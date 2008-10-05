@@ -1,0 +1,11 @@
+div.nav{
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 200px;
+}
+div.admin {
+  position: absolute;
+  left: 210px;
+  top: 5px;
+}
