@@ -15,30 +15,34 @@
 			$content = 'One or more fields was filled out incorrectly. Please hit your browser\'s back button and correct the mistake.';
 			}
 		}
-  if(!connect) { $content = 'One or more fields was filled out incorrectly. Please hit your browser\'s back button and correct the mistake.'; } else {
-    $handle = fopen('./schema/MySQL.sql', "r");
-    $query = fread($handle, filesize('./schema/MySQL.sql'));
-    fclose($handle);
-    $query = explode(';',$query);
-    $i = 1;
-    $f = count($query);
-    while ($i <= $f) {
-    mysql_query($query[$i],$connect);
-    $i++;
-    }
-  $content = $content.'<br />Config File:<br />
-  <textarea rows="20" cols="120"><?php
+	if(!connect) { $content = 'One or more fields was filled out incorrectly. Please hit your browser\'s back button and correct the mistake.'; } else {
+		$handle = fopen('./schema/MySQL.sql', "r");
+		if(!$handle) {
+			$content .= 'Failed to read default database schema.';
+			$error = 1;
+			}
+		$query = fread($handle, filesize('./schema/MySQL.sql'));
+		fclose($handle);
+		$query = explode(';',$query);
+		$i = 1;
+		$f = count($query);
+		while ($i <= $f) {
+		mysql_query($query[$i],$connect);
+		$i++;
+		}
+	$config_file = '../config.php';
+	$handle = fopen($config_file, "w");
+	if(!handle) {
+		$content .= 'Failed to open configuration file for writing.';
+		$error = 1;
+		}
+	$config = '<?php
 	// Security Check
-	if ($security != 1) {
+	if (SECURITY != 1) {
 		die (\'You cannot access this page directly.\');
 		}
 
-	// Communtiy CMS Configuration file
-	//
-	// Eventually, we will have an install script.
-	// For now though, manually configure.
-
-	$CONFIG[\'SYS_PATH\'] = \'\';	// Path to Community CMS on server
+	$CONFIG[\'SYS_PATH\'] = \'Unused\';	// Path to Community CMS on server
 	$CONFIG[\'db_host\'] = \''.$_POST['dbhost'].'\';		// MySQL server host (usually localhost)
 	$CONFIG[\'db_user\'] = \''.$_POST['dbuser'].'\';			// MySQL database user
 	$CONFIG[\'db_pass\'] = \''.$_POST['dbpass'].'\';			// MySQL database password
@@ -47,6 +51,14 @@
 
 	// Set the value below to \'1\' to disable Community CMS
 	$CONFIG[\'disabled\'] = 0;
-?></textarea><br />
-Install Successful. Please copy the above text to your config.php file and delete the install folder.';} 
+?>';
+	$config_write = fwrite($handle,$config);
+	if(!$config_write) {
+		$content.= 'Failed to write to config.php. Is it writeable?';
+		$error = 1;
+		}
+	fclose($handle);
+if($error != 1) {
+	$content .= 'Install Successful. Please copy the above text to your config.php file and delete the install folder.';
+	}
 ?>
