@@ -160,7 +160,7 @@ INSERT INTO `comcms_pages` (`id`, `title`, `type`, `menu`, `list`) VALUES
 CREATE TABLE IF NOT EXISTS `comcms_pagetypes` (
   `id` int(4) NOT NULL auto_increment,
   `name` tinytext NOT NULL,
-  `description` text NOT NULL,
+	`description` text NOT NULL,
   `author` tinytext NOT NULL,
   `filename` tinytext NOT NULL,
   PRIMARY KEY  (`id`)
@@ -171,13 +171,20 @@ CREATE TABLE IF NOT EXISTS `comcms_pagetypes` (
 --
 
 INSERT INTO `comcms_pagetypes` (`id`, `name`, `description`, `author`, `filename`) VALUES
-(1, 'News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', ''),
-(2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by date. It is most useful for a monthly newsletter scenario.', 'stephenjust', ''),
-(3, 'Calendar', 'A complex date management system supporting a full month view, week view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', ''),
+(1, 'News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', 'news.php'),
+(2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by date. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
+(3, 'Calendar', 'A complex date management system supporting a full month view, week view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
 (4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php');
 
 -- --------------------------------------------------------
-
+CREATE TABLE IF NOT EXISTS `comcms_permissions` (
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`user` INT NOT NULL ,
+	`type` TEXT NOT NULL ,
+	`value` INT NOT NULL ,
+	`extra` INT NOT NULL DEFAULT '0',
+	INDEX (`user`)
+) ENGINE = MYISAM DEFAULT CHARSET=latin1
 --
 -- Table structure for table `comcms_templates`
 --
