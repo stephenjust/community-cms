@@ -51,7 +51,6 @@ setVarsForm("user='.$_SESSION['user'].'");
 				$article = str_replace('<!-- $ARTICLE_DATE_DAY$ -->',$date_day,$article);
 				$article = str_replace('<!-- $ARTICLE_DATE_YEAR$ -->',$date_year,$article);
 				$article = str_replace('<!-- $ARTICLE_DATE$ -->',$date,$article);
-				$article = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$article);
 				$article = str_replace('<!-- $ARTICLE_AUTHOR$ -->',stripslashes($news['author']),$article);
 				$i++;
 				$return .= $article;
