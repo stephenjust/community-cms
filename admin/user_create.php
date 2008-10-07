@@ -21,6 +21,7 @@
 			$address_hide = $_POST['address_hide'];
 			$email_hide = $_POST['email_hide'];
 			$hide = $_POST['hide'];
+			$message = $_POST['message'];
 			if(strlen($username) <= 5) {
 				$content .= 'Your user name should be at least six characters.<br />';
 				$error = 1;

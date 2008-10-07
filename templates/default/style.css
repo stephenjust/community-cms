@@ -90,11 +90,15 @@ span.contact_name a {
 	color: #000000;
 	text-decoration: none;
 }
+span.contact_title {
+	font-style: italic;
+	color: #777777;
+}
 span.contact_heading {
 	font-size: normal;
 	font-family: Calibri,Tahoma,Verdana,Arial,Sans-Serif;
 	font-style: italic;
-	color: #999999;
+	color: #AAAAAA;
 }
 
 input.button_cal_back_month {
