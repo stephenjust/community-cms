@@ -4,10 +4,12 @@
 		die ('You cannot access this page directly.');
 		}
 	global $site_info;
-	$entry = 1;
-	$entries = 10;
+	if(!isset($_GET['start']) || $_GET['start'] == "" || $_GET['start'] < 0) {
+		$_GET['start'] = 0;
+		}
+	$start = $_GET['start'];
 	$i = 1;
-	$news_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date DESC';
+	$news_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date DESC LIMIT '.$start.',10';
 	$news_handle = $db->query($news_query);
 	$news_num_rows = $news_handle->num_rows;
 	$template = get_row_from_db("templates","WHERE id = ".$site_info['template']);
@@ -28,6 +30,9 @@ setVarsForm("user='.$_SESSION['user'].'");
 			} else {
 			while ($news_num_rows >= $i) {
 				$news = $news_handle->fetch_assoc();
+				if(!isset($first_date)) {
+					$first_date = $news['date'];
+					}
 				$article = $template;
 				if (!isset($news['image']) || $news['image'] == "") {
 					$picture = "";
@@ -56,5 +61,28 @@ setVarsForm("user='.$_SESSION['user'].'");
 				$return .= $article;
 				}
 			}
+		$news_first_query = 'SELECT date FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date DESC LIMIT 1';
+		$news_first_handle = $db->query($news_first_query);
+		$news_first = $news_first_handle->fetch_assoc();
+		$news_last_query = 'SELECT date FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date ASC LIMIT 1';
+		$news_last_handle = $db->query($news_last_query);
+		$news_last = $news_last_handle->fetch_assoc();
+		$template_file = $template_path."pagination.html";
+		$handle = fopen($template_file, "r");
+		$page_list = fread($handle, filesize($template_file));
+		fclose($handle);
+		if($news_first['date'] != $first_date && isset($first_date)) {
+			$prev_start = $start - 10;
+			$page_list = str_replace('<!-- $PREV_PAGE$ -->','<a href="index.php?id='.$id.'&start='.$prev_start.'" class="prev_page" id="prev_page">Previous Page</a>',$page_list);
+			} else {
+			$page_list = str_replace('<!-- $PREV_PAGE$ -->','',$page_list);
+			}
+		if($news_last['date'] != $news['date'] && isset($news['date'])) {
+			$next_start = $start + 10;
+			$page_list = str_replace('<!-- $NEXT_PAGE$ -->','<a href="index.php?id='.$id.'&start='.$next_start.'" class="prev_page" id="prev_page">Next Page</a>',$page_list);
+			} else {
+			$page_list = str_replace('<!-- $NEXT_PAGE$ -->','',$page_list);
+			}
+		$return .= $page_list;
 		return $return;
 	?>

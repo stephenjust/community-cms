@@ -52,3 +52,8 @@ contactlist.html
 <!-- $CONTACT_EMAIL$ -->             Displays email address
 <!-- $CONTACT_ADDRESS$ -->           Address
 <!-- $CONTACT_TELEPHONE$ -->         Telephone number
+
+pagination.html
+===============
+<!-- $NEXT_PAGE$ -->                 Link to next page of results
+<!-- $PREV_PAGE$ -->                 Link to previous page of results
