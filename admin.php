@@ -87,7 +87,7 @@ tinyMCE.init({
 	extended_valid_elements : \"a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]\"
 });
 </script>";
-		$nav_bar = "<span class='nav_header'>Main</span><br />
+		$nav_bar = "<div id='nav_bar'><span class='nav_header'>Main</span><br />
 		<a href='admin.php?".SID."'>Admin Home</a><br />
 <a href='index.php?".SID."' target='_blank'>View Site</a><br />
 <span class='nav_header'>News</span><br />
@@ -109,7 +109,7 @@ Page Types<br />
 <a href='admin.php?module=user_create'>New User</a><br />
 <a href='admin.php?module=user'>User List</a><br />
 <span class='nav_header'>Other</span><br />
-<a href='index.php?login=2'>Log Out</a>";
+<a href='index.php?login=2'>Log Out</a></div>";
 		$nav_login = NULL;
 		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
 		$template = str_replace('<!-- $SCRIPTS$ -->',$scripts,$template);

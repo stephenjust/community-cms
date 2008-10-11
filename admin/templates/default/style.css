@@ -45,11 +45,15 @@ div.nav_menu input {
   width: 150px;
   background: #CCCCCC;
 }
+div.nav_menu {
+	font-family: Calibri,Arial;
+}
 div.nav_menu a {
   color: #333333;
   padding-left: 10px;
   text-decoration: none;
   background: url('./images/menu.png') no-repeat;
+  font-family: Calibri,Arial;
 }
 h1 {
 	font-family: Cambria,Arial,Sans-Serif;
@@ -187,7 +191,7 @@ span.newsletter_year {
 
 /* Administration Specific Styles */
 span.nav_header {
-	font-family: Arial,'Sans Serif',Serif;
+	font-family: Cambria,Arial,'Sans Serif',Serif;
 	font-weight: bold;
 	text-align: center;
 }
