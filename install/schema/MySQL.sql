@@ -180,9 +180,7 @@ INSERT INTO `comcms_pagetypes` (`id`, `name`, `description`, `author`, `filename
 CREATE TABLE IF NOT EXISTS `comcms_permissions` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	`user` INT NOT NULL ,
-	`type` TEXT NOT NULL ,
-	`value` INT NOT NULL ,
-	`extra` INT NOT NULL DEFAULT '0',
+	`files` INT(4) NOT NULL DEFAULT '0',
 	INDEX (`user`)
 ) ENGINE = MYISAM DEFAULT CHARSET=latin1
 --
