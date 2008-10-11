@@ -9,6 +9,7 @@
 		}
 	$start = $_GET['start'];
 	$i = 1;
+	$first_date = NULL;
 	$news_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date DESC LIMIT '.$start.',10';
 	$news_handle = $db->query($news_query);
 	$news_num_rows = $news_handle->num_rows;
@@ -25,12 +26,13 @@
 		$return = '<script type="text/javascript">
 setVarsForm("user='.$_SESSION['user'].'");
 </script>';
+		$news['date'] = NULL;
 		if($news_num_rows == 0) {
 			$return .= 'There are no articles to be displayed.';
 			} else {
 			while ($news_num_rows >= $i) {
 				$news = $news_handle->fetch_assoc();
-				if(!isset($first_date)) {
+				if($first_date == NULL) {
 					$first_date = $news['date'];
 					}
 				$article = $template;
@@ -77,7 +79,7 @@ setVarsForm("user='.$_SESSION['user'].'");
 			} else {
 			$page_list = str_replace('<!-- $PREV_PAGE$ -->','',$page_list);
 			}
-		if($news_last['date'] != $news['date'] && isset($news['date'])) {
+		if($news_last['date'] != $news['date'] && $news['date'] != NULL) {
 			$next_start = $start + 10;
 			$page_list = str_replace('<!-- $NEXT_PAGE$ -->','<a href="index.php?id='.$id.'&start='.$next_start.'" class="prev_page" id="prev_page">Next Page</a>',$page_list);
 			} else {
