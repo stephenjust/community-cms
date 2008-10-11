@@ -45,19 +45,20 @@ Please choose a file: <input name="upload" type="file" /><br />
 		}
 		
 	// Create a folder list
-	function folder_list($directory = "", $type = 0) {
+	function folder_list($directory = "",$current = "",$type = 0) {
 		$folder_root = './files/';
-		if(!eregi('[.]',$directory)) {
+		if(!eregi('.',$directory)) {
 			$folder_open = $folder_root.$directory;
 			$files = scandir($folder_open);
 			$num_files = count($files);
 			$i = 1;
 			$j = 1;
+			$return = NULL;
 			if($num_files == 0) {
-				$return = 'There are no files to display in this folder.';
+				$return .= 'There are no files to display in this folder.';
 				}
 			if($type == 1) { // Start listbox if that is the view mode specified.
-				$return = $return.'<select name="folder_list">
+				$return .= '<select name="folder_list">
 <option value="">Default</option>';
 				}
 			while($i < $num_files) {
@@ -65,7 +66,11 @@ Please choose a file: <input name="upload" type="file" /><br />
 					if($type == 0) {
 						$return = $return.$files[$i].'<br />';
 						} elseif($type == 1) {
-						$return = $return.'<option value="'.$files[$i].'">'.$files[$i].'</option>';
+						if($current == $files[$i]) {
+							$return .= '<option value="'.$files[$i].'" selected>'.$files[$i].'</option>';
+							} else {
+							$return .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
+							}
 						}
 					}
 				$i++;
@@ -74,7 +79,7 @@ Please choose a file: <input name="upload" type="file" /><br />
 				$return = $return.'</select>';
 				}
 			} else {
-			$return = 'Error retrieving file list.';
+			$return = 'Error retrieving folder list.';
 			}
 		return $return;
 		}

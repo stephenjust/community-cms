@@ -52,7 +52,7 @@
 	function checkuser_admin() {
 		global $CONFIG;
 		global $db;
-		if($_SESSION['type'] != 1) {
+		if($_SESSION['type'] < 1) {
 			err_page(3004);
 			}
 		$query = 'SELECT username,password,realname,type FROM '.$CONFIG['db_prefix'].'users WHERE username = \''.$_SESSION['user'].'\' AND password = \''.$_SESSION['pass'].'\' AND type = \''.$_SESSION['type'].'\' AND realname = \''.$_SESSION['name'].'\'';

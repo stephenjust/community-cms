@@ -1,5 +1,25 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
+
+CREATE TABLE IF NOT EXISTS comcms_admin_pages (
+	`id` INT NOT NULL auto_increment PRIMARY KEY ,
+	`category` TEXT NOT NULL,
+	`on_menu` BOOL NOT NULL DEFAULT '1',
+	`label` TEXT NOT NULL,
+	`file` TEXT NOT NULL
+) ENGINE=MYISAM DEFAULT CHARSET=latin1 ;
+
+
+INSERT INTO comcms_admin_pages 
+	(`id`,`category`,`on_menu`,`label`,`file`) VALUES 
+	(NULL,'News','1','New Article','news_new_article'),
+	(NULL,'News','1','Article Manager','news'),
+	(NULL,'News','0','Edit Article','news_edit_article'),
+	(NULL,'Calendar','1','Dates','calendar'),
+	(NULL,'Calendar','1','Settings','calendar_settings'),
+	(NULL,'Calendar','1','New Date','calendar_new_date'),
+	(NULL,'Files','1','Upload File','upload'),
+	(NULL,'Files','1','Manage','filemanager');
 --
 -- Table structure for table `comcms_calendar`
 --

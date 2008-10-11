@@ -88,22 +88,12 @@ tinyMCE.init({
 });
 </script>";
 $nav_bar = NULL;
-// $nav_bar .= admin_nav();
-		$nav_bar = "<span class='nav_header'>Main</span><br />
+		$nav_bar .= "<span class='nav_header'>Main</span><br />
 		<a href='admin.php?".SID."'>Admin Home</a><br />
 <a href='index.php?".SID."' target='_blank'>View Site</a><br />
-<span class='nav_header'>News</span><br />
-<a href='admin.php?module=news_new_article'>New Article</a><br />
-<a href='admin.php?module=news&".SID."'>Articles</a><br />
-<span class='nav_header'>Calendar</span><br />
-<a href='admin.php?module=calendar_new_date'>New Date</a><br />
-<a href='admin.php?module=calendar&".SID."'>Dates</a><br />
-<a href='admin.php?module=calendar_settings&".SID."'>Settings</a><br />
+".admin_nav()."
 <span class='nav_header'>Newsletters</span><br />
 <a href='admin.php?module=newsletter&".SID."'>Newsletters</a><br />
-<span class='nav_header'>Files</span><br />
-<a href='admin.php?module=upload'>Upload</a><br />
-<a href='admin.php?module=filemanager'>Manage</a><br />
 <span class='nav_header'>Pages</span><br />
 <a href='admin.php?module=pages&".SID."'>Pages</a><br />
 Page Types<br />

@@ -73,7 +73,7 @@
 	    $check_message = $check_message_handle->num_rows;
 	    $return .= '<a href="messages.php">'.$check_message." new messages</a><br />\n";
 	    $return .= mysqli_error($db);
-	    if($_SESSION['type'] == 1) {
+	    if($_SESSION['type'] >= 1) {
 	      $return .= "<a href='admin.php?".SID."'>Admin</a>";
 	    }
 	  }

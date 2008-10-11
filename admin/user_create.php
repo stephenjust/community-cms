@@ -87,7 +87,7 @@
 				$error = 1;
 				}
 			if($error != 1) {
-				$create_user_query = 'INSERT INTO '.$CONFIG['db_prefix']."users (type,username,password,realname,title,phone,email,address,phone_hide,email_hide,address_hide,hide,message) VALUES (0,'$username','".md5($password)."','$real_name','$title','$telephone','$email','$address',$telephone_hide,$email_hide,$address_hide,$hide,$message)";
+				$create_user_query = 'INSERT INTO '.$CONFIG['db_prefix']."users (type,username,password,realname,title,phone,email,address,phone_hide,email_hide,address_hide,hide,message) VALUES (2,'$username','".md5($password)."','$real_name','$title','$telephone','$email','$address',$telephone_hide,$email_hide,$address_hide,$hide,$message)";
 				$create_user = $db->query($create_user_query);
 				if(!$create_user) {
 					$content .= 'Your account could not be created.';
