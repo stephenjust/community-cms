@@ -87,7 +87,9 @@ tinyMCE.init({
 	extended_valid_elements : \"a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]\"
 });
 </script>";
-		$nav_bar = "<div id='nav_bar'><span class='nav_header'>Main</span><br />
+$nav_bar = NULL;
+// $nav_bar .= admin_nav();
+		$nav_bar = "<span class='nav_header'>Main</span><br />
 		<a href='admin.php?".SID."'>Admin Home</a><br />
 <a href='index.php?".SID."' target='_blank'>View Site</a><br />
 <span class='nav_header'>News</span><br />
@@ -107,10 +109,9 @@ tinyMCE.init({
 Page Types<br />
 <span class='nav_header'>Users</span><br />
 <a href='admin.php?module=user_create'>New User</a><br />
-<a href='admin.php?module=user'>User List</a><br />
-<span class='nav_header'>Other</span><br />
-<a href='index.php?login=2'>Log Out</a></div>";
+<a href='admin.php?module=user'>User List</a>";
 		$nav_login = NULL;
+		$nav_login .= display_login_box();
 		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
 		$template = str_replace('<!-- $SCRIPTS$ -->',$scripts,$template);
 		$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
@@ -118,8 +119,6 @@ Page Types<br />
 		$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
 		$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
 		$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
-		$template = str_replace('<!-- $FOOTER$ -->','<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>
- Powered by Community CMS',$template);
 		echo $template;
 		}
 	display_admin($content);

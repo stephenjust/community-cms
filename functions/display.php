@@ -24,7 +24,7 @@
 		$image_path = $template_path.'images/';
 		include ('notebook_content.php');
 		$nav_bar = display_nav_bar();
-		$nav_login = display_login_box($page_info,$site_info);
+		$nav_login = display_login_box();
 		$content = get_page_content($page_info['id'],$page_info['type'],$view);
 		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
 		$template = str_replace('<!-- $ADMIN_INCLUDE$ -->',$admin_include,$template);
@@ -59,7 +59,9 @@
 		return $return;
 		}
 	
-	function display_login_box($page_info,$site_info) {
+	function display_login_box() {
+		global $page_info;
+		global $site_info;
 		global $db;
 		global $CONFIG;
 	  if(!isset($_SESSION['user']) || !isset($_SESSION['pass'])) {
