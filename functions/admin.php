@@ -73,6 +73,9 @@
 		case 'user_create':
 			include('./admin/user_create.php');
 			break;
+		case 'user_edit':
+			include('./admin/user_edit.php');
+			break;
 		case 'user_permission':
 			include('./admin/user_permission.php');
 			break;
