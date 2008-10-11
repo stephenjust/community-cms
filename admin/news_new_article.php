@@ -9,6 +9,9 @@
 	if ($_GET['action'] == 'new') {
 		// Clean up variables.
 		$title = addslashes($_POST['title']);
+		$title = str_replace('"','&quot;',$title);
+		$title = str_replace('<','&lt;',$title);
+		$title = str_replace('>','&gt;',$title);
 		$content = addslashes($_POST['content']);
 		$author = addslashes($_POST['author']);
 		$image = addslashes($_POST['image']);

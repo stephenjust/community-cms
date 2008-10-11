@@ -13,9 +13,13 @@
 		// Clean up variables.
 		$edit_content = addslashes($_POST['update_content']);
 		$edit_id = addslashes($_POST['id']);
+		$name = stripslashes($_POST['title']);
+		$name = str_replace('"','&quot;',$name);
+		$name = str_replace('<','&lt;',$name);
+		$name = str_replace('>','&gt;',$name);
 		$image = $_POST['image'];
 		$page = $_POST['page'];
-		$edit_article_query = 'UPDATE '.$CONFIG['db_prefix']."news SET description='$edit_content',page='$page',image='$image',date='$date' WHERE id = $edit_id";
+		$edit_article_query = 'UPDATE '.$CONFIG['db_prefix']."news SET name='$name',description='$edit_content',page='$page',image='$image',date='$date' WHERE id = $edit_id";
 		$edit_article = $db->query($edit_article_query);
 		if(!$edit_article) {
 			$content = 'Failed to edit article. '.mysqli_error($db);
@@ -29,7 +33,7 @@
 <h1>Edit Existing Article</h1>
 <table class="admintable">
 <input type="hidden" name="id" value="'.$edit[1]['id'].'" />
-<tr><td width="150" class="row1">Heading:</td><td class="row1">'.stripslashes($edit[1]['name']).'</td></tr>
+<tr><td width="150" class="row1">Heading:</td><td class="row1"><input type="text" name="title" value="'.stripslashes($edit[1]['name']).'" /></td></tr>
 <tr><td class="row2" valign="top">Content:</td><td class="row2"><textarea name="update_content" rows="30">'.stripslashes($edit[1]['description']).'</textarea></td></tr>
 <tr><td width="150" class="row1" valign="top">Page:</td><td class="row1"><select name="page">';
 		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 1 ORDER BY list ASC';
