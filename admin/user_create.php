@@ -9,6 +9,14 @@
 			$username = addslashes($_POST['username']);
 			$pass = $_POST['pass'];
 			$pass_conf = $_POST['pass_conf'];
+			if(eregi(',',$_POST['surname'])) {
+				$content .= 'You cannot have a comma in your surname.<br />';
+				$error = 1;
+				}
+			if(eregi(',',$_POST['first_name'])) {
+				$content .= 'You cannot have a comma in your first name.<br />';
+				$error = 1;
+				}
 			$real_name = addslashes($_POST['surname']).', '.addslashes($_POST['first_name']);
 			$title = addslashes($_POST['title']);
 			if(strlen($title) <= 1) {
