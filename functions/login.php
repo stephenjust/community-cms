@@ -48,7 +48,9 @@
 				return;
 				}
 			$userinfo = $access->fetch_assoc();
-			define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);
+			if(!defined('USERINFO')) {
+				define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);
+				}
 			return;
 			}
 		if($mustbeloggedin == 1) {
