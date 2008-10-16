@@ -22,14 +22,12 @@
 			}
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 		$image_path = $template_path.'images/';
-		include ('notebook_content.php');
 		$nav_bar = display_nav_bar();
 		$nav_login = display_login_box();
 		$content = get_page_content($page_info['id'],$page_info['type'],$view);
 		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
 		$template = str_replace('<!-- $ADMIN_INCLUDE$ -->',$admin_include,$template);
 		$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
-		$template = str_replace('<!-- $NOTEBOOK_CONTENT$ -->',$notebook_content,$template);
 		$template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
 		$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
 		$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
