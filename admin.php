@@ -91,15 +91,7 @@ $nav_bar = NULL;
 		$nav_bar .= "<span class='nav_header'>Main</span><br />
 		<a href='admin.php?".SID."'>Admin Home</a><br />
 <a href='index.php?".SID."' target='_blank'>View Site</a><br />
-".admin_nav()."
-<span class='nav_header'>Newsletters</span><br />
-<a href='admin.php?module=newsletter&".SID."'>Newsletters</a><br />
-<span class='nav_header'>Pages</span><br />
-<a href='admin.php?module=pages&".SID."'>Pages</a><br />
-Page Types<br />
-<span class='nav_header'>Users</span><br />
-<a href='admin.php?module=user_create'>New User</a><br />
-<a href='admin.php?module=user'>User List</a>";
+".admin_nav();
 		$nav_login = NULL;
 		$nav_login .= display_login_box();
 		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);

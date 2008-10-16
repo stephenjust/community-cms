@@ -31,39 +31,4 @@
 		$page = $page_handle->fetch_assoc();
 		include('./admin/'.$page['file'].'.php');
 		}
-	switch($_GET['module']) {
-
-		//
-		// Newsletter Management Pages
-		//
-
-		case 'newsletter':
-			include('./admin/newsletter.php');
-			break;
-
-		//
-		// Page Management Pages
-		//
-
-		case 'pages':
-			include('./admin/page.php');
-			break;
-			
-		//
-		// User Management Pages
-		//
-		
-		case 'user':
-			include('./admin/user.php');
-			break;
-		case 'user_create':
-			include('./admin/user_create.php');
-			break;
-		case 'user_edit':
-			include('./admin/user_edit.php');
-			break;
-		case 'user_permission':
-			include('./admin/user_permission.php');
-			break;
-		}
 	?>

@@ -19,14 +19,14 @@
 				$message = 'Successfully added article.';
 				}
 			}
-			if ($_GET['action'] == 'delete') {
-			$delete_article_query = 'DELETE FROM '.$CONFIG['db_prefix'].'newsletters WHERE id = '.$_POST['delete'];
-			$delete_article = $db->query($delete_article_query);
-			if(!$delete_article) {
-				$message = 'Failed to delete newsletter entry. '.mysqli_error($db);
-				} else {
-				$message = 'Successfully deleted newsletter entry.';
-				}
+		}
+	if($_GET['action'] == 'delete') {
+		$delete_article_query = 'DELETE FROM '.$CONFIG['db_prefix'].'newsletters WHERE id = '.$_POST['delete'];
+		$delete_article = $db->query($delete_article_query);
+		if(!$delete_article) {
+			$message = 'Failed to delete newsletter entry. '.mysqli_error($db);
+			} else {
+			$message = 'Successfully deleted newsletter entry.';
 			}
 		}
 		$content = $message;

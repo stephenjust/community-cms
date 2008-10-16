@@ -19,7 +19,12 @@ INSERT INTO comcms_admin_pages
 	(NULL,'Calendar','1','Settings','calendar_settings'),
 	(NULL,'Calendar','1','New Date','calendar_new_date'),
 	(NULL,'Files','1','Upload File','upload'),
-	(NULL,'Files','1','Manage','filemanager');
+	(NULL,'Files','1','Manage','filemanager'),
+	(NULL,'Newsletters','1','Newsletters','newsletter'),
+	(NULL,'Pages','1','Pages','page'),
+	(NULL,'Users','1','New User','user_create'),
+	(NULL,'Users','1','User List','user'),
+	(NULL,'Users','0','Edit User','user_edit');
 --
 -- Table structure for table `comcms_calendar`
 --

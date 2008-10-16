@@ -117,7 +117,7 @@
 		}
 // $content = NULL;
 $content = $message;
-$content = $content.'<form method="POST" action="admin.php?module=pages&action=new">
+$content = $content.'<form method="POST" action="admin.php?module=page&action=new">
 <h1>Add Page</h1>
 <table style="border: 1px solid #000000;">
 <tr><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
@@ -147,9 +147,9 @@ $content = $content.'<h1>Edit Page</h1>
 		$page_list = $page_list_handle->fetch_assoc();
 		$content = $content.'<tr>
 <td class="adm_page_list_item">'.$page_list['title'].'</td>
-<td><a href="?module=pages&action=del&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=pages&action=move_up&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=pages&action=move_down&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=page&action=del&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=page&action=move_up&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=page&action=move_down&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>
 </tr>';
 		$i++;
 	}
