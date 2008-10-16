@@ -144,17 +144,6 @@ CREATE TABLE IF NOT EXISTS `comcms_newsletters` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Table structure for table `comcms_notebook`
---
-
-CREATE TABLE IF NOT EXISTS `comcms_notebook` (
-  `id` int(11) NOT NULL auto_increment,
-  `message` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
-
---
 -- Table structure for table `comcms_pages`
 --
 
