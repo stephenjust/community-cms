@@ -28,10 +28,12 @@ header("Pragma: no-cache"); // HTTP/1.0
 		}
 	$fieldname = $_GET['fieldname'];
 	$content = $_GET['content'];
-	$content = str_replace('"','&quot;',$content);
-	$content = str_replace('<','&lt;',$content);
-	$content = str_replace('>','&gt;',$content);
 	$fieldname = explode('_',$fieldname);
+	if($fieldname[0] == 'title') { // Need to do this to prevent stripping tags from content.
+		$content = str_replace('"','&quot;',$content);
+		$content = str_replace('<','&lt;',$content);
+		$content = str_replace('>','&gt;',$content);
+		}
 $query = 'UPDATE '.$CONFIG['db_prefix'].'news SET '.$fieldname[0].' = \''.$content.'\' WHERE id = \''.$fieldname[1].'\'';
 mysql_query($query,$connect);
 echo mysql_error();
