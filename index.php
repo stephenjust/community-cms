@@ -14,8 +14,9 @@
 		}
 	// Check if site is disabled.
 	if($CONFIG['disabled'] == 1) {
-		err_page(1);
+		err_page(11);
 		}
+	$NOTIFICATION = NULL;
 	// Try to establish a connection to the MySQL server using the MySQLi classes.		
 	@ $db = new mysqli($CONFIG['db_host'],$CONFIG['db_user'],$CONFIG['db_pass'],$CONFIG['db_name']);
 	if(mysqli_connect_errno()) {
@@ -36,9 +37,15 @@
 	if(!include_once('./include.php')) {
 		err_page(2001); // File not found error.
 		}
+		
+	// Load global site information.
+	$site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
+	$site_info_handle = $db->query($site_info_query);
+	$site_info = $site_info_handle->fetch_assoc();
+		
 	// Initialize some variables to keep PHP from complaining.
 	if(!isset($_GET['id'])) {
-		$page_id = 1;
+		$page_id = $site_info['home'];
 		} else {
 		$page_id = $_GET['id'];
 		}
@@ -62,11 +69,12 @@
 		}
 	checkuser();
 	
-	// Load global site information.
-	$site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
-	$site_info_handle = $db->query($site_info_query);
-	$site_info = $site_info_handle->fetch_assoc();
-	
+	if(file_exists('./install')) {
+		$NOTIFICATION .= 'Please delete your ./install directory.<br />';
+		}
+	if(is_writeable('./config.php')) {
+		$NOTIFICATION .= 'Please change the permissions on ./config.php to 0755 or something else that makes it unwriteable.<br />';
+		}
 	// Load page information.
 	$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = \''.$page_id.'\'';
 	$page_info_handle = $db->query($page_info_query);

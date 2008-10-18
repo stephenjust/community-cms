@@ -19,7 +19,17 @@
 			$message = 'Successfully added page';
 			}
 		}
-	if ($_GET['action'] == 'del') {
+	if($_GET['action'] == 'home') {
+		$home_query = 'UPDATE '.$CONFIG['db_prefix'].'config SET home='.$_GET['id'];
+		$home = $db->query($home_query);
+		if(!$home) {
+			$message = 'Failed to change home page. '.mysqli_error($db);
+			} else {
+			$message = 'Successfully changed home page.';
+			$site_info['home'] = $_GET['id']; // Site info was gathered on admin.php, a while back, so we need to reset it to the current value.
+			}
+		}
+	if($_GET['action'] == 'del') {
 		// Delete page from database if no files exist on that page.
 		$page_type_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'];
 		$page_type = $db->query($page_type_query);
@@ -128,16 +138,16 @@ $content = $content.'<form method="POST" action="admin.php?module=page&action=ne
 		$content = $content.'<input type="radio" name="type" value="'.$pagetypes[$i]['id'].'" />'.$pagetypes[$i]['name'].'<br />';
 		$i++;
 	}
-$content = $content.'</td></td></tr>
+$content .= '</td></td></tr>
 <tr><td>Hidden:</td><td><input type="checkbox" name="hidden" /></td></td></tr>
 <tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 </table>
 
 </form>';
 
-$content = $content.'<h1>Edit Page</h1>
+$content .= '<h1>Edit Page</h1>
 <table style="border: 1px solid #000000;">
-<tr><td width="350">Page:</td><td>Del</td><td>Up</td><td>Dn</td></tr>';
+<tr><td width="350">Page:</td><td>Del</td><td>Up</td><td>Dn</td><td>Home</td></tr>';
 	// Get page list in the order defined in the database. First is 0.
 	$page_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages ORDER BY list ASC';
 	$page_list_handle = $db->query($page_list_query);
@@ -145,11 +155,17 @@ $content = $content.'<h1>Edit Page</h1>
  	$i = 1;
 	while ($i <= $page_list_rows) {
 		$page_list = $page_list_handle->fetch_assoc();
-		$content = $content.'<tr>
-<td class="adm_page_list_item">'.$page_list['title'].'</td>
+		global $site_info;
+		$content .= '<tr>
+<td class="adm_page_list_item">'.$page_list['title'].' ';
+		if($page_list['id'] == $site_info['home']) {
+			$content .= '(Default)';
+			}
+		$content .= '</td>
 <td><a href="?module=page&action=del&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=page&action=move_up&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=page&action=move_down&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=page&action=home&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>
 </tr>';
 		$i++;
 	}

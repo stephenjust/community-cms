@@ -2,7 +2,7 @@ Community CMS Error Codes
 =========================
 
 0      - Undefined Error (There was no code passed to the function)
-1      - Community CMS disabled
+11      - Community CMS disabled
 
 0xxx   - Config Errors
 =========================

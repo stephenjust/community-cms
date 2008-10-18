@@ -77,7 +77,8 @@ CREATE TABLE IF NOT EXISTS `comcms_config` (
   `url` text NOT NULL,
   `comment` text NOT NULL,
   `template` int(11) NOT NULL,
-  `active` tinyint(1) NOT NULL
+  `active` tinyint(1) NOT NULL,
+  `home` int(4) NOT NULL default '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
