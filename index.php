@@ -72,9 +72,9 @@
 	if(file_exists('./install')) {
 		$NOTIFICATION .= 'Please delete your ./install directory.<br />';
 		}
-	if(is_writeable('./config.php')) {
-		$NOTIFICATION .= 'Please change the permissions on ./config.php to 0755 or something else that makes it unwriteable.<br />';
-		}
+//	if(is_writeable('./config.php')) {
+//		$NOTIFICATION .= 'Please change the permissions on ./config.php to 0755 or something else that makes it unwriteable.<br />';
+//		}
 	// Load page information.
 	$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = \''.$page_id.'\'';
 	$page_info_handle = $db->query($page_info_query);
