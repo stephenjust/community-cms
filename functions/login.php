@@ -18,6 +18,7 @@
 			if($num_rows != 1) {
 				err_page(3003);
 				} else {
+				session_set_cookie_params(84000000);
 				$_SESSION['userid'] = $result['id'];
 				$_SESSION['user'] = $user;
 				$_SESSION['pass'] = md5($passwd);

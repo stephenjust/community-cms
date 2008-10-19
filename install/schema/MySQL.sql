@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `comcms_permissions` (
 	`user` INT NOT NULL ,
 	`files` INT(4) NOT NULL DEFAULT '0',
 	INDEX (`user`)
-) ENGINE = MYISAM DEFAULT CHARSET=latin1
+) ENGINE = MYISAM DEFAULT CHARSET=latin1;
 --
 -- Table structure for table `comcms_templates`
 --

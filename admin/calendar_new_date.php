@@ -32,7 +32,7 @@
 				$message .= "You did not fill out one or more of the times properly. Please fix the problem and resubmit.";
 				} else {
 				$create_date_query = 'INSERT INTO '.$CONFIG['db_prefix'].'calendar (category,starttime,endtime,year,month,day,header,description,location,author,image,hidden) VALUES ("'.$category.'","'.$start_time.'","'.$end_time.'",
-				"'.$year.'","'.$month.'","'.$day.'","'.$title.'","'.$content.'","'.$location.'","'.$author.'",'.$image.','.$hide.')';
+				"'.$year.'","'.$month.'","'.$day.'","'.$title.'","'.$content.'","'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
 				$create_date = $db->query($create_date_query);
 				if(!$create_date) {
 					$message .= 'Failed to create date information. '.mysqli_error($db).$create_date_query;
