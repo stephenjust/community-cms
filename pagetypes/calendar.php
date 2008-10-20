@@ -54,7 +54,7 @@
     $i = 1;
     $page = $page."<div class='calendar_content'>";
     while ($i <= $dates['num_rows']) {
-      $page = $page."<a href='?id=".$_GET['id']."&view=event&a=".$dates[$i]['id']."'>".$dates[$i]['header']."</a><br />";
+      $page = $page."<a href='?id=".$_GET['id']."&view=event&a=".$dates[$i]['id']."'>".stripslashes($dates[$i]['header'])."</a><br />";
       $i++;
     }
     $page = $page."</div>";
