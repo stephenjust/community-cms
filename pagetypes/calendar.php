@@ -31,21 +31,15 @@
   while ($counter_day <= $calendar_days) {
     if ($counter_dow == 7) { $page = $page."</tr>\n<tr>"; $counter_dow = 0; }
     unset($dates);
-		$dates_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar WHERE month = \''.$month.'\' AND year = \''.$year.'\' AND day = \''.$counter_day.'\' LIMIT 0,2';
+		$dates_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar date, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE date.month = \''.$month.'\' AND date.year = \''.$year.'\' AND date.day = \''.$counter_day.'\' AND date.category = cat.id LIMIT 0,2';
 		$dates_handle = $db->query($dates_query);
-		$dates[1] = $dates_handle->fetch_assoc();
 		$i = 1;
-		while($i < $dates_handle->num_rows) {
-			$dates[$i] = $dates_handle->fetch_assoc($dates_handle);
-			$i++;
-			}
-		$dates['num_rows'] = $dates_handle->num_rows;
     $page = $page."<td";
     if ($counter_day == date('j') && $month == date('n') && $year == date('Y')) {
       $page = $page." class='calendar_today'";
     }
     $page = $page."><b>";
-    if ($dates['num_rows'] > 0) {
+    if ($dates_handle->num_rows > 0) {
       $page = $page."<a href='?id=".$_GET['id']."&view=day&m=".$month."&y=".$year."&d=".$counter_day."'>".$counter_day."</a>";
     } else {
       $page = $page.$counter_day;
@@ -53,8 +47,12 @@
     $page = $page."</b><br />";
     $i = 1;
     $page = $page."<div class='calendar_content'>";
-    while ($i <= $dates['num_rows']) {
-      $page = $page."<a href='?id=".$_GET['id']."&view=event&a=".$dates[$i]['id']."'>".stripslashes($dates[$i]['header'])."</a><br />";
+    while ($i <= $dates_handle->num_rows) {
+    	$dates = $dates_handle->fetch_assoc();
+    	if($dates['colour'] == '') {
+    		$dates['colour'] = 'red';
+    		}
+      $page = $page."<a href='?id=".$_GET['id']."&view=event&a=".$dates['id'].'\'><img src="<!-- $IMAGE_PATH$ -->icon_'.$dates['colour'].'.png" width="16px" height="16px" alt="'.$dates['label'].'" border="0px" />'.stripslashes($dates['header'])."</a><br />";
       $i++;
     }
     $page = $page."</div>";

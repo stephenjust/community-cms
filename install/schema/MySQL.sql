@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `comcms_calendar` (
 CREATE TABLE IF NOT EXISTS `comcms_calendar_categories` (
   `id` int(11) NOT NULL auto_increment,
   `label` text NOT NULL,
+   `colour` text NOT NULL,
   `description` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
@@ -62,9 +63,9 @@ CREATE TABLE IF NOT EXISTS `comcms_calendar_categories` (
 -- Dumping data for table `comcms_calendar_categories`
 --
 
-INSERT INTO `comcms_calendar_categories` (`id`, `label`, `description`) VALUES
-(0, 'Default Category', ''),
-(1, 'Other', '');
+INSERT INTO `comcms_calendar_categories` (`id`, `label`, `colour`, `description`) VALUES
+(0, 'Default Category', 'red', ''),
+(1, 'Other', 'yellow', '');
 
 -- --------------------------------------------------------
 
