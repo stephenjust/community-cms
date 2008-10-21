@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `comcms_calendar` (
 --
 
 CREATE TABLE IF NOT EXISTS `comcms_calendar_categories` (
-  `id` int(11) NOT NULL auto_increment,
+  `cat_id` int(11) NOT NULL auto_increment,
   `label` text NOT NULL,
    `colour` text NOT NULL,
   `description` text NOT NULL,

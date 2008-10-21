@@ -31,7 +31,7 @@
   while ($counter_day <= $calendar_days) {
     if ($counter_dow == 7) { $page = $page."</tr>\n<tr>"; $counter_dow = 0; }
     unset($dates);
-		$dates_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar date, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE date.month = \''.$month.'\' AND date.year = \''.$year.'\' AND date.day = \''.$counter_day.'\' AND date.category = cat.id LIMIT 0,2';
+		$dates_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar date, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE date.month = \''.$month.'\' AND date.year = \''.$year.'\' AND date.day = \''.$counter_day.'\' AND date.category = cat.cat_id LIMIT 0,2';
 		$dates_handle = $db->query($dates_query);
 		$i = 1;
     $page = $page."<td";

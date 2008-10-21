@@ -6,7 +6,7 @@
 	$message = NULL;
 	// Delete category if requested.
 	if ($_GET['action'] == 'delete_category') {
-		$delete_category_query = 'DELETE FROM '.$CONFIG['db_prefix'].'calendar_categories WHERE id = '.$_POST['delete_category_id'];
+		$delete_category_query = 'DELETE FROM '.$CONFIG['db_prefix'].'calendar_categories WHERE cat_id = '.$_POST['delete_category_id'];
 		$delete_category = $db->query($delete_category_query);
 		if(!$delete_category) {
 			$message = 'Failed to delete category. '.mysqli_error();
@@ -53,7 +53,7 @@ $content = $message.'<form method="POST" action="?module=calendar_settings&actio
  	$cat = get_row_from_db("calendar_categories");
  	$i = 1;
 	while ($i <= $cat['num_rows']) {
-		$content = $content.'<input type="radio" name="delete_category_id" value="'.$cat[$i]['id'].'" /><img src="./admin/templates/default/images/icon_'.$cat[$i]['colour'].'.png" width="16px" height="16px" alt="'.$cat[$i]['colour'].'" />'.$cat[$i]['label'].'<br />';
+		$content = $content.'<input type="radio" name="delete_category_id" value="'.$cat[$i]['cat_id'].'" /><img src="./admin/templates/default/images/icon_'.$cat[$i]['colour'].'.png" width="16px" height="16px" alt="'.$cat[$i]['colour'].'" />'.$cat[$i]['label'].'<br />';
 		$i++;
 	}
 

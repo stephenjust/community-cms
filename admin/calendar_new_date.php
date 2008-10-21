@@ -49,12 +49,12 @@ $content = $message.'<form method="POST" action="?module=calendar_new_date&actio
 <tr><td width="150" class="row1">*Heading:</td><td class="row1"><input type="text" name="title" value="'.$_POST['title'].'" /></td></tr>
 <tr><td width="150" class="row2">Category:</td><td class="row2">
 <select name="category">';
- 	$category_list_query = 'SELECT id,label FROM '.$CONFIG['db_prefix'].'calendar_categories ORDER BY id ASC';
+ 	$category_list_query = 'SELECT cat_id,label FROM '.$CONFIG['db_prefix'].'calendar_categories ORDER BY cat_id ASC';
  	$category_list_handle = $db->query($category_list_query);
  	$b = 1;
 	while ($b <= $category_list_handle->num_rows) {
 		$category_list = $category_list_handle->fetch_assoc();
-		$content .= '<option value="'.$category_list['id'].'" />'.$category_list['label'].'</option>';
+		$content .= '<option value="'.$category_list['cat_id'].'" />'.$category_list['label'].'</option>';
 		$b++;
 	}
 
