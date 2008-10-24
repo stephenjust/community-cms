@@ -29,6 +29,8 @@
 					$content .= 'Password not changed.<br />';
 					}
 				$telephone = addslashes($_POST['telephone']);
+				$email = addslashes($_POST['email']);
+				$title = addslashes($_POST['title']);
 				$telephone_hide = $_POST['telephone_hide'];
 				$address_hide = $_POST['address_hide'];
 				$email_hide = $_POST['email_hide'];
@@ -36,6 +38,10 @@
 				$message = $_POST['message'];
 				if(strlen($telephone) <= 11 || !eregi('^[0-9\-]+\-[0-9]+\-[0-9]+$',$telephone)) {
 					$content .= 'Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.<br />';
+					$error = 1;
+					}
+				if(!eregi('^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$',$email)) {
+					$content .= 'You did not enter a valid email address.<br />';
 					$error = 1;
 					}
 				if($telephone_hide == 'on') {
@@ -62,7 +68,16 @@
 					$message = 1;
 					} else {
 					$message = 0;
-					}	
+					}
+				if($error == 0) {
+					$edit_query = 'UPDATE '.$CONFIG['db_prefix'].'users SET realname="'.$_POST['surname'].', '.$_POST['first_name'].'", title="'.$title.'", phone="'.$telephone.'", email="'.$email.'", address="'.addslashes($_POST['address']).'", address_hide='.$address_hide.', email_hide='.$email_hide.', message='.$message.', hide='.$hide.' WHERE id = '.$_GET['edit'].' LIMIT 1';
+					$edit_handle = $db->query($edit_query);
+					if(!$edit_handle) {
+						$content .= 'Failed to update user information. '.mysqli_error($db);
+						} else {
+						$content .= 'Successfully updated user information.';
+						}
+					}
 				} else {
 				$name = explode(', ',$current_data['realname']);
 				if($current_data['phone_hide'] == 1) {

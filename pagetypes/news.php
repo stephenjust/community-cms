@@ -39,7 +39,7 @@ setVarsForm("user='.$_SESSION['user'].'");
 				if (!isset($news['image']) || $news['image'] == "") {
 					$picture = "";
 					} else {
-					$picture = "<img src='".$news['image']."' alt='".$news['image']."' align='left' width='100' height='100' style='padding: 5px; padding-right: 10px;' />";
+					$picture = "<img src='".$news['image']."' alt='".$news['image']."' class='news_image' />";
 					}
 				$date = substr($news['date'],0,10);
 				$date_parts = explode('-',$date);

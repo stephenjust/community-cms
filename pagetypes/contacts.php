@@ -80,7 +80,13 @@ Message to user:<br />
 				} else {
 				$contact_address = $contact_info['address'];
 				}
-			$current_contact = str_replace('<!-- $CONTACT_NAME$ -->',stripslashes($realname),$current_contact);
+			if(eregi(',',$realname)) {
+				$firstlast = explode(', ',$realname);
+				$realname_firstlast = $firstlast[1].' '.$firstlast[0];
+				} else {
+				$realname_firstlast = $realname;
+				}
+			$current_contact = str_replace('<!-- $CONTACT_NAME$ -->',stripslashes($realname_firstlast),$current_contact);
 			$current_contact = str_replace('<!-- $CONTACT_TITLE$ -->',stripslashes($contact_info['title']),$current_contact);
 			$current_contact = str_replace('<!-- $CONTACT_EMAIL$ -->',stripslashes($contact_email),$current_contact);
 			$current_contact = str_replace('<!-- $CONTACT_TELEPHONE$ -->',stripslashes($contact_telephone),$current_contact);

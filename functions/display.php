@@ -63,7 +63,7 @@
 		global $db;
 		global $CONFIG;
 	  if(!isset($_SESSION['user']) || !isset($_SESSION['pass'])) {
-	    $return = "<form method='POST' action='index.php?id=".$page_info['id']."&login=1'>\nUser: <input type='text' name='user' /><br />\nPass: <input type='password' name='passwd' /><br />\n<input type='submit' value='Login!' /></form>\n";
+	    $return = "<form method='POST' action='index.php?id=".$page_info['id']."&amp;login=1'>\nUser: <input type='text' name='user' /><br />\nPass: <input type='password' name='passwd' /><br />\n<input type='submit' value='Login!' /></form>\n";
 	  } else { 
 	    $return = $_SESSION['name']."<br />\n<a href='index.php?login=2'>Log Out</a><br />\n";
 	    $check_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.$_SESSION['userid'];
