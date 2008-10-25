@@ -24,7 +24,8 @@ INSERT INTO comcms_admin_pages
 	(NULL,'Pages','1','Pages','page'),
 	(NULL,'Users','1','New User','user_create'),
 	(NULL,'Users','1','User List','user'),
-	(NULL,'Users','0','Edit User','user_edit');
+	(NULL,'Users','0','Edit User','user_edit'),
+	(NULL,'Logs','1','View Logs','log_view');
 --
 -- Table structure for table `comcms_calendar`
 --
@@ -103,6 +104,14 @@ CREATE TABLE IF NOT EXISTS `comcms_files` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
+CREATE TABLE IF NOT EXISTS `comcms_logs` (
+  `log_id` int(11) NOT NULL auto_increment,
+  `date` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `user_id` int(5) NOT NULL,
+  `action` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Table structure for table `comcms_news`

@@ -25,7 +25,7 @@
 		if(!$home) {
 			$message = 'Failed to change home page. '.mysqli_error($db);
 			} else {
-			$message = 'Successfully changed home page.';
+			$message = 'Successfully changed home page. '.log_action('Set home page to page with id \''.$_GET['id'].'\'');
 			$site_info['home'] = $_GET['id']; // Site info was gathered on admin.php, a while back, so we need to reset it to the current value.
 			}
 		}
@@ -54,7 +54,7 @@
 			if(!$del_page) {
 				$message = 'Failed to delete page. '.mysqli_error($db);
 				} else {
-				$message = 'Successfully deleted page.';
+				$message = 'Successfully deleted page. '.log_action('Deleted page with id \''.$_GET['id'].'\'');
 				}
 			}
 		}

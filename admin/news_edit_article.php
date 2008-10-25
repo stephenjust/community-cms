@@ -24,7 +24,7 @@
 		if(!$edit_article) {
 			$content = 'Failed to edit article. '.mysqli_error($db);
 			} else {
-			$content = 'Successfully edited article.';
+			$content = 'Successfully edited article. '.log_action('Edited news article \''.$name.'\'');
 			}
 		} else {
 		$edit = get_row_from_db('news',"WHERE id = ".$_GET['id']);

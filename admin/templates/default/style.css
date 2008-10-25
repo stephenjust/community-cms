@@ -223,6 +223,23 @@ div.errormessage {
 .admintable .row2 {
 	background: #E6E6E6;
 }
+
+table.log_messages th {
+	background: #DDDDDD;
+	text-align: left;
+	font-family: Cambria,'Times New Roman',Serif;
+}
+tr.row1 td {
+	background: #EEEEEE;
+	padding-left: 3px;
+	font-family: Calibri,Arial,Sans-Serif;
+}
+tr.row2 td {
+	background: #E6E6E6;
+	padding-left: 3px;
+	font-family: Calibri,Arial,Sans-Serif;
+}
+
 .notice {
 	background: #f6ec8c;
 	border: 1px solid #f3d05d;

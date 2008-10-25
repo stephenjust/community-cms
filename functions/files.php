@@ -37,7 +37,8 @@ Please choose a file: <input name="upload" type="file" /><br />
 		$target = $target . basename( $_FILES['upload']['name']) ;
 		$ok=1;
 		if(move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
-			$return = "The file ". basename( $_FILES['upload']['name']). " has been uploaded";
+			$return = "The file ". basename( $_FILES['upload']['name']). " has been uploaded. ";
+			$return .= log_action ('Uploaded file '.$_FILES['upload']['name']);
 			} else {
 			$return = "Sorry, there was a problem uploading your file.";
 			}

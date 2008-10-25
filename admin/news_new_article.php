@@ -24,7 +24,7 @@
 		if(!$new_article) {
 			$content = 'Failed to add article. '.errormesg(mysqli_error());
 			} else {
-			$content = 'Successfully added article.';
+			$content = 'Successfully added article. '.log_action('New news article \''.$title.'\'');
 			}
 		} else {
 		$content = '</form>

@@ -12,7 +12,7 @@
 		if(!$delete_article) {
 			$message = 'Failed to delete article. '.mysqli_error($db);
 			} else {
-			$message = 'Successfully deleted article.';
+			$message = 'Successfully deleted article. '.log_action('Deleted article with id \''.$_GET['id'].'\'');
 			}
 		}
 	$content = $message;

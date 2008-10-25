@@ -16,7 +16,7 @@
 			if(!$new_article) {
 				$message = 'Failed to add article. '.mysqli_error($db);
 				} else {
-				$message = 'Successfully added article.';
+				$message = 'Successfully added article. '.log_action('New newsletter \''.$_POST['label'].'\'');
 				}
 			}
 		}
@@ -26,7 +26,7 @@
 		if(!$delete_article) {
 			$message = 'Failed to delete newsletter entry. '.mysqli_error($db);
 			} else {
-			$message = 'Successfully deleted newsletter entry.';
+			$message = 'Successfully deleted newsletter entry. '.log_action('Deleted newsletter with id \''.$_POST['delete'].'\'');
 			}
 		}
 		$content = $message;

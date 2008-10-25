@@ -31,4 +31,16 @@
 		$page = $page_handle->fetch_assoc();
 		include('./admin/'.$page['file'].'.php');
 		}
+		
+	function log_action($message) {
+		global $db;
+		global $CONFIG;
+		$date = date('Y-m-d H:i:s');
+		$user = $_SESSION['userid'];
+		$log_query = 'INSERT INTO '.$CONFIG['db_prefix'].'logs (user_id,action,date) VALUES ('.$user.',"'.$message.'","'.$date.'")';
+		if(!$db->query($log_query)) {
+			$message_error = mysqli_error($db);
+			}
+		return $message_error;
+		}
 	?>
