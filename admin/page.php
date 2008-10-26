@@ -9,24 +9,35 @@
 	  	} else { 
 	  	$_POST['hidden'] = 1;
 	  	}
+	  $message = NULL;
 	  // Add page to database.
 		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,type,menu) VALUES ("'.$_POST['title'].'",
 	  "'.$_POST['type'].'",'.$_POST['hidden'].')';
 		$new_page = $db->query($new_page_query);
 		if(!$new_page) {
-			echo errormesg(mysqli_error());
+			$message .= mysqli_error($db).'<br />';
 			} else {
-			$message = 'Successfully added page';
+			$message .= 'Successfully added page.<br />'.log_action('New page \''.$_POST['title'].'\'');
 			}
 		}
 	if($_GET['action'] == 'home') {
-		$home_query = 'UPDATE '.$CONFIG['db_prefix'].'config SET home='.$_GET['id'];
-		$home = $db->query($home_query);
-		if(!$home) {
-			$message = 'Failed to change home page. '.mysqli_error($db);
+		$check_page_query = 'SELECT id,title FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'].' LIMIT 1';
+		$check_page_handle = $db->query($check_page_query);
+		if(!$check_page_handle) {
+			$message .= 'Failed to check if page exists.<br />'.mysqli_error($db);
+			}
+		if($check_page_handle->num_rows == 1) {
+			$home_query = 'UPDATE '.$CONFIG['db_prefix'].'config SET home='.$_GET['id'];
+			$home = $db->query($home_query);
+			if(!$home) {
+				$message .= 'Failed to change home page.<br />'.mysqli_error($db);
+				} else {
+				$check_page = $check_page_handle->fetch_assoc();
+				$message .= 'Successfully changed home page. '.log_action('Set home page to \''.$check_page['title'].'\'');
+				$site_info['home'] = $_GET['id']; // Site info was gathered on admin.php, a while back, so we need to reset it to the current value.
+				}
 			} else {
-			$message = 'Successfully changed home page. '.log_action('Set home page to page with id \''.$_GET['id'].'\'');
-			$site_info['home'] = $_GET['id']; // Site info was gathered on admin.php, a while back, so we need to reset it to the current value.
+			$message .= 'Could not find the page you are trying to delete.';
 			}
 		}
 	if($_GET['action'] == 'del') {

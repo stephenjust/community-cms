@@ -14,7 +14,7 @@
 			if(!$delete_user) {
 				$message = 'Failed to delete user. '.mysqli_error($db);
 				} else {
-				$message = 'Successfully deleted user.';
+				$message = 'Successfully deleted user. '.log_action('Deleted user #'.$_GET['id']);
 				}
 			}
 		}

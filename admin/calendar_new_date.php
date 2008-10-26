@@ -35,9 +35,9 @@
 				"'.$year.'","'.$month.'","'.$day.'","'.$title.'","'.$content.'","'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
 				$create_date = $db->query($create_date_query);
 				if(!$create_date) {
-					$message .= 'Failed to create date information. '.mysqli_error($db).$create_date_query;
+					$message .= 'Failed to create date information.<br />'.mysqli_error($db).$create_date_query;
 					} else {
-					$message .= 'Successfully created date information.';
+					$message .= 'Successfully created date information. '.log_action('New date entry on '.$day.'/'.$month.'/'.$year.' \''.$title.'\'');
 					}
 				}
 			}
@@ -51,6 +51,9 @@ $content = $message.'<form method="POST" action="?module=calendar_new_date&actio
 <select name="category">';
  	$category_list_query = 'SELECT cat_id,label FROM '.$CONFIG['db_prefix'].'calendar_categories ORDER BY cat_id ASC';
  	$category_list_handle = $db->query($category_list_query);
+ 	if(!$category_list_handle) {
+ 		$content .= '<option value="error" >'.mysqli_error($db).'</option>';
+ 		}
  	$b = 1;
 	while ($b <= $category_list_handle->num_rows) {
 		$category_list = $category_list_handle->fetch_assoc();

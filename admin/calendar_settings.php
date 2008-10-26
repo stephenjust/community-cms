@@ -6,12 +6,22 @@
 	$message = NULL;
 	// Delete category if requested.
 	if ($_GET['action'] == 'delete_category') {
-		$delete_category_query = 'DELETE FROM '.$CONFIG['db_prefix'].'calendar_categories WHERE cat_id = '.$_POST['delete_category_id'];
-		$delete_category = $db->query($delete_category_query);
-		if(!$delete_category) {
-			$message = 'Failed to delete category. '.mysqli_error();
+		$check_category_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar_categories WHERE cat_id = '.$_POST['delete_category_id'].' LIMIT 1';
+		$check_category_handle = $db->query($check_category_query);
+		if(!$check_category_handle) {
+			$message .= 'Failed to check if category exists.<br />'.mysqli_error($db);
+			}
+		if($check_category_handle->num_rows == 1) {
+			$delete_category_query = 'DELETE FROM '.$CONFIG['db_prefix'].'calendar_categories WHERE cat_id = '.$_POST['delete_category_id'];
+			$delete_category = $db->query($delete_category_query);
+			if(!$delete_category) {
+				$message .= 'Failed to delete category. '.mysqli_error();
+				} else {
+				$check_category = $check_category_handle->fetch_assoc();
+				$message .= 'Successfully deleted category. '.log_action('Deleted category \''.$check_category['label'].'\'');
+				}
 			} else {
-			$message = 'Successfully deleted category.';
+			$message .= 'Failed to find the category that you are trying to delete.';
 			}
 		}
 	// Create new category if requested.
@@ -21,9 +31,9 @@
 			$create_category_query = 'INSERT INTO '.$CONFIG['db_prefix'].'calendar_categories (label,colour) VALUES (\''.$category_name.'\',\''.$_POST['colour'].'\')';
 			$create_category = $db->query($create_category_query);
 			if(!$create_category) {
-				$message = 'Failed to create category \''.$_POST['category'].'\' '.mysqli_error();
+				$message = 'Failed to create category \''.$category_name.'\' '.mysqli_error();
 				} else {
-				$message = 'Successfully created category.';
+				$message = 'Successfully created category. '.log_action('New category \''.$category_name.'\'');
 				}
 			} else {
 			$message = 'You did not provide a name for your new category.';

@@ -7,16 +7,26 @@
 	$message = NULL;
 	$date = date('Y-m-d H:i:s');
 		if ($_GET['action'] == 'delete') {
-		$delete_article_query = 'DELETE FROM '.$CONFIG['db_prefix'].'news WHERE id = '.$_GET['id'];
-		$delete_article = $db->query($delete_article_query);
-		if(!$delete_article) {
-			$message = 'Failed to delete article. '.mysqli_error($db);
+		$read_article_query = 'SELECT news.id,news.name,page.title FROM '.$CONFIG['db_prefix'].'news news, '.$CONFIG['db_prefix'].'pages page WHERE news.id = '.$_GET['id'].' AND news.page = page.id LIMIT 1';
+		$read_article_handle = $db->query($read_article_query);
+		if(!$read_article_handle) {
+			$message .= 'Failed to read article information. '.mysqli_error($db);
+			}
+		if($read_article_handle->num_rows == 1) {
+			$delete_article_query = 'DELETE FROM '.$CONFIG['db_prefix'].'news WHERE id = '.$_GET['id'];
+			$delete_article = $db->query($delete_article_query);
+			if(!$delete_article) {
+				$message .= 'Failed to delete article. '.mysqli_error($db);
+				} else {
+				$read_article = $read_article_handle->fetch_assoc();
+				$message .= 'Successfully deleted article. '.log_action('Deleted news article \''.addslashes($read_article['name']).'\' from \''.addslashes($read_article['title']).'\'');
+				}
 			} else {
-			$message = 'Successfully deleted article. '.log_action('Deleted article with id \''.$_GET['id'].'\'');
+			$message .= 'Could not find the article you asked to delete.';
 			}
 		}
 	$content = $message;
-$content = $content.'<h1>Edit Article</h1>
+$content .= '<h1>Edit Article</h1>
 <table style="border: 1px solid #000000;">
 <tr><td><form method="POST" action="admin.php?module=news"><select name="page">';
 		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 1 ORDER BY list ASC';

@@ -92,7 +92,7 @@
 				if(!$create_user) {
 					$content .= 'Your account could not be created.';
 					} else {
-					$content .= "Thank you, $real_name, your account has been created.";
+					$content .= "Thank you, $real_name, your account has been created. ".log_action('New user \''.$real_name.'\'');
 					}
 				}
 			} else {
