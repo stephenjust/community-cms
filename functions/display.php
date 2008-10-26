@@ -4,12 +4,9 @@
 		die ('You cannot access this page directly.');
 		}
 	function display_page($page_info,$site_info,$view="") {
-		$template = get_row_from_db("templates","WHERE id = ".$site_info['template']);
-		$template_path = $template[1]['path'];
-		$template_file = $template_path."index.html";
-		$handle = fopen($template_file, "r");
-		$template = fread($handle, filesize($template_file));
-		fclose($handle);
+		$template_handle = load_template_file();
+		$template = $template_handle['contents'];
+		$template_path = $template_handle['template_path'];
 		$page_title = $page_info['title'];
 		// Initialize session variable if unset.
 		if(!isset($_SESSION['type'])) {
@@ -63,16 +60,13 @@
 		global $db;
 		global $CONFIG;
 	  if(!isset($_SESSION['user']) || !isset($_SESSION['pass'])) {
-	  	$template = get_row_from_db("templates","WHERE id = ".$site_info['template']);
-			$template_path = $template[1]['path'];
-			$template_file = $template_path."login.html";
-			$handle = fopen($template_file, "r");
-			$template = fread($handle, filesize($template_file));
-			fclose($handle);
+	  	$template_handle = load_template_file('login.html');
+			$template = $template_handle['contents'];
+			$template_path = $template_handle['template_path'];
 			$template = str_replace('<!-- $LOGIN_USERNAME$ -->','<input type="text" name="user" id="login_user" />',$template);
 			$template = str_replace('<!-- $LOGIN_PASSWORD$ -->','<input type="password" name="passwd" id="login_password" />',$template);
 			$template = str_replace('<!-- $LOGIN_BUTTON$ -->','<input type="submit" value="Login!" id="login_button" />',$template);
-	    $return = "<form method='POST' action='index.php?id=".$page_info['id']."&amp;login=1'>\n".$template."</form>\n";
+	    $return = "<form method='post' action='index.php?id=".$page_info['id']."&amp;login=1'>\n".$template."</form>\n";
 	  } else { 
 	    $return = $_SESSION['name']."<br />\n<a href='index.php?login=2'>Log Out</a><br />\n";
 	    $check_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.$_SESSION['userid'];

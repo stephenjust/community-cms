@@ -4,6 +4,27 @@
 		die ('You cannot access this page directly.');
 		}
 
+	// Load template file
+	function load_template_file($filename = 'index.html') {
+		global $db; // Needed for db query
+		global $CONFIG; // Needed for db query
+		global $site_info; // Needed for db query
+		$template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates WHERE id = '.$site_info['template'];
+		$template_handle = $db->query($template_query);
+		if(!$template_handle) {
+			echo mysql_error($db);
+			} else {
+			$template = $template_handle->fetch_assoc();
+			}
+		$template_path = $template['path'];
+		$template_file = $template_path.$filename;
+		$handle = fopen($template_file, "r");
+		$tpl_file['contents'] = fread($handle, filesize($template_file));
+		$tpl_file['template_path'] = $template_path;
+		fclose($handle);
+		return $tpl_file;
+		}
+
 	// File Upload Functions
 	function file_upload_box($show_dirs = 0) {	// Displays HTML for a file upload box
 		$return = '<form enctype="multipart/form-data" action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&'.$_SERVER['QUERY_STRING'].'" method="POST">

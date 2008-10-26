@@ -13,12 +13,9 @@
 	$news_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date DESC LIMIT '.$start.',10';
 	$news_handle = $db->query($news_query);
 	$news_num_rows = $news_handle->num_rows;
-	$template = get_row_from_db("templates","WHERE id = ".$site_info['template']);
-	$template_path = $template[1]['path'];
-	$template_file = $template_path."article.html";
-	$handle = fopen($template_file, "r");
-	$template = fread($handle, filesize($template_file));
-	fclose($handle);
+	$template_handle = load_template_file('article.html');
+	$template = $template_handle['contents'];
+	$template_path = $template_handle['template_path'];
 		// Initialize session variable if not initialized to prevent warnings.
 		if(!isset($_SESSION['user'])) {
 		  $_SESSION['user'] = NULL;

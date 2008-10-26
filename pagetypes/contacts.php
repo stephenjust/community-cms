@@ -6,24 +6,15 @@
 	global $CONFIG;
 	global $db;
 	global $site_info;
-	$template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates WHERE id = '.$site_info['template'].' LIMIT 1';
-	$template_handle = $db->query($template_query);
-	if($template_handle->num_rows == 0) {
-		$content = 'Error. Unable to find template information in the database.';
-		return $content;
-		}
-	$template = $template_handle->fetch_assoc();
-	$template_path = $template['path'];
 	$content = NULL;
 	$current_contact = NULL;
 	$j = 1;
 	$contact_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'users WHERE hide = 0 ORDER BY realname ASC';
 	$contact_list_handle = $db->query($contact_list_query);
 	$contact_list_num_rows = $contact_list_handle->num_rows;
-	$contact_list_template_file_path = $template_path."contactlist.html";
-	$contact_list_file_handle = fopen($contact_list_template_file_path, "r");
-	$contact_list_template_file = fread($contact_list_file_handle, filesize($contact_list_template_file_path));
-	fclose($contact_list_file_handle);
+	$contact_template_handle = load_template_file('contactlist.html');
+	$contact_template = $contact_template_handle['contents'];
+	$template_path = $contact_template_handle['template_path'];
 	if(!isset($_GET['message'])) {
 		$_GET['message'] = '';
 		}
@@ -58,7 +49,7 @@ Message to user:<br />
 		} else {
 		while ($contact_list_num_rows >= $j) {
 			$contact_info = $contact_list_handle->fetch_assoc();
-			$current_contact .= $contact_list_template_file;
+			$current_contact .= $contact_template;
 			$contact_email = NULL;
 			if($contact_info['message'] == 1) {
 				$realname = '<a href="index.php?id='.$_GET['id'].'&message='.$contact_info['id'].'">'.$contact_info['realname'].'</a>';
