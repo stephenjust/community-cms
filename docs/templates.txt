@@ -18,6 +18,12 @@ GLOBAL
 <!-- $NAV_BAR$ -->                   Displays a vertical list of pages
 <!-- $NAV_LOGIN$ -->                 Displays the login box, or user info
 
+login.html
+==========
+<!-- $LOGIN_USERNAME$ -->            Displays a username input field.
+<!-- $LOGIN_PASSWORD$ -->            Displays a password input field.
+<!-- $LOGIN_BUTTON$ -->              Displays a login button.
+
 messages.html
 =============
 <!-- $MESSAGE_BODY$ -->              Message body

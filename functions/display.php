@@ -63,7 +63,16 @@
 		global $db;
 		global $CONFIG;
 	  if(!isset($_SESSION['user']) || !isset($_SESSION['pass'])) {
-	    $return = "<form method='POST' action='index.php?id=".$page_info['id']."&amp;login=1'>\nUser: <input type='text' name='user' /><br />\nPass: <input type='password' name='passwd' /><br />\n<input type='submit' value='Login!' /></form>\n";
+	  	$template = get_row_from_db("templates","WHERE id = ".$site_info['template']);
+			$template_path = $template[1]['path'];
+			$template_file = $template_path."login.html";
+			$handle = fopen($template_file, "r");
+			$template = fread($handle, filesize($template_file));
+			fclose($handle);
+			$template = str_replace('<!-- $LOGIN_USERNAME$ -->','<input type="text" name="user" id="login_user" />',$template);
+			$template = str_replace('<!-- $LOGIN_PASSWORD$ -->','<input type="password" name="passwd" id="login_password" />',$template);
+			$template = str_replace('<!-- $LOGIN_BUTTON$ -->','<input type="submit" value="Login!" id="login_button" />',$template);
+	    $return = "<form method='POST' action='index.php?id=".$page_info['id']."&amp;login=1'>\n".$template."</form>\n";
 	  } else { 
 	    $return = $_SESSION['name']."<br />\n<a href='index.php?login=2'>Log Out</a><br />\n";
 	    $check_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.$_SESSION['userid'];
