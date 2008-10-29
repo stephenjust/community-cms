@@ -31,13 +31,15 @@
 		$page = $page_handle->fetch_assoc();
 		include('./admin/'.$page['file'].'.php');
 		}
-		
+
 	function log_action($message) {
 		global $db;
 		global $CONFIG;
 		$date = date('Y-m-d H:i:s');
 		$user = $_SESSION['userid'];
-		$log_query = 'INSERT INTO '.$CONFIG['db_prefix'].'logs (user_id,action,date) VALUES ('.$user.',"'.$message.'","'.$date.'")';
+		$ip_octet = $_SERVER['REMOTE_ADDR'];
+		$ip_int = ip2long($ip_octet);
+		$log_query = 'INSERT INTO '.$CONFIG['db_prefix'].'logs (user_id,action,date,ip_addr) VALUES ('.$user.',"'.$message.'","'.$date.'",'.$ip_int.')';
 		if(!$db->query($log_query)) {
 			$message_error = mysqli_error($db);
 			}

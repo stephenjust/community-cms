@@ -68,7 +68,6 @@
 		logout();
 		}
 	checkuser();
-	
 	if(file_exists('./install')) {
 		$NOTIFICATION .= 'Please delete your ./install directory.<br />';
 		}

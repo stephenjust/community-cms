@@ -13,13 +13,13 @@
 	$num_messages = $log_message_handle->num_rows;
 	$content .= '<table class="log_messages">
 <tr>
-<th>Date</th><th>Action</th><th>User</th>
+<th>Date</th><th>Action</th><th>User</th><th>IP</th>
 </tr>';
 $rowtype = 1;
 	while($i <= $num_messages) {
 		$log_message = $log_message_handle->fetch_assoc();
 		$content .= '<tr class="row'.$rowtype.'">
-<td>'.$log_message['date'].'</td><td>'.$log_message['action'].'</td><td>'.$log_message['realname'].'</td>
+<td>'.$log_message['date'].'</td><td>'.$log_message['action'].'</td><td>'.$log_message['realname'].'</td><td>'.long2ip($log_message['ip_addr']).'</td>
 </tr>';
 		if($rowtype == 1) {
 			$rowtype = 2;
