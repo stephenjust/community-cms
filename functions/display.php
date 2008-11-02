@@ -7,6 +7,7 @@
 		$template_handle = load_template_file();
 		$template = $template_handle['contents'];
 		$template_path = $template_handle['template_path'];
+		global $page_title;
 		$page_title = $page_info['title'];
 		// Initialize session variable if unset.
 		if(!isset($_SESSION['type'])) {
