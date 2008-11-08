@@ -35,7 +35,7 @@ $content .= '<h1>Add Newsletter</h1>
 <form method="POST" action="admin.php?module=newsletter&action=new">
 <table>
 <tr><td>Label:</td><td><input type="text" name="label" /></td></tr>
-<tr><td>File:</td><td><div id="dynamic_file_list">'.
+<tr><td valign="top">File:</td><td><div id="dynamic_file_list">'.
 // file_list('newsletters',1)
 dynamic_file_list('newsletters').'</div></td></tr>
 <tr><td>Month:</td><td><input type="text" name="month" /></td></tr>
@@ -58,7 +58,7 @@ $content .= '</select></td></tr>
 <h1>Delete Newsletter</h1>
 <form method="POST" action="admin.php?module=newsletter&action=delete">
 <table style="border: 1px solid #000000;">
-<tr><td width="150">Page</td><td>Year</td><td>Month</td></tr>
+<tr><td width="150">Page</td><td>Year</td><td>Month</td><td>Label</td></tr>
 <tr><td colspan="2">';
 	$articles = get_row_from_db("newsletters","ORDER BY id desc");
 	$i = 1;
@@ -66,7 +66,7 @@ $content .= '</select></td></tr>
 		$nl_page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$articles[$i]['page'];
 		$nl_page_query_handle = $db->query($nl_page_query);
 		$nl_page = $nl_page_query_handle->fetch_assoc();
-		$content .= '<tr><td><input type="radio" name="delete" value="'.$articles[$i]['id'].'" />'.$nl_page['title'].'</td><td>'.$articles[$i]['year'].'</td><td>'.$articles[$i]['month'].'</td></tr>';
+		$content .= '<tr><td><input type="radio" name="delete" value="'.$articles[$i]['id'].'" />'.$nl_page['title'].'</td><td>'.$articles[$i]['year'].'</td><td>'.$articles[$i]['month'].'</td><td>'.$articles[$i]['label'].'</td></tr>';
 		$i++;
 		}
 	$content .= '</td></tr>

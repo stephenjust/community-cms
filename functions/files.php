@@ -185,9 +185,9 @@ Please choose a file: <input name="upload" type="file" /><br />
 			} else {
 			$return .= 'Error retrieving folder list.';
 			}
-		$return .= '<select name="folder_dropdown_box" id="dynamic_folder_dropdown_box">
+		$return .= '<select name="folder_dropdown_box" id="dynamic_folder_dropdown_box" onChange="update_dynamic_file_list()">
 		<option value="">Default</option>'.$dropdown_box_options.'
-		</select><input type="button" value="Change Folder" onClick="update_dynamic_file_list()" /><br />';
+		</select><br />';
 		
 		//
 		// File list portion:
