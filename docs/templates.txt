@@ -11,6 +11,7 @@ GLOBAL
 <!-- $PAGE_TITLE$ -->                Page title (usually in title bar)
 <!-- $CSS_INCLUDE$ -->               Included CSS files based on the database
 <!-- $IMAGE_PATH$ -->                Path to template image directory
+<!-- $PAGE_MESSAGE$ -->              Displays page message
 <!-- $CONTENT$ -->                   Main page content
 <!-- $FOOTER$ -->                    Page footer
 <!-- $ADMIN_INCLUDE$ -->             Includes all scripts required by admins

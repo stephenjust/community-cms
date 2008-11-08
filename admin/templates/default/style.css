@@ -125,7 +125,6 @@ input.button_cal_next_year {
 }
 table.calendar {
   width: 100%;
-  word-wrap: break-word;
   overflow: hidden;
   table-layout: fixed;
 }
@@ -134,7 +133,6 @@ table.calendar td {
   vertical-align: top;
   height: 80px;
   width: 14%;
-  word-wrap: break-word;
   overflow: hidden;
   table-layout: fixed;
 }
@@ -143,20 +141,17 @@ td.calendar_today {
 }
 table.calendar_day {
   width: 100%;
-  word-wrap: break-word;
   overflow: hidden;
 }
 table.calendar_day td {
   border: 1px solid #000000;
   height: 20px;
-  word-wrap: break-word;
   overflow: hidden;
 }
 div.time, td.time {
   vertical-align: top;
   height: 20px;
   width: 140px;
-  word-wrap: break-word;
   overflow: hidden;
   table-layout: fixed;
 }
@@ -164,21 +159,18 @@ div.head, td.head {
   vertical-align: top;
   height: 20px;
   width: 200px;
-  word-wrap: break-word;
   overflow: hidden;
   table-layout: fixed;
 }
 div.description, td.description {
   vertical-align: top;
   height: 20px;
-  word-wrap: break-word;
   overflow: hidden;
   table-layout: fixed;
 }
 div.calendar_content {
   width: 100%;
   height: 65px;
-  word-wrap: break-word;
   overflow: hidden;
 }
 

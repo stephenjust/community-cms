@@ -35,7 +35,9 @@ $content .= '<h1>Add Newsletter</h1>
 <form method="POST" action="admin.php?module=newsletter&action=new">
 <table>
 <tr><td>Label:</td><td><input type="text" name="label" /></td></tr>
-<tr><td>File:</td><td>'.file_list('newsletters',1).'</td></tr>
+<tr><td>File:</td><td><div id="dynamic_file_list">'.
+// file_list('newsletters',1)
+dynamic_file_list('newsletters').'</div></td></tr>
 <tr><td>Month:</td><td><input type="text" name="month" /></td></tr>
 <tr><td>Year:</td><td><input type="text" name="year" /></td></tr>
 <tr><td width="150">Page:</td><td>

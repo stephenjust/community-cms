@@ -109,9 +109,10 @@ Please choose a file: <input name="upload" type="file" /><br />
 	// Create a file list
 	function file_list($directory = "", $type = 0, $selected = "") {
 		$return = NULL;
-		$folder_root = './files/';
+		$folder_root = ROOT.'files/';
 		if(eregi('[.]',$directory) == 0) {
 			$folder_open = $folder_root.$directory;
+			$folder_open_short = './files/'.$directory;
 			$files = scandir($folder_open);
 			$num_files = count($files);
 			$i = 1;
@@ -126,19 +127,19 @@ Please choose a file: <input name="upload" type="file" /><br />
 			while($i < $num_files) {
 				if(!is_dir($folder_open.'/'.$files[$i])) {
 					if($type == 1) {
-						$return = $return.'<option value="'.$folder_open.'/'.$files[$i].'" />'.$files[$i].'</option>';
+						$return = $return.'<option value="'.$folder_open_short.'/'.$files[$i].'" />'.$files[$i].'</option>';
 						$j++;
 						} elseif($type == 2) {
 						if(ereg('\.png|\.jpg$',$files[$i]) == 1) {
 							if($folder_open.'/'.$files[$i] == $selected) {
-								$return = $return.'<input type="radio" name="image" value="'.$folder_open.'/'.$files[$i].'" checked /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" /><br />';
+								$return = $return.'<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" checked /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" /><br />';
 								} else {
-								$return = $return.'<input type="radio" name="image" value="'.$folder_open.'/'.$files[$i].'" /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" /><br />';
+								$return = $return.'<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" /><br />';
 								}
 							$j++;
 							}
 						} else {
-						$return = $return.'<a href="'.$folder_open.'/'.$files[$i].'">'.$files[$i].'</a><br />';
+						$return = $return.'<a href="'.$folder_open_short.'/'.$files[$i].'">'.$files[$i].'</a><br />';
 						$j++; // Count files that were displayed.
 						}
 					}
@@ -153,6 +154,46 @@ Please choose a file: <input name="upload" type="file" /><br />
 			} else {
 			$return = 'Error retrieving file list.';
 			}
+		return $return;
+		}
+	function dynamic_file_list($directory = '') {
+		//
+		// Folder list portion:
+		//
+
+		$current = $directory;
+		$dropdown_box_options = '<option value="">Default</option>';
+		$folder_root = ROOT.'files/';
+		if(!eregi('./',$directory)) {
+			$folder_open = $folder_root;
+			$files = scandir($folder_open);
+			$num_files = count($files);
+			$i = 1;
+			$j = 1;
+			$return = NULL;
+			$dropdown_box_options = NULL;
+			while($i < $num_files) {
+				if($files[$i] != '..' && is_dir($folder_open.'/'.$files[$i])) {
+					if($current == $files[$i]) {
+						$dropdown_box_options .= '<option value="'.$files[$i].'" selected>'.$files[$i].'</option>';
+						} else {
+						$dropdown_box_options .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
+						}
+					}
+				$i++;
+				}
+			} else {
+			$return .= 'Error retrieving folder list.';
+			}
+		$return .= '<select name="folder_dropdown_box" id="dynamic_folder_dropdown_box">
+		<option value="">Default</option>'.$dropdown_box_options.'
+		</select><input type="button" value="Change Folder" onClick="update_dynamic_file_list()" /><br />';
+		
+		//
+		// File list portion:
+		//
+
+		$return .= file_list($directory,1);
 		return $return;
 		}
 	?>

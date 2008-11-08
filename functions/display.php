@@ -4,6 +4,8 @@
 		die ('You cannot access this page directly.');
 		}
 	function display_page($page_info,$site_info,$view="") {
+		global $db;
+		global $CONFIG;
 		$template_handle = load_template_file();
 		$template = $template_handle['contents'];
 		$template_path = $template_handle['template_path'];
@@ -20,6 +22,15 @@
 			}
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 		$image_path = $template_path.'images/';
+		$page_message = NULL;
+		$page_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'page_messages WHERE `page_id` = '.$page_info['id'].' ORDER BY `order`, `start_date` ASC';
+		$page_message_handle = $db->query($page_message_query);
+		$i = 1;
+		while($page_message_handle->num_rows >= $i) {
+			$page_message_content = $page_message_handle->fetch_assoc();
+			$page_message .= '<div class="page_message">'.$page_message_content['text'].'</div>';
+			$i++;
+			}
 		$nav_bar = display_nav_bar();
 		$nav_login = display_login_box();
 		$content = get_page_content($page_info['id'],$page_info['type'],$view);
@@ -28,6 +39,7 @@
 		$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
 		$template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
 		$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
+		$template = str_replace('<!-- $PAGE_MESSAGE$ -->',$page_message,$template);
 		$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
 		$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
 		$template = str_replace('<!-- $FOOTER$ -->','<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>

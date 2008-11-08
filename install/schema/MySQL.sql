@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `comcms_pages` (
   `menu` tinyint(1) NOT NULL,
   `list` int(6) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `comcms_pages`
@@ -177,8 +177,16 @@ INSERT INTO `comcms_pages` (`id`, `title`, `type`, `menu`, `list`) VALUES
 (2, 'Calendar', 3, 1, 1),
 (3, 'Newsletters', 2, 1, 2);
 
--- --------------------------------------------------------
-
+CREATE TABLE IF NOT EXISTS `comcms_page_messages` (
+	`message_id` INT NOT NULL auto_increment PRIMARY KEY,
+	`page_id` INT NOT NULL,
+	`start_date` DATE NOT NULL,
+	`end_date` DATE NOT NULL,
+	`end` BOOL NOT NULL DEFAULT '1',
+	`text` TEXT NOT NULL,
+	`order` INT NOT NULL,
+	INDEX ( `page_id`,`order` )
+) ENGINE = MYISAM DEFAULT CHARSET=latin1;
 --
 -- Table structure for table `comcms_pagetypes`
 --
