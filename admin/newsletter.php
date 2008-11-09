@@ -4,6 +4,7 @@
 		die ('You cannot access this page directly.');
 		}
 	$message = NULL;
+	$months = array('January','February','March','April','May','June','July','August','September','October','November','December');
 	if ($_GET['action'] == 'new') {
 		if(!isset($_POST['file_list'])) {
 			$_POST['file_list'] = NULL;
@@ -30,17 +31,26 @@
 			}
 		}
 		$content = $message;
-
+		$monthbox = '<select name="month">';
+		$monthcount = 1; 
+		while ($monthcount <= 12) {
+		if(date('m') == $monthcount) {
+			$monthbox .= "<option value='".$monthcount."' selected >".$months[$monthcount-1]."</option>"; // Need [$monthcount-1] as arrays start at 0.
+			$monthcount++;
+			} else {
+			$monthbox .= "<option value='".$monthcount."'>".$months[$monthcount-1]."</option>";
+			$monthcount++;
+		}
+	}
+$monthbox .= '</select>';
 $content .= '<h1>Add Newsletter</h1>
 <form method="POST" action="admin.php?module=newsletter&action=new">
-<table>
-<tr><td>Label:</td><td><input type="text" name="label" /></td></tr>
-<tr><td valign="top">File:</td><td><div id="dynamic_file_list">'.
-// file_list('newsletters',1)
-dynamic_file_list('newsletters').'</div></td></tr>
-<tr><td>Month:</td><td><input type="text" name="month" /></td></tr>
-<tr><td>Year:</td><td><input type="text" name="year" /></td></tr>
-<tr><td width="150">Page:</td><td>
+<table class="admintable">
+<tr><td class="row1">Label:</td><td class="row1"><input type="text" name="label" /></td></tr>
+<tr><td valign="top" class="row2">File:</td><td class="row2"><div id="dynamic_file_list">
+'.dynamic_file_list('newsletters').'</div></td></tr>
+<tr><td class="row1">Date:</td><td class="row1">'.$monthbox.'<input type="text" name="year" maxlength="4" size="4" value="'.date('Y').'" /></td></tr>
+<tr><td width="150" class="row2">Page:</td><td class="row2">
 <select name="page">';
 	$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 2 ORDER BY list ASC';
 	$page_query_handle = $db->query($page_query);
@@ -51,26 +61,30 @@ dynamic_file_list('newsletters').'</div></td></tr>
 		$i++;
 	}
 $content .= '</select></td></tr>
-<tr><td></td><td><input type="submit" value="Submit" /></td></tr>
+<tr><td class="row1"></td><td class="row1"><input type="submit" value="Submit" /></td></tr>
 </table>
 </form>
 
 <h1>Delete Newsletter</h1>
 <form method="POST" action="admin.php?module=newsletter&action=delete">
-<table style="border: 1px solid #000000;">
-<tr><td width="150">Page</td><td>Year</td><td>Month</td><td>Label</td></tr>
-<tr><td colspan="2">';
+<table class="admintable">
+<tr><td width="150" class="row1">Label</td><td class="row1">Page</td><td class="row1">Month</td><td class="row1">Year</td></tr>';
 	$articles = get_row_from_db("newsletters","ORDER BY id desc");
+	$row = 2;
 	$i = 1;
+	if($articles['num_rows'] == 0) {
+		$delete_disabled = "disabled ";
+		}
 	while ($i <= $articles['num_rows']) {
 		$nl_page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$articles[$i]['page'];
 		$nl_page_query_handle = $db->query($nl_page_query);
 		$nl_page = $nl_page_query_handle->fetch_assoc();
-		$content .= '<tr><td><input type="radio" name="delete" value="'.$articles[$i]['id'].'" />'.$nl_page['title'].'</td><td>'.$articles[$i]['year'].'</td><td>'.$articles[$i]['month'].'</td><td>'.$articles[$i]['label'].'</td></tr>';
+		$content .= '<tr><td class="row'.$row.'"><input type="radio" name="delete" value="'.$articles[$i]['id'].'" />'.$articles[$i]['label'].'</td><td class="row'.$row.'">'.$nl_page['title'].'</td><td class="row'.$row.'">'.$months[$articles[$i]['month']-1].'</td><td class="row'.$row.'">'.$articles[$i]['year'].'</td></tr>';
 		$i++;
+		if($row == 1) { $row = 2; } else { $row = 1; }
 		}
 	$content .= '</td></tr>
-<tr><td width="150">&nbsp;</td><td><input type="submit" value="Delete" /></td></tr>
+<tr><td class="row'.$row.'" colspan="4"><input type="submit" value="Delete" '.$delete_disabled.'/></td></tr>
 </table>
 </form>';
 ?>
