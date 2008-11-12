@@ -57,8 +57,8 @@
 			header("HTTP/1.0 404 Not Found");
 			} else {
 			$article = $article_handle->fetch_assoc();
-			$page_title = $article['name'];
-			$content = '<strong>'.$article['name'].'</strong><br /><br />'.$article['description'];
+			$page_title = stripslashes($article['name']);
+			$content = '<strong>'.stripslashes($article['name']).'</strong><br /><br />'.stripslashes($article['description']);
 			}
 		}
 	// Display page
