@@ -46,7 +46,7 @@ setVarsForm("user='.$_SESSION['user'].'");
 				$date_unix = mktime(0,0,0,$date_month,$date_day,$date_year);
 				$date_month_text = date('M',$date_unix);
 				$image_path = NULL;
-				$article = str_replace('<!-- $ARTICLE_TITLE$ -->',stripslashes($news['name']),$article);
+				$article = str_replace('<!-- $ARTICLE_TITLE$ -->','<a href="view.php?article_id='.$news['id'].'">'.stripslashes($news['name']).'</a>',$article);
 				$article = str_replace('<!-- $ARTICLE_CONTENT$ -->',stripslashes($news['description']),$article);
 				$article = str_replace('<!-- $ARTICLE_IMAGE$ -->',$picture,$article);
 				$article = str_replace('<!-- $ARTICLE_ID$ -->',$news['id'],$article);

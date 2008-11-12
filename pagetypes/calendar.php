@@ -61,10 +61,10 @@
     $counter_dow++;
   }
   while ($counter_dow < 7) {
-    $page = $page."<td></td>";
+    $page .= '<td></td>';
     $counter_dow++;
   }
-  $page = $page."</tr><tr><td colspan='7' align='center' style='vertical-align: middle;'>Showing 2 events per day. Click on the day number to show more.</td></tr></table>";
+  $page .= "</tr><tr><td colspan='7' align='center' style='vertical-align: middle;'>Showing 2 events per day. Click on the day number to show more.</td></tr></table>";
     break;
     case "event":
     $event = get_row_from_db("calendar","WHERE id = $_GET[a]");
@@ -80,15 +80,20 @@
       $event_etime = explode(':',$event[1]['endtime']);
       $event_start = mktime($event_stime[0],$event_stime[1],0,$event[1]['month'],$event[1]['day'],$event[1]['year']);
       $event_end = mktime($event_etime[0],$event_etime[1],0,$event[1]['month'],$event[1]['day'],$event[1]['year']);
-      $page = $page.date('g:ia -',$event_start);
-      $page = $page.date(' g:ia',$event_end)."<br />";
-      $page = $page.date(' l, F j Y',$event_start);
-      $page = $page."<br />\n";
+      $page .= date('g:ia -',$event_start);
+      $page .= date(' g:ia',$event_end)."<br />";
+      $page .= date(' l, F j Y',$event_start);
+      $page .= "<br />\n";
     }
-    $page = $page."<br /><br />\n";
-    $page = $page.$event[1]['description'];
-    $page = $page."<br />\n";
-    $page = $page.$event[1]['location'];
+    global $CONFIG;
+    global $db;
+    $category_name_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar_categories WHERE cat_id = '.$event[1]['category'].' LIMIT 1';
+    $category_name_handle = $db->query($category_name_query);
+    $category_name = $category_name_handle->fetch_assoc();
+    $page .= '<br />'.$category_name['label']."<br />\n";
+    $page .= $event[1]['description'];
+    $page .= "<br />\n";
+    $page .= $event[1]['location'];
     break;
     case "day":
       $day = get_row_from_db("calendar","WHERE year = $_GET[y] AND month = $_GET[m] AND day = $_GET[d] ORDER BY starttime ASC");
@@ -105,7 +110,8 @@
         } else {
         $page = $page."<tr><td class='time'><div class='time'>".date('g:ia',$event_start)." - ".date('g:ia',$event_end)."</div></td>";
         }
-        $page = $page."<td class='head'><div class='head'><a href='?id=".$_GET['id']."&view=event&a=".$day[$i]['id']."'>".$day[$i]['header']."</a></div></td><td class='description'><div class='description'>".$day[$i]['description']."</div></td></tr>\n";
+        $page = $page."<td class='head'><div class='head'><a href='?id=".$_GET['id']."&view=event&a=".$day[$i]['id']."'>".$day[$i]['header']."</a></div></td>
+<td class='description'><div class='description'>".$day[$i]['description']."</div></td></tr>\n";
         $i++;
       }
       $page = $page."</table>";

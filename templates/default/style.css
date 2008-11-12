@@ -83,6 +83,10 @@ span.news_item_date_day {
 span.news_title {
   font: 2em Cambria,'Times New Roman',Serif;
 }
+span.news_title a {
+	color: #000000;
+	text-decoration: none;
+}
 span.news_content {
 
 }
