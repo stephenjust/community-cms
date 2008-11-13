@@ -45,6 +45,7 @@
 			  $errormesg = '3003: Either your username or your password was incorrect. <a href=\'index.php\'>Go back.</a>';
 				break;
 			case 3004:
+				header('HTTP/1.1 403 Forbidden'); // Should sufficiently prevent search engine discovery.
 			  $errormesg = '3004: You do not have sufficient priveleges to view this page. <a href=\'index.php\'>Go back.</a>';
 				break;
 			}
