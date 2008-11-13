@@ -9,5 +9,5 @@
   	$content = $content.file_upload($_POST['path']);
   	}
   // Display upload form and upload location selector.
-  $content = $content.file_upload_box(1);
+  $content .= file_upload_box(1);
 ?>

@@ -48,7 +48,10 @@ $content .= '<h1>Add Newsletter</h1>
 <table class="admintable">
 <tr><td class="row1">Label:</td><td class="row1"><input type="text" name="label" /></td></tr>
 <tr><td valign="top" class="row2">File:</td><td class="row2"><div id="dynamic_file_list">
-'.dynamic_file_list('newsletters').'</div></td></tr>
+'.dynamic_file_list('newsletters').'</div>
+<input type="button" value="Upload File" onClick="window.open(\'./admin/upload_mini.php\',\'mywindow\',\'width=400,height=200\')" />
+<input type="button" value="Refresh List" onClick="update_dynamic_file_list()" />
+</td></tr>
 <tr><td class="row1">Date:</td><td class="row1">'.$monthbox.'<input type="text" name="year" maxlength="4" size="4" value="'.date('Y').'" /></td></tr>
 <tr><td width="150" class="row2">Page:</td><td class="row2">
 <select name="page">';

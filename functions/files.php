@@ -32,14 +32,14 @@ Please choose a file: <input name="upload" type="file" /><br />
 ';
 		if($show_dirs == 1) {
 			$return = $return.'Where would you like to save the file?<br />';
-			$dir = './files';
+			$dir = ROOT.'files';
 			$files = scandir($dir);
 			$num_files = count($files);
 			$i = 1;
 			$return = $return.'<select name="path">
 <option value="">Default</option>';
 			while($i < $num_files) {
-				if($files[$i] != '..' && is_dir('./files/'.$files[$i])) {
+				if($files[$i] != '..' && is_dir(ROOT.'files/'.$files[$i])) {
 					$return = $return.'<option value="'.$files[$i].'">'.$files[$i].'</option>';
 					}
 				$i++;
@@ -54,7 +54,7 @@ Please choose a file: <input name="upload" type="file" /><br />
 		if($path != "") {
 			$path = $path.'/';
 			}
-		$target = 'files/'.$path;
+		$target = ROOT.'files/'.$path;
 		$target = $target . basename( $_FILES['upload']['name']) ;
 		$ok=1;
 		if(move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
