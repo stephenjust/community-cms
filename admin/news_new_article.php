@@ -16,10 +16,11 @@
 		$author = addslashes($_POST['author']);
 		$image = addslashes($_POST['image']);
 		$page = addslashes($_POST['page']);
+		$showdate = $_POST['date_params'];
 	  if(strlen($image) <= 3) { 
 	  	$image = NULL;
 	  	}
-	  $new_article_query = 'INSERT INTO '.$CONFIG['db_prefix']."news (page,name,description,author,image,date) VALUES ($page,'$title','$content','$author','$image','$date')";
+	  $new_article_query = 'INSERT INTO '.$CONFIG['db_prefix']."news (page,name,description,author,image,date,showdate) VALUES ($page,'$title','$content','$author','$image','$date','$showdate')";
 		$new_article = $db->query($new_article_query);
 		if(!$new_article) {
 			$content = 'Failed to add article. '.errormesg(mysqli_error());
@@ -47,7 +48,14 @@
 			}
 		$content = $content.'</select></td></tr>
 <tr><td width="150" valign="top" class="row2">Image:</td><td class="row2">'.file_list('newsicons',2).'</td></tr>
-<tr><td width="150" class="row1">&nbsp;</td><td class="row1"><input type=\'submit\' value=\'Submit\' /></td></tr>
+<tr><td width="150" class="row1" valign="top">Date:</td><td class="row1">
+<select name="date_params">
+<option value="0">Hide Date</option>
+<option value="1" selected>Show Date</option>
+<option value="2">Show Mini</option>
+</select>
+</td></tr>
+<tr><td width="150" class="row2">&nbsp;</td><td class="row2"><input type=\'submit\' value=\'Submit\' /></td></tr>
 </table>
 </form>
 <form method="POST" action="?module=news&action=del">';

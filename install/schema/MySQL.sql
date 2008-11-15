@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS `comcms_news` (
   `author` text,
   `date` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
   `image` text default NULL,
+  `showdate` int(2) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;

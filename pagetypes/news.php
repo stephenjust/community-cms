@@ -46,6 +46,22 @@ setVarsForm("user='.$_SESSION['user'].'");
 				$date_unix = mktime(0,0,0,$date_month,$date_day,$date_year);
 				$date_month_text = date('M',$date_unix);
 				$image_path = NULL;
+				if($news['showdate'] == 1) {
+					$article = str_replace('<!-- $FULL_DATE_START$ -->',NULL,$article);
+					$article = str_replace('<!-- $FULL_DATE_END$ -->',NULL,$article);
+					} elseif($news['showdate'] == 0) {
+					$start = NULL;
+					$end = NULL;
+					$replace_length = NULL;
+					$start = strpos($article,'<!-- $FULL_DATE_START$ -->');
+					$end = strpos($article,'<!-- $FULL_DATE_END$ -->');
+					if($start && $end) {
+						$replace_length = $end - $start + 24;
+						$article = substr_replace($article,NULL,$start,$replace_length);
+						}
+					} else {
+					
+					}
 				$article = str_replace('<!-- $ARTICLE_TITLE$ -->','<a href="view.php?article_id='.$news['id'].'">'.stripslashes($news['name']).'</a>',$article);
 				$article = str_replace('<!-- $ARTICLE_CONTENT$ -->',stripslashes($news['description']),$article);
 				$article = str_replace('<!-- $ARTICLE_IMAGE$ -->',$picture,$article);
