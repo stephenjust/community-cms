@@ -29,7 +29,10 @@
 		include('./admin/index.php');
 		} else {
 		$page = $page_handle->fetch_assoc();
-		include('./admin/'.$page['file'].'.php');
+		$loaded = @ include('./admin/'.$page['file'].'.php');
+		if(!$loaded) {
+			$content = 'Failed to load '.$page['file'].'.php';
+			}
 		}
 
 	function log_action($message) {

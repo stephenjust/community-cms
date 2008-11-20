@@ -22,6 +22,7 @@ INSERT INTO comcms_admin_pages
 	(NULL,'Files','1','Manage','filemanager'),
 	(NULL,'Newsletters','1','Newsletters','newsletter'),
 	(NULL,'Pages','1','Pages','page'),
+	(NULL,'Pages','1','Page Messages','page_message'),
 	(NULL,'Users','1','New User','user_create'),
 	(NULL,'Users','1','User List','user'),
 	(NULL,'Users','0','Edit User','user_edit'),
