@@ -28,7 +28,7 @@
 		$i = 1;
 		while($page_message_handle->num_rows >= $i) {
 			$page_message_content = $page_message_handle->fetch_assoc();
-			$page_message .= '<div class="page_message">'.$page_message_content['text'].'</div>';
+			$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
 			$i++;
 			}
 		$nav_bar = display_nav_bar();
