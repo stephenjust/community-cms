@@ -7,21 +7,31 @@
 	$message = NULL;
 	$date = date('Y-m-d H:i:s');
   if ($_GET['action'] == 'edit') {
-  	$edit_id = $_POST['id'];
-  	$start_date = $_POST['start_year'].'-'.$_POST['start_month'].'-'.$_POST['start_day'];
-  	$end_date = $_POST['end_year'].'-'.$_POST['end_month'].'-'.$_POST['end_day'];
-		if($_POST['expire'] == "on") {
-			$expire = '1'; 
-			} else {
-			$expire = '0';
+  	$page_name_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_POST['page_id'].' LIMIT 1';
+		$page_name_handle = $db->query($page_name_query);
+		if(!$page_name_handle) {
+			$message .= 'Failed to read name of current page for log message. '.mysqli_error($db);
 			}
-  	$text = addslashes($_POST['update_content']);
-		$edit_article_query = 'UPDATE '.$CONFIG['db_prefix']."page_messages SET start_date='$start_date',end_date='$end_date',end='$expire',text='$text' WHERE message_id = $edit_id";
-		$edit_article = $db->query($edit_article_query);
-		if(!$edit_article) {
-			$content = 'Failed to edit page message. '.mysqli_error($db);
+		if($page_name_handle->num_rows == 1) {
+  		$edit_id = $_POST['id'];
+  		$start_date = $_POST['start_year'].'-'.$_POST['start_month'].'-'.$_POST['start_day'];
+  		$end_date = $_POST['end_year'].'-'.$_POST['end_month'].'-'.$_POST['end_day'];
+			if($_POST['expire'] == "on") {
+				$expire = '1'; 
+				} else {
+				$expire = '0';
+				}
+  		$text = addslashes($_POST['update_content']);
+			$edit_article_query = 'UPDATE '.$CONFIG['db_prefix']."page_messages SET start_date='$start_date',end_date='$end_date',end='$expire',text='$text' WHERE message_id = $edit_id";
+			$edit_article = $db->query($edit_article_query);
+			if(!$edit_article) {
+				$content = 'Failed to edit page message. '.mysqli_error($db);
+				} else {
+				$page_name = $page_name_handle->fetch_assoc();
+				$content = 'Successfully edited page message. '.log_action('Edited page message for page \''.$page_name['title'].'\'');
+				}
 			} else {
-			$content = 'Successfully edited page message. '.log_action('Edited page message for page \''.$_POST['page_id'].'\'');
+			$content = 'Failed to find the page which you are trying to edit the message of.';
 			}
 		} else {
 		if(!isset($_GET['id']) || $_GET['id'] == '') {
