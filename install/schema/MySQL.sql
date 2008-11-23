@@ -23,7 +23,8 @@ INSERT INTO comcms_admin_pages
 	(NULL,'Newsletters','1','Newsletters','newsletter'),
 	(NULL,'Pages','1','Pages','page'),
 	(NULL,'Pages','1','Page Messages','page_message'),
-	(NULL,'Pages','0','Edit Page Message','page_message_edit');
+	(NULL,'Pages','0','Create Page Message','page_message_new'),
+	(NULL,'Pages','0','Edit Page Message','page_message_edit'),
 	(NULL,'Users','1','New User','user_create'),
 	(NULL,'Users','1','User List','user'),
 	(NULL,'Users','0','Edit User','user_edit'),
