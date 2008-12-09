@@ -20,6 +20,22 @@
 			$message .= 'Successfully added page.<br />'.log_action('New page \''.$_POST['title'].'\'');
 			}
 		}
+		
+	if ($_GET['action'] == 'new_link') {
+	  $message = NULL;
+	  $link = htmlentities($_POST['url']);
+	  $name = $_POST['title'];
+	  $title = $name.'<LINK>'.$link;
+	  // Add page to database.
+		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,type,menu) VALUES ("'.$title.'",0,1)';
+		$new_page = $db->query($new_page_query);
+		if(!$new_page) {
+			$message .= mysqli_error($db).'<br />';
+			} else {
+			$message .= 'Successfully added page link.<br />'.log_action('New page link \''.$_POST['title'].'\'');
+			}
+		}		
+		
 	if($_GET['action'] == 'home') {
 		$check_page_query = 'SELECT id,title FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'].' LIMIT 1';
 		$check_page_handle = $db->query($check_page_query);
@@ -138,7 +154,7 @@
 		}
 // $content = NULL;
 $content = $message;
-$content = $content.'<form method="POST" action="admin.php?module=page&action=new">
+$content .= '<form method="POST" action="admin.php?module=page&action=new">
 <h1>Add Page</h1>
 <table style="border: 1px solid #000000;">
 <tr><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
@@ -146,7 +162,7 @@ $content = $content.'<form method="POST" action="admin.php?module=page&action=ne
  	$pagetypes = get_row_from_db("pagetypes","","id,name");
  	$i = 1;
 	while ($i <= $pagetypes['num_rows']) {
-		$content = $content.'<input type="radio" name="type" value="'.$pagetypes[$i]['id'].'" />'.$pagetypes[$i]['name'].'<br />';
+		$content .= '<input type="radio" name="type" value="'.$pagetypes[$i]['id'].'" />'.$pagetypes[$i]['name'].'<br />';
 		$i++;
 	}
 $content .= '</td></td></tr>
@@ -154,6 +170,17 @@ $content .= '</td></td></tr>
 <tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 </table>
 
+</form>';
+
+$content .= '<form method="POST" action="admin.php?module=page&action=new_link">
+<h1>Add Menu Link</h1>
+<table style="border: 1px solid #000000;">
+<tr><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
+<tr><td valign="top">URL:</td><td>
+<input type="text" name="url" value="http://" /><br />
+</td></td></tr>
+<tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
+</table>
 </form>';
 
 $content .= '<h1>Edit Page</h1>
@@ -166,6 +193,10 @@ $content .= '<h1>Edit Page</h1>
  	$i = 1;
 	while ($i <= $page_list_rows) {
 		$page_list = $page_list_handle->fetch_assoc();
+		if($page_list['type'] == 0) {
+			$page_list['title'] = explode('<LINK>',$page_list['title']);
+			$page_list['title'] = $page_list['title'][0];
+			}
 		global $site_info;
 		$content .= '<tr>
 <td class="adm_page_list_item">'.$page_list['title'].' ';
@@ -175,9 +206,10 @@ $content .= '<h1>Edit Page</h1>
 		$content .= '</td>
 <td><a href="?module=page&action=del&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=page&action=move_up&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=page&action=move_down&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=page&action=home&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>
-</tr>';
+<td><a href="?module=page&action=move_down&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>';
+if($page_list['type'] != 0) {
+	$content .= '<td><a href="?module=page&action=home&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>
+</tr>'; }
 		$i++;
 	}
 $content = $content.'</table>';

@@ -60,7 +60,14 @@
 			if ($nav_menu['id'] == $page_info['id']) {
 				$return .= $nav_menu['title']."<br />";
 				} else {
-				$return .= "<a href='index.php?id=".$nav_menu['id']."'>".$nav_menu['title']."</a><br />";
+				if($nav_menu['type'] == 0) {
+					$link = explode('<LINK>',$nav_menu['title']);
+					$link_path = $link[1];
+					$link_name = $link[0];
+					$return .= "<a href='".$link_path."'>".$link_name."</a><br />";
+					} else {
+					$return .= "<a href='index.php?id=".$nav_menu['id']."'>".$nav_menu['title']."</a><br />";
+					}
 				}
 			$i++;
 			}
