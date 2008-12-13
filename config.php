@@ -4,10 +4,7 @@
 		die ('You cannot access this page directly.');
 		}
 
-	// ComPortal Configuration file
-	//
-	// Eventually, we will have an install script.
-	// For now though, manually configure.
+	// Community CMS Configuration file
 
 	$CONFIG['SYS_PATH'] = '/var/www/communitycms/';	// Path to CommunityCMS on server
 	$CONFIG['db_host'] = 'localhost';		// MySQL server host (usually localhost)

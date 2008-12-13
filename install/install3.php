@@ -32,18 +32,21 @@
 		$i = 1;
 		$f = count($query);
 		while ($i <= $f) {
-			mysql_query($query[$i],$connect);
+			if(!mysql_query($query[$i],$connect)) {
+				$content .= 'Query '.$query[$i].' failed to execute.<br />';
+				$error = 1;
+				}
 			$i++;
 			}
 		$config_file = '../config.php';
 		$handle = fopen($config_file, "w");
-		if(!handle) {
+		if(!$handle) {
 			$content .= 'Failed to open configuration file for writing.<br />';
 			$error = 1;
 			}
 		$config = '<?php
 	// Security Check
-	if (SECURITY != 1) {
+	if (@SECURITY != 1) {
 		die (\'You cannot access this page directly.\');
 		}
 
@@ -58,11 +61,9 @@
 	$CONFIG[\'disabled\'] = 0;
 ?>';
 		$config_write = fwrite($handle,$config);
-		if($error != 1) {
-			if(!$config_write) {
-				$content.= 'Failed to write to config.php. Is it writeable?';
-				$error = 1;
-				}
+		if(!$config_write) {
+			$content .= 'Failed to write to config.php. Is it writeable?';
+			$error = 1;
 			}
 		fclose($handle);
 		if($error != 1) {

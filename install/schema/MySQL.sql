@@ -60,14 +60,14 @@ CREATE TABLE IF NOT EXISTS `comcms_calendar_categories` (
   `label` text NOT NULL,
    `colour` text NOT NULL,
   `description` text NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`cat_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `comcms_calendar_categories`
 --
 
-INSERT INTO `comcms_calendar_categories` (`id`, `label`, `colour`, `description`) VALUES
+INSERT INTO `comcms_calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
 (0, 'Default Category', 'red', ''),
 (1, 'Other', 'yellow', '');
 
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `comcms_logs` (
   `user_id` int(5) NOT NULL,
   `action` text NOT NULL,
   `ip_addr` INT(10) unsigned NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
@@ -232,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `comcms_templates` (
   `description` text NOT NULL,
   `author` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 --
 -- Dumping data for table `comcms_templates`

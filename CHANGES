@@ -1,0 +1,27 @@
+Changes
+-------
+
+0.3 -> 0.4
+----------
+Installer now automatically updates config.php
+Ability to send messages to user through the Contacts page
+Page types and admin page entries are now completely modular
+News articles now get separated into pages of 10 articles each
+Ability to create / modify users from the backend
+More customizability through templates
+The security check has changed its method from variables to constants
+  to prevent user-generated false-verifications
+Removed deprecated notebook
+Can change default page now
+Calendar categories now have coloured icons that appear in the calendar
+  month view and event views
+Renamed some database tables to simplify database operations
+Administrator action logging and log viewer (stores IP addresses)
+New function to display template files
+Newsletters page now displays title, newsletters can be in any folder
+Dynamic file list
+Added article view to display only one article in a printable format
+Sends a 403 header when permission denied
+News article dates can now be hidden
+Messages can now be attached to each page
+Navigation menu can now contain regular hyperlinks
