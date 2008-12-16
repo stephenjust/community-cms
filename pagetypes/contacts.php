@@ -124,6 +124,20 @@ Message to user:<br />
 				$current_contact = str_replace('<!-- $CONTACT_ADDRESS_START$ -->','',$current_contact);
 				$current_contact = str_replace('<!-- $CONTACT_ADDRESS_END$ -->','',$current_contact);
 				}
+			if($contact_info['title'] == '' || $contact_info['title'] == NULL) {
+				$start = NULL;
+				$end = NULL;
+				$replace_length = NULL;
+				$start = strpos($current_contact,'<!-- $CONTACT_TITLE_START$ -->');
+				$end = strpos($current_contact,'<!-- $CONTACT_TITLE_END$ -->');
+				if($start && $end) {
+					$replace_length = $end - $start + 28;
+					$current_contact = substr_replace($current_contact,'',$start,$replace_length);
+					}
+				} else {
+				$current_contact = str_replace('<!-- $CONTACT_TITLE_START$ -->','',$current_contact);
+				$current_contact = str_replace('<!-- $CONTACT_TITLE_END$ -->','',$current_contact);
+				}
 			$content .= $current_contact;
 			$current_contact = NULL;
 			$j++;
