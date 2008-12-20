@@ -7,10 +7,18 @@
 		global $CONFIG;
 		global $db;
 		$result = NULL;
-		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'admin_pages WHERE on_menu = 1 ORDER BY category,label ASC';
+		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'admin_pages WHERE on_menu = 1 AND category = "Main" ORDER BY category,label ASC';
 		$page_handle = $db->query($page_query);
 		$i = 1;
 		$header = NULL;
+		while($page_handle->num_rows >= $i) {
+			$page_list = $page_handle->fetch_assoc();
+			$result .= '<a href="admin.php?module='.$page_list['file'].'">'.$page_list['label'].'</a><br />';
+			$i++;
+			}
+		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'admin_pages WHERE on_menu = 1 AND category != "Main" ORDER BY category,label ASC';
+		$page_handle = $db->query($page_query);
+		$i = 1;
 		while($page_handle->num_rows >= $i) {
 			$page_list = $page_handle->fetch_assoc();
 			$last_header = $header;

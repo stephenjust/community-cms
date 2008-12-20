@@ -10,7 +10,7 @@
 		$template = $template_handle['contents'];
 		$template_path = $template_handle['template_path'];
 		global $page_title;
-		$page_title = $page_info['title'];
+		$page_title = $page_info['title'].' - '.$site_info['name'];
 		// Initialize session variable if unset.
 		if(!isset($_SESSION['type'])) {
 			$_SESSION['type'] = 0;
