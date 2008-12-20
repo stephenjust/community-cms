@@ -4,8 +4,8 @@
 		die ('You cannot access this page directly.');
 		}
 	$return = NULL;
-	global $page_title;
-	$return = '<h1>'.$page_title.'</h1>';
+	global $page_info;
+	$return = '<h1>'.$page_info['title'].'</h1>';
 	$i = 1;
 		$newsletter = get_row_from_db("newsletters","WHERE page = ".$id." ORDER BY year desc, month desc LIMIT 0,30");
 		if($newsletter['num_rows'] == 0) {
