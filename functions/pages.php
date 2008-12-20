@@ -17,7 +17,8 @@
 			$page_type = $page_type_handle->fetch_assoc();
 			$page = $NOTIFICATION.include(ROOT.'pagetypes/'.$page_type['filename']);
 			} else {
-			$page = 'Failed to load page because the type of page that you are trying to view does not exist in the database.';
+			header("HTTP/1.0 404 Not Found");
+			$page = 'Page not found.';
 			}
 		return $page;
 		}

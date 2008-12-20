@@ -10,6 +10,7 @@
 		$template = $template_handle['contents'];
 		$template_path = $template_handle['template_path'];
 		global $page_title;
+		$content = get_page_content($page_info['id'],$page_info['type'],$view);
 		$page_title = $page_info['title'].' - '.$site_info['name'];
 		// Initialize session variable if unset.
 		if(!isset($_SESSION['type'])) {
@@ -23,17 +24,18 @@
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 		$image_path = $template_path.'images/';
 		$page_message = NULL;
-		$page_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'page_messages WHERE `page_id` = '.$page_info['id'].' ORDER BY `order`, `start_date` ASC';
-		$page_message_handle = $db->query($page_message_query);
-		$i = 1;
-		while($page_message_handle->num_rows >= $i) {
-			$page_message_content = $page_message_handle->fetch_assoc();
-			$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
-			$i++;
+		if($content != 'Page not found.') {
+			$page_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'page_messages WHERE `page_id` = '.$page_info['id'].' ORDER BY `order`, `start_date` ASC';
+			$page_message_handle = $db->query($page_message_query);
+			$i = 1;
+			while($page_message_handle->num_rows >= $i) {
+				$page_message_content = $page_message_handle->fetch_assoc();
+				$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
+				$i++;
+				}
 			}
 		$nav_bar = display_nav_bar();
 		$nav_login = display_login_box();
-		$content = get_page_content($page_info['id'],$page_info['type'],$view);
 		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
 		$template = str_replace('<!-- $ADMIN_INCLUDE$ -->',$admin_include,$template);
 		$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
