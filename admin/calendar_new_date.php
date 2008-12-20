@@ -87,7 +87,7 @@ $monthcount++;
 $content .= '</select></td></tr>
 <tr><td width="150" class="row1">*Year:</td><td class="row1"><input type="text" name="year" value="'.$_POST['year'].'" maxlength="4" /></td></tr>
 <tr><td class="row2" valign="top">Description:</td>
-<td class="row2"><textarea name="content" rows="30">'.$_POST['content'].'</textarea></td></tr>
+<td class="row2"><textarea name="content" rows="30">'.stripslashes($_POST['content']).'</textarea></td></tr>
 <tr><td width="150" class="row1">Location:</td><td class="row1"><input type="text" name="location" value="'.$_POST['location'].'" /></td></tr>
 <tr><td width="150" valign="top" class="row2">Image:</td><td class="row2">'.file_list('newsicons',2).'</td></tr>
 <tr><td width="150" class="row1">Hidden:</td><td class="row1"><input type="checkbox" name="hide" /></td></tr>

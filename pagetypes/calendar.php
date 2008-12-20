@@ -70,7 +70,7 @@
     $event = get_row_from_db("calendar","WHERE id = $_GET[a]");
     $page = "<a href='?id=".$_GET['id']."&m=".$event[1]['month']."&y=".$event[1]['year']."'>Back to month view</a><br />";
     $page = $page."<a href='?id=".$_GET['id']."&view=day&d=".$event[1]['day']."&m=".$event[1]['month']."&y=".$event[1]['year']."'>Back to day view</a><br />";
-    $page = $page."<h1>".$event[1]['header']."</h1>";
+    $page = $page."<h1>".stripslashes($event[1]['header'])."</h1>";
     $page = $page."Posted by ".$event[1]['author']."<br />";
     if ($event[1]['starttime'] == $event[1]['endtime']) {
       $event_start = mktime(0,0,0,$event[1]['month'],$event[1]['day'],$event[1]['year']);
@@ -110,8 +110,8 @@
         } else {
         $page = $page."<tr><td class='time'><div class='time'>".date('g:ia',$event_start)." - ".date('g:ia',$event_end)."</div></td>";
         }
-        $page = $page."<td class='head'><div class='head'><a href='?id=".$_GET['id']."&view=event&a=".$day[$i]['id']."'>".$day[$i]['header']."</a></div></td>
-<td class='description'><div class='description'>".$day[$i]['description']."</div></td></tr>\n";
+        $page = $page."<td class='head'><div class='head'><a href='?id=".$_GET['id']."&view=event&a=".$day[$i]['id']."'>".stripslashes($day[$i]['header'])."</a></div></td>
+<td class='description'><div class='description'>".stripslashes($day[$i]['description'])."</div></td></tr>\n";
         $i++;
       }
       $page = $page."</table>";
