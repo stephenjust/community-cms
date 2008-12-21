@@ -209,6 +209,10 @@ div.errormessage {
 .admintable {
 	border-spacing: 2px;
 }
+.admintable th {
+	background: #DDDDDD;
+	text-align: left;
+}
 .admintable .row1 {
 	background: #EEEEEE;
 }
