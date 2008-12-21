@@ -167,6 +167,7 @@ CREATE TABLE IF NOT EXISTS `comcms_newsletters` (
 CREATE TABLE IF NOT EXISTS `comcms_pages` (
   `id` int(11) NOT NULL auto_increment,
   `title` text NOT NULL,
+  `show_title` tinyint(1) NOT NULL default '1',
   `type` int(11) NOT NULL,
   `menu` tinyint(1) NOT NULL,
   `list` int(6) NOT NULL default '0',

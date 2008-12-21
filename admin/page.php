@@ -9,9 +9,14 @@
 	  	} else { 
 	  	$_POST['hidden'] = 1;
 	  	}
+	  if($_POST['show_title'] == 'on') { 
+	  	$_POST['show_title'] = 1; 
+	  	} else { 
+	  	$_POST['show_title'] = 0;
+	  	}
 	  $message = NULL;
 	  // Add page to database.
-		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,type,menu) VALUES ("'.$_POST['title'].'",
+		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,show_title,type,menu) VALUES ("'.$_POST['title'].'",'.$_POST['show_title'].',
 	  "'.$_POST['type'].'",'.$_POST['hidden'].')';
 		$new_page = $db->query($new_page_query);
 		if(!$new_page) {
@@ -158,6 +163,7 @@ $content .= '<form method="POST" action="admin.php?module=page&action=new">
 <h1>Add Page</h1>
 <table style="border: 1px solid #000000;">
 <tr><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
+<tr><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
 <tr><td valign="top">Type:</td><td>';
  	$pagetypes = get_row_from_db("pagetypes","","id,name");
  	$i = 1;

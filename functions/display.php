@@ -24,6 +24,9 @@
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 		$image_path = $template_path.'images/';
 		$page_message = NULL;
+		if($page_info['show_title'] == 1) {
+			$page_message .= '<h1>'.$page_info['title'].'</h1>';
+			}
 		if($content != 'Page not found.') {
 			$page_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'page_messages WHERE `page_id` = '.$page_info['id'].' ORDER BY `order`, `start_date` ASC';
 			$page_message_handle = $db->query($page_message_query);
