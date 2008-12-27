@@ -17,7 +17,10 @@
 			if(!$new_article) {
 				$message = 'Failed to add article. '.mysqli_error($db);
 				} else {
-				$message = 'Successfully added article. '.log_action('New newsletter \''.$_POST['label'].'\'');
+				$page_query = 'SELECT title FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_POST['page'].' LIMIT 1';
+				$page_handle = $db->query($page_query);
+				$page = $page_handle->fetch_assoc();
+				$message = 'Successfully added article. '.log_action('New newsletter \''.$_POST['label'].'\' added to '.$page['title']);
 				}
 			}
 		}
