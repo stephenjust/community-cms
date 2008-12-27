@@ -20,7 +20,7 @@
   $next_month = $month + 1;
   $page =  "<table class='calendar'><tr>\n";
   // List buttons from right to left
-  $page = $page."<th colspan='5'>".date('F Y',$day1['timestamp'])."</th>\n<th colspan='2'>
+  $page = $page."<th colspan='4'>".date('F Y',$day1['timestamp'])."</th>\n<th colspan='3'>
 	<form method='post' action='?id=".$_GET['id']."&m=".$month."&y=".$next_year."'><input type='submit' value='&gt;&gt;' width='40px' class='button_cal_next_year' /></form>
 	<form method='post' action='?id=".$_GET['id']."&m=".$next_month."&y=".$year."'><input type='submit' value='&gt;' width='30px' class='button_cal_next_month' /></form>
 	<form method='post' action='?id=".$_GET['id']."'><input type='submit' value='Today' width='55px' class='button_cal_today' /></form>
