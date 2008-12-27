@@ -50,7 +50,7 @@ $content .= '<h1>Page Messages</h1>
 		while ($i <= $page_query_handle->num_rows) {
 			$page = $page_query_handle->fetch_assoc();
 			if(!isset($_POST['page'])) {
-				$_POST['page'] = '1';
+				$_POST['page'] = $site_info['home'];
 				}
 			if($page['id'] == $_POST['page']) {
 				$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';

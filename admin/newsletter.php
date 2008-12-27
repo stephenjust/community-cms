@@ -25,12 +25,12 @@
 			}
 		}
 	if($_GET['action'] == 'delete') {
-		$delete_article_query = 'DELETE FROM '.$CONFIG['db_prefix'].'newsletters WHERE id = '.$_POST['delete'];
+		$delete_article_query = 'DELETE FROM '.$CONFIG['db_prefix'].'newsletters WHERE id = '.$_GET['id'];
 		$delete_article = $db->query($delete_article_query);
 		if(!$delete_article) {
 			$message = 'Failed to delete newsletter entry. '.mysqli_error($db);
 			} else {
-			$message = 'Successfully deleted newsletter entry. '.log_action('Deleted newsletter with id \''.$_POST['delete'].'\'');
+			$message = 'Successfully deleted newsletter entry. '.log_action('Deleted newsletter with id \''.$_GET['id'].'\'');
 			}
 		}
 		$content = $message;
@@ -69,28 +69,47 @@ $content .= '<h1>Add Newsletter</h1>
 $content .= '</select></td></tr>
 <tr><td class="row1"></td><td class="row1"><input type="submit" value="Submit" /></td></tr>
 </table>
-</form>
-
-<h1>Delete Newsletter</h1>
-<form method="POST" action="admin.php?module=newsletter&action=delete">
-<table class="admintable">
-<tr><td width="150" class="row1">Label</td><td class="row1">Page</td><td class="row1">Month</td><td class="row1">Year</td></tr>';
-	$articles = get_row_from_db("newsletters","ORDER BY id desc");
-	$row = 2;
-	$i = 1;
-	if($articles['num_rows'] == 0) {
-		$delete_disabled = "disabled ";
-		}
-	while ($i <= $articles['num_rows']) {
-		$nl_page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$articles[$i]['page'];
-		$nl_page_query_handle = $db->query($nl_page_query);
-		$nl_page = $nl_page_query_handle->fetch_assoc();
-		$content .= '<tr><td class="row'.$row.'"><input type="radio" name="delete" value="'.$articles[$i]['id'].'" />'.$articles[$i]['label'].'</td><td class="row'.$row.'">'.$nl_page['title'].'</td><td class="row'.$row.'">'.$months[$articles[$i]['month']-1].'</td><td class="row'.$row.'">'.$articles[$i]['year'].'</td></tr>';
-		$i++;
-		if($row == 1) { $row = 2; } else { $row = 1; }
-		}
-	$content .= '</td></tr>
-<tr><td class="row'.$row.'" colspan="4"><input type="submit" value="Delete" '.$delete_disabled.'/></td></tr>
-</table>
 </form>';
+$content .= '<h1>Manage Newsletters</h1>
+<table style="border: 1px solid #000000;">
+<tr><td><form method="post" action="admin.php?module=newsletter"><select name="page">';
+		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 2 ORDER BY list ASC';
+		$page_query_handle = $db->query($page_query);
+ 		$i = 1;
+		while ($i <= $page_query_handle->num_rows) {
+			$page = $page_query_handle->fetch_assoc();
+			if(!isset($_POST['page'])) {
+				$_POST['page'] = $site_info['home'];
+				$first = 1;
+				}
+			if($page['id'] == $_POST['page']) {
+				$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
+				} else {
+				$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
+				if($first == 1 && $page['id'] != $_POST['page']) {
+					$_POST['page'] = $page['id'];
+					$first = 0;
+					}
+				}
+			$i++;
+			}
+		$content = $content.'</select></td><td colspan="3"><input type="submit" value="Change Page" /></form></td></tr>
+<tr><td width="350">Label:</td><td>Month</td><td>Year</td><td>Del</td></tr>';
+	// Get page message list in the order defined in the database. First is 0.
+	$nl_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'newsletters WHERE page = '.stripslashes($_POST['page']).' ORDER BY year DESC,month DESC';
+	$nl_handle = $db->query($nl_query);
+ 	$i = 1;
+ 	if($nl_handle->num_rows == 0) {
+ 		$content .= '<tr><td colspan="4">There are no newsletter entries on this page.</td></tr>';
+ 		}
+	while ($i <= $nl_handle->num_rows) {
+		$nl = $nl_handle->fetch_assoc();
+		$content .= '<tr>
+<td class="adm_page_list_item">'.strip_tags(stripslashes($nl['label']),'<br>').'</td>
+<td>'.$months[$nl['month']-1].'</td><td>'.$nl['year'].'</td>
+<td><a href="?module=newsletter&action=delete&id='.$nl['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+</tr>';
+		$i++;
+	}
+$content .= '</table>';
 ?>

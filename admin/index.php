@@ -4,6 +4,10 @@
 		die ('You cannot access this page directly.');
 		}
 	define('ROOT','./');
+	if($_GET['action'] == 'new_log') {
+		$log_message = strip_tags($_POST['message']);
+		log_action($log_message);
+		}
 	$log_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'logs log, '.$CONFIG['db_prefix'].'users user WHERE log.user_id = user.id ORDER BY log.date DESC LIMIT 5';
 	$log_message_handle = $db->query($log_message_query);
 	if(!$log_message_handle) {
@@ -31,6 +35,7 @@ $rowtype = 1;
 		$i++;
 		}
 	$content .= '</table>';
+	$content .= '<form method="post" action="?action=new_log"><input type="text" name="message" /><input type="submit" value="Add Message" /></form>';
 $content .= '<h3>User Summary:</h3>
 You have at least one admin user and possibly some other users.
 <h3>Database Summary:</h3>
