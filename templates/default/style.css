@@ -1,50 +1,35 @@
-body {
-  margin: 0px;
-  font-family: Calibri, 'Times New Roman', Arial, Sans-Serif;
-}
-div.pagehead {
-  position: absolute;
-  top: 0px;
-  height: 160px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  text-align: center;
-  width: 100%;
-  background: url('./images/header.png');
-  z-index: 1;
-}
 img.logo {
   width: 686px;
   height: 160px;
   border: 0px;
 }
-div.navigation {
-  position: absolute;
-  top: 158px;
-  left: 0px;
-  width: 200px;
-  padding: 2px;
-}
 div.nav_menu {
   background: url('./images/menubg.png');
   width: 190px;
   padding-left: 10px;
-  color: #000000;
+  color: #000;
+  float: left;
+  clear: both;
 }
 div.nav_menu_top {
   background: url('./images/menutop.png');
   height: 10px;
   width: 200px;
+  float: left;
 }
 div.nav_menu_separator {
   background: url('./images/menusep.png');
   height: 20px;
   width: 200px;
+  float: left;
+  clear: both;
 }
 div.nav_menu_bottom {
   background: url('./images/menubottom.png');
   height: 20px;
   width: 200px;
+  float: left;
+  clear: both;
 }
 div.nav_menu input {
   border: 1px solid #000000;
@@ -119,38 +104,23 @@ span.contact_heading {
 }
 
 input.button_cal_back_month {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 250px;
+	float: right;
   width: 33px;
 }
 input.button_cal_back_year {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 290px;
+	float: right;
   width: 44px;
 }
 input.button_cal_today {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 185px;
+	float: right;
   width: 58px;
 }
 input.button_cal_next_month {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 145px;
+	float: right;
   width: 33px;
 }
 input.button_cal_next_year {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 95px;
+	float: right;
   width: 44px;
 }
 table.calendar {

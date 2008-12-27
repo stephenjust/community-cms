@@ -19,9 +19,14 @@
   $next_year = $year + 1;
   $next_month = $month + 1;
   $page =  "<table class='calendar'><tr>\n";
-  $page = $page."<th colspan='5'>".date('F Y',$day1['timestamp'])."</th>\n<th colspan='2'> <form method='post' action='?id=".$_GET['id']."&m=".$month."&y=".$prev_year."'><input type='submit' value='&lt;&lt;' width='40px' class='button_cal_back_year' /></form> 
-  <form method='post' action='?id=".$_GET['id']."&m=".$prev_month."&y=".$year."'><input type='submit' value='&lt;' width='30px' class='button_cal_back_month' /></form> <form method='post' action='?id=".$_GET['id']."'><input type='submit' value='Today' width='55px' class='button_cal_today' /></form>
-  <form method='post' action='?id=".$_GET['id']."&m=".$next_month."&y=".$year."'><input type='submit' value='&gt;' width='30px' class='button_cal_next_month' /></form> <form method='post' action='?id=".$_GET['id']."&m=".$month."&y=".$next_year."'><input type='submit' value='&gt;&gt;' width='40px' class='button_cal_next_year' /></form></th></tr>\n<tr>";
+  // List buttons from right to left
+  $page = $page."<th colspan='5'>".date('F Y',$day1['timestamp'])."</th>\n<th colspan='2'>
+	<form method='post' action='?id=".$_GET['id']."&m=".$month."&y=".$next_year."'><input type='submit' value='&gt;&gt;' width='40px' class='button_cal_next_year' /></form>
+	<form method='post' action='?id=".$_GET['id']."&m=".$next_month."&y=".$year."'><input type='submit' value='&gt;' width='30px' class='button_cal_next_month' /></form>
+	<form method='post' action='?id=".$_GET['id']."'><input type='submit' value='Today' width='55px' class='button_cal_today' /></form>
+	<form method='post' action='?id=".$_GET['id']."&m=".$prev_month."&y=".$year."'><input type='submit' value='&lt;' width='30px' class='button_cal_back_month' /></form>
+	<form method='post' action='?id=".$_GET['id']."&m=".$month."&y=".$prev_year."'><input type='submit' value='&lt;&lt;' width='40px' class='button_cal_back_year' /></form>
+	</th></tr>\n<tr>";
   $page = $page."<th>Sunday</th>\n<th>Monday</th>\n<th>Tuesday</th>\n<th>Wednesday</th>\n<th>Thursday</th>\n<th>Friday</th>\n<th>Saturday</th><tr>\n";
   while ($counter_dow < $day1['day_of_week']) {
   $page = $page."<td></td>";

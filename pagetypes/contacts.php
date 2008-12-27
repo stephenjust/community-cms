@@ -51,10 +51,16 @@ Message to user:<br />
 			$contact_info = $contact_list_handle->fetch_assoc();
 			$current_contact .= $contact_template;
 			$contact_email = NULL;
-			if($contact_info['message'] == 1) {
-				$realname = '<a href="index.php?id='.$_GET['id'].'&message='.$contact_info['id'].'">'.$contact_info['realname'].'</a>';
+			if(eregi(',',$contact_info['realname'])) {
+				$firstlast = explode(', ',$contact_info['realname']);
+				$realname_firstlast = $firstlast[1].' '.$firstlast[0];
 				} else {
-				$realname = $contact_info['realname'];
+				$realname_firstlast = $contact_info['realname'];
+				}
+			if($contact_info['message'] == 1) {
+				$realname = '<a href="index.php?id='.$_GET['id'].'&message='.$contact_info['id'].'">'.$realname_firstlast.'</a>';
+				} else {
+				$realname = $realname_firstlast;
 				}
 			if($contact_info['email_hide'] == 1) {
 				$contact_email = 'Hidden';
@@ -71,13 +77,7 @@ Message to user:<br />
 				} else {
 				$contact_address = $contact_info['address'];
 				}
-			if(eregi(',',$realname)) {
-				$firstlast = explode(', ',$realname);
-				$realname_firstlast = $firstlast[1].' '.$firstlast[0];
-				} else {
-				$realname_firstlast = $realname;
-				}
-			$current_contact = str_replace('<!-- $CONTACT_NAME$ -->',stripslashes($realname_firstlast),$current_contact);
+			$current_contact = str_replace('<!-- $CONTACT_NAME$ -->',stripslashes($realname),$current_contact);
 			$current_contact = str_replace('<!-- $CONTACT_TITLE$ -->',stripslashes($contact_info['title']),$current_contact);
 			$current_contact = str_replace('<!-- $CONTACT_EMAIL$ -->',stripslashes($contact_email),$current_contact);
 			$current_contact = str_replace('<!-- $CONTACT_TELEPHONE$ -->',stripslashes($contact_telephone),$current_contact);
