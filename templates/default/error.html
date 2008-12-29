@@ -5,28 +5,52 @@
 <title><!-- $PAGE_TITLE$ --></title>
 <!-- $CSS_INCLUDE$ -->
 <style type="text/css">
-div.content {
-  position: absolute;
-  top: 160px;
-  left: 215px;
-  right: 5px;
-  padding-bottom: 50px;
+body {
+  margin: 0px;
+  font-family: Calibri, 'Times New Roman', Arial, Sans-Serif;
+}
+#header { 
+	background-color: #3187b4; /* If image is not loaded yet */
+	background: url('<!-- $IMAGE_PATH$ -->header.png'); /* Covers solid background */
+	height:160px;
+	text-align: center;
+}
+#left { 
+	float: left;
+	width: 200px;
+	background-color: #FFF; 
+	min-height: 350px; /* for modern browsers */
+	height: auto !important; /* for modern browsers */
+	height: 350px; /* for IE5.x and IE6 */
+}
+#center { 
+	margin-left: 200px;
+	background-color: #FFF; 
+	min-height: 350px; /* for modern browsers */
+	height: auto !important; /* for modern browsers */
+	height: 350px; /* for IE5.x and IE6 */
+}
+#footer { 
+	clear: both;
+	background-color: #FFF;
+	height: 55px;
+	text-align: center;
 }
 </style>
 </head>
 <body>
-<div class="pagehead">
-<a href="index.php"><img src="<!-- $IMAGE_PATH$ -->logo.png" alt="Logo" border="0px" height="160px" width="686px" /></a>
-</div>
-<div class="navigation">
+<div id="header">
+	<a href="index.php"><img src="<!-- $IMAGE_PATH$ -->logo.png" alt="Logo" border="0px" height="160px" width="686px" /></a>
+	</div>
+<div id="left">
   <div class="nav_menu_top"></div>
   <div class="nav_menu_bottom"></div>
-</div>
-<div class="content">
-  <!-- $CONTENT$ -->
-</div>
-<div class="footer">
-  <!-- $FOOTER$ -->
-</div>
+	</div>
+<div id="center">
+	<!-- $CONTENT$ -->
+	</div>
+<div id="footer">
+	<!-- $FOOTER$ -->
+	</div>
 </body>
 </html>
