@@ -46,6 +46,7 @@
 		$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
 		$template = str_replace('<!-- $PAGE_MESSAGE$ -->',$page_message,$template);
 		$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
+//		$template = str_replace('<!-- $LEFT_CONTENT$ -->',include(ROOT.'content_blocks/poll_block.php'),$template);
 		$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
 		$template = str_replace('<!-- $FOOTER$ -->','<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>
 <br />Powered by Community CMS',$template);

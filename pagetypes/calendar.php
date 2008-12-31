@@ -70,36 +70,45 @@
     $counter_dow++;
   }
   $page .= "</tr><tr><td colspan='7' align='center' style='vertical-align: middle;'>Showing 2 events per day. Click on the day number to show more.</td></tr></table>";
-    break;
-    case "event":
-    $event = get_row_from_db("calendar","WHERE id = $_GET[a]");
-    $page = "<a href='?id=".$_GET['id']."&m=".$event[1]['month']."&y=".$event[1]['year']."'>Back to month view</a><br />";
-    $page = $page."<a href='?id=".$_GET['id']."&view=day&d=".$event[1]['day']."&m=".$event[1]['month']."&y=".$event[1]['year']."'>Back to day view</a><br />";
-    $page = $page."<h1>".stripslashes($event[1]['header'])."</h1>";
-    $page = $page."Posted by ".$event[1]['author']."<br />";
-    if ($event[1]['starttime'] == $event[1]['endtime']) {
-      $event_start = mktime(0,0,0,$event[1]['month'],$event[1]['day'],$event[1]['year']);
-      $page = $page."All day, ".date('l, F j Y',$event_start);
-    } else {
-      $event_stime = explode(':',$event[1]['starttime']);
-      $event_etime = explode(':',$event[1]['endtime']);
-      $event_start = mktime($event_stime[0],$event_stime[1],0,$event[1]['month'],$event[1]['day'],$event[1]['year']);
-      $event_end = mktime($event_etime[0],$event_etime[1],0,$event[1]['month'],$event[1]['day'],$event[1]['year']);
-      $page .= date('g:ia -',$event_start);
-      $page .= date(' g:ia',$event_end)."<br />";
-      $page .= date(' l, F j Y',$event_start);
-      $page .= "<br />\n";
-    }
-    global $CONFIG;
-    global $db;
-    $category_name_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar_categories WHERE cat_id = '.$event[1]['category'].' LIMIT 1';
-    $category_name_handle = $db->query($category_name_query);
-    $category_name = $category_name_handle->fetch_assoc();
-    $page .= '<br />'.$category_name['label']."<br />\n";
-    $page .= $event[1]['description'];
-    $page .= "<br />\n";
-    $page .= $event[1]['location'];
-    break;
+		break;
+		case "event":
+			$page = NULL;
+			$event_id = stripslashes($_GET['a']);
+			$event_query = 'SELECT cal.*, cat.label FROM '.$CONFIG['db_prefix'].'calendar cal, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE cal.id = '.$event_id.' AND cal.category = cat.cat_id LIMIT 1';
+			$event_handle = $db->query($event_query);
+			if(!$event_handle || $event_handle->num_rows == 0) {
+				header('HTTP/1.1 404 Not Found');
+				$page .= 'The event you are trying to view could not be found.';
+				} else {
+				$event = $event_handle->fetch_assoc();
+				if($event['starttime'] == $event['endtime']) {
+					$event_start = mktime(0,0,0,$event['month'],$event['day'],$event['year']);
+					$event_time = 'All day, '.date('l, F j Y',$event_start);
+					unset($event_start);
+					} else {
+					$event_stime = explode(':',$event['starttime']);
+					$event_etime = explode(':',$event['endtime']);
+					$event_start = mktime($event_stime[0],$event_stime[1],0,$event['month'],$event['day'],$event['year']);
+					$event_end = mktime($event_etime[0],$event_etime[1],0,$event['month'],$event['day'],$event['year']);
+					$event_time = date('g:ia -',$event_start).date(' g:ia',$event_end)."<br />".date(' l, F j Y',$event_start);
+					unset($event_stime);
+					unset($event_etime);
+					unset($event_start);
+					unset($event_end);
+					}
+				$event_template = load_template_file('calendar_event.html');
+				$event_template['contents'] = str_replace('<!-- $EVENT_HEADING$ -->',stripslashes($event['header']),$event_template['contents']);
+				$event_template['contents'] = str_replace('<!-- $EVENT_AUTHOR$ -->',stripslashes($event['author']),$event_template['contents']);
+				$event_template['contents'] = str_replace('<!-- $EVENT_TIME$ -->',$event_time,$event_template['contents']);
+				$event_template['contents'] = str_replace('<!-- $EVENT_CATEGORY$ -->',stripslashes($event['label']),$event_template['contents']);			
+				$event_template['contents'] = str_replace('<!-- $EVENT_DESCRIPTION$ -->',stripslashes($event['description']),$event_template['contents']);
+				$event_template['contents'] = str_replace('<!-- $EVENT_LOCATION$ -->',stripslashes($event['location']),$event_template['contents']);
+				$page .= "<a href='?id=".$_GET['id']."&m=".$event['month']."&y=".$event['year']."'>Back to month view</a><br />";
+				$page .= "<a href='?id=".$_GET['id']."&view=day&d=".$event['day']."&m=".$event['month']."&y=".$event['year']."'>Back to day view</a><br />";
+				$page .= $event_template['contents'];
+				unset($event_template);
+				}
+    	break;
     case "day":
       $day = get_row_from_db("calendar","WHERE year = $_GET[y] AND month = $_GET[m] AND day = $_GET[d] ORDER BY starttime ASC");
       $page = "<a href='?id=".$_GET['id']."&m=".$_GET['m']."&y=".$_GET['y']."'>Back to month view</a><br />\n";
