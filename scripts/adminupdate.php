@@ -25,6 +25,8 @@ header("Pragma: no-cache"); // HTTP/1.0
 	  if($login['num_rows'] != 1) {
 			die('Your session has expired.');
 			}
+		} else {
+		die('You are not logged in');
 		}
 	$fieldname = $_GET['fieldname'];
 	$content = $_GET['content'];
