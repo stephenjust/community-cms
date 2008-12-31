@@ -11,7 +11,6 @@
 		$template_path = $template_handle['template_path'];
 		global $page_title;
 		$content = get_page_content($page_info['id'],$page_info['type'],$view);
-		$page_title = $page_info['title'].' - '.$site_info['name'];
 		// Initialize session variable if unset.
 		if(!isset($_SESSION['type'])) {
 			$_SESSION['type'] = 0;
@@ -39,15 +38,18 @@
 			}
 		$nav_bar = display_nav_bar();
 		$nav_login = display_login_box();
-		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
 		$template = str_replace('<!-- $ADMIN_INCLUDE$ -->',$admin_include,$template);
 		$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
 		$template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
 		$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
 		$template = str_replace('<!-- $PAGE_MESSAGE$ -->',$page_message,$template);
 		$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
+		global $special_title;
+		$page_title = $page_info['title'].' - '.$special_title.$site_info['name'];
+		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
 //		$template = str_replace('<!-- $LEFT_CONTENT$ -->',include(ROOT.'content_blocks/poll_block.php'),$template);
 		$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
+		$template = str_replace('<!-- $PAGE_ID$ -->',$page_info['id'],$template);
 		$template = str_replace('<!-- $FOOTER$ -->','<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>
 <br />Powered by Community CMS',$template);
 		echo $template;

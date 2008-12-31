@@ -103,6 +103,32 @@ span.contact_heading {
 	color: #AAAAAA;
 }
 
+/*
+CALENDAR
+*/
+
+table.calendar {
+	width: 100%;
+	overflow: hidden;
+	table-layout: fixed;
+}
+table.calendar td {
+	border: 1px solid #CCCCCC;
+	vertical-align: top;
+	height: 80px;
+	width: 14%;
+	overflow: hidden;
+	table-layout: fixed;
+}
+table.calendar a.day_number {
+	text-decoration: none;
+	font-weight: bold;
+	color: #000000;
+}
+table.calendar a.calendar_event {
+	text-decoration: none;
+	color: #000000;
+}
 input.button_cal_back_month {
 	float: right;
   width: 33px;
@@ -123,22 +149,7 @@ input.button_cal_next_year {
 	float: right;
   width: 44px;
 }
-table.calendar {
-  width: 100%;
-  overflow: hidden;
-  table-layout: fixed;
-}
-table.calendar td {
-  border: 1px solid #000000;
-  vertical-align: top;
-  height: 80px;
-  width: 14%;
-  overflow: hidden;
-  table-layout: fixed;
-}
-td.calendar_today {
-  background: #FFFFFF;
-}
+
 table.calendar_day {
   width: 100%;
   overflow: hidden;
@@ -146,6 +157,7 @@ table.calendar_day {
 table.calendar_day td {
   border: 1px solid #000000;
   height: 20px;
+  vertical-align: top;
   overflow: hidden;
 }
 div.time, td.time {
