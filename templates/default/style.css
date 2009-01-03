@@ -129,6 +129,28 @@ table.calendar a.calendar_event {
 	text-decoration: none;
 	color: #000000;
 }
+table.calendar_day {
+	border: 0px;
+	width: 100%;
+}
+table.calendar_day td {
+	vertical-align: top;
+}
+table.calendar_day td.time {
+	height: 20px;
+  width: 140px;
+}
+table.calendar_day td.head {
+  height: 20px;
+  width: 200px;
+  overflow: hidden;
+  table-layout: fixed;
+}
+table.calendar_day td.description {
+  height: 20px;
+  overflow: hidden;
+  table-layout: fixed;
+}
 input.button_cal_back_month {
 	float: right;
   width: 33px;
@@ -149,43 +171,6 @@ input.button_cal_next_year {
 	float: right;
   width: 44px;
 }
-
-table.calendar_day {
-  width: 100%;
-  overflow: hidden;
-}
-table.calendar_day td {
-  border: 1px solid #000000;
-  height: 20px;
-  vertical-align: top;
-  overflow: hidden;
-}
-div.time, td.time {
-  vertical-align: top;
-  height: 20px;
-  width: 140px;
-  overflow: hidden;
-  table-layout: fixed;
-}
-div.head, td.head {
-  vertical-align: top;
-  height: 20px;
-  width: 200px;
-  overflow: hidden;
-  table-layout: fixed;
-}
-div.description, td.description {
-  vertical-align: top;
-  height: 20px;
-  overflow: hidden;
-  table-layout: fixed;
-}
-div.calendar_content {
-  width: 100%;
-  height: 65px;
-  overflow: hidden;
-}
-
 
 span.newsletter_year {
   font-family: Arial;
