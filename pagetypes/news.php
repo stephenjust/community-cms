@@ -62,7 +62,7 @@ setVarsForm("user='.$_SESSION['user'].'");
 					} else {
 					
 					}
-				$article = str_replace('<!-- $ARTICLE_TITLE$ -->','<a href="view.php?article_id='.$news['id'].'">'.stripslashes($news['name']).'</a>',$article);
+				$article = str_replace('<!-- $ARTICLE_TITLE$ -->','<a href="view.php?article_id='.$news['id'].'" target="_blank">'.stripslashes($news['name']).'</a>',$article);
 				$article = str_replace('<!-- $ARTICLE_CONTENT$ -->',stripslashes($news['description']),$article);
 				$article = str_replace('<!-- $ARTICLE_IMAGE$ -->',$picture,$article);
 				$article = str_replace('<!-- $ARTICLE_ID$ -->',$news['id'],$article);
