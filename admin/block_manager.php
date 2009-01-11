@@ -55,7 +55,7 @@ $content .= '<h1>Block Manager</h1>
 	$block_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks ORDER BY id DESC';
 	$block_list_handle = $db->query($block_list_query);
  	if($block_list_handle->num_rows == 0) {
- 		$content = $content.'<tr><td class="adm_page_list_item">No blocks exist.</td><td></td><td></td></tr>';
+ 		$content = $content.'<tr><td></td><td class="adm_page_list_item">No blocks exist.</td><td></td><td></td></tr>';
  		} else {
  		$i = 1;
  		while ($i <= $block_list_handle->num_rows) {
@@ -74,15 +74,17 @@ $directory = 'content_blocks/';
 $folder_open = ROOT.$directory;
 $files = scandir($folder_open);
 $num_files = count($files);
-$i = 1;
+$i = 2;
 if($num_files < 4) {
 	$content .= 'No installed blocks.';
+	$bock_types_list = '<select name="type" disabled>';
 	} else {
 	$block_types_list = '<select name="type" id="adm_block_type_list" onChange="block_options_list_update()">';
 	while($i < $num_files) {
-		$type[$i] = explode('_',$files[$i]);
+		$type = explode('_',$files[$i]);
+		$type = $type[0];
 		if(!eregi('^\.',$files[$i]) && !eregi('~$',$files[$i]) && !eregi('\.info$',$files[$i])) {
-			$block_types_list .= '<option value="'.$type[$i][0].'">'.$type[$i][0].'</option>';
+			$block_types_list .= '<option value="'.$type.'">'.$type.'</option>';
 			}
 		$i++;
 		}
