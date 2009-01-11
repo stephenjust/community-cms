@@ -82,6 +82,7 @@ tinyMCE_GZ.init({
 <script language=\"javascript\" type=\"text/javascript\">
 tinyMCE.init({
 	mode : \"textareas\",
+	editor_deselector : \"mceNoEditor\",
 	theme : \"advanced\",
 	plugins : \"style,layer,table,save,advhr,advimage,advlink,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras\",
 	theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect\",
