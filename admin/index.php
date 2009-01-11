@@ -15,9 +15,9 @@
 		}
 	$i = 1;
 	$num_messages = $log_message_handle->num_rows;
-$content = '<h1>Administration</h1>
-<h3>Most Recent Activity:</h3>';
-	$content .= '<table class="log_messages">
+$content = '<h1>Administration</h1>';
+$content .= '<h3>Most Recent Activity:</h3>
+<table class="log_messages">
 <tr>
 <th>Date</th><th>Action</th><th>User</th><th>IP</th>
 </tr>';

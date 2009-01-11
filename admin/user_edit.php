@@ -14,9 +14,9 @@
 			} else {
 			$content = NULL;
 			if($_GET['edit'] != "") {
-				if($_POST['old_pass'] != "" && md5($_POST['old_pass']) == $current_data['password']) {
-					if($_POST['pass'] == $_POST['pass_conf'] && strlen($_POST['pass']) >= 8) {
-						$change_password_query = 'UPDATE '.$CONFIG['db_prefix'].'users SET password = "'.md5($_POST['pass']).'" WHERE id = '.$_GET['edit'].' LIMIT 1';
+				if($_POST['edit_old_pass'] != "" && md5($_POST['edit_old_pass']) == $current_data['password']) {
+					if($_POST['edit_pass'] == $_POST['edit_pass_conf'] && strlen($_POST['edit_pass']) >= 8) {
+						$change_password_query = 'UPDATE '.$CONFIG['db_prefix'].'users SET password = "'.md5($_POST['edit_pass']).'" WHERE id = '.$_GET['edit'].' LIMIT 1';
 						if(!$db->query($change_password_query)) {
 							$content .= 'Failed to change password.<br />'.mysqli_error($db).'<br />';
 							} else {
@@ -79,7 +79,7 @@
 						}
 					}
 				} else {
-				$name = explode(', ',$current_data['realname']);
+				$current_name = explode(', ',$current_data['realname']);
 				if($current_data['phone_hide'] == 1) {
 					$telephone_hide = 'checked';
 					} else {
@@ -109,19 +109,19 @@
 <form method="POST" action="admin.php?module=user_edit&edit='.$_GET['id'].'">
 <table class="admintable">
 <tr>
-<td class="row1">New Password:</td><td class="row1"><input type="password" name="pass" /></td><td rowspan="3" class="row1">If these password fields are filled correctly, your password will be changed. Leave the password fields empty if you do not want to change your password.</td>
+<td class="row1">New Password:</td><td class="row1"><input type="password" name="edit_pass" /></td><td rowspan="3" class="row1">If these password fields are filled correctly, your password will be changed. Leave the password fields empty if you do not want to change your password.</td>
 </tr>
 <tr>
-<td class="row2">Confirm Password:</td><td class="row2"><input type="password" name="pass_conf" /></td>
+<td class="row2">Confirm Password:</td><td class="row2"><input type="password" name="edit_pass_conf" /></td>
 </tr>
 <tr>
-<td class="row1">Old Password:</td><td class="row1"><input type="password" name="old_pass" /></td>
+<td class="row1">Old Password:</td><td class="row1"><input type="password" name="edit_old_pass" /></td>
 </tr>
 <tr>
-<td class="row2">First Name:</td><td class="row2" colspan="2"><input type="text" name="first_name" value="'.$name[1].'" /></td>
+<td class="row2">First Name:</td><td class="row2" colspan="2"><input type="text" name="first_name" value="'.$current_name[1].'" /></td>
 </tr>
 <tr>
-<td class="row1">Surname:</td><td class="row1" colspan="2"><input type="text" name="surname" value="'.$name[0].'" /></td>
+<td class="row1">Surname:</td><td class="row1" colspan="2"><input type="text" name="surname" value="'.$current_name[0].'" /></td>
 </tr>
 <tr>
 <td class="row2">Title/Position:</td><td class="row2" colspan="2"><input type="text" name="title" value="'.$current_data['title'].'" /></td>

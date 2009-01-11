@@ -49,7 +49,8 @@
 	if (@SECURITY != 1) {
 		die (\'You cannot access this page directly.\');
 		}
-
+	// Turn of \'register_globals\'
+	ini_set(\'register_globals\',0);
 	$CONFIG[\'SYS_PATH\'] = \'Unused\';	// Path to Community CMS on server
 	$CONFIG[\'db_host\'] = \''.$_POST['dbhost'].'\';		// MySQL server host (usually localhost)
 	$CONFIG[\'db_user\'] = \''.$_POST['dbuser'].'\';			// MySQL database user
