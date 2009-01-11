@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS comcms_admin_pages (
 INSERT INTO comcms_admin_pages 
 	(`id`,`category`,`on_menu`,`label`,`file`) VALUES 
 	(NULL,'Main','1','Configuration','site_config'),
+	(NULL,'Blocks','1','Block Manager','block_manager'),
 	(NULL,'News','1','New Article','news_new_article'),
 	(NULL,'News','1','Article Manager','news'),
 	(NULL,'News','0','Edit Article','news_edit_article'),
@@ -30,9 +31,12 @@ INSERT INTO comcms_admin_pages
 	(NULL,'Users','1','User List','user'),
 	(NULL,'Users','0','Edit User','user_edit'),
 	(NULL,'Logs','1','View Logs','log_view');
---
--- Table structure for table `comcms_calendar`
---
+	
+CREATE TABLE IF NOT EXISTS comcms_blocks (
+	`id` INT NOT NULL auto_increment PRIMARY KEY ,
+	`type` TEXT NOT NULL,
+	`attributes` TEXT NOT NULL
+) ENGINE=MYISAM DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `comcms_calendar` (
   `id` int(11) NOT NULL auto_increment,
@@ -171,6 +175,8 @@ CREATE TABLE IF NOT EXISTS `comcms_pages` (
   `type` int(11) NOT NULL,
   `menu` tinyint(1) NOT NULL,
   `list` int(6) NOT NULL default '0',
+  `blocks_left` text NULL,
+  `blocks_right` text NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
@@ -223,9 +229,35 @@ CREATE TABLE IF NOT EXISTS `comcms_permissions` (
 	`files` INT(4) NOT NULL DEFAULT '0',
 	INDEX (`user`)
 ) ENGINE = MYISAM DEFAULT CHARSET=latin1;
---
--- Table structure for table `comcms_templates`
---
+
+
+CREATE TABLE IF NOT EXISTS `comcms_poll_questions` (
+  `question_id` int(5) NOT NULL auto_increment,
+  `question` text NOT NULL,
+  `short_name` text NOT NULL,
+  `type` int(2) NOT NULL default '1',
+  `active` tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (`question_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
+
+CREATE TABLE IF NOT EXISTS `comcms_poll_answers` (
+  `answer_id` int(6) NOT NULL auto_increment,
+  `question_id` int(5) NOT NULL,
+  `answer` text NOT NULL,
+  `answer_order` int(2) NOT NULL,
+  PRIMARY KEY  (`answer_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
+CREATE TABLE IF NOT EXISTS `comcms_poll_responses` (
+  `response_id` int(11) NOT NULL auto_increment,
+  `question_id` int(5) NOT NULL,
+  `answer_id` int(6) NOT NULL,
+  `value` text,
+  `ip_addr` int(10) NOT NULL,
+  PRIMARY KEY  (`response_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+
 
 CREATE TABLE IF NOT EXISTS `comcms_templates` (
   `id` int(3) NOT NULL auto_increment,

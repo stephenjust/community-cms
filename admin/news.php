@@ -38,13 +38,13 @@ $content .= '<h1>Edit Article</h1>
 				$_POST['page'] = $page['id'];
 				}
 			if($page['id'] == $_POST['page']) {
-				$content = $content.'<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
+				$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
 				} else {
-				$content = $content.'<option value="'.$page['id'].'" />'.$page['title'].'</option>';
+				$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
 				}
 			$i++;
 			}
-		$content = $content.'</select></td><td colspan="2"><input type="submit" value="Change Page" /></form></td></tr>
+		$content .= '</select></td><td colspan="2"><input type="submit" value="Change Page" /></form></td></tr>
 <tr><td width="350">Title:</td><td>Del</td><td>Edit</td></tr>';
 	// Get page list in the order defined in the database. First is 0.
 	$page_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE page = '.stripslashes($_POST['page']);
@@ -52,16 +52,16 @@ $content .= '<h1>Edit Article</h1>
 	$page_list_rows = $page_list_handle->num_rows;
  	$i = 1;
  	if($page_list_rows == 0) {
- 		$content = $content.'<tr><td class="adm_page_list_item">There are no articles on this page.</td><td></td><td></td></tr>';
+ 		$content .= '<tr><td class="adm_page_list_item">There are no articles on this page.</td><td></td><td></td></tr>';
  		}
 	while ($i <= $page_list_rows) {
 		$page_list = $page_list_handle->fetch_assoc();
-		$content = $content.'<tr>
+		$content .= '<tr>
 <td class="adm_page_list_item">'.stripslashes($page_list['name']).'</td>
 <td><a href="?module=news&action=delete&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=news_edit_article&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 </tr>';
 		$i++;
 	}
-$content = $content.'</table>';
+$content .= '</table>';
 ?>

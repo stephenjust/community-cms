@@ -113,7 +113,6 @@
 		if(!$move_page) {
 			$message = 'Failed to optimize page order. '.mysqli_error($db);
 			}
-		$content = $content.$move_page_query;
 		$i++;
 		}	
 	$page_list_handle->free();
@@ -157,9 +156,67 @@
 				}
 			}
 		}
-// $content = NULL;
-$content = $message;
-$content .= '<form method="POST" action="admin.php?module=page&action=new">
+	if($_GET['action'] == 'editsave') {
+		$id = addslashes($_POST['id']);
+		$title = addslashes($_POST['title']);
+		if($_POST['hidden'] == 'on') { 
+	  	$hidden = 0; 
+	  	} else { 
+	  	$hidden = 1;
+	  	}
+	  if($_POST['show_title'] == 'on') { 
+	  	$show_title = 1; 
+	  	} else { 
+	  	$show_title = 0;
+	  	}
+		$blocks_left = addslashes($_POST['blocks_left']);
+		$blocks_right = addslashes($_POST['blocks_right']);
+		$save_query = 'UPDATE '.$CONFIG['db_prefix'].'pages SET title="'.$title.'",menu='.$hidden.',show_title='.$show_title.',blocks_left="'.$blocks_left.'",blocks_right="'.$blocks_right.'" WHERE id = '.$id.' LIMIT 1';
+		$save_handle = $db->query($save_query);
+		if(!$save_handle) {
+			$message = 'Failed to edit page. '.mysqli_error($db);;
+			} else {
+			$message = 'Updated page information. '.log_action('Updated information for page \''.$title.'\'');
+			}
+		}
+	// $content = NULL;
+	$content = $message;
+	if ($_GET['action'] == 'edit') {
+		$edit_page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'].' LIMIT 1';
+		$edit_page_handle = $db->query($edit_page_query);
+		if(!$edit_page_handle) {
+			$content .= 'Failed to load page data.';
+			} else {
+			$edit_page = $edit_page_handle->fetch_assoc();
+			if($edit_page['show_title'] == 1) {
+				$show_title = 'checked ';
+				} else {
+				$show_title = NULL;
+				}
+			if($edit_page['hidden'] == 1) {
+				$hidden = 'checked ';
+				} else {
+				$hidden = NULL;
+				}
+			$content .= '<form method="POST" action="admin.php?module=page&action=editsave">
+<h1>Edit Page</h1>
+<table style="border: 1px solid #000000;">
+<input type="hidden" name="id" value="'.$edit_page['id'].'" />
+<tr><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
+<tr><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
+<tr><td>Hidden:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
+<tr><td valign="top">Blocks:<br>(Comma separated block IDs)</td><td>Left:<br />
+<input type="text" name="blocks_left" /><br />
+Right:<br />
+<input type="text" name="blocks_right" disabled />
+</td></td></tr>
+<tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
+</table>
+
+</form>';
+			}
+		}
+	$content .= '<form method="POST" action="admin.php?module=page&action=new">
 <h1>Add Page</h1>
 <table style="border: 1px solid #000000;">
 <tr><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
@@ -189,9 +246,9 @@ $content .= '<form method="POST" action="admin.php?module=page&action=new_link">
 </table>
 </form>';
 
-$content .= '<h1>Edit Page</h1>
+$content .= '<h1>Manage Pages</h1>
 <table style="border: 1px solid #000000;">
-<tr><td width="350">Page:</td><td>Del</td><td>Up</td><td>Dn</td><td>Home</td></tr>';
+<tr><td width="350">Page:</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 	// Get page list in the order defined in the database. First is 0.
 	$page_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages ORDER BY list ASC';
 	$page_list_handle = $db->query($page_list_query);
@@ -212,7 +269,8 @@ $content .= '<h1>Edit Page</h1>
 		$content .= '</td>
 <td><a href="?module=page&action=del&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=page&action=move_up&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=page&action=move_down&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>';
+<td><a href="?module=page&action=move_down&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=page&action=edit&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>';
 if($page_list['type'] != 0) {
 	$content .= '<td><a href="?module=page&action=home&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>
 </tr>'; }

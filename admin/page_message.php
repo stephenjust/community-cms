@@ -52,10 +52,12 @@ $content .= '<h1>Page Messages</h1>
 			if(!isset($_POST['page'])) {
 				$_POST['page'] = $site_info['home'];
 				}
-			if($page['id'] == $_POST['page']) {
-				$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
-				} else {
-				$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
+			if(!eregi('<LINK>',$page['title'])) {
+				if($page['id'] == $_POST['page']) {
+					$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
+					} else {
+					$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
+					}
 				}
 			$i++;
 			}
