@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>Community CMS Documentation: Variables</title>
+<link rel="StyleSheet" type="text/css" href="style.css" />
+</head>
+<body>
+<h1>Community CMS Documentation: Variables</h1>
+<h2><a href="index.html">Main Page</a></h2>
+<a name="top"><h2>Variable Listing</h2></a>
+<ul>
+<li><a href="variables.html#session">$_SESSION array</a></li>
+<li><a href="variables.html#config">$CONFIG array</a></li>
+</ul>
+
+<a name="session"><h3>$_SESSION array</h3></a>
+<table>
+<tr>
+<th>Variable:</th><th>Description:</th>
+</tr>
+<tr>
+<td>$_SESSION['name']</td><td>Real name of user, in last, first format, NULL if not logged in.</td>
+</tr>
+<tr>
+<td>$_SESSION['pass']</td><td>MD5 hash of user's password, NULL if not logged in.</td>
+</tr>
+<tr>
+<td>$_SESSION['type']</td><td>User authentication level. A type greater than 0 results in administrative permissions. 0 or NULL if not logged in.</td>
+</tr>
+<tr>
+<td>$_SESSION['user']</td><td>Username of currently logged in user, NULL if not logged in.</td>
+</tr>
+<tr>
+<td>$_SESSION['userid']</td><td>ID of logged in user, NULL if not logged in.</td>
+</tr>
+</table>
+<a href="#top">Top</a><br />
+
+<a name="config"><h3>$CONFIG array</h3></a>
+<table>
+<tr>
+<th>Variable:</th><th>Description:</th>
+</tr>
+<tr>
+<td>$CONFIG['db_host']</td><td>Host of the MySQL database. Usually localhost.</td>
+</tr>
+<tr>
+<td>$CONFIG['db_name']</td><td>Name of the MySQL database.</td>
+</tr>
+<tr>
+<td>$CONFIG['db_pass']</td><td>Password of the MySQL database (in plain text).</td>
+</tr>
+<tr>
+<td>$CONFIG['db_prefix']</td><td>Table prefix within MySQL database. Only 'comcms_' is supported at this time.</td>
+</tr>
+<tr>
+<td>$CONFIG['disabled']</td><td>If set to 1, the site will be inaccessible.</td>
+</tr>
+</table>
+<a href="#top">Top</a><br />
+
+</body>
+</html>
