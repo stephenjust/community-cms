@@ -22,16 +22,6 @@
 	if(mysqli_connect_errno()) {
 		err_page(1001); // Database connect error.
 		}
-	$connect = mysql_connect($CONFIG['db_host'],$CONFIG['db_user'],$CONFIG['db_pass']);
-	if (!$connect) {
-		err_page(1001); // Database connect error.
-		} else {
-		// Try to open the database that is used by Community CMS.
-		$select_db = mysql_select_db($CONFIG['db_name'],$connect);
-		if(!$select_db) {
-			err_page(1002); // Select database error.
-			}
-		}
 
 	// Once the database connections are made, include all other necessary files.
 	if(!include_once('./include.php')) {
@@ -83,6 +73,5 @@
 	display_page($page_info,$site_info,$_GET['view']);
 	
 	// Close database connections and clean up loose ends.
-	mysql_close($connect);
 	$db->close();
 ?>

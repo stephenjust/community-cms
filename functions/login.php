@@ -6,8 +6,8 @@
 	function login($user,$passwd) {
 		global $CONFIG;
 		global $db;
-		$user = addslashes(mysql_real_escape_string($user));
-		$passwd = addslashes(mysql_real_escape_string($passwd));
+		$user = addslashes(mysqli_real_escape_string($db,$user));
+		$passwd = addslashes(mysqli_real_escape_string($db,$passwd));
 		if($user == "" || $passwd == "") {
 			err_page(3001);
 			} else {
