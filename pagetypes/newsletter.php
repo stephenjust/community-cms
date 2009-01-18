@@ -6,23 +6,28 @@
 	$return = NULL;
 	global $page_info;
 	$i = 1;
-		$newsletter = get_row_from_db("newsletters","WHERE page = ".$id." ORDER BY year desc, month desc LIMIT 0,30");
-		if($newsletter['num_rows'] == 0) {
+		$newsletter_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'newsletters WHERE page = '.$id.' ORDER BY year desc, month desc LIMIT 0,30';
+		$newsletter_handle = $db->query($newsletter_query);
+		if($newsletter_handle->num_rows == 0) {
 			$return .= "No newsletters to display";
 			} else {
-			$currentyear = $newsletter[1]['year'];
+			$newsletter = $newsletter_handle->fetch_assoc();
+			$currentyear = $newsletter['year'];
 			$return .= "<div class='newsletter'><span class='newsletter_year'>".$currentyear."</span><br />\n";
-			while ($newsletter['num_rows'] >= $i) {
-				if ($currentyear != $newsletter[$i]['year']) {
-					$currentyear = $newsletter[$i]['year'];
+			while ($newsletter_handle->num_rows >= $i) {
+				if ($currentyear != $newsletter['year']) {
+					$currentyear = $newsletter['year'];
 					$return .= "<span class='newsletter_year'>".$currentyear."</span><br />\n";
 					}
-				if ($newsletter[$i]['hidden'] != 1) {
-					$return .= '<a href="'.$newsletter[$i]['path'].'">'.$newsletter[$i]['label']."</a><br />\n";
+				if ($newsletter['hidden'] != 1) {
+					$return .= '<a href="'.$newsletter['path'].'">'.$newsletter['label']."</a><br />\n";
 					} else {
-					$return .= $newsletter[$i]['label']."<br />\n";
+					$return .= $newsletter['label']."<br />\n";
 					}
 				$i++;
+				if($i <= $newsletter_handle->num_rows) {
+					$newsletter = $newsletter_handle->fetch_assoc();
+					}
 				}
 			}
 		return $return."</div>";
