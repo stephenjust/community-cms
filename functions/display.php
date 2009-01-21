@@ -9,48 +9,56 @@
 		$template_handle = load_template_file();
 		$template = $template_handle['contents'];
 		$template_path = $template_handle['template_path'];
-		global $page_title;
 		$content = get_page_content($page_info['id'],$page_info['type'],$view);
-		// Initialize session variable if unset.
-		if(!isset($_SESSION['type'])) {
-			$_SESSION['type'] = 0;
-			}
-		if($_SESSION['type'] == 1) {
-			$admin_include = "<script src=\"./scripts/admin.js\" type=\"text/javascript\"></script>";
-			} else {
-			$admin_include = NULL;
-			}
+		$page_message = NULL;
+		$admin_include = NULL;
+		$left_blocks_content = NULL;
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 		$image_path = $template_path.'images/';
-		$page_message = NULL;
-		if($page_info['show_title'] == 1) {
-			$page_message .= '<h1>'.$page_info['title'].'</h1>';
-			}
-		if($content != 'Page not found.') {
+		// Check if the page acutally exists before anything else is done
+		global $page_not_found;
+		if($page_not_found == 1) {
+			$page_title = 'Page Not Found - '.$site_info['name'];
+			} else {
+			// Initialize session variable if unset.
+			if(!isset($_SESSION['type'])) {
+				$_SESSION['type'] = 0;
+				}
+			if($_SESSION['type'] == 1) { // Check for admin status
+				$admin_include = "<script src=\"./scripts/admin.js\" type=\"text/javascript\"></script>";
+				}
+			if($page_info['show_title'] == 1) { // Display the page header if required
+				$page_message .= '<h1>'.$page_info['title'].'</h1>';
+				}
 			$page_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'page_messages WHERE `page_id` = '.$page_info['id'].' ORDER BY `order`, `start_date` ASC';
 			$page_message_handle = $db->query($page_message_query);
 			$i = 1;
-			while($page_message_handle->num_rows >= $i) {
-				$page_message_content = $page_message_handle->fetch_assoc();
-				$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
-				$i++;
-				}
-			}
-		$left_blocks = explode(',',$page_info['blocks_left']);
-		$left_blocks_content = NULL;
-		$bk = 1;
-		while ($bk <= count($left_blocks)) {
-			$block_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$left_blocks[$bk - 1].' LIMIT 1';
-			$block_handle = $db->query($block_query);
-			if($block_handle) {
-				if($block_handle->num_rows == 1) {
-					$block_info = $block_handle->fetch_assoc();
-					$block_id = $block_info['id'];
-					$left_blocks_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
+			if($page_message_handle) { // Don't run the loop if the query failed
+				while($page_message_handle->num_rows >= $i) {
+					$page_message_content = $page_message_handle->fetch_assoc();
+					$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
+					$i++;
 					}
 				}
-			$bk++;
+			// Prepare for and search for content blocks
+			$left_blocks = explode(',',$page_info['blocks_left']);
+			$bk = 1; // Block iteration count
+			while ($bk <= count($left_blocks)) {
+				$block_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$left_blocks[$bk - 1].' LIMIT 1';
+				$block_handle = $db->query($block_query);
+				if($block_handle) {
+					if($block_handle->num_rows == 1) {
+						$block_info = $block_handle->fetch_assoc();
+						$block_id = $block_info['id'];
+						$left_blocks_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
+						}
+					}
+				$bk++;
+				}
+			global $special_title;
+			$page_title = $page_info['title'].' - '.$special_title.$site_info['name'];
 			}
+
 		$nav_bar = display_nav_bar();
 		$nav_login = display_login_box();
 		$template = str_replace('<!-- $ADMIN_INCLUDE$ -->',$admin_include,$template);
@@ -59,8 +67,6 @@
 		$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
 		$template = str_replace('<!-- $PAGE_MESSAGE$ -->',$page_message,$template);
 		$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
-		global $special_title;
-		$page_title = $page_info['title'].' - '.$special_title.$site_info['name'];
 		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
 		$template = str_replace('<!-- $LEFT_CONTENT$ -->',$left_blocks_content,$template);
 		$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);

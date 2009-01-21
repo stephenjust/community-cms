@@ -15,7 +15,7 @@
 			}
 		}
 	// Check if site is disabled.
-	if(@$CONFIG['disabled'] == 1 || $CONFIG['not_installed'] == 1) {
+	if(@$CONFIG['disabled'] == 1 || @ $CONFIG['not_installed'] == 1) {
 		err_page(11);
 		}
 	$NOTIFICATION = NULL;
