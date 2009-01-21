@@ -6,7 +6,7 @@
     $content = $content."Writable<br />\n";
     $i[1] = 1;
   } else {
-    $content = $content."Not writable<br />\n";
+    $content = $content."Not writable. If you do not have a config.php file, please create one.<br />\n";
   }
   $content = $content."files/ - ";
   if(is_writable('../files')) {
