@@ -1,0 +1,10 @@
+<script type="text/javascript" src="./scripts/minipoll_vote.js"></script>
+<span id="minipoll_question"><!-- $POLL_QUESTION$ --></span><br />
+<div id="minipoll_answer_block_<!-- $POLL_ID$ -->">
+	<!-- $POLL_ANSWER_START$ -->
+	<input type="radio" name="<!-- $POLL_SHORT_NAME$ -->" value="<!-- $POLL_ANSWER_ID$ -->" onChange="minipoll_vote(<!-- $POLL_ID$ -->,<!-- $POLL_ANSWER_ID$ -->)" /><!-- $POLL_ANSWER_TEXT$ --><br />
+	<!-- $POLL_ANSWER_END$ -->
+	<!-- $POLL_RESPONSE_START$ -->
+	<!-- $POLL_ANSWER_TEXT$ --> <!-- $POLL_ANSWER_PERCENT$ -->
+	<!-- $POLL_RESPONSE_END$ -->
+	</div>
