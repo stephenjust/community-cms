@@ -130,17 +130,18 @@
 					unset($event_start);
 					unset($event_end);
 					}
-				$event_template = load_template_file('calendar_event.html');
-				$event_template['contents'] = str_replace('<!-- $EVENT_HEADING$ -->',stripslashes($event['header']),$event_template['contents']);
-				$event_template['contents'] = str_replace('<!-- $EVENT_AUTHOR$ -->',stripslashes($event['author']),$event_template['contents']);
-				$event_template['contents'] = str_replace('<!-- $EVENT_TIME$ -->',$event_time,$event_template['contents']);
-				$event_template['contents'] = str_replace('<!-- $EVENT_CATEGORY$ -->',stripslashes($event['label']),$event_template['contents']);			
-				$event_template['contents'] = str_replace('<!-- $EVENT_DESCRIPTION$ -->',stripslashes($event['description']),$event_template['contents']);
-				$event_template['contents'] = str_replace('<!-- $EVENT_LOCATION$ -->',stripslashes($event['location']),$event_template['contents']);
+				$template_event = new template;
+				$template_event->load_file('calendar_event');
+				$template_event->event_heading = stripslashes($event['header']);
+				$template_event->event_author = stripslashes($event['author']);
+				$template_event->event_time = $event_time;
+				$template_event->event_category = stripslashes($event['label']);			
+				$template_event->event_description = stripslashes($event['description']);
+				$template_event->event_location = stripslashes($event['location']);
 				$page .= "<a href='?id=".$_GET['id']."&m=".$event['month']."&y=".$event['year']."'>Back to month view</a><br />";
 				$page .= "<a href='?id=".$_GET['id']."&view=day&d=".$event['day']."&m=".$event['month']."&y=".$event['year']."'>Back to day view</a><br />";
-				$page .= $event_template['contents'];
-				unset($event_template);
+				$page .= $template_event;
+				unset($template_event);
 				global $special_title;
 				$special_title = stripslashes($event['header']).' - ';
 				unset($event);
