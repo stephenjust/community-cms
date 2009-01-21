@@ -12,6 +12,9 @@
 	if(!include_once(ROOT.'functions/pages.php')) {
 		err_page(2001);
 		}
+	if(!include_once(ROOT.'classes.php')) {
+		err_page(2001);
+		}
 	if(!include_once(ROOT.'functions/display.php')) {
 		err_page(2001);
 		}

@@ -6,15 +6,14 @@
 	function display_page($page_info,$site_info,$view="") {
 		global $db;
 		global $CONFIG;
-		$template_handle = load_template_file();
-		$template = $template_handle['contents'];
-		$template_path = $template_handle['template_path'];
+		$template_page = new template;
+		$template_page->load_file();
 		$content = get_page_content($page_info['id'],$page_info['type'],$view);
 		$page_message = NULL;
 		$admin_include = NULL;
 		$left_blocks_content = NULL;
-		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
-		$image_path = $template_path.'images/';
+		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_page->path."style.css' />";
+		$image_path = $template_page->path.'images/';
 		// Check if the page acutally exists before anything else is done
 		global $page_not_found;
 		if($page_not_found == 1) {
@@ -58,22 +57,20 @@
 			global $special_title;
 			$page_title = $page_info['title'].' - '.$special_title.$site_info['name'];
 			}
-
-		$nav_bar = display_nav_bar();
-		$nav_login = display_login_box();
-		$template = str_replace('<!-- $ADMIN_INCLUDE$ -->',$admin_include,$template);
-		$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
-		$template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
-		$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
-		$template = str_replace('<!-- $PAGE_MESSAGE$ -->',$page_message,$template);
-		$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
-		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
-		$template = str_replace('<!-- $LEFT_CONTENT$ -->',$left_blocks_content,$template);
-		$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
-		$template = str_replace('<!-- $PAGE_ID$ -->',$page_info['id'],$template);
-		$template = str_replace('<!-- $FOOTER$ -->','<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>
-<br />Powered by Community CMS',$template);
-		echo $template;
+		$template_page->page_id = $page_info['id'];
+		$template_page->page_title = $page_title;
+		$template_page->page_message = $page_message;
+		$template_page->left_content = $left_blocks_content;
+		$template_page->footer = '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>
+<br />Powered by Community CMS';
+		$template_page->content = $content;
+		$template_page->image_path = $image_path;
+		$template_page->css_include = $css_include;
+		$template_page->nav_bar = display_nav_bar();
+		$template_page->nav_login = display_login_box();
+		$template_page->admin_include = $admin_include;
+		echo $template_page;
+		unset($template_page);
 		}
 
 	function display_nav_bar($mode = 1) {
@@ -109,13 +106,13 @@
 		global $db;
 		global $CONFIG;
 	  if(!checkuser()) {
-	  	$template_handle = load_template_file('login.html');
-			$template = $template_handle['contents'];
-			$template_path = $template_handle['template_path'];
-			$template = str_replace('<!-- $LOGIN_USERNAME$ -->','<input type="text" name="user" id="login_user" />',$template);
-			$template = str_replace('<!-- $LOGIN_PASSWORD$ -->','<input type="password" name="passwd" id="login_password" />',$template);
-			$template = str_replace('<!-- $LOGIN_BUTTON$ -->','<input type="submit" value="Login!" id="login_button" />',$template);
-	    $return = "<form method='post' action='index.php?id=".$page_info['id']."&amp;login=1'>\n".$template."</form>\n";
+	  	$template_loginbox = new template;
+	  	$template_loginbox->load_file('login');
+	  	$template_loginbox->login_username = '<input type="text" name="user" id="login_user" />';
+	  	$template_loginbox->login_password = '<input type="password" name="passwd" id="login_password" />';
+	  	$template_loginbox->login_button = '<input type="submit" value="Login!" id="login_button" />';
+	    $return = "<form method='post' action='index.php?id=".$page_info['id']."&amp;login=1'>\n".$template_loginbox."</form>\n";
+	    unset($template_loginbox);
 	  } else { 
 	    $return = $_SESSION['name']."<br />\n<a href='index.php?login=2'>Log Out</a><br />\n";
 	    $check_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.$_SESSION['userid'];
