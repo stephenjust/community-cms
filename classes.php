@@ -44,13 +44,26 @@
 			$this->path = $template['path'];
 			return true;
 			}
-			function __toString() {
-				if(isset($this->template)) {
-					$this->return = $this->template;
-					} else {
-					$this->return = 'Template file not loaded.';
-					}
-				return $this->return;
+
+		function replace_range($field,$string) {
+			$replace_length = NULL;
+			$start_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_START$ -->';
+			$end_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_END$ -->';
+			$start = strpos($this->template,$start_string);
+			$end = strpos($this->template,$end_string);
+			if($start && $end) {
+				$replace_length = $end - $start + strlen($end_string);
+				$this->template = substr_replace($this->template,$string,$start,$replace_length);
 				}
+			}
+
+		function __toString() {
+			if(isset($this->template)) {
+				$this->return = $this->template;
+				} else {
+				$this->return = 'Template file not loaded.';
+				}
+			return $this->return;
+			}
 		}
 ?>

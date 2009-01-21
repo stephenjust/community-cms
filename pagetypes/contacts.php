@@ -12,9 +12,6 @@
 	$contact_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'users WHERE hide = 0 ORDER BY realname ASC';
 	$contact_list_handle = $db->query($contact_list_query);
 	$contact_list_num_rows = $contact_list_handle->num_rows;
-	$contact_template_handle = load_template_file('contactlist.html');
-	$contact_template = $contact_template_handle['contents'];
-	$template_path = $contact_template_handle['template_path'];
 	if(!isset($_GET['message'])) {
 		$_GET['message'] = '';
 		}
@@ -53,8 +50,9 @@ Message to user:<br />
 		$content .= 'There are no users with visible contact information.';
 		} else {
 		while ($contact_list_num_rows >= $j) {
+			$template_contact = new template;
+			$template_contact->load_file('contactlist');
 			$contact_info = $contact_list_handle->fetch_assoc();
-			$current_contact .= $contact_template;
 			$contact_email = NULL;
 			if(eregi(',',$contact_info['realname'])) {
 				$firstlast = explode(', ',$contact_info['realname']);
@@ -82,69 +80,37 @@ Message to user:<br />
 				} else {
 				$contact_address = $contact_info['address'];
 				}
-			$current_contact = str_replace('<!-- $CONTACT_NAME$ -->',stripslashes($realname),$current_contact);
-			$current_contact = str_replace('<!-- $CONTACT_TITLE$ -->',stripslashes($contact_info['title']),$current_contact);
-			$current_contact = str_replace('<!-- $CONTACT_EMAIL$ -->',stripslashes($contact_email),$current_contact);
-			$current_contact = str_replace('<!-- $CONTACT_TELEPHONE$ -->',stripslashes($contact_telephone),$current_contact);
-			$current_contact = str_replace('<!-- $CONTACT_ADDRESS$ -->',stripslashes($contact_address),$current_contact);
+			$template_contact->contact_name = stripslashes($realname);
+			$template_contact->contact_title = stripslashes($contact_info['title']);
+			$template_contact->contact_email = stripslashes($contact_email);
+			$template_contact->contact_telephone = stripslashes($contact_telephone);
+			$template_contact->contact_address = stripslashes($contact_address);
 			if($contact_email == 'Hidden') {
-				$start = NULL;
-				$end = NULL;
-				$replace_length = NULL;
-				$start = strpos($current_contact,'<!-- $CONTACT_EMAIL_START$ -->');
-				$end = strpos($current_contact,'<!-- $CONTACT_EMAIL_END$ -->');
-				if($start && $end) {
-					$replace_length = $end - $start + 28;
-					$current_contact = substr_replace($current_contact,'',$start,$replace_length);
-					}
+				$template_contact->replace_range('contact_email','');
 				} else {
-				$current_contact = str_replace('<!-- $CONTACT_EMAIL_START$ -->','',$current_contact);
-				$current_contact = str_replace('<!-- $CONTACT_EMAIL_END$ -->','',$current_contact);
+				$template_contact->contact_email_start = '';
+				$template_contact->contact_email_end = '';
 				}
 			if($contact_telephone == 'Hidden') {
-				$start = NULL;
-				$end = NULL;
-				$replace_length = NULL;
-				$start = strpos($current_contact,'<!-- $CONTACT_TELEPHONE_START$ -->');
-				$end = strpos($current_contact,'<!-- $CONTACT_TELEPHONE_END$ -->');
-				if($start && $end) {
-					$replace_length = $end - $start + 32;
-					$current_contact = substr_replace($current_contact,'',$start,$replace_length);
-					}
+				$template_contact->replace_range('contact_telephone','');
 				} else {
-				$current_contact = str_replace('<!-- $CONTACT_TELEPHONE_START$ -->','',$current_contact);
-				$current_contact = str_replace('<!-- $CONTACT_TELEPHONE_END$ -->','',$current_contact);
+				$template_contact->contact_telephone_start = '';
+				$template_contact->contact_telephone_end = '';
 				}
 			if($contact_address == 'Hidden') {
-				$start = NULL;
-				$end = NULL;
-				$replace_length = NULL;
-				$start = strpos($current_contact,'<!-- $CONTACT_ADDRESS_START$ -->');
-				$end = strpos($current_contact,'<!-- $CONTACT_ADDRESS_END$ -->');
-				if($start && $end) {
-					$replace_length = $end - $start + 30;
-					$current_contact = substr_replace($current_contact,'',$start,$replace_length);
-					}
+				$template_contact->replace_range('contact_address','');
 				} else {
-				$current_contact = str_replace('<!-- $CONTACT_ADDRESS_START$ -->','',$current_contact);
-				$current_contact = str_replace('<!-- $CONTACT_ADDRESS_END$ -->','',$current_contact);
+				$template_contact->contact_address_start = '';
+				$template_contact->contact_address_end = '';
 				}
 			if($contact_info['title'] == '' || $contact_info['title'] == NULL) {
-				$start = NULL;
-				$end = NULL;
-				$replace_length = NULL;
-				$start = strpos($current_contact,'<!-- $CONTACT_TITLE_START$ -->');
-				$end = strpos($current_contact,'<!-- $CONTACT_TITLE_END$ -->');
-				if($start && $end) {
-					$replace_length = $end - $start + 28;
-					$current_contact = substr_replace($current_contact,'',$start,$replace_length);
-					}
+				$template_contact->replace_range('contact_title','');
 				} else {
-				$current_contact = str_replace('<!-- $CONTACT_TITLE_START$ -->','',$current_contact);
-				$current_contact = str_replace('<!-- $CONTACT_TITLE_END$ -->','',$current_contact);
+				$template_contact->contact_title_start = '';
+				$template_contact->contact_title_end = '';
 				}
-			$content .= $current_contact;
-			$current_contact = NULL;
+			$content .= $template_contact;
+			unset($template_contact);
 			$j++;
 			}
 		}

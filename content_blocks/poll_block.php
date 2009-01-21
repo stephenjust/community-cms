@@ -27,14 +27,19 @@
 		} else {
 		$poll_question = $poll_questions_handle->fetch_assoc();
 		}
-	$poll_template = load_template_file('mini_poll.html');
-	$poll_template['contents'] = str_replace('<!-- $POLL_QUESTION$ -->',$poll_question['question'],$poll_template['contents']);
+	$template_poll_block = new template;
+	$template_poll_block->load_file('mini_poll');
+	$template_poll_block->poll_question = $poll_question['question'];
+	$template_poll_block->poll_id = $poll_question['question_id'];
+	$template_poll_block->poll_short_name = $poll_question['short_name'];
+	$poll_template = $template_poll_block;
+	unset($template_poll_block);
 	$sep = array('<!-- $POLL_ANSWER_START$ -->','<!-- $POLL_ANSWER_END$ -->');
-	$poll_template['contents'] = str_replace($sep,'<NEWLINE>',$poll_template['contents']);
-	$poll_template = explode('<NEWLINE>',$poll_template['contents']);
+	$poll_template = str_replace($sep,'<NEWLINE>',$poll_template);
+	$poll_template = explode('<NEWLINE>',$poll_template);
 	$question_num = 1;
 	$poll_template_answers = NULL;
-	$poll_answers_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_answers WHERE question_id = '.$block_attribute['question_id'];
+	$poll_answers_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_answers WHERE question_id = '.$block_attribute['question_id'].' ORDER BY answer_id ASC';
 	$poll_answers_handle = $db->query($poll_answers_query);
 	if($poll_answers_handle->num_rows == 0) {
 		$poll_template_answers = 'There are no possible answers to the above question.';
@@ -50,7 +55,5 @@
 			}
 		}
 	$return .= $poll_template[0].$poll_template_answers.$poll_template[2];
-	$return = str_replace('<!-- $POLL_SHORT_NAME$ -->',$poll_question['short_name'],$return);
-	$return = str_replace('<!-- $POLL_ID$ -->',$poll_question['question_id'],$return);
 	return $return;
 	?>
