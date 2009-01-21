@@ -24,7 +24,14 @@
 				$_SESSION['pass'] = md5($passwd);
 				$_SESSION['name'] = $result['realname'];
 				$_SESSION['type'] = $result['type'];
+				$_SESSION['last_login'] = time();
 				define('USERINFO',$result['id'].','.$result['realname'].','.$result['type']);
+				// Set latest login time
+				$set_logintime_query = 'UPDATE '.$CONFIG['db_prefix'].'users SET lastlogin='.$_SESSION['last_login'].' WHERE id = '.$_SESSION['userid'].' LIMIT 1';
+				$set_logintime_handle = $db->query($set_logintime_query);
+				if(!$set_logintime_handle) {
+					logout();
+					}
 				}
 			}
 		}
@@ -58,6 +65,7 @@
 			err_page(3004);
 			return false;
 			}
+		return false; // Even if you are not required to be logged in, return false
 		}
 	function checkuser_admin() {
 		global $CONFIG;
@@ -65,13 +73,20 @@
 		if($_SESSION['type'] < 1) {
 			err_page(3004);
 			}
-		$query = 'SELECT username,password,realname,type FROM '.$CONFIG['db_prefix'].'users WHERE username = \''.$_SESSION['user'].'\' AND password = \''.$_SESSION['pass'].'\' AND type = \''.$_SESSION['type'].'\' AND realname = \''.$_SESSION['name'].'\'';
+		$query = 'SELECT username,password,realname,type,lastlogin FROM '.$CONFIG['db_prefix'].'users WHERE username = \''.$_SESSION['user'].'\' AND password = \''.$_SESSION['pass'].'\' AND type = \''.$_SESSION['type'].'\' AND lastlogin = '.addslashes($_SESSION['last_login']).' AND realname = \''.$_SESSION['name'].'\'';
 		$access = $db->query($query);
 		$num_rows = $access->num_rows;
 	  if($num_rows != 1) {
 			logout();
 			err_page(3002);
-			return;
+			return false;
+			} else {
+			$access_info = $access->fetch_assoc();
+			if($access_info['lastlogin'] <= time() - (60 * 60 * 12)) {
+				logout();
+				err_page(3002);
+				return false;
+				}
 			}
 			$userinfo = $access->fetch_assoc();
 			define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);

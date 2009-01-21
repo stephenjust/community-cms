@@ -76,7 +76,7 @@
 		echo $template;
 		}
 
-	function display_nav_bar($mode = "1") {
+	function display_nav_bar($mode = 1) {
 		global $page_info;
 		global $db;
 		global $CONFIG;
@@ -90,7 +90,7 @@
 				$return .= $nav_menu['title']."<br />";
 				} else {
 				if($nav_menu['type'] == 0) {
-					$link = explode('<LINK>',$nav_menu['title']);
+					$link = explode('<LINK>',$nav_menu['title']); // Check if menu entry is a link
 					$link_path = $link[1];
 					$link_name = $link[0];
 					$return .= "<a href='".$link_path."'>".$link_name."</a><br />";

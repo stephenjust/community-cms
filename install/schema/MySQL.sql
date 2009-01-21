@@ -296,22 +296,23 @@ CREATE TABLE IF NOT EXISTS `comcms_messages` (
 --
 
 CREATE TABLE IF NOT EXISTS `comcms_users` (
-  `id` int(5) NOT NULL auto_increment,
-  `type` int(2) NOT NULL default '1',
-  `username` text NOT NULL,
-  `password` text NOT NULL,
-  `realname` text NOT NULL,
-  `title` text NULL,
-  `phone` text NOT NULL,
-  `email` text NOT NULL,
-  `address` text NOT NULL,
-  `phone_hide` BOOL NOT NULL default '1',
-  `email_hide` BOOL NOT NULL default '1',
-  `address_hide` BOOL NOT NULL default '1',
-  `hide` BOOL NOT NULL default '0',
-  `message` BOOL NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `type` (`type`)
+	`id` int(5) NOT NULL auto_increment,
+	`type` int(2) NOT NULL default '1',
+	`username` text NOT NULL,
+	`password` text NOT NULL,
+	`realname` text NOT NULL,
+	`title` text NULL,
+	`phone` text NOT NULL,
+	`email` text NOT NULL,
+	`address` text NOT NULL,
+	`phone_hide` BOOL NOT NULL default '1',
+	`email_hide` BOOL NOT NULL default '1',
+	`address_hide` BOOL NOT NULL default '1',
+	`hide` BOOL NOT NULL default '0',
+	`message` BOOL NOT NULL default '0',
+	`lastlogin` INT NOT NULL default '0',
+	PRIMARY KEY  (`id`),
+	KEY `type` (`type`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
