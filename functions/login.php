@@ -41,6 +41,7 @@
 		unset($_SESSION['pass']);
 	  unset($_SESSION['name']);
 	  unset($_SESSION['type']);
+	  unset($_SESSION['lastlogin']);
 	  session_destroy();
 		}
 	function checkuser($mustbeloggedin = 0) {
