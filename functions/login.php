@@ -46,17 +46,17 @@
 		  if($num_rows != 1) {
 				logout();
 				err_page(3002);
-				return;
+				return false;
 				}
 			$userinfo = $access->fetch_assoc();
 			if(!defined('USERINFO')) {
 				define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);
 				}
-			return;
+			return true;
 			}
 		if($mustbeloggedin == 1) {
 			err_page(3004);
-			return;
+			return false;
 			}
 		}
 	function checkuser_admin() {

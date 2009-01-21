@@ -108,7 +108,7 @@
 		global $site_info;
 		global $db;
 		global $CONFIG;
-	  if(!isset($_SESSION['user']) || !isset($_SESSION['pass'])) {
+	  if(!checkuser()) {
 	  	$template_handle = load_template_file('login.html');
 			$template = $template_handle['contents'];
 			$template_path = $template_handle['template_path'];
