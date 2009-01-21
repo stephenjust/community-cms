@@ -9,8 +9,10 @@
 	// Load error handling code
 	require_once('./functions/error.php');
 	// Load database configuration
-	if(!include_once('./config.php')) {
-		err_page(0001);
+	if(@ !include_once('./config.php')) {
+		if(@ !include_once('./config.temp.php')) {
+			err_page(0001);
+			}
 		}
 	// Check if site is disabled.
 	if(@$CONFIG['disabled'] == 1 || $CONFIG['not_installed'] == 1) {
