@@ -13,9 +13,6 @@
 	$news_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date DESC LIMIT '.$start.',10';
 	$news_handle = $db->query($news_query);
 	$news_num_rows = $news_handle->num_rows;
-	$template_handle = load_template_file('article.html');
-	$template = $template_handle['contents'];
-	$template_path = $template_handle['template_path'];
 		// Initialize session variable if not initialized to prevent warnings.
 		if(!isset($_SESSION['user'])) {
 		  $_SESSION['user'] = NULL;
@@ -29,10 +26,11 @@ setVarsForm("user='.$_SESSION['user'].'");
 			} else {
 			while ($news_num_rows >= $i) {
 				$news = $news_handle->fetch_assoc();
-				if($first_date == NULL) {
+				if($first_date == NULL) { // For multiple page support
 					$first_date = $news['date'];
 					}
-				$article = $template;
+				$template_article = new template;
+				$template_article->load_file('article');
 				if (!isset($news['image']) || $news['image'] == "") {
 					$picture = "";
 					} else {
@@ -47,33 +45,26 @@ setVarsForm("user='.$_SESSION['user'].'");
 				$date_month_text = date('M',$date_unix);
 				$image_path = NULL;
 				if($news['showdate'] == 1) {
-					$article = str_replace('<!-- $FULL_DATE_START$ -->',NULL,$article);
-					$article = str_replace('<!-- $FULL_DATE_END$ -->',NULL,$article);
+					$template_article->full_date_start = '';
+					$template_article->full_date_end = '';
 					} elseif($news['showdate'] == 0) {
-					$start = NULL;
-					$end = NULL;
-					$replace_length = NULL;
-					$start = strpos($article,'<!-- $FULL_DATE_START$ -->');
-					$end = strpos($article,'<!-- $FULL_DATE_END$ -->');
-					if($start && $end) {
-						$replace_length = $end - $start + 24;
-						$article = substr_replace($article,NULL,$start,$replace_length);
-						}
+					$template_article->replace_range('full_date','');
 					} else {
 					
 					}
-				$article = str_replace('<!-- $ARTICLE_TITLE$ -->','<a href="view.php?article_id='.$news['id'].'" target="_blank">'.stripslashes($news['name']).'</a>',$article);
-				$article = str_replace('<!-- $ARTICLE_CONTENT$ -->',stripslashes($news['description']),$article);
-				$article = str_replace('<!-- $ARTICLE_IMAGE$ -->',$picture,$article);
-				$article = str_replace('<!-- $ARTICLE_ID$ -->',$news['id'],$article);
-				$article = str_replace('<!-- $ARTICLE_DATE_MONTH$ -->',$date_month,$article);
-				$article = str_replace('<!-- $ARTICLE_DATE_MONTH_TEXT$ -->',strtoupper($date_month_text),$article);
-				$article = str_replace('<!-- $ARTICLE_DATE_DAY$ -->',$date_day,$article);
-				$article = str_replace('<!-- $ARTICLE_DATE_YEAR$ -->',$date_year,$article);
-				$article = str_replace('<!-- $ARTICLE_DATE$ -->',$date,$article);
-				$article = str_replace('<!-- $ARTICLE_AUTHOR$ -->',stripslashes($news['author']),$article);
+				$template_article->article_title = '<a href="view.php?article_id='.$news['id'].'" target="_blank">'.stripslashes($news['name']).'</a>';
+				$template_article->article_content = stripslashes($news['description']);
+				$template_article->article_image = $picture;
+				$template_article->article_id = $news['id'];
+				$template_article->article_date_month = $date_month;
+				$template_article->article_date_month_text = strtoupper($date_month_text);
+				$template_article->article_date_day = $date_day;
+				$template_article->article_date_year = $date_year;
+				$template_article->article_date = $date;
+				$template_article->article_author = stripslashes($news['author']);
 				$i++;
-				$return .= $article;
+				$return .= $template_article;
+				unset($template_article);
 				}
 			}
 		$news_first_query = 'SELECT date FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date DESC LIMIT 1';
@@ -82,22 +73,21 @@ setVarsForm("user='.$_SESSION['user'].'");
 		$news_last_query = 'SELECT date FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date ASC LIMIT 1';
 		$news_last_handle = $db->query($news_last_query);
 		$news_last = $news_last_handle->fetch_assoc();
-		$template_file = $template_path."pagination.html";
-		$handle = fopen($template_file, "r");
-		$page_list = fread($handle, filesize($template_file));
-		fclose($handle);
+		$template_pagination = new template;
+		$template_pagination->load_file('pagination');
 		if($news_first['date'] != $first_date && isset($first_date)) {
 			$prev_start = $start - 10;
-			$page_list = str_replace('<!-- $PREV_PAGE$ -->','<a href="index.php?id='.$id.'&start='.$prev_start.'" class="prev_page" id="prev_page">Previous Page</a>',$page_list);
+			$template_pagination->prev_page = '<a href="index.php?id='.$id.'&start='.$prev_start.'" class="prev_page" id="prev_page">Previous Page</a>';
 			} else {
-			$page_list = str_replace('<!-- $PREV_PAGE$ -->','',$page_list);
+			$template_pagination->prev_page = '';
 			}
 		if($news_last['date'] != $news['date'] && $news['date'] != NULL) {
 			$next_start = $start + 10;
-			$page_list = str_replace('<!-- $NEXT_PAGE$ -->','<a href="index.php?id='.$id.'&start='.$next_start.'" class="prev_page" id="prev_page">Next Page</a>',$page_list);
+			$template_pagination->next_page = '<a href="index.php?id='.$id.'&start='.$next_start.'" class="prev_page" id="prev_page">Next Page</a>';
 			} else {
-			$page_list = str_replace('<!-- $NEXT_PAGE$ -->','',$page_list);
+			$template_pagination->next_page = '';
 			}
-		$return .= $page_list;
+		$return .= $template_pagination;
+		unset($template_pagination);
 		return $return;
 	?>
