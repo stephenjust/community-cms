@@ -46,7 +46,6 @@
 			}
 
 		function replace_range($field,$string) {
-			$replace_length = NULL;
 			$start_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_START$ -->';
 			$end_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_END$ -->';
 			$start = strpos($this->template,$start_string);
@@ -56,6 +55,17 @@
 				$this->template = substr_replace($this->template,$string,$start,$replace_length);
 				}
 			}
+
+		function get_range($field) {
+			$start_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_START$ -->';
+			$end_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_END$ -->';
+			$start = strpos($this->template,$start_string);
+			$end = strpos($this->template,$end_string);
+			if($start && $end) {
+				$length = $end - $start - strlen($start_string);
+				return substr($this->template,$start + strlen($start_string),$length);
+				}
+			}		
 
 		function __toString() {
 			if(isset($this->template)) {
