@@ -25,7 +25,7 @@ INSERT INTO comcms_admin_pages
 	(NULL,'Newsletters','1','Newsletters','newsletter'),
 	(NULL,'Polls','1','Poll Manager','poll_manager'),
 	(NULL,'Polls','1','New Poll','poll_new'),
-	(NULL,'Polls','0','Edit Poll','poll_edit'),
+	(NULL,'Polls','0','Poll Results','poll_results'),
 	(NULL,'Pages','1','Pages','page'),
 	(NULL,'Pages','1','Page Messages','page_message'),
 	(NULL,'Pages','0','Create Page Message','page_message_new'),

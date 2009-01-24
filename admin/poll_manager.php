@@ -40,7 +40,8 @@
 <td>'.$question_list['question_id'].'</td>
 <td class="adm_page_list_item">'.stripslashes($question_list['question']).'</td>
 <td><a href="?module=poll_manager&action=del&id='.$question_list['question_id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=poll_edit&id='.$question_list['question_id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>';
+<td><a href="?module=poll_edit&id='.$question_list['question_id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=poll_results&id='.$question_list['question_id'].'">Results</a></td>';
 		$i++;
 	}
 $content .= '</table>';
