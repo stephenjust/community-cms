@@ -68,6 +68,7 @@
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 		$image_path = $template_path.'images/';
 		$scripts = "<script language=\"javascript\" type=\"text/javascript\" src=\"./scripts/tinymce/jscripts/tiny_mce/tiny_mce_gzip.js\"></script>
+<script language='javascript' type='text/javascript' src='./admin/scripts/ajax.js'></script>
 <script language='javascript' type='text/javascript' src='./admin/scripts/dynamic_file_list.js'></script>
 <script language='javascript' type='text/javascript' src='./admin/scripts/block_options.js'></script>
 <script type=\"text/javascript\">

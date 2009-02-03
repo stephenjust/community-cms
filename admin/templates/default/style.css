@@ -1,59 +1,46 @@
-body {
-  margin: 0px;
-}
-div.pagehead {
-  position: absolute;
-  top: 0px;
+img.logo {
+  width: 280px;
   height: 100px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  text-align: left;
-  width: 100%;
-  background: url('./images/header.png');
-  z-index: 1;
-}
-div.navigation {
-  position: absolute;
-  top: 98px;
-  left: 0px;
-  width: 200px;
-  padding: 2px;
+  border: 0px;
 }
 div.nav_menu {
   background: url('./images/menubg.png');
   width: 190px;
   padding-left: 10px;
-  color: #000000;
+  color: #000;
+  float: left;
+  clear: both;
 }
 div.nav_menu_top {
   background: url('./images/menutop.png');
   height: 10px;
   width: 200px;
+  float: left;
 }
 div.nav_menu_separator {
   background: url('./images/menusep.png');
   height: 20px;
   width: 200px;
+  float: left;
+  clear: both;
 }
 div.nav_menu_bottom {
   background: url('./images/menubottom.png');
   height: 20px;
   width: 200px;
+  float: left;
+  clear: both;
 }
 div.nav_menu input {
   border: 1px solid #000000;
-  width: 150px;
+  width: 120px;
   background: #CCCCCC;
-}
-div.nav_menu {
-	font-family: Calibri,Arial;
 }
 div.nav_menu a {
   color: #333333;
   padding-left: 10px;
   text-decoration: none;
   background: url('./images/menu.png') no-repeat;
-  font-family: Calibri,Arial;
 }
 h1 {
 	font-family: Cambria,Arial,Sans-Serif;
