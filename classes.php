@@ -45,6 +45,36 @@
 			return true;
 			}
 
+		public function load_admin_file($file = 'index') {
+			global $db; // Used for query
+			global $CONFIG; // Used for query
+			global $site_info; //Used for query
+			$template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates WHERE id = '.$site_info['template'].' LIMIT 1';
+			$template_handle = $db->query($template_query);
+			try {
+				if(!$template_handle || $template_handle->num_rows == 0) {
+					throw new Exception('Failed to load template file.');
+					} else {
+					$template = $template_handle->fetch_assoc();
+					$template['path'] = 'admin/'.$template['path'];
+					$template_file = $template['path'].$file.'.html';
+					$handle = fopen($template_file, 'r');
+					$template_contents = fread($handle,filesize($template_file));
+					if(!$template_contents) {
+						throw new Exception('Failed to open template file.');
+						} else {
+						$this->template = $template_contents;
+						}
+					fclose($handle);
+					}
+				}
+			catch(Exception $e) {
+				return false;
+				}
+			$this->path = $template['path'];
+			return true;
+			}
+
 		function replace_range($field,$string) {
 			$start_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_START$ -->';
 			$end_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_END$ -->';

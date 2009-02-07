@@ -59,15 +59,12 @@
 	checkuser_admin();
 	include('./functions/admin.php');
 	function display_admin($content) {
-		$template_path = './admin/templates/default/';
-		$template_file = $template_path."index.html";
-		$handle = fopen($template_file, "r");
-		$template = fread($handle, filesize($template_file));
-		fclose($handle);
+		$template_page = new template;
+		$template_page->load_admin_file();
 		$page_title = 'Community CMS Administration';
-		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
-		$image_path = $template_path.'images/';
-		$scripts = '<script language="javascript" type="text/javascript" src="./scripts/tinymce/jscripts/tiny_mce/tiny_mce_gzip.js"></script>
+		$css_include = '<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
+		$image_path = $template_page->path.'images/';
+		$template_page->scripts = '<script language="javascript" type="text/javascript" src="./scripts/tinymce/jscripts/tiny_mce/tiny_mce_gzip.js"></script>
 <script language="javascript" type="text/javascript" src="./admin/scripts/ajax.js"></script>
 <script language="javascript" type="text/javascript" src="./admin/scripts/dynamic_file_list.js"></script>
 <script language="javascript" type="text/javascript" src="./admin/scripts/block_options.js"></script>
@@ -96,21 +93,18 @@ tinyMCE.init({
 	extended_valid_elements : "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]"
 });
 </script>';
-$nav_bar = NULL;
-		$nav_bar .= '<span class="nav_header">Main</span><br />
+		$template_page->nav_bar = '<span class="nav_header">Main</span><br />
 		<a href="admin.php?'.SID.'">Admin Home</a><br />
 <a href="index.php?'.SID.'" target="_blank">View Site</a><br />
 '.admin_nav();
-		$nav_login = NULL;
-		$nav_login .= display_login_box();
-		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
-		$template = str_replace('<!-- $SCRIPTS$ -->',$scripts,$template);
-		$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
-		$template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
-		$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
-		$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
-		$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
-		echo $template;
+		$template_page->nav_login = display_login_box();
+		$template_page->page_title = $page_title;
+		$template_page->css_include = $css_include;
+		$template_page->nav_login = $nav_login;
+		$template_page->content = $content;
+		$template_page->image_path = $image_path;
+		echo $template_page;
+		unset($template_page);
 		}
 	display_admin($content);
 
