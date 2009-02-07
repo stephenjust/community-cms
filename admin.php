@@ -67,40 +67,40 @@
 		$page_title = 'Community CMS Administration';
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 		$image_path = $template_path.'images/';
-		$scripts = "<script language=\"javascript\" type=\"text/javascript\" src=\"./scripts/tinymce/jscripts/tiny_mce/tiny_mce_gzip.js\"></script>
-<script language='javascript' type='text/javascript' src='./admin/scripts/ajax.js'></script>
-<script language='javascript' type='text/javascript' src='./admin/scripts/dynamic_file_list.js'></script>
-<script language='javascript' type='text/javascript' src='./admin/scripts/block_options.js'></script>
-<script type=\"text/javascript\">
+		$scripts = '<script language="javascript" type="text/javascript" src="./scripts/tinymce/jscripts/tiny_mce/tiny_mce_gzip.js"></script>
+<script language="javascript" type="text/javascript" src="./admin/scripts/ajax.js"></script>
+<script language="javascript" type="text/javascript" src="./admin/scripts/dynamic_file_list.js"></script>
+<script language="javascript" type="text/javascript" src="./admin/scripts/block_options.js"></script>
+<script type="text/javascript">
 tinyMCE_GZ.init({
-	plugins : 'style,layer,table,save,advhr,advimage,advlink,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras',
-	themes : 'advanced',
-	languages : 'en',
+	plugins : \'style,layer,table,save,advhr,advimage,advlink,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras\',
+	themes : \'advanced\',
+	languages : \'en\',
 	disk_cache : true,
 	debug : false
 });
 </script>
-<script language=\"javascript\" type=\"text/javascript\">
+<script language="javascript" type="text/javascript">
 tinyMCE.init({
-	mode : \"textareas\",
-	editor_deselector : \"mceNoEditor\",
-	theme : \"advanced\",
-	plugins : \"style,layer,table,save,advhr,advimage,advlink,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras\",
-	theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect\",
-	theme_advanced_buttons2 : \"cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor\",
-	theme_advanced_buttons3 : \"tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen\",
-	theme_advanced_buttons4 : \"insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking\",
-	theme_advanced_toolbar_location : \"top\",
-	theme_advanced_toolbar_align : \"left\",
-	theme_advanced_statusbar_location : \"bottom\",
-	extended_valid_elements : \"a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]\"
+	mode : "textareas",
+	editor_deselector : "mceNoEditor",
+	theme : "advanced",
+	plugins : "style,layer,table,save,advhr,advimage,advlink,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+	theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+	theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+	theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking",
+	theme_advanced_toolbar_location : "top",
+	theme_advanced_toolbar_align : "left",
+	theme_advanced_statusbar_location : "bottom",
+	extended_valid_elements : "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]"
 });
-</script>";
+</script>';
 $nav_bar = NULL;
-		$nav_bar .= "<span class='nav_header'>Main</span><br />
-		<a href='admin.php?".SID."'>Admin Home</a><br />
-<a href='index.php?".SID."' target='_blank'>View Site</a><br />
-".admin_nav();
+		$nav_bar .= '<span class="nav_header">Main</span><br />
+		<a href="admin.php?'.SID.'">Admin Home</a><br />
+<a href="index.php?'.SID.'" target="_blank">View Site</a><br />
+'.admin_nav();
 		$nav_login = NULL;
 		$nav_login .= display_login_box();
 		$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
