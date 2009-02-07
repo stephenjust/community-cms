@@ -16,36 +16,28 @@
 				echo 'Template file not loaded yet.';
 				}
 			}
+			
 		public function load_file($file = 'index') {
-			global $db; // Used for query
-			global $CONFIG; // Used for query
-			global $site_info; //Used for query
-			$template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates WHERE id = '.$site_info['template'].' LIMIT 1';
-			$template_handle = $db->query($template_query);
-			try {
-				if(!$template_handle || $template_handle->num_rows == 0) {
-					throw new Exception('Failed to load template file.');
-					} else {
-					$template = $template_handle->fetch_assoc();
-					$template_file = $template['path'].$file.'.html';
-					$handle = fopen($template_file, 'r');
-					$template_contents = fread($handle,filesize($template_file));
-					if(!$template_contents) {
-						throw new Exception('Failed to open template file.');
-						} else {
-						$this->template = $template_contents;
-						}
-					fclose($handle);
-					}
-				}
-			catch(Exception $e) {
+			$path = './';
+			$file .= '.html';
+			if($this->load_template($path,$file)) {
+				return true;
+				} else {
 				return false;
 				}
-			$this->path = $template['path'];
-			return true;
 			}
 
 		public function load_admin_file($file = 'index') {
+			$path = './admin/';
+			$file .= '.html';
+			if($this->load_template($path,$file)) {
+				return true;
+				} else {
+				return false;
+				}
+			}
+
+		private function load_template($path,$file) {
 			global $db; // Used for query
 			global $CONFIG; // Used for query
 			global $site_info; //Used for query
@@ -56,10 +48,9 @@
 					throw new Exception('Failed to load template file.');
 					} else {
 					$template = $template_handle->fetch_assoc();
-					$template['path'] = 'admin/'.$template['path'];
-					$template_file = $template['path'].$file.'.html';
-					$handle = fopen($template_file, 'r');
-					$template_contents = fread($handle,filesize($template_file));
+					$path .= $template['path'];
+					$handle = fopen($path.$file, 'r');
+					$template_contents = fread($handle,filesize($path.$file));
 					if(!$template_contents) {
 						throw new Exception('Failed to open template file.');
 						} else {
@@ -71,7 +62,7 @@
 			catch(Exception $e) {
 				return false;
 				}
-			$this->path = $template['path'];
+			$this->path = $path;
 			return true;
 			}
 
