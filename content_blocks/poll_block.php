@@ -31,11 +31,9 @@
 		$template_poll_block->poll_question = $poll_question['question'];
 		$template_poll_block->poll_id = $poll_question['question_id'];
 		$template_poll_block->poll_short_name = $poll_question['short_name'];
-		$poll_template = $template_poll_block;
-		unset($template_poll_block);
-		$sep = array('<!-- $POLL_ANSWER_START$ -->','<!-- $POLL_ANSWER_END$ -->');
-		$poll_template = str_replace($sep,'<NEWLINE>',$poll_template);
-		$poll_template = explode('<NEWLINE>',$poll_template);
+		$template_poll_block_answer = new template;
+		$template_poll_block_answer->path = $template_poll_block->path;
+		$template_poll_block_answer->template = $template_poll_block->get_range('poll_answer');
 		$question_num = 1;
 		$poll_template_answers = NULL;
 		$poll_answers_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_answers WHERE question_id = '.$block_attribute['question_id'].' ORDER BY answer_id ASC';
@@ -45,15 +43,17 @@
 			} else {
 			$current_answer = 1;
 			while($current_answer <= $poll_answers_handle->num_rows) {
-				$poll_template_answer = $poll_template[1];
+				$template_current_answer = clone $template_poll_block_answer;
 				$poll_answer = $poll_answers_handle->fetch_assoc();
-				$poll_template_answer = str_replace('<!-- $POLL_ANSWER_TEXT$ -->',$poll_answer['answer'],$poll_template_answer);
-				$poll_template_answer = str_replace('<!-- $POLL_ANSWER_ID$ -->',$poll_answer['answer_id'],$poll_template_answer);
-				$poll_template_answers .= $poll_template_answer;
+				$template_current_answer->poll_answer_text = $poll_answer['answer'];
+				$template_current_answer->poll_answer_id = $poll_answer['answer_id'];
+				$poll_template_answers .= $template_current_answer;
+				unset($template_current_answer);
 				$current_answer++;
 				}
-			}			
-		$return .= $poll_template[0].$poll_template_answers.$poll_template[2];
+			}
+		$template_poll_block->replace_range('poll_answer',$poll_template_answers);
+		$return .= $template_poll_block;
 		}
 	return $return;
 	?>
