@@ -11,6 +11,12 @@ body {
   margin: 0px;
   font-family: Calibri, 'Times New Roman', Arial, Sans-Serif;
 }
+#helpbutton {
+	text-align: right;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
 #header { 
 	background-color: #3187b4; /* If image is not loaded yet */
 	background: url('<!-- $IMAGE_PATH$ -->header.png'); /* Covers solid background */
@@ -41,6 +47,11 @@ body {
 </style>
 </head>
 <body>
+	<div id="helpbutton">
+		<form method="post" action="admin.php?module=help">
+		<input type="submit" value="HELP" />		
+		</form>
+		</div>
 	<div id="header">
 		<a href="admin.php"><img src="<!-- $IMAGE_PATH$ -->logo.png" alt="Header" class="logo" /></a>
 		</div>
