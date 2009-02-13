@@ -45,8 +45,8 @@
 $content = $message.'<form method="POST" action="?module=calendar_new_date&action=new">
 <h1>Create New Calendar Date</h1>
 <table class="admintable">
-<input type="hidden" name="author" value="'.$_SESSION['name'].'" />
-<tr><td width="150" class="row1">*Heading:</td><td class="row1"><input type="text" name="title" value="'.$_POST['title'].'" /></td></tr>
+<input type="hidden" name="author" value="'.stripslashes($_SESSION['name']).'" />
+<tr><td width="150" class="row1">*Heading:</td><td class="row1"><input type="text" name="title" value="'.stripslashes($_POST['title']).'" /></td></tr>
 <tr><td width="150" class="row2">Category:</td><td class="row2">
 <select name="category">';
  	$category_list_query = 'SELECT cat_id,label FROM '.$CONFIG['db_prefix'].'calendar_categories ORDER BY cat_id ASC';
@@ -57,7 +57,11 @@ $content = $message.'<form method="POST" action="?module=calendar_new_date&actio
  	$b = 1;
 	while ($b <= $category_list_handle->num_rows) {
 		$category_list = $category_list_handle->fetch_assoc();
-		$content .= '<option value="'.$category_list['cat_id'].'" />'.$category_list['label'].'</option>';
+		if($category == $category_list['cat_id']) {
+			$content .= '<option value="'.$category_list['cat_id'].'" selected />'.$category_list['label'].'</option>';
+			} else {
+			$content .= '<option value="'.$category_list['cat_id'].'" />'.$category_list['label'].'</option>';
+			}
 		$b++;
 	}
 
@@ -88,7 +92,7 @@ $content .= '</select></td></tr>
 <tr><td width="150" class="row1">*Year:</td><td class="row1"><input type="text" name="year" value="'.$_POST['year'].'" maxlength="4" /></td></tr>
 <tr><td class="row2" valign="top">Description:</td>
 <td class="row2"><textarea name="content" rows="30">'.stripslashes($_POST['content']).'</textarea></td></tr>
-<tr><td width="150" class="row1">Location:</td><td class="row1"><input type="text" name="location" value="'.$_POST['location'].'" /></td></tr>
+<tr><td width="150" class="row1">Location:</td><td class="row1"><input type="text" name="location" value="'.stripslashes($_POST['location']).'" /></td></tr>
 <tr><td width="150" valign="top" class="row2">Image:</td><td class="row2">'.file_list('newsicons',2).'</td></tr>
 <tr><td width="150" class="row1">Hidden:</td><td class="row1"><input type="checkbox" name="hide" /></td></tr>
 <tr><td width="150" class="row2">&nbsp;</td><td class="row2"><input type="submit" value="Submit" /></td></tr>
