@@ -11,6 +11,7 @@
 		global $CONFIG;
 		global $db;
 		global $NOTIFICATION;
+		$page = NULL;
 		if(isset($_POST['vote']) && isset($_POST['vote_poll'])) {
 			$question_id = $_POST['vote_poll'];
 			$answer_id = $_POST['vote'];
@@ -18,9 +19,9 @@
 			$query = 'INSERT INTO '.$CONFIG['db_prefix'].'poll_responses (question_id ,answer_id ,value ,ip_addr) VALUES ('.$question_id.', '.$answer_id.', NULL, \''.ip2long($user_ip).'\');';
 			$handle = $db->query($query);
 			if(!$handle) {
-				echo('Failed to submit your vote.');
+				$page .= 'Failed to submit your vote.<br />';
 				} else {
-				echo('Thank you for voting.');
+				$page .= '<span style="color: #CC0000">Thank you for voting.</span><br />';
 				}
 			}
 		$page_type_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pagetypes WHERE id = '.$type.' LIMIT 1';
@@ -28,7 +29,7 @@
 		try {
 			if($page_type_handle->num_rows == 1) {
 				$page_type = $page_type_handle->fetch_assoc();
-				$page = $NOTIFICATION.include(ROOT.'pagetypes/'.$page_type['filename']);
+				$page .= $NOTIFICATION.include(ROOT.'pagetypes/'.$page_type['filename']);
 				} else {
 				header("HTTP/1.0 404 Not Found");
 				global $page_not_found;
