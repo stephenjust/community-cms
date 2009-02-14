@@ -28,16 +28,25 @@
 		
 	if ($_GET['action'] == 'new_link') {
 	  $message = NULL;
-	  $link = htmlentities($_POST['url']);
-	  $name = $_POST['title'];
-	  $title = $name.'<LINK>'.$link;
-	  // Add page to database.
-		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,type,menu) VALUES ("'.$title.'",0,1)';
-		$new_page = $db->query($new_page_query);
-		if(!$new_page) {
-			$message .= mysqli_error($db).'<br />';
+	  $link = $_POST['url'];
+	  if(strlen($link) > 10) {
+	  	$link = htmlentities($link);
+	  	$name = $_POST['title'];
+	  	if(strlen($name) > 2) {
+				$title = $name.'<LINK>'.$link;
+				// Add page to database.
+				$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,type,menu) VALUES ("'.$title.'",0,1)';
+				$new_page = $db->query($new_page_query);
+				if(!$new_page) {
+					$message .= mysqli_error($db).'<br />';
+					} else {
+					$message .= 'Successfully created link to external page.<br />'.log_action('New menu link to external page \''.$_POST['title'].'\'');
+					}
+				} else {
+				$message .= 'Failed to create link to external page. Invalid link name.<br />';
+				}
 			} else {
-			$message .= 'Successfully added page link.<br />'.log_action('New page link \''.$_POST['title'].'\'');
+			$message .= 'Failed to create link to external page. Invalid address.<br />';
 			}
 		}		
 		
@@ -236,13 +245,13 @@ $content .= '</td></td></tr>
 </form>';
 
 $content .= '<form method="POST" action="admin.php?module=page&action=new_link">
-<h1>Add Menu Link</h1>
+<h1>Add Link to External Page</h1>
 <table style="border: 1px solid #000000;">
-<tr><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
+<tr><td width="150">Link Text:</td><td><input type="text" name="title" value="" /></td></tr>
 <tr><td valign="top">URL:</td><td>
 <input type="text" name="url" value="http://" /><br />
 </td></td></tr>
-<tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
+<tr><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
 </table>
 </form>';
 
