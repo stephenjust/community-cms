@@ -1,1 +1,2 @@
 poll#question_id=int
+text#article_id=int

@@ -97,4 +97,39 @@
 			return $this->return;
 			}
 		}
+	
+	class block {
+		public $block_id;
+		public $type;
+		public $attributes;
+
+		public function __set($name,$value) {
+			$this->$name = $value;
+			}
+
+		public function get_block_information() {
+			if(!isset($this->block_id)) {
+				return false;
+				}
+			global $CONFIG;
+			global $db;
+			$block_attribute_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$this->block_id.' LIMIT 1';
+			$block_attribute_handle = $db->query($block_attribute_query);
+			$block = $block_attribute_handle->fetch_assoc();
+			$block_attribute_temp = $block['attributes'];
+			$block_attribute_temp = explode("\n",$block_attribute_temp);
+			$block_attribute_count = count($block_attribute_temp);
+			$i = 0;
+			while($i < $block_attribute_count) {
+				$attribute_temp = explode('=',$block_attribute_temp[$i]);
+				$this->attribute[$attribute_temp[0]] = $attribute_temp[1];
+				$i++;
+				}
+			return;
+			}
+		
+		function __toString() {
+			
+			}
+		}
 ?>

@@ -4,6 +4,9 @@
 		die ('You cannot access this page directly.');
 		}
 	global $site_info;
+	$text_block = new block;
+	$text_block->block_id = $block_info['id'];
+	$block_id = $block_info['id'];
 	$return = NULL;
 	$block_attribute_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$block_id.' LIMIT 1';
 	$block_attribute_handle = $db->query($block_attribute_query);

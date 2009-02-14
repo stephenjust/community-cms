@@ -215,9 +215,9 @@
 <tr><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 <tr><td>Hidden:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
 <tr><td valign="top">Blocks:<br>(Comma separated block IDs)</td><td>Left:<br />
-<input type="text" name="blocks_left" /><br />
+<input type="text" name="blocks_left" value="'.$edit_page['blocks_left'].'" /><br />
 Right:<br />
-<input type="text" name="blocks_right" disabled />
+<input type="text" name="blocks_right" value="'.$edit_page['blocks_right'].'" />
 </td></td></tr>
 <tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 </table>

@@ -12,6 +12,7 @@
 		$page_message = NULL;
 		$admin_include = NULL;
 		$left_blocks_content = NULL;
+		$right_blocks_content = NULL;
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_page->path."style.css' />";
 		$image_path = $template_page->path.'images/';
 		// Check if the page acutally exists before anything else is done
@@ -48,8 +49,20 @@
 				if($block_handle) {
 					if($block_handle->num_rows == 1) {
 						$block_info = $block_handle->fetch_assoc();
-						$block_id = $block_info['id'];
 						$left_blocks_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
+						}
+					}
+				$bk++;
+				}
+			$right_blocks = explode(',',$page_info['blocks_right']);
+			$bk = 1; // Block iteration count
+			while ($bk <= count($left_blocks)) {
+				$block_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$right_blocks[$bk - 1].' LIMIT 1';
+				$block_handle = $db->query($block_query);
+				if($block_handle) {
+					if($block_handle->num_rows == 1) {
+						$block_info = $block_handle->fetch_assoc();
+						$right_blocks_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
 						}
 					}
 				$bk++;
@@ -60,6 +73,7 @@
 		$template_page->page_title = $page_title;
 		$template_page->page_message = $page_message;
 		$template_page->left_content = $left_blocks_content;
+		$template_page->right_content = $right_blocks_content;
 		$template_page->footer = '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>
 <br />Powered by Community CMS';
 		$template_page->content = $content;
