@@ -46,7 +46,8 @@ displayed at the top of the article. It can contain any character.</li>
 <li>Next, choose a page to put this article on. Only pages that are configured
 to display news will be available as choices.</li>
 <li>You can assign an image to your news articles. This will be displayed with
-the article. Choose one if desired.</li>
+the article. Choose one if desired. Use the file manager to upload new images.
+Save them in the \'news_icons\' directory.</li>
 <li>If you would like, you can show the date on your news article, or you could
 show an abbreviated version of the date, or even show no date at all. The
 latter option would be ideal if you are having a page with only one long
