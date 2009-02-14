@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS comcms_admin_pages (
 INSERT INTO comcms_admin_pages 
 	(`id`,`category`,`on_menu`,`label`,`file`) VALUES 
 	(NULL,'Main','1','Configuration','site_config'),
+	(NULL,'Help','0','Help','help'),
 	(NULL,'Blocks','1','Block Manager','block_manager'),
 	(NULL,'News','1','New Article','news_new_article'),
 	(NULL,'News','1','Article Manager','news'),

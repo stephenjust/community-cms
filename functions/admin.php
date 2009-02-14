@@ -24,9 +24,9 @@
 			$last_header = $header;
 			$header = $page_list['category'];
 			if($header != $last_header) {
-				$result .= '<span class="nav_header">'.$page_list['category'].'</span><br />';
+				$result .= '<span class="nav_header">'.stripslashes($page_list['category']).'</span><br />';
 				}
-			$result .= '<a href="admin.php?module='.$page_list['file'].'">'.$page_list['label'].'</a><br />';
+			$result .= '<a href="admin.php?module='.$page_list['file'].'">'.stripslashes($page_list['label']).'</a><br />';
 			$i++;
 			}
 		return $result;
