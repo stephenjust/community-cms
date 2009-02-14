@@ -5,4 +5,10 @@
 		}
 	$content = '<h1>Help</h1>';
 	$content .= 'Help is on the way!';
+	if(!isset($_GET['page'])) {
+		$page = 'table_of_contents';
+		} else {
+		$page = $_GET['page'];
+		}
+	$content .= include(ROOT.'admin/help_pages/'.$page.'.php');
 ?>

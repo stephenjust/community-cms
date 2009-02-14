@@ -235,3 +235,32 @@ div.notice {
 	width: 300px;
 	z-index: 3;
 }
+
+/*
+Styles used only on help pages
+*/
+#admin_help_toc {
+
+}
+#admin_help_toc a {
+	color: #000;
+	text-decoration:none;
+}
+#admin_help_toc a:hover {
+	text-decoration: underline;
+}
+
+#admin_help_page {
+
+}
+#admin_help_page div.admin_help_explanation {
+	font-style: italic;
+	font-family: Arial, Sans-Serif;
+	font-size: small;
+	margin-left: 50px;
+	margin-right: 50px;
+	text-align: justify;
+}
+#admin_help_page div.admin_help_quick_instructions {
+
+}
