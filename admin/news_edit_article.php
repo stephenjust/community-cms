@@ -62,7 +62,9 @@
 			$date_params['show'] = NULL;
 			$date_params['mini'] = 'selected';
 			}
-		$content .= '</select></td></tr>
+		if($edit[1]['page'] == 0) { $no_page = 'selected'; }
+		$content .= '<option value="0" '.$no_page.'>No Page</option>
+</select></td></tr>
 <tr><td width="150" class="row2" valign="top">Image:</td><td class="row2">'.file_list('newsicons',2,$edit[1]['image']).'</td></tr>
 <tr><td width="150" class="row1" valign="top">Date:</td><td class="row1">
 <select name="date_params">

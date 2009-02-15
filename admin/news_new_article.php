@@ -46,7 +46,8 @@
 			$content = $content.'<option value="'.$page['id'].'" />'.$page['title'].'</option>';
 			$i++;
 			}
-		$content = $content.'</select></td></tr>
+		$content = $content.'<option value="0">No Page</option>
+</select></td></tr>
 <tr><td width="150" valign="top" class="row2">Image:</td><td class="row2">'.file_list('newsicons',2).'</td></tr>
 <tr><td width="150" class="row1" valign="top">Date:</td><td class="row1">
 <select name="date_params">
