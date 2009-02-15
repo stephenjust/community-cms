@@ -118,28 +118,30 @@ Please choose a file: <input name="upload" type="file" /><br />
 			$i = 1;
 			$j = 1;
 			if($type == 1) {
-				$return = $return.'<select name="file_list">';
+				$return .= '<select name="file_list">';
 				} elseif($type == 2) {	// If type = 2, display icons for images, and display radio buttons next to each icon. If it is not an image,
 																// do not display it. Add a 'No image' link as well.
-				$return = $return.'<input type="radio" name="image" value="" checked>No Image<br />';
+				$return .= '<input type="radio" name="image" value="" checked>No Image<br />';
 				$j++; // Make sure this is displayed even if there's no files. 
 				}
 			while($i < $num_files) {
 				if(!is_dir($folder_open.'/'.$files[$i])) {
 					if($type == 1) {
-						$return = $return.'<option value="'.$folder_open_short.'/'.$files[$i].'" />'.$files[$i].'</option>';
+						$return .= '<option value="'.$folder_open_short.'/'.$files[$i].'" />'.$files[$i].'</option>';
 						$j++;
 						} elseif($type == 2) {
 						if(ereg('\.png|\.jpg$',$files[$i]) == 1) {
+							$return .= '<div class="admin_image_list_item">';
 							if($folder_open.'/'.$files[$i] == $selected) {
-								$return = $return.'<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" checked /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" /><br />';
+								$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" checked /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" />';
 								} else {
-								$return = $return.'<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" /><br />';
+								$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" />';
 								}
+							$return .= '</div>';
 							$j++;
 							}
 						} else {
-						$return = $return.'<a href="'.$folder_open_short.'/'.$files[$i].'">'.$files[$i].'</a><br />';
+						$return .= '<a href="'.$folder_open_short.'/'.$files[$i].'">'.$files[$i].'</a><br />';
 						$j++; // Count files that were displayed.
 						}
 					}
@@ -149,7 +151,7 @@ Please choose a file: <input name="upload" type="file" /><br />
 				$return = 'There are no files to display.';
 				}
 			if($type == 1) {
-				$return = $return.'</select>';
+				$return .= '</select>';
 				}
 			} else {
 			$return = 'Error retrieving file list.';

@@ -235,6 +235,17 @@ div.notice {
 	width: 300px;
 	z-index: 3;
 }
+div.admin_image_list_item {
+	display: block;
+	float: left;
+	text-align: center;
+	border: 1px solid #000;
+}
+div.admin_image_list_item img {
+	width: 100px;
+	height: 100px;
+	padding: 2px;
+}
 
 /*
 Styles used only on help pages

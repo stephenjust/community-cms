@@ -60,13 +60,18 @@ div.news_item_date {
   z-index: 1;
 }
 span.news_item_date_month {
-  font: 1em Verdana,Arial,Sans-Serif;
+	font: 1em Verdana,Arial,Sans-Serif;
+	line-height: 80%;
 }
 span.news_item_date_day {
-  font: 2.5em Verdana,Arial,Sans-Serif;
+	font: 2.3em Verdana,Arial,Sans-Serif;
+	line-height: 80%;
+}
+span.news_item_date_year {
+	font: 0.8em Verdana,Arial,Sans-Serif;
 }
 span.news_title {
-  font: 2em Cambria,'Times New Roman',Serif;
+	font: 2em Cambria,'Times New Roman',Serif;
 }
 span.news_title a {
 	color: #000000;
