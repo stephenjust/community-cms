@@ -4,23 +4,11 @@
 		die ('You cannot access this page directly.');
 		}
 	global $site_info;
-	$text_block = new block;
-	$text_block->block_id = $block_info['id'];
-	$block_id = $block_info['id'];
+	$poll_block = new block;
+	$poll_block->block_id = $block_info['id'];
+	$poll_block->get_block_information();
 	$return = NULL;
-	$block_attribute_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$block_id.' LIMIT 1';
-	$block_attribute_handle = $db->query($block_attribute_query);
-	$block = $block_attribute_handle->fetch_assoc();
-	$block_attribute_temp = $block['attributes'];
-	$block_attribute_temp = explode("\n",$block_attribute_temp);
-	$block_attribute_count = count($block_attribute_temp);
-	$i = 0;
-	while($i < $block_attribute_count) {
-		$attribute_temp = explode('=',$block_attribute_temp[$i]);
-		$block_attribute[$attribute_temp[0]] = $attribute_temp[1];
-		$i++;
-		}
-	$poll_questions_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_questions WHERE question_id = '.$block_attribute['question_id'].' ORDER BY question_id DESC';
+	$poll_questions_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_questions WHERE question_id = '.$poll_block->attribute['question_id'].' ORDER BY question_id DESC';
 	$poll_questions_handle = $db->query($poll_questions_query);
 	if(!$poll_questions_handle) {
 		$return .= 'Failed to retrieve list of poll questions.<br />'.mysqli_error($db);
@@ -39,7 +27,7 @@
 		$template_poll_block_answer->template = $template_poll_block->get_range('poll_answer');
 		$question_num = 1;
 		$poll_template_answers = NULL;
-		$poll_answers_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_answers WHERE question_id = '.$block_attribute['question_id'].' ORDER BY answer_id ASC';
+		$poll_answers_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_answers WHERE question_id = '.$poll_block->attribute['question_id'].' ORDER BY answer_id ASC';
 		$poll_answers_handle = $db->query($poll_answers_query);
 		if($poll_answers_handle->num_rows == 0) {
 			$poll_template_answers = 'There are no possible answers to the above question.';
