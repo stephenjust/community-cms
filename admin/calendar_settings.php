@@ -60,14 +60,17 @@ $content = $message.'<form method="POST" action="?module=calendar_settings&actio
 <table class="admintable">
 <tr><td width="150" class="row1">Category:</td><td class="row1">&nbsp;</td></tr>
 <tr><td colspan="2" class="row2">';
- 	$cat = get_row_from_db("calendar_categories");
+	$category_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar_categories';
+	$category_handle = $db->query($category_query);
  	$i = 1;
-	while ($i <= $cat['num_rows']) {
-		$content = $content.'<input type="radio" name="delete_category_id" value="'.$cat[$i]['cat_id'].'" /><img src="./admin/templates/default/images/icon_'.$cat[$i]['colour'].'.png" width="16px" height="16px" alt="'.$cat[$i]['colour'].'" />'.$cat[$i]['label'].'<br />';
+	while ($i <= $category_handle->num_rows) {
+		$cat = $category_handle->fetch_assoc();
+		$content .= '<input type="radio" name="delete_category_id" value="'.$cat['cat_id'].'" />
+<img src="./admin/templates/default/images/icon_'.$cat['colour'].'.png" width="16px" height="16px" alt="'.$cat['colour'].'" />'.$cat['label'].'<br />';
 		$i++;
 	}
 
-$content = $content.'</td></tr>
+$content .= '</td></tr>
 <tr><td width="150" class="row1">&nbsp;</td><td class="row1"><input type="submit" value="Delete" /></td></tr>
 </table>
 </form>';
