@@ -6,7 +6,9 @@
 	define('ROOT','./');
 	if($_GET['action'] == 'new_log') {
 		$log_message = strip_tags($_POST['message']);
-		log_action($log_message);
+		if(strlen($log_message) > 5) {
+			log_action($log_message);
+			}
 		}
 	$log_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'logs log, '.$CONFIG['db_prefix'].'users user WHERE log.user_id = user.id ORDER BY log.date DESC LIMIT 5';
 	$log_message_handle = $db->query($log_message_query);
