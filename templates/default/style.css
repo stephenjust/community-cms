@@ -129,6 +129,21 @@ span.minipoll_question {
 }
 
 /*
+UPCOMING EVENTS BLOCK
+*/
+div.events_upcoming_block {
+	padding: 3px;
+}
+div.events_upcoming_block span.header {
+	font-family: Cambria,'Times New Roman',Serif;
+	font-size: large;	
+}
+div.events_upcoming_block table.events {
+	background: #FFF;
+	border: 1px solid #000;
+}
+
+/*
 CALENDAR
 */
 

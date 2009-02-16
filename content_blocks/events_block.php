@@ -14,7 +14,8 @@
 			break;
 		case 'upcoming':
 			$upcoming_event_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar 
-WHERE year >= '.date('Y').' AND month >= '.date('m').' AND day >= '.date('d').'
+WHERE (year = '.date('Y').' AND month = '.date('m').' AND day >= '.date('d').') OR
+(year = '.date('Y').' AND month > '.date('m').') OR (year > '.date('Y').')
 ORDER BY year ASC, month ASC, day ASC LIMIT '.$event_block->attribute['num'];
 			$upcoming_event_handle = $db->query($upcoming_event_query);
 			if(!$upcoming_event_handle) {
