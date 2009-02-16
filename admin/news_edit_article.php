@@ -28,32 +28,34 @@
 			$content = 'Successfully edited article. '.log_action('Edited news article \''.$name.'\'');
 			}
 		} else {
-		$edit = get_row_from_db('news','WHERE id = '.$_GET['id'].' LIMIT 1');
-		if($edit['num_rows'] != 0) {
+		$edit_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE id = '.addslashes($_GET['id']).' LIMIT 1';
+		$edit_handle = $db->query($edit_query);
+		if($edit_handle->num_rows != 0) {
+			$edit = $edit_handle->fetch_assoc();
 			$content .= '<form method="POST" action="admin.php?module=news_edit_article&action=edit">
 <h1>Edit Existing Article</h1>
 <table class="admintable">
-<input type="hidden" name="id" value="'.$edit[1]['id'].'" />
-<tr><td width="150" class="row1">Heading:</td><td class="row1"><input type="text" name="title" value="'.stripslashes($edit[1]['name']).'" /></td></tr>
-<tr><td class="row2" valign="top">Content:</td><td class="row2"><textarea name="update_content" rows="30">'.stripslashes($edit[1]['description']).'</textarea></td></tr>
+<input type="hidden" name="id" value="'.$edit['id'].'" />
+<tr><td width="150" class="row1">Heading:</td><td class="row1"><input type="text" name="title" value="'.stripslashes($edit['name']).'" /></td></tr>
+<tr><td class="row2" valign="top">Content:</td><td class="row2"><textarea name="update_content" rows="30">'.stripslashes($edit['description']).'</textarea></td></tr>
 <tr><td width="150" class="row1" valign="top">Page:</td><td class="row1"><select name="page">';
 		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 1 ORDER BY list ASC';
 		$page_query_handle = $db->query($page_query);
  		$i = 1;
 		while ($i <= $page_query_handle->num_rows) {
 			$page = $page_query_handle->fetch_assoc();
-			if($page['id'] == $edit[1]['page']) {
+			if($page['id'] == $edit['page']) {
 				$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
 				} else {
 				$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
 				}
 			$i++;
 			}
-		if($edit[1]['showdate'] == 0) {
+		if($edit['showdate'] == 0) {
 			$date_params['hide'] = 'selected';
 			$date_params['show'] = NULL;
 			$date_params['mini'] = NULL;
-			} elseif($edit[1]['showdate'] == 1) {
+			} elseif($edit['showdate'] == 1) {
 			$date_params['hide'] = NULL;
 			$date_params['show'] = 'selected';
 			$date_params['mini'] = NULL;
@@ -62,10 +64,10 @@
 			$date_params['show'] = NULL;
 			$date_params['mini'] = 'selected';
 			}
-		if($edit[1]['page'] == 0) { $no_page = 'selected'; }
+		if($edit['page'] == 0) { $no_page = 'selected'; }
 		$content .= '<option value="0" '.$no_page.'>No Page</option>
 </select></td></tr>
-<tr><td width="150" class="row2" valign="top">Image:</td><td class="row2">'.file_list('newsicons',2,$edit[1]['image']).'</td></tr>
+<tr><td width="150" class="row2" valign="top">Image:</td><td class="row2">'.file_list('newsicons',2,$edit['image']).'</td></tr>
 <tr><td width="150" class="row1" valign="top">Date:</td><td class="row1">
 <select name="date_params">
 <option value="0" '.$date_params['hide'].'>Hide Date</option>
