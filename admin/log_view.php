@@ -19,7 +19,10 @@ $rowtype = 1;
 	while($i <= $num_messages) {
 		$log_message = $log_message_handle->fetch_assoc();
 		$content .= '<tr class="row'.$rowtype.'">
-<td>'.$log_message['date'].'</td><td>'.$log_message['action'].'</td><td>'.$log_message['realname'].'</td><td>'.long2ip($log_message['ip_addr']).'</td>
+<td>'.$log_message['date'].'</td>
+<td>'.$log_message['action'].'</td>
+<td>'.$log_message['realname'].'</td>
+<td>'.long2ip($log_message['ip_addr']).'</td>
 </tr>';
 		if($rowtype == 1) {
 			$rowtype = 2;

@@ -30,11 +30,16 @@
 	if(!isset($_POST['folder_list'])) {
 		$_POST['folder_list'] == "";
 		}
-	$content .= '<form method="POST" action="admin.php?module=filemanager">'.folder_list('',$_POST['folder_list'],1); // Create listbox with folder names and a form to navigate folders.
-	$content .= '<input type="submit" value="Change Directory" /></form><br />';
+	$content .= '<form method="POST" action="admin.php?module=filemanager">
+'.folder_list('',$_POST['folder_list'],1); // Create listbox with folder names and a form to navigate folders.
+	$content .= '<input type="submit" value="Change Directory" />
+</form>
+<br />';
 	$content .= file_list($_POST['folder_list']); // Get a file list of the current directory.
 	$content .= '<br />
 <br />
 <form method="post" action="?module=filemanager&action=new_folder">
-New folder: <input type="text" name="new_folder_name" maxlength="30" /><input type="submit" value="Create Folder" /></form>';
+New folder: <input type="text" name="new_folder_name" maxlength="30" />
+<input type="submit" value="Create Folder" />
+</form>';
 ?>
