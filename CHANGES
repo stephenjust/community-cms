@@ -1,6 +1,38 @@
 Changes
 -------
+Last updated Feb 15, 2009
+----------
+0.4 -> 0.5
+----------
+ADMIN
+-Admin home displays latest log messages, can add custom messages
+-Added 'Help' pages to backend.
+-File manager can create folders.
+-You can configure the site name from the backend instead of editing
+	template files.
+-Configure whether page title shows as header on top of page content.
+-Simplified calendar management backend.
+-Improved and added log messages.
+-TinyMCE can be disabled for certain textareas.
+BLOCKS
+-Added poll block and text block.
+-Blocks can be in the left or right column of any page.
+TEMPLATES
+-New classes for templates to simplify str_replace calls, also added
+	ability to easily replace ranges marked by <!-- $*_START$ --> and 
+	<!-- $*_END$ --> tags within template files.
+-Re-made default template to display correctly in more browsers.
+-Calendar module uses templates now.
+CLEANING
+-Removed old DB functions completely from frontend, backend almost done.
+BUGFIXES
+-Now gives useful HTTP headers in addition to error messages (404, 403, etc.)
+-Fixed most session issues.
+-Many other bugfixes.
+SECURITY
+-Keep track of previous login time.
 
+----------
 0.3 -> 0.4
 ----------
 Installer now automatically updates config.php
