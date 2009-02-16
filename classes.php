@@ -117,7 +117,7 @@
 			$block_attribute_handle = $db->query($block_attribute_query);
 			$block = $block_attribute_handle->fetch_assoc();
 			$block_attribute_temp = $block['attributes'];
-			$block_attribute_temp = explode("\n",$block_attribute_temp);
+			$block_attribute_temp = explode(",",$block_attribute_temp);
 			$block_attribute_count = count($block_attribute_temp);
 			$i = 0;
 			while($i < $block_attribute_count) {

@@ -21,7 +21,7 @@
 					$message .= 'Successfully deleted block. '.log_action('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
 					}
 				} else {
-				$message .= 'Could not find the article you asked to delete.';
+				$message .= 'Could not find the block you are trying to delete.';
 				}
 			}
 		} elseif ($_GET['action'] == 'new') {

@@ -15,6 +15,15 @@
 	if($referer_directory == "") {
 		die('Security breach.');
 		}
+/*
+Block File Format:
+
+blockname#parameter('Parameter Name')=type{comma,separated,values}\n
+block2#id('Something ID')=int\n
+
+*/
+
+
 	$current_directory = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
 	if($current_directory == $referer_directory.'/admin/scripts') {
 		$file_path = ROOT.'content_blocks/blocks.info';
@@ -37,11 +46,36 @@
 				$allattributes = NULL;
 				while ($j <= $num_attributes) {
 					$atb = explode('=',$attributes[$j - 1]);
-					echo $atb[0].'=';
-					if ($atb[1] == 'int') {
-						echo '<input type="text" maxlength="9" size="3" name="'.$atb[0].'" /><br />';
+					$temp = explode('(\'',$atb[0]);
+					$attribute_name = $temp[0];
+					$temp = substr($temp[1],0,-2);
+					$attribute_description = $temp;
+					unset($temp);
+					echo $attribute_description.'=';
+					if(eregi('\{.+\}',$atb[1])) {
+						$temp = explode('{',$atb[1]);
+						$attribute_type = $temp[0];
+						$atb[1] = $temp[0];
+						$possible_responses = substr($temp[1],0,-1);
 						}
-					$allattributes .= $atb[0];
+					switch($atb[1]) { // $atb[1] = attribute type
+						case 'int':
+							echo '<input type="text" maxlength="9" size="3" name="'.$attribute_name.'" /><br />';
+							break;
+						case 'option':
+							echo '<select name="'.$attribute_name.'">';
+							$possible_responses = explode(',',$possible_responses);
+							for($i = 1; $i <= count($possible_responses); $i++) {
+								echo '<option value="'.$possible_responses[$i - 1].'">'.$possible_responses[$i - 1].'</option>';
+								}
+							echo '</select>';
+							echo '<br />';
+							break;
+						default:
+							echo 'Not supported.<br />';
+							break;
+						}
+					$allattributes .= $attribute_name;
 					if ($j != $num_attributes) {
 						$allattributes .= ',';
 						}

@@ -69,15 +69,15 @@
 					} else {
 					$current_day->day_number = $counter_day;
 					}
-				$i = 1;
 				$dates = NULL;
-				while ($i <= $day_info_handle->num_rows) {
+				for ($i = 1; $i <= $day_info_handle->num_rows; $i++) {
 					$day_info = $day_info_handle->fetch_assoc();
 					if($day_info['colour'] == '') {
 						$day_info['colour'] = 'red';
 						}
-					$dates .= "<a href='?id=".$_GET['id']."&view=event&a=".$day_info['id'].'\' class="calendar_event"><img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png" width="16px" height="16px" alt="'.stripslashes($day_info['label']).'" border="0px" />'.stripslashes($day_info['header'])."</a><br />";
-					$i++;
+					$dates .= "<a href='?id=".$_GET['id']."&view=event&a=".$day_info['id'].'\' class="calendar_event">
+<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png" width="16px" height="16px" alt="'.stripslashes($day_info['label']).'" border="0px" />
+'.stripslashes($day_info['header'])."</a><br />";
 					}
 				$current_day->day_events = $dates;
 				$current_week_days .= $current_day->template;
