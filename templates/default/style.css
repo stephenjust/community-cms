@@ -77,7 +77,8 @@ span.news_title a {
 	color: #000000;
 	text-decoration: none;
 }
-span.news_content {
+div.news_content {
+	font-family: Arial,Helvetica,Sans-Serif;
 }
 img.news_image {
   width: 100px;
