@@ -10,4 +10,12 @@
 			return 0;
 			}
 		}
+
+
+	function replace_char_codes($input) {
+		$output = $input;
+		$output = str_replace('–','&ndash;',$output);
+		$output = str_replace('’','&rsquo;',$output);
+		return $output;
+		}
 ?>

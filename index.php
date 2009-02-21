@@ -1,7 +1,7 @@
 <?php
 	// Report all PHP errors
 	error_reporting(E_ALL);
-	header('Content-type: text/html; charset=ISO-8859-1');
+	header('Content-type: text/html; charset=UTF-8');
 	// The not-so-secure security check.
 	define('SECURITY',1);
 	define('ROOT','./');
