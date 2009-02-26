@@ -183,7 +183,7 @@
 		$save_query = 'UPDATE '.$CONFIG['db_prefix'].'pages SET title="'.$title.'",menu='.$hidden.',show_title='.$show_title.',blocks_left="'.$blocks_left.'",blocks_right="'.$blocks_right.'" WHERE id = '.$id.' LIMIT 1';
 		$save_handle = $db->query($save_query);
 		if(!$save_handle) {
-			$message = 'Failed to edit page. '.mysqli_error($db);;
+			$message = 'Failed to edit page. '.mysqli_error($db);
 			} else {
 			$message = 'Updated page information. '.log_action('Updated information for page \''.$title.'\'');
 			}
@@ -230,14 +230,18 @@ Right:<br />
 <table style="border: 1px solid #000000;">
 <tr><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
 <tr><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
-<tr><td valign="top">Type:</td><td>';
- 	$pagetypes = get_row_from_db("pagetypes","","id,name");
+<tr><td valign="top">Type:</td><td>
+<select name="type">';
+	$pagetypes_query = 'SELECT id,name FROM '.$CONFIG['db_prefix'].'pagetypes';
+	$pagetypes_handle = $db->query($pagetypes_query);
  	$i = 1;
-	while ($i <= $pagetypes['num_rows']) {
-		$content .= '<input type="radio" name="type" value="'.$pagetypes[$i]['id'].'" />'.$pagetypes[$i]['name'].'<br />';
+	while ($i <= $pagetypes_handle->num_rows) {
+		$pagetypes = $pagetypes_handle->fetch_assoc();
+		$content .= '<option value="'.$pagetypes['id'].'">'.$pagetypes['name'].'</option>';
 		$i++;
 	}
-$content .= '</td></td></tr>
+$content .= '</select>
+</td></td></tr>
 <tr><td>Hidden:</td><td><input type="checkbox" name="hidden" /></td></td></tr>
 <tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 </table>
@@ -275,6 +279,9 @@ $content .= '<h1>Manage Pages</h1>
 		if($page_list['id'] == $site_info['home']) {
 			$content .= '(Default)';
 			}
+		if($page_list['menu'] == 0) {
+			$content .= '(Hidden)';
+			}
 		$content .= '</td>
 <td><a href="?module=page&action=del&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=page&action=move_up&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
@@ -285,5 +292,5 @@ if($page_list['type'] != 0) {
 </tr>'; }
 		$i++;
 	}
-$content = $content.'</table>';
+$content .= '</table>';
 ?>
