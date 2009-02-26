@@ -6,7 +6,8 @@
 $message = NULL;
 if($_GET['action'] == 'save') {
 	$site_name = addslashes(strip_tags($_POST['site_name']));
-	$site_info_update_query = 'UPDATE '.$CONFIG['db_prefix']."config SET name='$site_name' LIMIT 1";
+	$footer = addslashes($_POST['footer']);
+	$site_info_update_query = 'UPDATE '.$CONFIG['db_prefix']."config SET name='$site_name',footer='$footer' LIMIT 1";
 	$site_info_update_handle = $db->query($site_info_update_query);
 	if(!$site_info_update_handle) {
 		$message .= 'Failed to update site information.';
@@ -28,6 +29,7 @@ $content .= '<form method="post" action="admin.php?module=site_config&action=sav
 <tr><td width="150">Site Description:</td><td><input type="text" name="site_desc" value="'.$current_config['comment'].'" /></td></tr>
 <tr><td width="150">Site URL:</td><td><input type="text" name="site_url" value="'.$current_config['url'].'" /></td></tr>
 <tr><td width="150">Default Template:</td><td>'.$current_config['template'].'</td></tr>
+<tr><td width="150">Page Footer:</td><td><textarea name="footer">'.stripslashes($current_config['footer']).'</textarea></td></tr>
 <tr><td width="150">Site Disabled:</td><td>no</td></tr>
 <tr><td width="150">Cookie Domain:</td><td></td></tr>
 <tr><td width="150">Cookie Path:</td><td></td></tr>

@@ -16,6 +16,7 @@
 			$num_rows = $access->num_rows;
 			$result = $access->fetch_assoc();
 			if($num_rows != 1) {
+				logout();
 				err_page(3003);
 				} else {
 				session_set_cookie_params(84000000);
@@ -48,6 +49,10 @@
 		global $CONFIG;
 		global $db;
 		if(isset($_SESSION['user'])) {
+			if(!isset($_SESSION['pass']) || !isset($_SESSION['name'])) {
+				logout();
+				return false;
+				}
 			$query = 'SELECT id,username,password,realname,type FROM '.$CONFIG['db_prefix'].'users WHERE username = \''.$_SESSION['user'].'\' AND password = \''.$_SESSION['pass'].'\' AND type = \''.$_SESSION['type'].'\' AND realname = \''.$_SESSION['name'].'\'';
 			$access = $db->query($query);
 			$num_rows = $access->num_rows;

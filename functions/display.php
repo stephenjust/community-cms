@@ -74,8 +74,7 @@
 		$template_page->page_message = $page_message;
 		$template_page->left_content = $left_blocks_content;
 		$template_page->right_content = $right_blocks_content;
-		$template_page->footer = '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>
-<br />Powered by Community CMS';
+		$template_page->footer = stripslashes($site_info['footer']);
 		$template_page->content = $content;
 		$template_page->page_id = $page_info['id'];
 		$template_page->image_path = $image_path;

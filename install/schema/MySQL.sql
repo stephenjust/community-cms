@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS `comcms_config` (
   `url` text NOT NULL,
   `comment` text NOT NULL,
   `template` int(11) NOT NULL,
+  `footer` text NOT NULL,
   `active` tinyint(1) NOT NULL,
   `home` int(4) NOT NULL default '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -99,8 +100,8 @@ CREATE TABLE IF NOT EXISTS `comcms_config` (
 -- Dumping data for table `comcms_config`
 --
 
-INSERT INTO `comcms_config` (`name`, `url`, `comment`, `template`, `active`) VALUES
-('Community CMS Default', 'http://localhost/', 'Sourceforge.net', 1, 1);
+INSERT INTO `comcms_config` (`name`, `url`, `comment`, `template`, `footer`, `active`) VALUES
+('Community CMS Default', 'http://localhost/', 'Sourceforge.net', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);
 
 -- --------------------------------------------------------
 
