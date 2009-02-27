@@ -41,5 +41,6 @@ $rowtype = 1;
 $content .= '<h3>User Summary:</h3>
 You have at least one admin user and possibly some other users.
 <h3>Database Summary:</h3>
-You are using <i>some</i> space for your database.'; 
+Database Version: '.$site_info['db_version'].'<br />
+MySQL Version: '.$db->get_server_info(); 
 ?>
