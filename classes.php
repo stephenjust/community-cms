@@ -86,7 +86,21 @@
 				$length = $end - $start - strlen($start_string);
 				return substr($this->template,$start + strlen($start_string),$length);
 				}
-			}		
+			}
+
+		function split($split_marker) {
+			$content = $this->template;
+			$temp = explode('<!-- $'.mb_convert_case($split_marker, MB_CASE_UPPER, "UTF-8").'$ -->',$content);
+			$this->template = $temp[0];
+			$new_temp = $temp[1];
+			unset($temp);
+			unset($content);
+			$new_template = new template;
+			$new_template->path = $this->path;
+			$new_template->template = '<!-- $'.mb_convert_case($split_marker, MB_CASE_UPPER, "UTF-8").'$ -->'.$new_temp;
+			unset($new_temp);
+			return $new_template;
+			}
 
 		function __toString() {
 			if(isset($this->template)) {

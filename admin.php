@@ -18,15 +18,6 @@
 	if(mysqli_connect_errno()) {
 		err_page(1001);
 		}
-	$connect = mysql_connect($CONFIG['db_host'],$CONFIG['db_user'],$CONFIG['db_pass']);
-	if (!$connect) {
-		die('Could not connect to the MySQL server.');
-		}
-	// Try to open the database that is used by Community CMS.
-	$select_db = mysql_select_db($CONFIG['db_name'],$connect);
-	if(!$select_db) {
-		die('Unable to select mysql database.');
-		}
 	// Once the database connections are made, include all other necessary files.
 	if(!include_once('./include.php')) {
 		err_page(2001);
@@ -58,7 +49,9 @@
 	// Run login checks.
 	checkuser_admin();
 	include('./functions/admin.php');
-	function display_admin($content) {
+	function display_admin() {
+		global $CONFIG;
+		global $db;
 		$template_page = new template;
 		$template_page->load_admin_file();
 		$page_title = 'Community CMS Administration';
@@ -95,20 +88,33 @@ tinyMCE.init({
 });
 </script>';
 		$template_page->nav_bar = '<span class="nav_header">Main</span><br />
-		<a href="admin.php?'.SID.'">Admin Home</a><br />
+<a href="admin.php?'.SID.'">Admin Home</a><br />
 <a href="index.php?'.SID.'" target="_blank">View Site</a><br />
 '.admin_nav();
 		$template_page->nav_login = display_login_box();
 		$template_page->page_title = $page_title;
 		$template_page->css_include = $css_include;
-		$template_page->nav_login = $nav_login;
-		$template_page->content = $content;
+		$template_page_bottom = $template_page->split('content');
 		$template_page->image_path = $image_path;
 		echo $template_page;
 		unset($template_page);
+		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'admin_pages WHERE file = "'.$_GET['module'].'" LIMIT 1';
+		$page_handle = $db->query($page_query);
+		if($page_handle->num_rows != 1) {
+			include('./admin/index.php');
+			} else {
+			$page = $page_handle->fetch_assoc();
+			$loaded = include('./admin/'.$page['file'].'.php');
+			if(!$loaded) {
+				$content = 'Failed to load '.$page['file'].'.php';
+				}
+			}
+		$template_page_bottom->content = $content;
+		$template_page_bottom->image_path = $image_path;
+		echo $template_page_bottom;
+		unset($template_page_bottom);
 		}
 	display_admin($content);
 
-	mysql_close($connect);
 	$db->close();
 ?>

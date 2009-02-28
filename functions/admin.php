@@ -31,17 +31,6 @@
 			}
 		return $result;
 		}
-	$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'admin_pages WHERE file = "'.$_GET['module'].'" LIMIT 1';
-	$page_handle = $db->query($page_query);
-	if($page_handle->num_rows != 1) {
-		include('./admin/index.php');
-		} else {
-		$page = $page_handle->fetch_assoc();
-		$loaded = include('./admin/'.$page['file'].'.php');
-		if(!$loaded) {
-			$content = 'Failed to load '.$page['file'].'.php';
-			}
-		}
 
 	function log_action($message) {
 		global $db;
