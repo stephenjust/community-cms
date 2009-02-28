@@ -15,7 +15,7 @@
 	$block_template->load_file('mini_categories');
 	for($i = 1; $i <= $category_handle->num_rows; $i++) {
 		$category = $category_handle->fetch_assoc();
-		$cats .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$category['colour'].'.png">'.$category['label'].'<br />';
+		$cats .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$category['colour'].'.png"> '.stripslashes($category['label']).'<br />';
 		}
 	unset($category_block);
 	$block_template->categories = $cats;
