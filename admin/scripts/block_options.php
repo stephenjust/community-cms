@@ -20,6 +20,7 @@ Block File Format:
 
 blockname#parameter('Parameter Name')=type{comma,separated,values}\n
 block2#id('Something ID')=int\n
+block3#
 
 */
 
@@ -32,19 +33,19 @@ block2#id('Something ID')=int\n
 		fclose($file_handle);
 		$block_entries = explode("\n",$file);
 		$num_entries = count($block_entries);
-		$i = 1;
-		while ($i <= $num_entries) {
+		for ($i = 1; $i <= $num_entries; $i++) {
 			$entry = explode('#',$block_entries[$i - 1]);
 			if($entry[0] == $_GET['blocktype']) {
 				$attributes = explode('&',$entry[1]);
 				$num_attributes = count($attributes);
 				$j = 1;
-				if ($num_attributes == 0) {
+				if ($num_attributes == 0 || strlen($attributes[0]) < 1) {
 					echo '<input type="hidden" name="attributes" value="" />';
 					echo 'No options.';
+					$num_attributes = 0;
 					}
 				$allattributes = NULL;
-				while ($j <= $num_attributes) {
+				for ($j = 1; $j <= $num_attributes; $j++) {
 					$atb = explode('=',$attributes[$j - 1]);
 					$temp = explode('(\'',$atb[0]);
 					$attribute_name = $temp[0];
@@ -74,17 +75,15 @@ block2#id('Something ID')=int\n
 						default:
 							echo 'Not supported.<br />';
 							break;
-						}
+						} // SWITCH
 					$allattributes .= $attribute_name;
 					if ($j != $num_attributes) {
 						$allattributes .= ',';
 						}
-					$j++;
-					}
+					} // FOR $j
 				echo '<input type="hidden" name="attributes" value="'.$allattributes.'" />';
-				}
-			$i++;
-			}
+				} // IF $entry[0], $_GET['blocktype']
+			} // FOR $i
 		} else {
 		die('Security breach.');
 		}

@@ -8,7 +8,6 @@
 		global $CONFIG;
 		$template_page = new template;
 		$template_page->load_file();
-		$content = get_page_content($page_info['id'],$page_info['type'],$view);
 		$page_message = NULL;
 		$admin_include = NULL;
 		$left_blocks_content = NULL;
@@ -75,15 +74,21 @@
 		$template_page->left_content = $left_blocks_content;
 		$template_page->right_content = $right_blocks_content;
 		$template_page->footer = stripslashes($site_info['footer']);
-		$template_page->content = $content;
-		$template_page->page_id = $page_info['id'];
-		$template_page->image_path = $image_path;
-		$template_page->css_include = $css_include;
 		$template_page->nav_bar = display_nav_bar();
 		$template_page->nav_login = display_login_box();
+		$template_page->css_include = $css_include;
 		$template_page->admin_include = $admin_include;
+		$template_page->page_id = $page_info['id'];
+		$template_page->image_path = $image_path;
+		$template_page_bottom = $template_page->split('content');
 		echo $template_page;
 		unset($template_page);
+		$content = get_page_content($page_info['id'],$page_info['type'],$view);
+		$template_page_bottom->content = $content;
+		$template_page_bottom->page_id = $page_info['id'];
+		$template_page_bottom->image_path = $image_path;
+		echo $template_page_bottom;
+		unset($template_page_bottom);
 		}
 
 	function display_nav_bar($mode = 1) {

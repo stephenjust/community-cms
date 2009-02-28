@@ -1,3 +1,4 @@
 poll#question_id('Question ID')=int
 text#article_id('Article ID')=int
 events#mode('Display Mode')=option{upcoming,past}&num('Number of Entries')=int
+calendarcategories#
