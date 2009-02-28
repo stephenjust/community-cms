@@ -55,7 +55,7 @@
 				}
 			$right_blocks = explode(',',$page_info['blocks_right']);
 			$bk = 1; // Block iteration count
-			while ($bk <= count($left_blocks)) {
+			while ($bk <= count($right_blocks)) {
 				$block_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$right_blocks[$bk - 1].' LIMIT 1';
 				$block_handle = $db->query($block_query);
 				if($block_handle) {
