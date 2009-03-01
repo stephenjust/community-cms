@@ -43,19 +43,22 @@
 	$content .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$_POST['year'].'" /><input type="submit" value="Change" /></form>';
 	$content .= '<form method="post" action="?module=calendar&action=delete">
 <table class="admintable">
-<tr><th>&nbsp;</th><th>Date:</th><th>Heading:</th></tr>';
+<tr><th>&nbsp;</th><th>Date:</th><th>Heading:</th><th></th></tr>';
 	$rowcount = 1;
 	$date_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar WHERE year = '.$_POST['year'].' AND month = '.$_POST['month'].' ORDER BY day,starttime ASC';
 	$date_handle = $db->query($date_query);
  	$i = 1;
  	if($date_handle->num_rows == 0) {
- 		$content .= '<tr><td colspan="3" class="row1">There are no dates in this month.</td></tr>';
+ 		$content .= '<tr><td colspan="4" class="row1">There are no dates in this month.</td></tr>';
  		$rowcount = 2;
  		}
 	while ($i <= $date_handle->num_rows) {
 		$cal = $date_handle->fetch_assoc();
 		$cal_time = mktime(0,0,0,$cal['month'],$cal['day'],$cal['year']);
-		$content .= '<tr><td class="row'.$rowcount.'"><input type="radio" name="date_del" value="'.$cal['id'].'" /></td><td class="row'.$rowcount.'">'.date('M d, Y',$cal_time).'</td><td class="row'.$rowcount.'">'.stripslashes($cal['header']).'</tr>';
+		$content .= '<tr><td class="row'.$rowcount.'"><input type="radio" name="date_del" value="'.$cal['id'].'" /></td>
+<td class="row'.$rowcount.'">'.date('M d, Y',$cal_time).'</td>
+<td class="row'.$rowcount.'">'.stripslashes($cal['header']).'</td>
+<td class="row'.$rowcount.'"><a href="admin.php?module=calendar_edit_date&id='.$cal['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td></tr>';
 		$i++;
 		if($rowcount == 1) {
 			$rowcount = 2;
@@ -63,7 +66,7 @@
 			$rowcount = 1;
 			}
 		}
-	$content .= '<tr><td class="row'.$rowcount.'">&nbsp;</td><td colspan="2" class="row'.$rowcount.'"><input type="submit" value="Delete" /></td></tr>
+	$content .= '<tr><td class="row'.$rowcount.'">&nbsp;</td><td colspan="3" class="row'.$rowcount.'"><input type="submit" value="Delete" /></td></tr>
 </table>
 </form>';
 ?>

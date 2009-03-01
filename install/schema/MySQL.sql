@@ -21,6 +21,7 @@ INSERT INTO comcms_admin_pages
 	(NULL,'Calendar','1','Dates','calendar'),
 	(NULL,'Calendar','1','Settings','calendar_settings'),
 	(NULL,'Calendar','1','New Date','calendar_new_date'),
+	(NULL,'Calendar','0','Edit Date','calendar_edit_date'),
 	(NULL,'Files','1','Upload File','upload'),
 	(NULL,'Files','1','Manage','filemanager'),
 	(NULL,'Newsletters','1','Newsletters','newsletter'),
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `comcms_calendar` (
   `description` text,
   `location` text,
   `author` text,
-  `image` int(11) default NULL,
+  `image` text default NULL,
   `hidden` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `category` (`category`)
