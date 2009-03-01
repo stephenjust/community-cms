@@ -8,7 +8,7 @@
 	if(!isset($_GET['page'])) {
 		$page = 'table_of_contents';
 		} else {
-		$page = $_GET['page'];
+		$page = addslashes($_GET['page']);
 		}
 	$content .= include(ROOT.'admin/help_pages/'.$page.'.php');
 ?>

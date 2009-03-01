@@ -17,26 +17,33 @@
 				$message = 'Successfully deleted user. '.log_action('Deleted user #'.$_GET['id']);
 				}
 			}
-		}
+		} // IF 'delete'
+
+// ----------------------------------------------------------------------------
+
 	$content = $message;
-$content = $content.'<h1>User List</h1>
+	$content = $content.'<h1>User List</h1>
 <table class="admintable">
-<tr><td width="350">Name:</td><td>Del</td><td>Edit</td></tr>';
+<tr><th width="350">Name:</th><th colspan="2">&nbsp;</th></tr>';
 	$page_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'users ORDER BY realname ASC';
 	$page_list_handle = $db->query($page_list_query);
 	$page_list_rows = $page_list_handle->num_rows;
- 	$i = 1;
  	if($page_list_rows == 0) {
- 		$content = $content.'<tr><td class="adm_page_list_item">An error has occured. No users were found.</td><td></td><td></td></tr>';
+ 		$content = $content.'<tr class="row1"><td colspan="3">An error has occured. No users were found.</td></tr>';
  		}
-	while ($i <= $page_list_rows) {
+ 	$rowstyle = 'row1';
+	for ($i = 1; $i <= $page_list_rows; $i++) {
 		$page_list = $page_list_handle->fetch_assoc();
-		$content = $content.'<tr>
-<td class="adm_page_list_item">'.stripslashes($page_list['realname']).'</td>
+		$content = $content.'<tr class="'.$rowstyle.'">
+<td>'.stripslashes($page_list['realname']).'</td>
 <td><a href="?module=user&action=delete&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=user_edit&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 </tr>';
-		$i++;
-	}
+		if($rowstyle == 'row1') {
+			$rowstyle = 'row2';
+			} else {
+			$rowstyle = 'row1';
+			}
+		}
 $content = $content.'</table>';
 ?>

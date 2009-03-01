@@ -4,28 +4,22 @@
 		die ('You cannot access this page directly.');
 		}
 	if ($_GET['action'] == 'new') {
-	  if($_POST['hidden'] == 'on') { 
-	  	$_POST['hidden'] = 0; 
-	  	} else { 
-	  	$_POST['hidden'] = 1;
-	  	}
-	  if($_POST['show_title'] == 'on') { 
-	  	$_POST['show_title'] = 1; 
-	  	} else { 
-	  	$_POST['show_title'] = 0;
-	  	}
+		$menu = checkbox($_POST['menu']);
+		$show_title = checkbox($_POST['show_title']);
 	  $message = NULL;
 	  // Add page to database.
-		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,show_title,type,menu) VALUES ("'.$_POST['title'].'",'.$_POST['show_title'].',
-	  "'.$_POST['type'].'",'.$_POST['hidden'].')';
+		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,show_title,type,menu) 
+VALUES ("'.$_POST['title'].'",'.$show_title.',"'.$_POST['type'].'",'.$menu.')';
 		$new_page = $db->query($new_page_query);
 		if(!$new_page) {
 			$message .= mysqli_error($db).'<br />';
 			} else {
 			$message .= 'Successfully added page.<br />'.log_action('New page \''.$_POST['title'].'\'');
 			}
-		}
-		
+		} // IF 'new'
+
+// ----------------------------------------------------------------------------
+
 	if ($_GET['action'] == 'new_link') {
 	  $message = NULL;
 	  $link = $_POST['url'];
@@ -48,8 +42,10 @@
 			} else {
 			$message .= 'Failed to create link to external page. Invalid address.<br />';
 			}
-		}		
-		
+		} // IF 'new_link'
+
+// ----------------------------------------------------------------------------
+
 	if($_GET['action'] == 'home') {
 		$check_page_query = 'SELECT id,title FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'].' LIMIT 1';
 		$check_page_handle = $db->query($check_page_query);
@@ -69,7 +65,10 @@
 			} else {
 			$message .= 'Could not find the page you are trying to delete.';
 			}
-		}
+		} // IF 'home'
+
+// ----------------------------------------------------------------------------
+
 	if($_GET['action'] == 'del') {
 		// Delete page from database if no files exist on that page.
 		$page_type_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'];
@@ -98,7 +97,10 @@
 				$message = 'Successfully deleted page. '.log_action('Deleted page with id \''.$_GET['id'].'\'');
 				}
 			}
-		}
+		} // IF 'del'
+
+// ----------------------------------------------------------------------------
+
 	// Clean page list
 	$page_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages ORDER BY list ASC';
 	$page_list_handle = $db->query($page_list_query);
@@ -125,6 +127,9 @@
 		$i++;
 		}	
 	$page_list_handle->free();
+
+// ----------------------------------------------------------------------------
+
 	// Move page down if requested.
 	if($_GET['action'] == 'move_down') {
 		$move_down_query1 = 'SELECT id,list FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'].' LIMIT 1';
@@ -144,7 +149,10 @@
 				$message = 'Failed to move page down.';
 				}
 			}
-		}
+		}// IF 'move_down'
+
+// ----------------------------------------------------------------------------
+
 	// Move page up if requested.
 	if($_GET['action'] == 'move_up') {
 		$move_up_query1 = 'SELECT id,list FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'].' LIMIT 1';
@@ -164,31 +172,28 @@
 				$message = 'Failed to move page up.';
 				}
 			}
-		}
+		} // IF 'move_up'
+
+// ----------------------------------------------------------------------------
+
 	if($_GET['action'] == 'editsave') {
 		$id = addslashes($_POST['id']);
 		$title = addslashes($_POST['title']);
-		if($_POST['hidden'] == 'on') { 
-	  	$hidden = 0; 
-	  	} else { 
-	  	$hidden = 1;
-	  	}
-	  if($_POST['show_title'] == 'on') { 
-	  	$show_title = 1; 
-	  	} else { 
-	  	$show_title = 0;
-	  	}
+		$menu = checkbox($_POST['hidden']);
+	  $show_title = checkbox($_POST['show_title']);
 		$blocks_left = addslashes($_POST['blocks_left']);
 		$blocks_right = addslashes($_POST['blocks_right']);
-		$save_query = 'UPDATE '.$CONFIG['db_prefix'].'pages SET title="'.$title.'",menu='.$hidden.',show_title='.$show_title.',blocks_left="'.$blocks_left.'",blocks_right="'.$blocks_right.'" WHERE id = '.$id.' LIMIT 1';
+		$save_query = 'UPDATE '.$CONFIG['db_prefix'].'pages SET title="'.$title.'",menu='.$menu.',show_title='.$show_title.',blocks_left="'.$blocks_left.'",blocks_right="'.$blocks_right.'" WHERE id = '.$id.' LIMIT 1';
 		$save_handle = $db->query($save_query);
 		if(!$save_handle) {
 			$message = 'Failed to edit page. '.mysqli_error($db);
 			} else {
 			$message = 'Updated page information. '.log_action('Updated information for page \''.$title.'\'');
 			}
-		}
-	// $content = NULL;
+		} // IF 'editsave'
+
+// ----------------------------------------------------------------------------
+
 	$content = $message;
 	if ($_GET['action'] == 'edit') {
 		$edit_page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'].' LIMIT 1';
@@ -197,40 +202,36 @@
 			$content .= 'Failed to load page data.';
 			} else {
 			$edit_page = $edit_page_handle->fetch_assoc();
-			if($edit_page['show_title'] == 1) {
-				$show_title = 'checked ';
-				} else {
-				$show_title = NULL;
-				}
-			if($edit_page['hidden'] == 1) {
-				$hidden = 'checked ';
-				} else {
-				$hidden = NULL;
-				}
+			$show_title = checkbox($edit_page['show_title'],1);
+			$hidden = checkbox($edit_page['menu'],1);
 			$content .= '<form method="POST" action="admin.php?module=page&action=editsave">
 <h1>Edit Page</h1>
-<table style="border: 1px solid #000000;">
+<table class="admintable">
 <input type="hidden" name="id" value="'.$edit_page['id'].'" />
-<tr><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
-<tr><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
-<tr><td>Hidden:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
-<tr><td valign="top">Blocks:<br>(Comma separated block IDs)</td><td>Left:<br />
+<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
+<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
+<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
+<tr class="row2"><td valign="top">Blocks:<br>(Comma separated block IDs)</td><td>Left:<br />
 <input type="text" name="blocks_left" value="'.$edit_page['blocks_left'].'" /><br />
 Right:<br />
 <input type="text" name="blocks_right" value="'.$edit_page['blocks_right'].'" />
 </td></td></tr>
-<tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
+<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 </table>
 
 </form>';
 			}
 		}
+
+// ----------------------------------------------------------------------------
+
 	$content .= '<form method="POST" action="admin.php?module=page&action=new">
 <h1>Add Page</h1>
-<table style="border: 1px solid #000000;">
-<tr><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
-<tr><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
-<tr><td valign="top">Type:</td><td>
+<table class="admintable">
+<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
+<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
+<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
+<tr class="row2"><td valign="top">Type:</td><td>
 <select name="type">';
 	$pagetypes_query = 'SELECT id,name FROM '.$CONFIG['db_prefix'].'pagetypes';
 	$pagetypes_handle = $db->query($pagetypes_query);
@@ -242,40 +243,43 @@ Right:<br />
 	}
 $content .= '</select>
 </td></td></tr>
-<tr><td>Hidden:</td><td><input type="checkbox" name="hidden" /></td></td></tr>
-<tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
+<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 </table>
 
 </form>';
+
+// ----------------------------------------------------------------------------
 
 $content .= '<form method="POST" action="admin.php?module=page&action=new_link">
 <h1>Add Link to External Page</h1>
-<table style="border: 1px solid #000000;">
-<tr><td width="150">Link Text:</td><td><input type="text" name="title" value="" /></td></tr>
-<tr><td valign="top">URL:</td><td>
+<table class="admintable">
+<tr class="row1"><td width="150">Link Text:</td><td><input type="text" name="title" value="" /></td></tr>
+<tr class="row2"><td valign="top">URL:</td><td>
 <input type="text" name="url" value="http://" /><br />
 </td></td></tr>
-<tr><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
+<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
 </table>
 </form>';
 
+// ----------------------------------------------------------------------------
+
 $content .= '<h1>Manage Pages</h1>
-<table style="border: 1px solid #000000;">
-<tr><td width="350">Page:</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+<table class="admintable">
+<tr><th width="350">Page:</th><th colspan="5">&nbsp;</th></tr>';
 	// Get page list in the order defined in the database. First is 0.
 	$page_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages ORDER BY list ASC';
 	$page_list_handle = $db->query($page_list_query);
 	$page_list_rows = $page_list_handle->num_rows;
- 	$i = 1;
-	while ($i <= $page_list_rows) {
+	$rowstyle = 'row1';
+	for ($i = 1; $i <= $page_list_rows; $i++) {
 		$page_list = $page_list_handle->fetch_assoc();
 		if($page_list['type'] == 0) {
 			$page_list['title'] = explode('<LINK>',$page_list['title']);
-			$page_list['title'] = $page_list['title'][0];
+			$page_list['title'] = $page_list['title'][0].' (Link)';
 			}
 		global $site_info;
-		$content .= '<tr>
-<td class="adm_page_list_item">'.$page_list['title'].' ';
+		$content .= '<tr class="'.$rowstyle.'">
+<td>'.$page_list['title'].' ';
 		if($page_list['id'] == $site_info['home']) {
 			$content .= '(Default)';
 			}
@@ -283,14 +287,26 @@ $content .= '<h1>Manage Pages</h1>
 			$content .= '(Hidden)';
 			}
 		$content .= '</td>
-<td><a href="?module=page&action=del&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=page&action=move_up&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=page&action=move_down&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=page&action=edit&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>';
-if($page_list['type'] != 0) {
-	$content .= '<td><a href="?module=page&action=home&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>
-</tr>'; }
-		$i++;
-	}
+<td><a href="?module=page&action=del&id='.$page_list['id'].'">
+<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=page&action=move_up&id='.$page_list['id'].'">
+<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=page&action=move_down&id='.$page_list['id'].'">
+<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>';
+		if($page_list['type'] != 0) {
+			$content .= '<td><a href="?module=page&action=edit&id='.$page_list['id'].'">
+<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="?module=page&action=home&id='.$page_list['id'].'">
+<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>
+</tr>'; 
+			} else {
+			$content .= '<td>&nbsp;</td><td>&nbsp;</td>';
+			}
+		if($rowstyle == 'row1') {
+			$rowstyle = 'row2';
+			} else {
+			$rowstyle = 'row1';
+			}
+		} // FOR
 $content .= '</table>';
 ?>

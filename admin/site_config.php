@@ -14,7 +14,10 @@ if($_GET['action'] == 'save') {
 		} else {
 		$message .= 'Successfully edited site information. '.log_action('Updated site information.');
 		}
-	}
+	} // IF 'save'
+
+// ----------------------------------------------------------------------------
+
 $config_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config LIMIT 1';
 $config_handle = $db->query($config_query);
 if(!$config_handle) {

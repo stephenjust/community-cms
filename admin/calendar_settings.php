@@ -23,8 +23,10 @@
 			} else {
 			$message .= 'Failed to find the category that you are trying to delete.';
 			}
-		}
-	// Create new category if requested.
+		} // IF 'delete_category'
+
+// ----------------------------------------------------------------------------
+
 	if ($_GET['action'] == 'create_category') {
 		$category_name = addslashes($_POST['category_name']);
 		if($category_name != "") {
@@ -38,7 +40,10 @@
 			} else {
 			$message = 'You did not provide a name for your new category.';
 			}
-		}
+		} // IF 'create_category'
+
+// ----------------------------------------------------------------------------
+
 $content = $message.'<form method="POST" action="?module=calendar_settings&action=create_category">
 <h1>Create New Category</h1>
 <table class="admintable">

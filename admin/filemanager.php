@@ -6,6 +6,7 @@
 	$content = NULL;
 	if($_GET['action'] == 'new_folder') {
 		$new_folder_name = addslashes($_POST['new_folder_name']);
+		// Validate folder name
 		if(strlen($new_folder_name) > 30) {
 			$content .= 'New folder name too long.<br />';
 			$error = 1;
@@ -25,8 +26,11 @@
 				} else {
 				$content .= 'A file or folder with that name already exists.';
 				}
-			}
-		}
+			} // IF error
+		} // IF 'new_folder'
+
+// ----------------------------------------------------------------------------
+
 	if(!isset($_POST['folder_list'])) {
 		$_POST['folder_list'] == "";
 		}

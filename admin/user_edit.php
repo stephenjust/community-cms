@@ -49,8 +49,16 @@
 				$email_hide = checkbox($email_hide);
 				$hide = checkbox($hide);
 				$message = checkbox($message);
+				if($_POST['surname'] == '' || $_POST['first_name'] == '') {
+					$realname = $_POST['surname'].$_POST['first_name'];
+					} else {
+					$realname = $_POST['surname'].', '.$_POST['first_name'];
+					}
 				if($error == 0) {
-					$edit_query = 'UPDATE '.$CONFIG['db_prefix'].'users SET realname="'.$_POST['surname'].', '.$_POST['first_name'].'", title="'.$title.'", phone="'.$telephone.'", email="'.$email.'", address="'.addslashes($_POST['address']).'", address_hide='.$address_hide.', email_hide='.$email_hide.', message='.$message.', hide='.$hide.' WHERE id = '.$_GET['edit'].' LIMIT 1';
+					$edit_query = 'UPDATE '.$CONFIG['db_prefix'].'users SET realname="'.$realname.'", 
+title="'.$title.'", phone="'.$telephone.'", email="'.$email.'", address="'.addslashes($_POST['address']).'", 
+address_hide='.$address_hide.', email_hide='.$email_hide.', phone_hide='.$telephone_hide.', 
+message='.$message.', hide='.$hide.' WHERE id = '.$_GET['edit'].' LIMIT 1';
 					$edit_handle = $db->query($edit_query);
 					if(!$edit_handle) {
 						$content .= 'Failed to update user information. '.mysqli_error($db);
@@ -58,33 +66,16 @@
 						$content .= 'Successfully updated user information.';
 						}
 					}
-				} else {
+				} else { // IF 'edit'
+
+// ----------------------------------------------------------------------------
+
 				$current_name = explode(', ',$current_data['realname']);
-				if($current_data['phone_hide'] == 1) {
-					$telephone_hide = 'checked';
-					} else {
-					$telephone_hide = NULL;
-					}
-				if($current_data['address_hide'] == 1) {
-					$address_hide = 'checked';
-					} else {
-					$address_hide = NULL;
-					}
-				if($current_data['email_hide'] == 1) {
-					$email_hide = 'checked';
-					} else {
-					$email_hide = NULL;
-					}
-				if($current_data['hide'] == 1) {
-					$hide = 'checked';
-					} else {
-					$hide = NULL;
-					}
-				if($current_data['message'] == 1) {
-					$message = 'checked';
-					} else {
-					$message = NULL;
-					}
+				$telephone_hide = checkbox($current_data['phone_hide'],1);
+				$address_hide = checkbox($current_data['address_hide'],1);
+				$email_hide = checkbox($current_data['email_hide'],1);
+				$hide = checkbox($current_data['hide'],1);
+				$message = checkbox($current_data['message'],1);
 				$content = '<h1>Modify User</h1>
 <form method="POST" action="admin.php?module=user_edit&edit='.$_GET['id'].'">
 <table class="admintable">

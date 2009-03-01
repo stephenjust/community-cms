@@ -3,11 +3,19 @@
 	if (@SECURITY != 1) {
 		die ('You cannot access this page directly.');
 		}
-	function checkbox($var) {
-		if($var == "on") {
-			return 1; 
+	function checkbox($var,$reverse = 0) {
+		if($reverse == 0) {
+			if($var == "on") {
+				return 1; 
+				} else {
+				return 0;
+				}
 			} else {
-			return 0;
+			if($var == 1) {
+				return 'checked';
+				} else {
+				return NULL;
+				}
 			}
 		}
 

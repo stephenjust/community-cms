@@ -53,9 +53,7 @@
 	  $_POST['passwd'] = NULL;
 		}
 	if($_GET['login'] == 1) {
-		$user = $_POST['user'];
-		$passwd = $_POST['passwd'];
-		login($user,$passwd);
+		login($_POST['user'],$_POST['passwd']);
 		} elseif($_GET['login'] == 2) {
 		logout();
 		}
