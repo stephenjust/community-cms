@@ -20,7 +20,7 @@
 		$showdate = $_POST['date_params'];
 		$image = $_POST['image'];
 		$page = $_POST['page'];
-		$edit_article_query = 'UPDATE '.$CONFIG['db_prefix']."news SET name='$name',description='$edit_content',page='$page',image='$image',date='$date',showdate='$showdate' WHERE id = $edit_id";
+		$edit_article_query = 'UPDATE '.$CONFIG['db_prefix']."news SET name='$name',description='$edit_content',page='$page',image='$image',date_edited='$date',showdate='$showdate' WHERE id = $edit_id";
 		$edit_article = $db->query($edit_article_query);
 		if(!$edit_article) {
 			$content = 'Failed to edit article. '.mysqli_error($db);

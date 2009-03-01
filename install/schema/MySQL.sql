@@ -138,12 +138,13 @@ CREATE TABLE IF NOT EXISTS `comcms_news` (
   `name` text,
   `description` text,
   `author` text,
-  `date` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
-  `image` text default NULL,
+  `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `date_edited` timestamp NULL default NULL,
+  `image` text,
   `showdate` int(2) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
 
 --
 -- Dumping data for table `comcms_news`
