@@ -16,23 +16,25 @@ body {
 	position: absolute;
 	top: 0px;
 	right: 0px;
+	z-index: 1000;
 }
-#header { 
-	background-color: #3187b4; /* If image is not loaded yet */
-	background: url('<!-- $IMAGE_PATH$ -->header.png'); /* Covers solid background */
-	height:100px;
-	text-align: center;
+#header {
+	width: 100%;
+	background-color: #EEE;
+	border: 0px;
 }
 #left { 
 	float: left;
 	width: 200px;
-	background-color: #FFF; 
+	background-color: #EEE;
+	border: 1px dashed #999; 
+	padding-left: 3px;
 	min-height: 350px; /* for modern browsers */
 	height: auto !important; /* for modern browsers */
 	height: 350px; /* for IE5.x and IE6 */
 }
 #center { 
-	margin-left: 200px;
+	margin-left: 210px;
 	background-color: #FFF; 
 	min-height: 350px; /* for modern browsers */
 	height: auto !important; /* for modern browsers */
@@ -47,22 +49,13 @@ body {
 </style>
 </head>
 <body>
-	<div id="helpbutton">
-		<a href="admin.php?module=help" target="_blank"><img src="<!-- $IMAGE_PATH$ -->help.png" alt="HELP" border="0px" /></a>
-		</div>
 	<div id="header">
-		<a href="admin.php"><img src="<!-- $IMAGE_PATH$ -->logo.png" alt="Header" class="logo" /></a>
+		<a href="admin.php?"><img src="<!-- $IMAGE_PATH$ -->logo.png" border="0px"></a>
 		</div>
 	<div id="left">
-  	<div class="nav_menu_top"></div>
-  	<div class="nav_menu">
-    	<!-- $NAV_BAR$ -->
-  		</div>
-  	<div class="nav_menu_separator"></div>
-  	<div class="nav_menu">
-    	<!-- $NAV_LOGIN$ -->
-  		</div>
-  	<div class="nav_menu_bottom"></div>
+		<!-- $NAV_BAR$ -->
+		<hr>
+		<!-- $NAV_LOGIN$ -->
 		<div class="left_content">
 			<!-- $LEFT_CONTENT$ -->
 			</div>
@@ -73,6 +66,10 @@ body {
 		</div>
 	<div id="footer">
   	<!-- $FOOTER$ -->
+		</div>
+	<div id="helpbutton">
+		<a href="admin.php?module=help" target="_blank">
+		<img src="<!-- $IMAGE_PATH$ -->help.png" alt="HELP" border="0px" /></a>
 		</div>
 	</body>
 </html>

@@ -1,42 +1,4 @@
-img.logo {
-  width: 280px;
-  height: 100px;
-  border: 0px;
-}
-div.nav_menu {
-  background: url('./images/menubg.png');
-  width: 190px;
-  padding-left: 10px;
-  color: #000;
-  float: left;
-  clear: both;
-}
-div.nav_menu_top {
-  background: url('./images/menutop.png');
-  height: 10px;
-  width: 200px;
-  float: left;
-}
-div.nav_menu_separator {
-  background: url('./images/menusep.png');
-  height: 20px;
-  width: 200px;
-  float: left;
-  clear: both;
-}
-div.nav_menu_bottom {
-  background: url('./images/menubottom.png');
-  height: 20px;
-  width: 200px;
-  float: left;
-  clear: both;
-}
-div.nav_menu input {
-  border: 1px solid #000000;
-  width: 120px;
-  background: #CCCCCC;
-}
-div.nav_menu a {
+#left a {
   color: #333333;
   padding-left: 10px;
   text-decoration: none;
