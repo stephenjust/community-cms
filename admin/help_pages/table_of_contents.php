@@ -24,6 +24,10 @@ of any administration page.
 <li><a href="admin.php?module=help&page=tinymce_what_is_it">What is TinyMCE?</a></li>
 <li><a href="admin.php?module=help&page=tinymce_paste_in_firefox">Pasting in Firefox</a></li>
 </ol>';
+	$return .= '<h4>Help</h4>
+<ol>
+<li><a href="admin.php?module=help&page=help_create">Creating a help page</a></li>
+</ol>';
 	$return .= '</div>';
 	return $return;
 ?>
