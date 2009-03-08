@@ -112,6 +112,7 @@ tinyMCE.init({
 			}
 		$template_page_bottom->content = $content;
 		$template_page_bottom->image_path = $image_path;
+		$template_page_bottom->footer = 'Powered by Community CMS';
 		echo $template_page_bottom;
 		unset($template_page_bottom);
 		}

@@ -25,11 +25,11 @@
 			$telephone = addslashes($_POST['telephone']);
 			$address = addslashes($_POST['address']);
 			$email = addslashes($_POST['email']);
-			$telephone_hide = $_POST['telephone_hide'];
-			$address_hide = $_POST['address_hide'];
-			$email_hide = $_POST['email_hide'];
-			$hide = $_POST['hide'];
-			$message = $_POST['message'];
+			$telephone_hide = checkbox($_POST['telephone_hide']);
+			$address_hide = checkbox($_POST['address_hide']);
+			$email_hide = checkbox($_POST['email_hide']);
+			$hide = checkbox($_POST['hide']);
+			$message = checkbox($_POST['message']);
 			if(strlen($username) <= 5) {
 				$content .= 'Your user name should be at least six characters.<br />';
 				$error = 1;
@@ -50,31 +50,6 @@
 				$content .= 'Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.<br />';
 				$error = 1;
 				}
-			if($telephone_hide == 'on') {
-				$telephone_hide = 1;
-				} else {
-				$telephone_hide = 0;
-				}
-			if($address_hide == 'on') {
-				$address_hide = 1;
-				} else {
-				$address_hide = 0;
-				}
-			if($email_hide == 'on') {
-				$email_hide = 1;
-				} else {
-				$email_hide = 0;
-				}
-			if($hide == 'on') {
-				$hide = 1;
-				} else {
-				$hide = 0;
-				}
-			if($message == 'on') {
-				$message = 1;
-				} else {
-				$message = 0;
-				}	
 			$check_user_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'users WHERE username = "'.$username.'"';
 			$check_user_handle = $db->query($check_user_query);
 			if(!$check_user_handle) {
@@ -102,44 +77,54 @@
 		$content = '<h1>Create New User</h1>
 <form method="POST" action="admin.php?module=user_create&create=1">
 <table class="admintable">
-<tr>
-<td class="row1">User Name:</td><td class="row1"><input type="text" name="username" /> johndoe01</td>
+<tr class="row1">
+<td>User Name:</td>
+<td><input type="text" name="username" /> johndoe01</td>
 </tr>
-<tr>
-<td class="row2">Password:</td><td class="row2"><input type="password" name="pass" /></td>
+<tr class="row2">
+<td>Password:</td>
+<td><input type="password" name="pass" /></td>
 </tr>
-<tr>
-<td class="row1">Confirm Password:</td><td class="row1"><input type="password" name="pass_conf" /></td>
+<tr class="row1">
+<td>Confirm Password:</td>
+<td><input type="password" name="pass_conf" /></td>
 </tr>
-<tr>
-<td class="row2">First Name:</td><td class="row2"><input type="text" name="first_name" /> John</td>
+<tr class="row2">
+<td>First Name:</td>
+<td><input type="text" name="first_name" /> John</td>
 </tr>
-<tr>
-<td class="row1">Surname:</td><td class="row1"><input type="text" name="surname" /> Doe</td>
+<tr class="row1">
+<td>Surname:</td>
+<td><input type="text" name="surname" /> Doe</td>
 </tr>
-<tr>
-<td class="row2">Title/Position:</td><td class="row2"><input type="text" name="title" /></td>
+<tr class="row2">
+<td>Title/Position:</td>
+<td><input type="text" name="title" /></td>
 </tr>
-<tr>
-<td class="row1">Phone Number:</td><td class="row1"><input type="text" name="telephone" /><input type="checkbox" name="telephone_hide" checked /> 555-555-1234</td>
+<tr class="row1">
+<td>Phone Number:</td>
+<td><input type="text" name="telephone" /><input type="checkbox" name="telephone_hide" checked /> 555-555-1234</td>
 </tr>
-<tr>
-<td class="row2">Address:</td><td class="row2"><input type="text" name="address" /><input type="checkbox" name="address_hide" checked /> 15648 Candycane Lane</td>
+<tr class="row2">
+<td>Address:</td>
+<td><input type="text" name="address" /><input type="checkbox" name="address_hide" checked /> 15648 Candycane Lane</td>
 </tr>
-<tr>
-<td class="row1">Email Address:</td><td class="row1"><input type="text" name="email" /><input type="checkbox" name="email_hide" checked /> johndoe@example.com</td>
+<tr class="row1">
+<td>Email Address:</td><td><input type="text" name="email" /><input type="checkbox" name="email_hide" checked /> johndoe@example.com</td>
 </tr>
-<tr>
-<td colspan="2" class="row2">If you would not like your phone number, email, or address to be displayed publicly, please check the boxes above. However, if you would like to allow people to see all or some of this information, uncheck the boxes corresponding to the values that you would like to be visible. You must enter this information so that the website administrators may contact you if the need arises. To hide your contact entry completely, check the box below.</td>
+<tr class="row2">
+<td colspan="2">If you would not like your phone number, email, or address to be displayed publicly, please check the boxes above. However, if you would like to allow people to see all or some of this information, uncheck the boxes corresponding to the values that you would like to be visible. You must enter this information so that the website administrators may contact you if the need arises. To hide your contact entry completely, check the box below.</td>
 </tr>
-<tr>
-<td class="row1">Hide on contacts page:</td><td class="row1"><input type="checkbox" name="hide" /></td>
+<tr class="row1">
+<td>Hide on contacts page:</td>
+<td><input type="checkbox" name="hide" /></td>
 </tr>
-<tr>
-<td class="row2">Allow recieving messages:</td><td class="row2"><input type="checkbox" name="message" /></td>
+<tr class="row2">
+<td>Allow recieving messages:</td>
+<td><input type="checkbox" name="message" /></td>
 </tr>
-<tr>
-<td colspan="2" class="row1"><input type="submit" value="Submit" /></td>
+<tr class="row1">
+<td colspan="2"><input type="submit" value="Submit" /></td>
 </tr>
 </table></form>';
 		}
