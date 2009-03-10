@@ -43,8 +43,14 @@
 
 // ----------------------------------------------------------------------------
 
-	$content .= '<h3>User Summary:</h3>
-You have at least one admin user and possibly some other users.';
+	$content .= '<h3>User Summary:</h3>';
+	$user_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'users ORDER BY id DESC';
+	$user_handle = $db->query($user_query);
+	if($user_handle) {
+		$user = $user_handle->fetch_assoc();
+		$content .= 'Number of users: '.$user_handle->num_rows.'<br />
+Newest user: '.$user['username'];
+		}
 
 // ----------------------------------------------------------------------------
 
