@@ -97,9 +97,8 @@
 		global $CONFIG;
 		$nav_menu_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE menu = '.$mode.' ORDER BY list ASC';
 		$nav_menu_handle = $db->query($nav_menu_query);
-		$i = 1;
 		$return = NULL;
-		while ($nav_menu_handle->num_rows >= $i) {
+		for ($i = 1; $nav_menu_handle->num_rows >= $i; $i++) {
 			$nav_menu = $nav_menu_handle->fetch_assoc();
 			if ($nav_menu['id'] == $page_info['id']) {
 				$return .= $nav_menu['title']."<br />";
@@ -108,13 +107,15 @@
 					$link = explode('<LINK>',$nav_menu['title']); // Check if menu entry is a link
 					$link_path = $link[1];
 					$link_name = $link[0];
+					unset($link);
 					$return .= "<a href='".$link_path."'>".$link_name."</a><br />";
+					unset($link_name);
+					unset($link_path);
 					} else {
 					$return .= "<a href='index.php?id=".$nav_menu['id']."'>".$nav_menu['title']."</a><br />";
-					}
-				}
-			$i++;
-			}
+					} // IF is link
+				} // IF is not current page
+			} // FOR
 		return $return;
 		}
 	
@@ -129,10 +130,10 @@
 	  	$template_loginbox->login_username = '<input type="text" name="user" id="login_user" />';
 	  	$template_loginbox->login_password = '<input type="password" name="passwd" id="login_password" />';
 	  	$template_loginbox->login_button = '<input type="submit" value="Login!" id="login_button" />';
-	    $return = "<form method='post' action='index.php?id=".$page_info['id']."&amp;login=1'>\n".$template_loginbox."</form>\n";
+	    $return = "<form method='post' action='index.php?".$_SERVER['QUERY_STRING']."&amp;login=1'>\n".$template_loginbox."</form>\n";
 	    unset($template_loginbox);
 	  } else { 
-	    $return = $_SESSION['name']."<br />\n<a href='index.php?login=2'>Log Out</a><br />\n";
+	    $return = $_SESSION['name']."<br />\n<a href='index.php?".$_SERVER['QUERY_STRING']."&amp;login=2'>Log Out</a><br />\n";
 	    $check_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.$_SESSION['userid'];
 	    $check_message_handle = $db->query($check_message_query);
 	    $check_message = $check_message_handle->num_rows;

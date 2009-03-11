@@ -1,36 +1,61 @@
 Changes
 -------
-Last updated Feb 15, 2009
+Last updated Mar 10, 2009
 ----------
 0.4 -> 0.5
 ----------
 ADMIN
--Admin home displays latest log messages, can add custom messages
+-Admin home displays:
+  * latest log messages, can add custom messages
+  * number of users, newest user
+  * mySQL version, community cms database version
 -Added 'Help' pages to backend.
 -File manager can create folders.
--You can configure the site name from the backend instead of editing
-	template files.
--Configure whether page title shows as header on top of page content.
--Simplified calendar management backend.
--Improved and added log messages.
--TinyMCE can be disabled for certain textareas.
+-Site-wide configuration:
+  * site name (displayed in page header)
+  * site footer
+-Page manager changes:
+  * edit existing pages
+  * configure to show title or not
+  * it is more clear what each section does
+-Calendar changes:
+  * reorganized date manager
+  * added module to edit dates
+-News changes:
+  * show messages on all pages
+  * show messages assigned to no page (page=0)
+-Log message changes:
+  * improved detail of existing messages
+  * added log messages for more actions
+-TinyMCE changes:
+  * added spellcheck plugin
+  * can be disabled selectively
+  * uses o2k7 theme
+  * updated to new version
 BLOCKS
--Added poll block and text block.
+-Implemented block system
+-New blocks:
+  * poll
+  * news article
+  * calendar upcoming dates
+  * calendar categories
 -Blocks can be in the left or right column of any page.
 TEMPLATES
--New classes for templates to simplify str_replace calls, also added
-	ability to easily replace ranges marked by <!-- $*_START$ --> and 
-	<!-- $*_END$ --> tags within template files.
--Re-made default template to display correctly in more browsers.
--Calendar module uses templates now.
+-New classes for templates
+-Added ability to easily replace ranges in template files
+-Re-made default template to display correctly in more browsers
+-Most modules use template files now
 CLEANING
 -Removed old DB functions completely from frontend, backend almost done.
 BUGFIXES
 -Now gives useful HTTP headers in addition to error messages (404, 403, etc.)
+-User creator/editor now actually saves passwords instead of storing NULL
 -Fixed most session issues.
+-Logging in or out does not make you lose your current page in views where it was lost
 -Many other bugfixes.
 SECURITY
--Keep track of previous login time.
+-Keep track of previous login time
+-Users who have not authenticated in 12 hours may not use backend
 
 ----------
 0.3 -> 0.4
