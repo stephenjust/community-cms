@@ -20,13 +20,8 @@ header("Pragma: no-cache"); // HTTP/1.0
 		}
 	// Once the database connections are made, include all other necessary files.
 	require_once('../include.php');
-	if(isset($_SESSION['user'])) {
-		$login = get_row_from_db('users','WHERE username = \''.$_SESSION['user'].'\' AND password = \''.$_SESSION['pass'].'\' AND type = \'1\'');
-	  if($login['num_rows'] != 1) {
-			die('Your session has expired.');
-			}
-		} else {
-		die('You are not logged in');
+	if(!checkuser_admin()) {
+		die('You do not have sufficient priveleges to perfom that action.');
 		}
 	$fieldname = $_GET['fieldname'];
 	$content = $_GET['content'];
