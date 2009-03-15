@@ -19,6 +19,10 @@ of any administration page.
 <ol>
 <li><a href="admin.php?module=help&page=news_new_article">Create New Article</a></li>
 </ol>';
+	$return .= '<h4>Newsletters</h4>
+<ol>
+<li><a href="admin.php?module=help&page=newsletter_new_newsletter">Creating a Newsletter</a></li>
+</ol>';
 	$return .= '<h4>TinyMCE</h4>
 <ol>
 <li><a href="admin.php?module=help&page=tinymce_what_is_it">What is TinyMCE?</a></li>
