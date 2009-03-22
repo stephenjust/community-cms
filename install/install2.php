@@ -8,7 +8,7 @@
   $content = $content."<tr>\n<td>\nMySQL Database\n</td>\n<td>\n<input type='text' name='dbname' />\n</td>\n</tr>\n";
   $content = $content."<tr>\n<td>\nMySQL User\n</td>\n<td>\n<input type='text' name='dbuser' />\n</td>\n</tr>\n";
   $content = $content."<tr>\n<td>\nMySQL Password\n</td>\n<td>\n<input type='text' name='dbpass' />\n</td>\n</tr>\n";
-  $content = $content."<tr>\n<td>\nMySQL Table Prefix\n</td>\n<td>\n<input type='text' name='dbpfix' value='comcms_' /> You must leave as 'comcms_' as other prefixes are not yet supported.\n</td>\n</tr>\n";
+  $content = $content."<tr>\n<td>\nMySQL Table Prefix\n</td>\n<td>\n<input type='text' name='dbpfix' value='comcms_' />\n</td>\n</tr>\n";
   $content = $content."<tr>\n<td>\n&nbsp;\n</td>\n<td>\n<input type='submit' value='Submit' />\n</td>\n</tr>\n";
   $content = $content."</table>\n";
   $content = $content."</form>";

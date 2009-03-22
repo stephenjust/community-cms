@@ -3,7 +3,6 @@
   define('SECURITY',1);
   $nav_bar = "<div align='center'><span style='color: #00CC00;'>Check file permissions</span><hr />\n<span style='color: #00CC00;'>Configure settings</span><hr />\n<span style='color: #CCCC00;'>Download/save config file</span></div>\n";
   $content = "<h1>Installing...</h1>\n";
-  $content = $content."Right now, the site name value you entered is not recognized by the installer. To configure the system further, you must use a program such as phpMyAdmin to edit site information.";
   include('../include.php');
 	$connect = mysql_connect($_POST['dbhost'],$_POST['dbuser'],$_POST['dbpass']);
 	if (!$connect) {
@@ -28,16 +27,17 @@
 			}
 		$query = fread($handle, filesize('./schema/MySQL.sql'));
 		fclose($handle);
-		$query = explode(';',$query);
-		$i = 1;
-		$f = count($query);
-		while ($i <= $f) {
+		$dbprefix = addslashes($_POST['dbpfix']);
+		$sitename = addslashes($_POST['sitename']);
+		$query = str_replace('<!-- $DB_PREFIX$ -->',$dbprefix,$query);
+		$query = str_replace('<!-- $SITE_NAME$ -->',$sitename,$query);
+		$query = explode(';;',$query);
+		for ($i = 0; $i < count($query); $i++) {
 			if(!mysql_query($query[$i],$connect)) {
-				$content .= 'Query '.$query[$i].' failed to execute.<br />';
+				$content .= 'Query '.$query[$i].' failed to execute.<br />'.mysql_error($connect).'<br />';
 				$error = 1;
 				}
-			$i++;
-			}
+			} // FOR
 		$config_file = '../config.php';
 		$handle = fopen($config_file, "w");
 		if(!$handle) {
@@ -68,7 +68,9 @@
 			}
 		fclose($handle);
 		if($error != 1) {
-		$content .= 'Install Successful. Please delete the install folder once you are able to confirm that the system is fully functional.';
+		$content .= 'Install Successful.<br />Please delete the install folder once you are able to confirm that the system is fully functional.
+<br />
+To log in, use the username \'admin\' and the password \'password\'. <a href="../index.php">Continue to Site</a>';
 		}
 	}
 	if($error == 1) {

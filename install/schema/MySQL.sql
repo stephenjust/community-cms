@@ -1,16 +1,13 @@
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-CREATE TABLE IF NOT EXISTS comcms_admin_pages (
+CREATE TABLE IF NOT EXISTS <!-- $DB_PREFIX$ -->admin_pages (
 	`id` INT NOT NULL auto_increment PRIMARY KEY ,
 	`category` TEXT NOT NULL,
 	`on_menu` BOOL NOT NULL DEFAULT '1',
 	`label` TEXT NOT NULL,
 	`file` TEXT NOT NULL
-) ENGINE=MYISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=MYISAM DEFAULT CHARSET=latin1 ;;
 
 
-INSERT INTO comcms_admin_pages 
+INSERT INTO <!-- $DB_PREFIX$ -->admin_pages 
 	(`id`,`category`,`on_menu`,`label`,`file`) VALUES 
 	(NULL,'Main','1','Configuration','site_config'),
 	(NULL,'Help','0','Help','help'),
@@ -35,15 +32,15 @@ INSERT INTO comcms_admin_pages
 	(NULL,'Users','1','New User','user_create'),
 	(NULL,'Users','1','User List','user'),
 	(NULL,'Users','0','Edit User','user_edit'),
-	(NULL,'Logs','1','View Logs','log_view');
+	(NULL,'Logs','1','View Logs','log_view');;
 	
-CREATE TABLE IF NOT EXISTS comcms_blocks (
+CREATE TABLE IF NOT EXISTS <!-- $DB_PREFIX$ -->blocks (
 	`id` INT NOT NULL auto_increment PRIMARY KEY ,
 	`type` TEXT NOT NULL,
 	`attributes` TEXT NOT NULL
-) ENGINE=MYISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=MYISAM DEFAULT CHARSET=latin1 ;;
 
-CREATE TABLE IF NOT EXISTS `comcms_calendar` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
   `id` int(11) NOT NULL auto_increment,
   `category` int(11) NOT NULL,
   `starttime` time NOT NULL,
@@ -59,35 +56,35 @@ CREATE TABLE IF NOT EXISTS `comcms_calendar` (
   `hidden` tinyint(1) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `category` (`category`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
 --
--- Table structure for table `comcms_calendar_categories`
+-- Table structure for table `<!-- $DB_PREFIX$ -->calendar_categories`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_calendar_categories` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
   `cat_id` int(11) NOT NULL auto_increment,
   `label` text NOT NULL,
    `colour` text NOT NULL,
   `description` text NOT NULL,
   PRIMARY KEY  (`cat_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;;
 
 --
--- Dumping data for table `comcms_calendar_categories`
+-- Dumping data for table `<!-- $DB_PREFIX$ -->calendar_categories`
 --
 
-INSERT INTO `comcms_calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
+INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
 (0, 'Default Category', 'red', ''),
-(1, 'Other', 'yellow', '');
+(1, 'Other', 'yellow', '');;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comcms_config`
+-- Table structure for table `<!-- $DB_PREFIX$ -->config`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_config` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`db_version` decimal(6,2) NOT NULL,
 	`name` text NOT NULL,
 	`url` text NOT NULL,
@@ -96,44 +93,44 @@ CREATE TABLE IF NOT EXISTS `comcms_config` (
 	`footer` text NOT NULL,
 	`active` tinyint(1) NOT NULL,
 	`home` int(4) NOT NULL default '1'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;;
 
 --
--- Dumping data for table `comcms_config`
+-- Dumping data for table `<!-- $DB_PREFIX$ -->config`
 --
 
-INSERT INTO `comcms_config` (`db_version`,`name`, `url`, `comment`, `template`, `footer`, `active`) VALUES
-('0.01','Community CMS Default', 'http://localhost/', 'Sourceforge.net', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);
+INSERT INTO `<!-- $DB_PREFIX$ -->config` (`db_version`,`name`, `url`, `comment`, `template`, `footer`, `active`) VALUES
+('0.01','<!-- $SITE_NAME$ -->', 'http://localhost/', 'Sourceforge.net', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comcms_files`
+-- Table structure for table `<!-- $DB_PREFIX$ -->files`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_files` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   `id` int(11) NOT NULL auto_increment,
   `type` int(11) NOT NULL,
   `label` text NOT NULL,
   `path` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
 
-CREATE TABLE IF NOT EXISTS `comcms_logs` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   `log_id` int(11) NOT NULL auto_increment,
   `date` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
   `user_id` int(5) NOT NULL,
   `action` text NOT NULL,
   `ip_addr` INT(10) unsigned NOT NULL,
   PRIMARY KEY  (`log_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
 --
--- Table structure for table `comcms_news`
+-- Table structure for table `<!-- $DB_PREFIX$ -->news`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_news` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
   `id` int(11) NOT NULL auto_increment,
   `page` int(11) default NULL,
   `name` text,
@@ -145,23 +142,23 @@ CREATE TABLE IF NOT EXISTS `comcms_news` (
   `showdate` int(2) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;;
 
 --
--- Dumping data for table `comcms_news`
+-- Dumping data for table `<!-- $DB_PREFIX$ -->news`
 --
 
-INSERT INTO `comcms_news` (`id`, `page`, `name`, `description`, `author`, `date`, `image`) VALUES
+INSERT INTO `<!-- $DB_PREFIX$ -->news` (`id`, `page`, `name`, `description`, `author`, `date`, `image`) VALUES
 (0, 1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL),
-(1, 1, 'AJAX Front-end Content Editing Beta', '<p>Currently in development (but nearly finished): editing contend directly from the front page. BETA available. With this functionality, the admin editing page will not be the only way to edit content. This process is now fully functional! You can even edit from the backend!</p>', 'Administrator', '2008-08-16 12:49:00', NULL);
+(1, 1, 'AJAX Front-end Content Editing Beta', '<p>Currently in development (but nearly finished): editing contend directly from the front page. BETA available. With this functionality, the admin editing page will not be the only way to edit content. This process is now fully functional! You can even edit from the backend!</p>', 'Administrator', '2008-08-16 12:49:00', NULL);;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comcms_newsletters`
+-- Table structure for table `<!-- $DB_PREFIX$ -->newsletters`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_newsletters` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
   `id` int(11) NOT NULL auto_increment,
   `page` int(11) NOT NULL,
   `year` int(4) NOT NULL default '2008',
@@ -170,13 +167,13 @@ CREATE TABLE IF NOT EXISTS `comcms_newsletters` (
   `path` text character set utf8 collate utf8_unicode_ci,
   `hidden` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
 --
--- Table structure for table `comcms_pages`
+-- Table structure for table `<!-- $DB_PREFIX$ -->pages`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_pages` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
   `id` int(11) NOT NULL auto_increment,
   `title` text NOT NULL,
   `show_title` tinyint(1) NOT NULL default '1',
@@ -186,18 +183,18 @@ CREATE TABLE IF NOT EXISTS `comcms_pages` (
   `blocks_left` text NULL,
   `blocks_right` text NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;;
 
 --
--- Dumping data for table `comcms_pages`
+-- Dumping data for table `<!-- $DB_PREFIX$ -->pages`
 --
 
-INSERT INTO `comcms_pages` (`id`, `title`, `type`, `menu`, `list`) VALUES
+INSERT INTO `<!-- $DB_PREFIX$ -->pages` (`id`, `title`, `type`, `menu`, `list`) VALUES
 (1, 'Home', 1, 1, 0),
 (2, 'Calendar', 3, 1, 1),
-(3, 'Newsletters', 2, 1, 2);
+(3, 'Newsletters', 2, 1, 2);;
 
-CREATE TABLE IF NOT EXISTS `comcms_page_messages` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_messages` (
 	`message_id` INT NOT NULL auto_increment PRIMARY KEY,
 	`page_id` INT NOT NULL,
 	`start_date` DATE NOT NULL,
@@ -206,101 +203,101 @@ CREATE TABLE IF NOT EXISTS `comcms_page_messages` (
 	`text` TEXT NOT NULL,
 	`order` INT NOT NULL,
 	INDEX ( `page_id`,`order` )
-) ENGINE = MYISAM DEFAULT CHARSET=latin1;
+) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
 --
--- Table structure for table `comcms_pagetypes`
+-- Table structure for table `<!-- $DB_PREFIX$ -->pagetypes`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_pagetypes` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
   `id` int(4) NOT NULL auto_increment,
   `name` tinytext NOT NULL,
 	`description` text NOT NULL,
   `author` tinytext NOT NULL,
   `filename` tinytext NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;;
 
 --
--- Dumping data for table `comcms_pagetypes`
+-- Dumping data for table `<!-- $DB_PREFIX$ -->pagetypes`
 --
 
-INSERT INTO `comcms_pagetypes` (`id`, `name`, `description`, `author`, `filename`) VALUES
+INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (`id`, `name`, `description`, `author`, `filename`) VALUES
 (1, 'News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', 'news.php'),
 (2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by date. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
 (3, 'Calendar', 'A complex date management system supporting a full month view, week view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
-(4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php');
+(4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php');;
 
 -- --------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `comcms_permissions` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->permissions` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	`user` INT NOT NULL ,
 	`files` INT(4) NOT NULL DEFAULT '0',
 	INDEX (`user`)
-) ENGINE = MYISAM DEFAULT CHARSET=latin1;
+) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
 
 
-CREATE TABLE IF NOT EXISTS `comcms_poll_questions` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_questions` (
   `question_id` int(5) NOT NULL auto_increment,
   `question` text NOT NULL,
   `short_name` text NOT NULL,
   `type` int(2) NOT NULL default '1',
   `active` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`question_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
 
-CREATE TABLE IF NOT EXISTS `comcms_poll_answers` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_answers` (
   `answer_id` int(6) NOT NULL auto_increment,
   `question_id` int(5) NOT NULL,
   `answer` text NOT NULL,
   `answer_order` int(2) NOT NULL,
   PRIMARY KEY  (`answer_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
-CREATE TABLE IF NOT EXISTS `comcms_poll_responses` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
   `response_id` int(11) NOT NULL auto_increment,
   `question_id` int(5) NOT NULL,
   `answer_id` int(6) NOT NULL,
   `value` text,
   `ip_addr` int(10) NOT NULL,
   PRIMARY KEY  (`response_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
 
-CREATE TABLE IF NOT EXISTS `comcms_templates` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
   `id` int(3) NOT NULL auto_increment,
   `path` text NOT NULL,
   `name` text NOT NULL,
   `description` text NOT NULL,
   `author` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
 --
--- Dumping data for table `comcms_templates`
+-- Dumping data for table `<!-- $DB_PREFIX$ -->templates`
 --
 
-INSERT INTO `comcms_templates` (`id`, `path`, `name`, `description`, `author`) VALUES
-(1, 'templates/default/', 'Community CMS Default Template', 'Default template.', 'Stephen J');
+INSERT INTO `<!-- $DB_PREFIX$ -->templates` (`id`, `path`, `name`, `description`, `author`) VALUES
+(1, 'templates/default/', 'Community CMS Default Template', 'Default template.', 'Stephen J');;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comcms_messages`
+-- Table structure for table `<!-- $DB_PREFIX$ -->messages`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_messages` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`recipient` INT(5) NOT NULL DEFAULT '1',
 	`message` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-	) ENGINE = MYISAM DEFAULT CHARSET=latin1;
+	) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
 
 --
--- Table structure for table `comcms_users`
+-- Table structure for table `<!-- $DB_PREFIX$ -->users`
 --
 
-CREATE TABLE IF NOT EXISTS `comcms_users` (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`id` int(5) NOT NULL auto_increment,
 	`type` int(2) NOT NULL default '1',
 	`username` text NOT NULL,
@@ -318,12 +315,12 @@ CREATE TABLE IF NOT EXISTS `comcms_users` (
 	`lastlogin` INT NOT NULL default '0',
 	PRIMARY KEY  (`id`),
 	KEY `type` (`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;;
 
 --
--- Dumping data for table `comcms_users`
+-- Dumping data for table `<!-- $DB_PREFIX$ -->users`
 --
 
-INSERT INTO `comcms_users` (`id`, `type`, `username`, `password`, `realname`, `phone`, `email`, `address`, `phone_hide`, `email_hide`, `address_hide`, `message`) VALUES
+INSERT INTO `<!-- $DB_PREFIX$ -->users` (`id`, `type`, `username`, `password`, `realname`, `phone`, `email`, `address`, `phone_hide`, `email_hide`, `address_hide`, `message`) VALUES
 (1, 1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '555-555-5555', 'admin@example.com','Unknown',1,1,1,1),
-(2, 0, 'user', '5f4dcc3b5aa765d61d8327deb882cf99', 'Default User', '555-555-5555', 'user@example.com','Unknown',1,1,1,0);
+(2, 0, 'user', '5f4dcc3b5aa765d61d8327deb882cf99', 'Default User', '555-555-5555', 'user@example.com','Unknown',1,1,1,0)
