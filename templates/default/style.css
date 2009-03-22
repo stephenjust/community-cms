@@ -81,7 +81,12 @@ span.news_title a {
 	text-decoration: none;
 }
 div.news_content {
-	font-family: Arial,Helvetica,Sans-Serif;
+	font-family: Calibri,
+							Tahoma,
+							Verdana,
+							Arial,
+							"DejaVu Sans",
+							sans-serif;
 }
 img.news_image {
   width: 100px;
@@ -93,7 +98,13 @@ img.news_image {
 }
 span.contact_name {
 	font-size: large;
-	font-family: Cambria,'Times New Roman',Serif;
+	font-family: Cambria,
+							Georgia,
+							"Book Antiqua",
+							"Times New Roman",
+							"Century Schoolbook",
+							"Bitstream Vera Serif",
+							serif;
 }
 span.contact_name a {
 	color: #000000;
@@ -105,7 +116,12 @@ span.contact_title {
 }
 span.contact_heading {
 	font-size: medium;
-	font-family: Calibri,Tahoma,Verdana,Arial,Sans-Serif;
+	font-family: Calibri,
+							Tahoma,
+							Verdana,
+							Arial,
+							"DejaVu Sans",
+							sans-serif;
 	font-style: italic;
 	color: #AAAAAA;
 }
@@ -139,7 +155,13 @@ div.events_upcoming_block {
 	padding: 3px;
 }
 div.events_upcoming_block span.header {
-	font-family: Cambria,'Times New Roman',Serif;
+	font-family: Cambria,
+							Georgia,
+							"Book Antiqua",
+							"Times New Roman",
+							"Century Schoolbook",
+							"Bitstream Vera Serif",
+							serif;
 	font-size: large;	
 }
 div.events_upcoming_block table.events {
@@ -225,7 +247,12 @@ span.newsletter_year {
 
 div.errormessage {
   color: #FF0000;
-  font-family: Arial;
+	font-family: Calibri,
+							Tahoma,
+							Verdana,
+							Arial,
+							"DejaVu Sans",
+							sans-serif;
   font-size: small;
   background: #FFFFCC;
   border: 1px dashed #FFFF66;
