@@ -27,6 +27,11 @@
 <th>Date</th><th>Action</th><th>User</th><th>IP</th>
 </tr>';
 	$rowtype = 1;
+	if($num_messages == 0) {
+		$content .= '<tr class="row1">
+<td colspan="4">No log messages.</td>
+</tr>';
+		}
 	for ($i = 1; $i <= $num_messages; $i++) {
 		$log_message = $log_message_handle->fetch_assoc();
 		$content .= '<tr class="row'.$rowtype.'">

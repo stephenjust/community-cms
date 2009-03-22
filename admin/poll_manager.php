@@ -28,20 +28,29 @@
 		}
 	$content = $message;
 	$content .= '<h1>Poll Manager</h1>
-<table style="border: 1px solid #000000;">
-<tr><td>ID</td><td width="350">Question:</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+<table class="admintable">
+<tr><th>ID</th><th width="350">Question:</th><th colspan="2">&nbsp;</th></tr>';
 	// Get page list in the order defined in the database. First is 0.
 	$question_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_questions ORDER BY question_id ASC';
 	$question_list_handle = $db->query($question_list_query);
- 	$i = 1;
-	while ($i <= $question_list_handle->num_rows) {
+	if($question_list_handle->num_rows == 0) {
+		$content .= '<tr class="row1">
+<td colspan="4">No polls exist.</td>
+</tr>';
+		}
+	$rowstyle = 'row1';
+	for ($i = 1; $i <= $question_list_handle->num_rows; $i++) {
 		$question_list = $question_list_handle->fetch_assoc();
-		$content .= '<tr>
+		$content .= '<tr class="'.$rowstyle.'">
 <td>'.$question_list['question_id'].'</td>
-<td class="adm_page_list_item">'.stripslashes($question_list['question']).'</td>
+<td>'.stripslashes($question_list['question']).'</td>
 <td><a href="?module=poll_manager&action=del&id='.$question_list['question_id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=poll_results&id='.$question_list['question_id'].'">Results</a></td>';
-		$i++;
-	}
+		if($rowstyle == 'row1') {
+			$rowstyle = 'row2';
+			} else {
+			$rowstyle = 'row1';
+			}
+		} // FOR
 $content .= '</table>';
 ?>
