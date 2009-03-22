@@ -149,8 +149,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 --
 
 INSERT INTO `<!-- $DB_PREFIX$ -->news` (`id`, `page`, `name`, `description`, `author`, `date`, `image`) VALUES
-(0, 1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL),
-(1, 1, 'AJAX Front-end Content Editing Beta', '<p>Currently in development (but nearly finished): editing contend directly from the front page. BETA available. With this functionality, the admin editing page will not be the only way to edit content. This process is now fully functional! You can even edit from the backend!</p>', 'Administrator', '2008-08-16 12:49:00', NULL);;
+(0, 1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
 
 -- --------------------------------------------------------
 
