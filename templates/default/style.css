@@ -42,6 +42,23 @@ div.nav_menu a {
 	text-decoration: none;
 	background: url('./images/menu.png') no-repeat;
 }
+div.notification {
+	width: 100%;
+	margin: 3px;
+	border-radius: 0.2em;
+	-moz-border-radius: 0.2em;
+	text-align: center;
+	font-size: x-large;
+	background: #FFCCCC;
+}
+#left div.notification {
+	clear: both;
+	width: 195px;
+}
+#right div.notification {
+	clear: both;
+	width: 195px;
+}
 
 /* NEWS */
 div.news_item_container {

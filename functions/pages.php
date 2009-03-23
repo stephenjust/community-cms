@@ -20,7 +20,7 @@
 			if(!$handle) {
 				$NOTIFICATION .= 'Failed to submit your vote.<br />';
 				} else {
-				$NOTIFICATION .= '<span style="color: #CC0000">Thank you for voting.</span><br />';
+				$NOTIFICATION .= 'Thank you for voting.<br />';
 				}
 			}
 		$page_type_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pagetypes WHERE id = '.$type.' LIMIT 1';
@@ -28,7 +28,7 @@
 		try {
 			if($page_type_handle->num_rows == 1) {
 				$page_type = $page_type_handle->fetch_assoc();
-				$page = $NOTIFICATION.include(ROOT.'pagetypes/'.$page_type['filename']);
+				$page = include(ROOT.'pagetypes/'.$page_type['filename']);
 				} else {
 				header("HTTP/1.0 404 Not Found");
 				global $page_not_found;
@@ -37,7 +37,8 @@
 				}
 			}
 		catch(Exception $e) {
-			$page = '<b>Error:</b> '.$e->getMessage();
+			$NOTIFICATION .= '<b>Error:</b> '.$e->getMessage();
+			$page = NULL;
 			}
 		return $page;
 		}

@@ -6,6 +6,7 @@
 	function display_page($page_info,$site_info,$view="") {
 		global $db;
 		global $CONFIG;
+		global $NOTIFICATION;
 		$template_page = new template;
 		$template_page->load_file();
 		$page_message = NULL;
@@ -49,6 +50,8 @@
 					if($block_handle->num_rows == 1) {
 						$block_info = $block_handle->fetch_assoc();
 						$left_blocks_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
+						} else {
+						$left_blocks_content .= '<div class="notification"><strong>Error:</strong> Could not load block '.$left_blocks[$bk - 1].'.</div>';
 						}
 					}
 				$bk++;
@@ -62,6 +65,8 @@
 					if($block_handle->num_rows == 1) {
 						$block_info = $block_handle->fetch_assoc();
 						$right_blocks_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
+						} else {
+						$right_blocks_content .= '<div class="notification"><strong>Error:</strong> Could not load block '.$right_blocks[$bk - 1].'.</div>';
 						}
 					}
 				$bk++;
@@ -81,9 +86,13 @@
 		$template_page->page_id = $page_info['id'];
 		$template_page->image_path = $image_path;
 		$template_page_bottom = $template_page->split('content');
+		$content = get_page_content($page_info['id'],$page_info['type'],$view);
+		if(strlen($NOTIFICATION) > 0) {
+			$NOTIFICATION = '<div class="notification">'.$NOTIFICATION.'</div>';
+			}
+		$template_page->notification = $NOTIFICATION;
 		echo $template_page;
 		unset($template_page);
-		$content = get_page_content($page_info['id'],$page_info['type'],$view);
 		$template_page_bottom->content = $content;
 		$template_page_bottom->page_id = $page_info['id'];
 		$template_page_bottom->image_path = $image_path;
