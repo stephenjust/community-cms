@@ -32,6 +32,7 @@ INSERT INTO <!-- $DB_PREFIX$ -->admin_pages
 	(NULL,'Users','1','New User','user_create'),
 	(NULL,'Users','1','User List','user'),
 	(NULL,'Users','0','Edit User','user_edit'),
+	(NULL,'Users','1','Groups','user_groups'),
 	(NULL,'Logs','1','View Logs','log_view');;
 	
 CREATE TABLE IF NOT EXISTS <!-- $DB_PREFIX$ -->blocks (
