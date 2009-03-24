@@ -236,18 +236,10 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
---
--- Dumping data for table `<!-- $DB_PREFIX$ -->templates`
---
-
 INSERT INTO `<!-- $DB_PREFIX$ -->templates` (`id`, `path`, `name`, `description`, `author`) VALUES
 (1, 'templates/default/', 'Community CMS Default Template', 'Default template.', 'Stephen J');;
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `<!-- $DB_PREFIX$ -->messages`
---
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -256,9 +248,20 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
 	PRIMARY KEY (`id`)
 	) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
 
---
--- Table structure for table `<!-- $DB_PREFIX$ -->users`
---
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->user_groups` (
+	`id` int(5) NOT NULL auto_increment,
+	`name` text NOT NULL,
+	`label_format` text NOT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;;
+
+INSERT INTO `<!-- $DB_PREFIX$ -->user_groups`
+(`name`,`label_format`) VALUES
+('Administrator','font-weight: bold; color: #009900;');;
+
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`id` int(5) NOT NULL auto_increment,
@@ -279,10 +282,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	PRIMARY KEY  (`id`),
 	KEY `type` (`type`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;;
-
---
--- Dumping data for table `<!-- $DB_PREFIX$ -->users`
---
 
 INSERT INTO `<!-- $DB_PREFIX$ -->users` (`id`, `type`, `username`, `password`, `realname`, `phone`, `email`, `address`, `phone_hide`, `email_hide`, `address_hide`, `message`) VALUES
 (1, 1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '555-555-5555', 'admin@example.com','Unknown',1,1,1,1),

@@ -33,8 +33,8 @@
  		$content .= '<tr class="row1"><td colspan="6">An error may have occured. No groups were found.</td></tr>';
  		}
  	$rowstyle = 'row1';
-	for ($i = 1; $i <= $page_list_rows; $i++) {
-		$page_list = $page_list_handle->fetch_assoc();
+	for ($i = 1; $i <= $group_list_rows; $i++) {
+		$group_list = $group_list_handle->fetch_assoc();
 		$content .= '<tr class="'.$rowstyle.'">
 <td>'.$group_list['id'].'</td>
 <td><span style="'.stripslashes($group_list['label_format']).'" id="user_group_'.$group_list['id'].'">'.stripslashes($group_list['name']).'</span></td>
