@@ -6,29 +6,28 @@
 	function admin_nav() {
 		global $CONFIG;
 		global $db;
+		$pl_file = ROOT.'admin/menu.info';
+		$pl_handle = fopen($pl_file,'r');
+		$page_list = fread($pl_handle,filesize($pl_file));
+		fclose($pl_handle);
+		$admin_pages = explode("\n",$page_list);
+		unset($page_list);
+		$last_heading = 'Main';
 		$result = NULL;
-		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'admin_pages WHERE on_menu = 1 AND category = "Main" ORDER BY category,label ASC';
-		$page_handle = $db->query($page_query);
-		$i = 1;
-		$header = NULL;
-		while($page_handle->num_rows >= $i) {
-			$page_list = $page_handle->fetch_assoc();
-			$result .= '<a href="admin.php?module='.$page_list['file'].'">'.$page_list['label'].'</a><br />';
-			$i++;
-			}
-		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'admin_pages WHERE on_menu = 1 AND category != "Main" ORDER BY category,label ASC';
-		$page_handle = $db->query($page_query);
-		$i = 1;
-		while($page_handle->num_rows >= $i) {
-			$page_list = $page_handle->fetch_assoc();
-			$last_header = $header;
-			$header = $page_list['category'];
-			if($header != $last_header) {
-				$result .= '<span class="nav_header">'.stripslashes($page_list['category']).'</span><br />';
-				}
-			$result .= '<a href="admin.php?module='.$page_list['file'].'">'.stripslashes($page_list['label']).'</a><br />';
-			$i++;
-			}
+		for($i = 0; $i < count($admin_pages); $i++) {
+			if(strlen($admin_pages[$i]) > 3) { // 1
+				$admin_menu_item[$i] = explode('#',$admin_pages[$i]);
+				if(isset($admin_menu_item[$i][3])) { // 2
+					if($admin_menu_item[$i][0] != $last_heading && $admin_menu_item[$i][1] == 1) { // 3
+						$result .= '<span class="nav_header">'.stripslashes($admin_menu_item[$i][0]).'</span><br />';
+						$last_heading = $admin_menu_item[$i][0];
+						} // 3
+					if($admin_menu_item[$i][1] == 1) { // 4
+						$result .= '<a href="admin.php?module='.$admin_menu_item[$i][3].'">'.$admin_menu_item[$i][2].'</a><br />';
+						} // 4
+					} // 2
+				} // 1
+			} // FOR
 		return $result;
 		}
 
