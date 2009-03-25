@@ -273,13 +273,17 @@ $content .= '<h1>Manage Pages</h1>
 	$rowstyle = 'row1';
 	for ($i = 1; $i <= $page_list_rows; $i++) {
 		$page_list = $page_list_handle->fetch_assoc();
+
 		if($page_list['type'] == 0) {
 			$page_list['title'] = explode('<LINK>',$page_list['title']);
 			$page_list['title'] = $page_list['title'][0].' (Link)';
 			}
 		global $site_info;
-		$content .= '<tr class="'.$rowstyle.'">
-<td>'.$page_list['title'].' ';
+		$content .= '<tr class="'.$rowstyle.'"><td>';
+		if(strlen($page_list['text_id']) == 0 && $page_list['type'] != 0) {
+			$content .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
+			}
+		$content .= $page_list['title'].' ';
 		if($page_list['id'] == $site_info['home']) {
 			$content .= '(Default)';
 			}

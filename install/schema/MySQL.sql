@@ -138,6 +138,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
   `id` int(11) NOT NULL auto_increment,
+  `text_id` text NOT NULL,
   `title` text NOT NULL,
   `show_title` tinyint(1) NOT NULL default '1',
   `type` int(11) NOT NULL,
@@ -146,16 +147,16 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
   `blocks_left` text NULL,
   `blocks_right` text NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;;
 
 --
 -- Dumping data for table `<!-- $DB_PREFIX$ -->pages`
 --
 
-INSERT INTO `<!-- $DB_PREFIX$ -->pages` (`id`, `title`, `type`, `menu`, `list`) VALUES
-(1, 'Home', 1, 1, 0),
-(2, 'Calendar', 3, 1, 1),
-(3, 'Newsletters', 2, 1, 2);;
+INSERT INTO `<!-- $DB_PREFIX$ -->pages` (`text_id`, `title`, `type`, `menu`, `list`) VALUES
+('home', 'Home', 1, 1, 0),
+('calendar', 'Calendar', 3, 1, 1),
+('newsletters', 'Newsletters', 2, 1, 2);;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_messages` (
 	`message_id` INT NOT NULL auto_increment PRIMARY KEY,
