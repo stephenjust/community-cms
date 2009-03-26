@@ -21,10 +21,18 @@
 	  		}
 	  	}
 		}
-	if($_POST['month'] > 12 || $_POST['month'] < 1) {
+	if(isset($_POST['month'])) {
+		if($_POST['month'] > 12 || $_POST['month'] < 1) {
+			$_POST['month'] = date('m');
+			}
+		} else {
 		$_POST['month'] = date('m');
 		}
-	if($_POST['year'] < 1 || $_POST['year'] > 9999) {
+	if(isset($_POST['year'])) {
+		if($_POST['year'] < 1 || $_POST['year'] > 9999) {
+			$_POST['year'] = date('Y');
+			}
+		} else {
 		$_POST['year'] = date('Y');
 		}
 	$content .= '<h1>Delete Date</h1>

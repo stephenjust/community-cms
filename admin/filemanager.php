@@ -32,7 +32,7 @@
 // ----------------------------------------------------------------------------
 
 	if(!isset($_POST['folder_list'])) {
-		$_POST['folder_list'] == "";
+		$_POST['folder_list'] = NULL;
 		}
 	$content .= '<form method="POST" action="admin.php?module=filemanager">
 '.folder_list('',$_POST['folder_list'],1); // Create listbox with folder names and a form to navigate folders.
