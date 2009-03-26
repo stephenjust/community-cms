@@ -3,6 +3,7 @@
 	DEFINE('ADMIN',1);
 	define('ROOT','./');
 	session_start();
+	$content = NULL;
 	// Load error handling code
 	require_once('./functions/error.php');
 	// Load database configuration
@@ -99,16 +100,12 @@ tinyMCE.init({
 		$template_page->image_path = $image_path;
 		echo $template_page;
 		unset($template_page);
-		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'admin_pages WHERE file = "'.$_GET['module'].'" LIMIT 1';
-		$page_handle = $db->query($page_query);
-		if($page_handle->num_rows != 1) {
-			include('./admin/index.php');
-			} else {
-			$page = $page_handle->fetch_assoc();
-			$loaded = include('./admin/'.$page['file'].'.php');
-			if(!$loaded) {
-				$content = 'Failed to load '.$page['file'].'.php';
+		if(isset($_GET['module'])) {
+			if(!include('./admin/'.addslashes($_GET['module']).'.php')) {
+				include('./admin/index.php');
 				}
+			} else {
+			include('./admin/index.php');
 			}
 		$template_page_bottom->content = $content;
 		$template_page_bottom->image_path = $image_path;

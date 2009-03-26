@@ -3,7 +3,6 @@
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		die ('You cannot access this page directly.');
 		}
-	define('ROOT','./');
 	if($_GET['action'] == 'new_log') {
 		$log_message = strip_tags($_POST['message']);
 		if(strlen($log_message) > 5) {
