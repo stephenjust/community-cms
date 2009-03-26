@@ -48,9 +48,13 @@
 		} // FOR $i
 	if($_POST['page'] == 0) {
 		$no_page = 'selected';
+		} else {
+		$no_page = NULL;
 		}
 	if($_POST['page'] == '*') {
 		$all_page = 'selected';
+		} else {
+		$all_page = NULL;
 		}
 	$content .= '<option value="0" '.$no_page.'>No Page</option>
 <option value="*" '.$all_page.'>All Pages</option>
