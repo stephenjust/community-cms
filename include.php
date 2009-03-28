@@ -18,6 +18,9 @@
 	if(!include_once(ROOT.'functions/display.php')) {
 		err_page(2001);
 		}
+	if(!include_once(ROOT.'functions/blocks.php')) {
+		err_page(2001);
+		}
 	if(!include_once(ROOT.'functions/login.php')) {
 		err_page(2001);
 		}

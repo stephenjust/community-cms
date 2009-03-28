@@ -11,8 +11,6 @@
 		$template_page->load_file();
 		$page_message = NULL;
 		$admin_include = NULL;
-		$left_blocks_content = NULL;
-		$right_blocks_content = NULL;
 		$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_page->path."style.css' />";
 		$image_path = $template_page->path.'images/';
 		// Check if the page acutally exists before anything else is done
@@ -41,36 +39,16 @@
 					}
 				}
 			// Prepare for and search for content blocks
+			$left_blocks_content = NULL;
+			$right_blocks_content = NULL;
 			$left_blocks = explode(',',$page_info['blocks_left']);
-			$bk = 1; // Block iteration count
-			while ($bk <= count($left_blocks)) {
-				$block_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$left_blocks[$bk - 1].' LIMIT 1';
-				$block_handle = $db->query($block_query);
-				if($block_handle) {
-					if($block_handle->num_rows == 1) {
-						$block_info = $block_handle->fetch_assoc();
-						$left_blocks_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
-						} else {
-						$left_blocks_content .= '<div class="notification"><strong>Error:</strong> Could not load block '.$left_blocks[$bk - 1].'.</div>';
-						}
-					}
-				$bk++;
-				}
+			for ($bk = 1; $bk <= count($left_blocks); $bk++) {
+				$left_blocks_content .= get_block($left_blocks[$bk - 1]);
+				} // FOR
 			$right_blocks = explode(',',$page_info['blocks_right']);
-			$bk = 1; // Block iteration count
-			while ($bk <= count($right_blocks)) {
-				$block_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$right_blocks[$bk - 1].' LIMIT 1';
-				$block_handle = $db->query($block_query);
-				if($block_handle) {
-					if($block_handle->num_rows == 1) {
-						$block_info = $block_handle->fetch_assoc();
-						$right_blocks_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
-						} else {
-						$right_blocks_content .= '<div class="notification"><strong>Error:</strong> Could not load block '.$right_blocks[$bk - 1].'.</div>';
-						}
-					}
-				$bk++;
-				}
+			for ($bk = 1; $bk <= count($right_blocks); $bk++) {
+				$right_blocks_content .= get_block($right_blocks[$bk - 1]);
+				} // FOR
 			global $special_title;
 			$page_title = $page_info['title'].' - '.$special_title.$site_info['name'];
 			}

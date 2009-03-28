@@ -19,11 +19,11 @@ WHERE (year = '.date('Y').' AND month = '.date('m').' AND day >= '.date('d').') 
 ORDER BY year ASC, month ASC, day ASC LIMIT '.$event_block->attribute['num'];
 			$upcoming_event_handle = $db->query($upcoming_event_query);
 			if(!$upcoming_event_handle) {
-				$bl_return .= 'Failed to load upcoming dates.';
+				$bl_return .= 'Failed to load upcoming dates.<br />';
 				return $bl_return;
 				}
 			if($upcoming_event_handle->num_rows == 0) {
-				$bl_return .= '&nbsp;&nbsp;No upcoming dates.';
+				$bl_return .= '&nbsp;&nbsp;No upcoming dates.<br />';
 				return $bl_return;
 				}
 			$template_upcoming_events = new template;
