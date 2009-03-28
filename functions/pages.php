@@ -8,6 +8,7 @@
 		if($type == "") {
 			$type = 0;
 			}
+		$id = (int)$id;
 		global $CONFIG;
 		global $db;
 		global $NOTIFICATION;
