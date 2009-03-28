@@ -3,7 +3,11 @@
 	if (@SECURITY != 1) {
 		die ('You cannot access this page directly.');
 		}
-	function get_block($block_id) {
+	function get_block($block_id = NULL) {
+		$block_id = (int)$block_id;
+		if(strlen($block_id) < 1) {
+			return;
+			}
 		global $CONFIG;
 		global $db;
 		$block_content = NULL;
