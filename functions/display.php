@@ -99,7 +99,11 @@
 					unset($link_name);
 					unset($link_path);
 					} else {
-					$return .= "<a href='index.php?id=".$nav_menu['id']."'>".$nav_menu['title']."</a><br />";
+					if(strlen($nav_menu['text_id']) > 0) {
+						$return .= "<a href='index.php?page=".$nav_menu['text_id']."'>".$nav_menu['title']."</a><br />";
+						} else {
+						$return .= "<a href='index.php?id=".$nav_menu['id']."'>".$nav_menu['title']."</a><br />";
+						}
 					} // IF is link
 				} // IF is not current page
 			} // FOR

@@ -36,10 +36,17 @@
 	$site_info = $site_info_handle->fetch_assoc();
 		
 	// Initialize some variables to keep PHP from complaining.
-	if(!isset($_GET['id'])) {
+	if(!isset($_GET['id']) && !isset($_GET['page'])) {
 		$page_id = $site_info['home'];
+		$page_text_id = NULL;
 		} else {
-		$page_id = $_GET['id'];
+		if(isset($_GET['page'])) {
+			$page_id = NULL;
+			$page_text_id = $_GET['page'];
+			} else {
+			$page_id = $_GET['id'];
+			$page_text_id = NULL;
+			}
 		}
 	if(!isset($_GET['view'])) {
 		$_GET['view'] = NULL;
@@ -65,7 +72,11 @@
 //		$NOTIFICATION .= 'Please change the permissions on ./config.php to 0755 or something else that makes it unwriteable.<br />';
 //		}
 	// Load page information.
-	$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = \''.$page_id.'\'';
+	if($page_text_id != NULL) {
+		$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE text_id = \''.$page_text_id.'\'';
+		} else {
+		$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = \''.$page_id.'\'';
+		}
 	$page_info_handle = $db->query($page_info_query);
 	$page_info = $page_info_handle->fetch_assoc();
 	
