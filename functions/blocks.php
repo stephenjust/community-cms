@@ -5,7 +5,7 @@
 		}
 	function get_block($block_id = NULL) {
 		$block_id = (int)$block_id;
-		if(strlen($block_id) < 1) {
+		if(strlen($block_id) < 1 || $block_id <= 0) {
 			return;
 			}
 		global $CONFIG;
