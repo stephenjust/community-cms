@@ -7,9 +7,19 @@
 		$menu = checkbox($_POST['menu']);
 		$show_title = checkbox($_POST['show_title']);
 	  $message = NULL;
+	  $text_id = NULL;
+		if(isset($_POST['text_id']) && strlen($_POST['text_id']) > 0) {
+			$text_id_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE `text_id` = "'.$_POST['text_id'].'" LIMIT 1';
+			$text_id_handle = $db->query($text_id_query);
+			if($text_id_handle->num_rows == 1) {
+				$message .= 'The Text ID you set is not unique.<br />';
+				} else {
+				$text_id = $_POST['text_id'];
+				}
+			}
 	  // Add page to database.
-		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (title,show_title,type,menu) 
-VALUES ("'.$_POST['title'].'",'.$show_title.',"'.$_POST['type'].'",'.$menu.')';
+		$new_page_query = 'INSERT INTO '.$CONFIG['db_prefix'].'pages (text_id,title,show_title,type,menu) 
+VALUES ("'.$text_id.'","'.$_POST['title'].'",'.$show_title.',"'.$_POST['type'].'",'.$menu.')';
 		$new_page = $db->query($new_page_query);
 		if(!$new_page) {
 			$message .= mysqli_error($db).'<br />';
@@ -177,18 +187,29 @@ VALUES ("'.$_POST['title'].'",'.$show_title.',"'.$_POST['type'].'",'.$menu.')';
 // ----------------------------------------------------------------------------
 
 	if($_GET['action'] == 'editsave') {
+		$message = NULL;
 		$id = addslashes($_POST['id']);
+		$set_text_id = NULL;
+		if(isset($_POST['text_id']) && strlen($_POST['text_id']) > 0) {
+			$text_id_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE `text_id` = "'.$_POST['text_id'].'" LIMIT 1';
+			$text_id_handle = $db->query($text_id_query);
+			if($text_id_handle->num_rows == 1) {
+				$message .= 'The Text ID you set is not unique.<br />';
+				} else {
+				$set_text_id = 'text_id="'.$_POST['text_id'].'",';
+				}
+			}
 		$title = addslashes($_POST['title']);
 		$menu = checkbox($_POST['hidden']);
 	  $show_title = checkbox($_POST['show_title']);
 		$blocks_left = addslashes($_POST['blocks_left']);
 		$blocks_right = addslashes($_POST['blocks_right']);
-		$save_query = 'UPDATE '.$CONFIG['db_prefix'].'pages SET title="'.$title.'",menu='.$menu.',show_title='.$show_title.',blocks_left="'.$blocks_left.'",blocks_right="'.$blocks_right.'" WHERE id = '.$id.' LIMIT 1';
+		$save_query = 'UPDATE '.$CONFIG['db_prefix'].'pages SET '.$set_text_id.'title="'.$title.'",menu='.$menu.',show_title='.$show_title.',blocks_left="'.$blocks_left.'",blocks_right="'.$blocks_right.'" WHERE id = '.$id.' LIMIT 1';
 		$save_handle = $db->query($save_query);
 		if(!$save_handle) {
-			$message = 'Failed to edit page. '.mysqli_error($db);
+			$message .= 'Failed to edit page. '.mysqli_error($db);
 			} else {
-			$message = 'Updated page information. '.log_action('Updated information for page \''.$title.'\'');
+			$message .= 'Updated page information. '.log_action('Updated information for page \''.$title.'\'');
 			}
 		} // IF 'editsave'
 
@@ -207,8 +228,11 @@ VALUES ("'.$_POST['title'].'",'.$show_title.',"'.$_POST['type'].'",'.$menu.')';
 			$content .= '<form method="POST" action="admin.php?module=page&action=editsave">
 <h1>Edit Page</h1>
 <table class="admintable">
-<input type="hidden" name="id" value="'.$edit_page['id'].'" />
-<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
+<input type="hidden" name="id" value="'.$edit_page['id'].'" />';
+			if(strlen($edit_page['text_id']) < 1) {
+				$content .= '<tr class="row2"><td width="150">Text ID:</td><td><input type="text" name="text_id" value="" /></td></tr>';
+				}
+			$content .= '<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
 <tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 <tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
 <tr class="row2"><td valign="top">Blocks:<br>(Comma separated block IDs)</td><td>Left:<br />
@@ -229,9 +253,10 @@ Right:<br />
 <h1>Add Page</h1>
 <table class="admintable">
 <tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
-<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
-<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
-<tr class="row2"><td valign="top">Type:</td><td>
+<tr class="row2"><td width="150">Text ID</td><td><input type="text" name="text_id" value="" /></td></tr>
+<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
+<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
+<tr class="row1"><td valign="top">Type:</td><td>
 <select name="type">';
 	$pagetypes_query = 'SELECT id,name FROM '.$CONFIG['db_prefix'].'pagetypes';
 	$pagetypes_handle = $db->query($pagetypes_query);
@@ -243,7 +268,7 @@ Right:<br />
 	}
 $content .= '</select>
 </td></td></tr>
-<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
+<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 </table>
 
 </form>';
