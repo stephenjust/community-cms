@@ -46,7 +46,12 @@
 		}
 	}
 $monthbox .= '</select>';
-$content .= '<h1>Add Newsletter</h1>
+	$content .= '<div id="tabs">
+		<ul>
+			<li><a href="#tabs-1">Manage Newsletters</a></li>
+			<li><a href="#tabs-2">Add Newsletter</a></li>
+		</ul>';
+$content .= '<div id="tabs-2">
 <form method="POST" action="admin.php?module=newsletter&action=new">
 <table class="admintable">
 <tr><td class="row1">Label:</td><td class="row1"><input type="text" name="label" /></td></tr>
@@ -69,8 +74,8 @@ $content .= '<h1>Add Newsletter</h1>
 $content .= '</select></td></tr>
 <tr><td class="row1"></td><td class="row1"><input type="submit" value="Submit" /></td></tr>
 </table>
-</form>';
-$content .= '<h1>Manage Newsletters</h1>
+</form></div>';
+$content .= '<div id="tabs-1">
 <table style="border: 1px solid #000000;">
 <tr><td><form method="post" action="admin.php?module=newsletter"><select name="page">';
 		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 2 ORDER BY list ASC';
@@ -111,5 +116,5 @@ $content .= '<h1>Manage Newsletters</h1>
 </tr>';
 		$i++;
 	}
-$content .= '</table>';
+$content .= '</table></div></div>';
 ?>

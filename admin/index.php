@@ -12,6 +12,13 @@
 
 // ----------------------------------------------------------------------------
 
+	$content = '<div id="tabs">
+		<ul>
+			<li><a href="#tabs-1">Recent Activity</a></li>
+			<li><a href="#tabs-2">User Summary</a></li>
+			<li><a href="#tabs-3">Database Summary</a></li>
+		</ul>';
+
 	// Display log messages
 	$log_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'logs log, '.$CONFIG['db_prefix'].'users user WHERE log.user_id = user.id ORDER BY log.date DESC LIMIT 5';
 	$log_message_handle = $db->query($log_message_query);
@@ -19,8 +26,7 @@
 		$content .= 'Failed to read log messages. '.mysqli_error($db).'<br />';
 		}
 	$num_messages = $log_message_handle->num_rows;
-	$content = '<h1>Administration</h1>';
-	$content .= '<h3>Most Recent Activity:</h3>
+	$content .= '<div id="tabs-1">
 <table class="log_messages">
 <tr>
 <th>Date</th><th>Action</th><th>User</th><th>IP</th>
@@ -43,22 +49,23 @@
 			}
 		} // FOR $i
 	$content .= '</table>';
-	$content .= '<form method="post" action="?action=new_log"><input type="text" name="message" /><input type="submit" value="Add Message" /></form>';
+	$content .= '<form method="post" action="?action=new_log"><input type="text" name="message" /><input type="submit" value="Add Message" />
+</form></div>';
 
 // ----------------------------------------------------------------------------
 
-	$content .= '<h3>User Summary:</h3>';
+	$content .= '<div id="tabs-2">';
 	$user_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'users ORDER BY id DESC';
 	$user_handle = $db->query($user_query);
 	if($user_handle) {
 		$user = $user_handle->fetch_assoc();
 		$content .= 'Number of users: '.$user_handle->num_rows.'<br />
-Newest user: '.$user['username'];
+Newest user: '.$user['username'].'</div>';
 		}
 
 // ----------------------------------------------------------------------------
 
-	$content .= '<h3>Database Summary:</h3>
+	$content .= '<div id="tabs-3">
 Database Version: '.$site_info['db_version'].'<br />
-MySQL Version: '.$db->get_server_info(); 
+MySQL Version: '.$db->get_server_info().'</div></div>'; 
 ?>
