@@ -59,18 +59,35 @@ div.errormessage {
   z-index: 1;
 }
 .admintable {
-	border-spacing: 2px;
-	width: 600px;
+	width: 100%;
+	border: 1px solid #e78f08;
+	background: #f6a828;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 }
 .admintable th {
-	background: #DDDDDD;
 	text-align: left;
+	font-size: 1em;
+}
+.admintable tr {
+	border-bottom: 1px solid #e78F08;
 }
 .admintable .row1 {
-	background: #EEEEEE;
+/*	background: #EEEEEE; */
 }
 .admintable .row2 {
-	background: #E6E6E6;
+/*	background: #E6E6E6; */
+}
+.admintable td {
+	border: 1px solid #dddddd;
+	background: #eeeeee url(images/ui-bg_highlight-soft_100_eeeeee_1x100.png) 50% top repeat-x;
+	color: #333333;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+.admintable td.empty {
+	border: 0px;
+	background: #f6a828;
 }
 
 table.log_messages th {
@@ -78,7 +95,7 @@ table.log_messages th {
 	text-align: left;
 	font-family: Cambria,'Times New Roman',Serif;
 }
-tr.row1 td {
+/* tr.row1 td {
 	background: #EEEEEE;
 	padding-left: 3px;
 	font-family: Calibri,Arial,Sans-Serif;
@@ -87,7 +104,7 @@ tr.row2 td {
 	background: #E6E6E6;
 	padding-left: 3px;
 	font-family: Calibri,Arial,Sans-Serif;
-}
+} */
 
 .notice {
 	background: #f6ec8c;

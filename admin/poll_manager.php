@@ -21,7 +21,8 @@
 				$num_deleted_answers = mysqli_affected_rows($db);
 				$delete_question_handle = $db->query($delete_question_query);
 				if($delete_question_handle) {
-					$message .= 'Deleted '.$num_deleted_respones.' poll respones, '.$num_deleted_answers.' poll answer choices, and the poll question.<br />';
+					$message .= 'Deleted '.$num_deleted_respones.' poll respones, '.$num_deleted_answers.' poll answer choices, and the poll question.<br />'.
+					log_action('Deleted poll question, answers and responses for poll ID '.$_POST['question_id']);
 					}
 				}
 			}

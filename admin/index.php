@@ -27,7 +27,7 @@
 		}
 	$num_messages = $log_message_handle->num_rows;
 	$content .= '<div id="tabs-1">
-<table class="log_messages">
+<table class="ui-corner-all admintable">
 <tr>
 <th>Date</th><th>Action</th><th>User</th><th>IP</th>
 </tr>';

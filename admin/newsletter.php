@@ -72,11 +72,11 @@ $content .= '<div id="tabs-2">
 		$i++;
 	}
 $content .= '</select></td></tr>
-<tr><td class="row1"></td><td class="row1"><input type="submit" value="Submit" /></td></tr>
+<tr><td class="empty"></td><td class="row1"><input type="submit" value="Submit" /></td></tr>
 </table>
 </form></div>';
 $content .= '<div id="tabs-1">
-<table style="border: 1px solid #000000;">
+<table class="admintable">
 <tr><td><form method="post" action="admin.php?module=newsletter"><select name="page">';
 		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 2 ORDER BY list ASC';
 		$page_query_handle = $db->query($page_query);
