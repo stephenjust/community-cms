@@ -59,8 +59,12 @@
 		$page_title = 'Community CMS Administration';
 		$css_include = '<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
 		$image_path = $template_page->path.'images/';
-		$template_page->scripts = '<script language="javascript" type="text/javascript" src="./scripts/tiny_mce/tiny_mce_gzip.js"></script>
+		$template_page->scripts = '<link type="text/css" href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />	
+<script language="javascript" type="text/javascript" src="./scripts/tiny_mce/tiny_mce_gzip.js"></script>
 <script language="javascript" type="text/javascript" src="./admin/scripts/ajax.js"></script>
+<script language="javascript" type="text/javascript" src="./scripts/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="./scripts/jquery-ui.js"></script>
+<script language="javascript" type="text/javascript" src="./scripts/jquery-custom.js"></script>
 <script language="javascript" type="text/javascript" src="./admin/scripts/dynamic_file_list.js"></script>
 <script language="javascript" type="text/javascript" src="./admin/scripts/block_options.js"></script>
 <script type="text/javascript">
@@ -88,8 +92,11 @@ tinyMCE.init({
 	theme_advanced_statusbar_location : "bottom",
 	extended_valid_elements : "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]"
 });
+</script>
+<script type="text/javascript">
+
 </script>';
-		$template_page->nav_bar = '<span class="nav_header">Main</span><br />
+		$template_page->nav_bar = '<div id="menu"><div><h3><a href="#">Main</a></h3><div>
 <a href="admin.php?'.SID.'">Admin Home</a><br />
 <a href="index.php?'.SID.'" target="_blank">View Site</a><br />
 '.admin_nav();

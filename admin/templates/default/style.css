@@ -1,108 +1,11 @@
-#left a {
-  color: #333333;
-  padding-left: 10px;
-  text-decoration: none;
-  background: url('./images/menu.png') no-repeat;
-}
+/*
+COMMUNITY CMS ADMIN STYLESHEET
+*/
+
+/* ------------------------------------------------------------------------- */
+
 h1 {
 	font-family: Cambria,Arial,Sans-Serif;
-}
-
-/* Used by article.html */
-div.news_item_container {
-  position: relative;
-}
-div.news_item {
-  position: relative;
-}
-div.news_item_date {
-  float: left;
-  width: 90px;
-  height: 90px;
-  padding: 15px;
-  background-image: url('./images/news_article_date.png');
-  text-align: center;
-  z-index: 1;
-}
-span.news_item_date_month {
-  font: 1.5em Sans-Serif;
-}
-span.news_item_date_day {
-  font: 3em Sans-Serif;
-}
-span.news_title {
-  font: 2em Sans-Serif;
-}
-span.news_content {
-
-}
-
-input.button_cal_back_month {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 250px;
-  width: 33px;
-}
-input.button_cal_back_year {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 290px;
-  width: 44px;
-}
-input.button_cal_today {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 185px;
-  width: 58px;
-}
-input.button_cal_next_month {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 145px;
-  width: 33px;
-}
-input.button_cal_next_year {
-  display: inline;
-  position: absolute;
-  top: 0px;
-  right: 95px;
-  width: 44px;
-}
-table.calendar {
-  width: 100%;
-  overflow: hidden;
-  table-layout: fixed;
-}
-table.calendar td {
-  border: 1px solid #000000;
-  vertical-align: top;
-  height: 80px;
-  width: 14%;
-  overflow: hidden;
-  table-layout: fixed;
-}
-td.calendar_today {
-  background: #FFFFFF;
-}
-table.calendar_day {
-  width: 100%;
-  overflow: hidden;
-}
-table.calendar_day td {
-  border: 1px solid #000000;
-  height: 20px;
-  overflow: hidden;
-}
-div.time, td.time {
-  vertical-align: top;
-  height: 20px;
-  width: 140px;
-  overflow: hidden;
-  table-layout: fixed;
 }
 div.head, td.head {
   vertical-align: top;
@@ -157,6 +60,7 @@ div.errormessage {
 }
 .admintable {
 	border-spacing: 2px;
+	width: 600px;
 }
 .admintable th {
 	background: #DDDDDD;
@@ -208,6 +112,7 @@ div.admin_image_list_item img {
 	height: 100px;
 	padding: 2px;
 }
+
 
 /*
 Styles used only on help pages

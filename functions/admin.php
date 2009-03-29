@@ -14,20 +14,33 @@
 		unset($page_list);
 		$last_heading = 'Main';
 		$result = NULL;
+		$list_index = 0;
 		for($i = 0; $i < count($admin_pages); $i++) {
 			if(strlen($admin_pages[$i]) > 3) { // 1
 				$admin_menu_item[$i] = explode('#',$admin_pages[$i]);
 				if(isset($admin_menu_item[$i][3])) { // 2
 					if($admin_menu_item[$i][0] != $last_heading && $admin_menu_item[$i][1] == 1) { // 3
-						$result .= '<span class="nav_header">'.stripslashes($admin_menu_item[$i][0]).'</span><br />';
+						$result .= '</div></div>
+<div><h3><a href="#">'.stripslashes($admin_menu_item[$i][0]).'</a></h3>
+<div>';
 						$last_heading = $admin_menu_item[$i][0];
+						$list_index++;
 						} // 3
 					if($admin_menu_item[$i][1] == 1) { // 4
+						if($_GET['module'] == $admin_menu_item[$i][3]) {
+							$page_index = $list_index;
+							}
 						$result .= '<a href="admin.php?module='.$admin_menu_item[$i][3].'">'.$admin_menu_item[$i][2].'</a><br />';
 						} // 4
 					} // 2
 				} // 1
 			} // FOR
+		$result .= '</div></div></div>';
+		$result .= '<script type="text/javascript">
+$(function() {
+$("#menu").accordion({ header: "h3" }).accordion( "activate" , '.$page_index.' );
+});
+</script>';
 		return $result;
 		}
 

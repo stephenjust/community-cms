@@ -24,6 +24,9 @@
 				$message .= 'Could not find the block you are trying to delete.';
 				}
 			}
+
+// ----------------------------------------------------------------------------
+
 		} elseif ($_GET['action'] == 'new') {
 		$type = addslashes($_POST['type']);
 		$attributes = addslashes($_POST['attributes']);
@@ -47,8 +50,16 @@
 			}
 		unset($type);
 		}
+
+// ----------------------------------------------------------------------------
+
 	$content = $message;
-$content .= '<h1>Block Manager</h1>
+	$content .= '<div id="tabs">
+		<ul>
+			<li><a href="#tabs-1">Manage Blocks</a></li>
+			<li><a href="#tabs-2">New Block</a></li>
+		</ul>';
+$content .= '<div id="tabs-1">
 <table style="border: 1px solid #000000;">
 <tr><td>ID</td><td width="350">Info:</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 	// Get block list by id
@@ -69,7 +80,7 @@ $content .= '<h1>Block Manager</h1>
 			$i++;
  			} 
  		}
-$content .= '</table>';
+$content .= '</table></div>';
 $directory = 'content_blocks/';
 $folder_open = ROOT.$directory;
 $files = scandir($folder_open);
@@ -92,7 +103,10 @@ if($num_files < 4) { // ( ., .., blocks.info, and a block file)
 		unset($block_type);
 		}
 	$block_types_list .= '</select>';
-	$content .= '<h1>New Block</h1>
+
+// ----------------------------------------------------------------------------
+
+	$content .= '<div id="tabs-2">
 	<form method="post" action="admin.php?module=block_manager&action=new">
 	<table style="border: 1px solid #000000;">
 	<tr><td>Type:</td><td>'.$block_types_list.'</td></tr>
@@ -100,7 +114,7 @@ if($num_files < 4) { // ( ., .., blocks.info, and a block file)
 	<tr><td></td><td><input type="submit" value="Submit" /></td></tr>
 	</table></form>
 	<script language="javascript" type="text/javascript">
-	block_options_list_update()</script>';
+	block_options_list_update()</script></div>
+	</div>';
 	}
-
 ?>

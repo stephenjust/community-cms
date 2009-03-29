@@ -216,6 +216,19 @@ VALUES ("'.$text_id.'","'.$_POST['title'].'",'.$show_title.',"'.$_POST['type'].'
 // ----------------------------------------------------------------------------
 
 	$content = $message;
+	if($_GET['action'] == 'edit') {
+		$edit_tab = '<li><a href="#tabs-0">Edit Page</a></li>';
+		}
+	$content .= '<div id="tabs">
+		<ul>
+			'.$edit_tab.'
+			<li><a href="#tabs-1">Manage Pages</a></li>
+			<li><a href="#tabs-2">Add Page</a></li>
+			<li><a href="#tabs-3">Add Link to External Page</a></li>
+		</ul>';
+
+// ----------------------------------------------------------------------------
+
 	if ($_GET['action'] == 'edit') {
 		$edit_page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = '.$_GET['id'].' LIMIT 1';
 		$edit_page_handle = $db->query($edit_page_query);
@@ -226,7 +239,7 @@ VALUES ("'.$text_id.'","'.$_POST['title'].'",'.$show_title.',"'.$_POST['type'].'
 			$show_title = checkbox($edit_page['show_title'],1);
 			$hidden = checkbox($edit_page['menu'],1);
 			$content .= '<form method="POST" action="admin.php?module=page&action=editsave">
-<h1>Edit Page</h1>
+<div id="tabs-0">
 <table class="admintable">
 <input type="hidden" name="id" value="'.$edit_page['id'].'" />';
 			if(strlen($edit_page['text_id']) < 1) {
@@ -242,53 +255,14 @@ Right:<br />
 </td></td></tr>
 <tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 </table>
-
+</div>
 </form>';
 			}
 		}
 
 // ----------------------------------------------------------------------------
 
-	$content .= '<form method="POST" action="admin.php?module=page&action=new">
-<h1>Add Page</h1>
-<table class="admintable">
-<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
-<tr class="row2"><td width="150">Text ID</td><td><input type="text" name="text_id" value="" /></td></tr>
-<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
-<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
-<tr class="row1"><td valign="top">Type:</td><td>
-<select name="type">';
-	$pagetypes_query = 'SELECT id,name FROM '.$CONFIG['db_prefix'].'pagetypes';
-	$pagetypes_handle = $db->query($pagetypes_query);
- 	$i = 1;
-	while ($i <= $pagetypes_handle->num_rows) {
-		$pagetypes = $pagetypes_handle->fetch_assoc();
-		$content .= '<option value="'.$pagetypes['id'].'">'.$pagetypes['name'].'</option>';
-		$i++;
-	}
-$content .= '</select>
-</td></td></tr>
-<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
-</table>
-
-</form>';
-
-// ----------------------------------------------------------------------------
-
-$content .= '<form method="POST" action="admin.php?module=page&action=new_link">
-<h1>Add Link to External Page</h1>
-<table class="admintable">
-<tr class="row1"><td width="150">Link Text:</td><td><input type="text" name="title" value="" /></td></tr>
-<tr class="row2"><td valign="top">URL:</td><td>
-<input type="text" name="url" value="http://" /><br />
-</td></td></tr>
-<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
-</table>
-</form>';
-
-// ----------------------------------------------------------------------------
-
-$content .= '<h1>Manage Pages</h1>
+$content .= '<div id="tabs-1">
 <table class="admintable">
 <tr><th width="350">Page:</th><th colspan="5">&nbsp;</th></tr>';
 	// Get page list in the order defined in the database. First is 0.
@@ -337,5 +311,43 @@ $content .= '<h1>Manage Pages</h1>
 			$rowstyle = 'row1';
 			}
 		} // FOR
-$content .= '</table>';
+$content .= '</table></div>';
+
+// ----------------------------------------------------------------------------
+
+	$content .= '<div id="tabs-2"><form method="POST" action="admin.php?module=page&action=new">
+<table class="admintable">
+<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
+<tr class="row2"><td width="150">Text ID</td><td><input type="text" name="text_id" value="" /></td></tr>
+<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
+<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
+<tr class="row1"><td valign="top">Type:</td><td>
+<select name="type">';
+	$pagetypes_query = 'SELECT id,name FROM '.$CONFIG['db_prefix'].'pagetypes';
+	$pagetypes_handle = $db->query($pagetypes_query);
+ 	$i = 1;
+	while ($i <= $pagetypes_handle->num_rows) {
+		$pagetypes = $pagetypes_handle->fetch_assoc();
+		$content .= '<option value="'.$pagetypes['id'].'">'.$pagetypes['name'].'</option>';
+		$i++;
+	}
+$content .= '</select>
+</td></td></tr>
+<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
+</table>
+
+</form></div>';
+
+// ----------------------------------------------------------------------------
+
+$content .= '<div id="tabs-3"><form method="POST" action="admin.php?module=page&action=new_link">
+<table class="admintable" id="adm_pg_table_create_link">
+<tr class="row1"><td width="150">Link Text:</td><td><input type="text" name="title" value="" /></td></tr>
+<tr class="row2"><td valign="top">URL:</td><td>
+<input type="text" name="url" value="http://" /><br />
+</td></td></tr>
+<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
+</table>
+</form></div></div>';
+
 ?>

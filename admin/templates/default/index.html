@@ -23,18 +23,21 @@ body {
 	background-color: #EEE;
 	border: 0px;
 }
-#left { 
-	float: left;
+table.main {
+	width: 100%;
+}
+td {
+	vertical-align: top;
+}
+td.left { 
 	width: 200px;
 	background-color: #EEE;
-	border: 1px dashed #999; 
 	padding-left: 3px;
 	min-height: 350px; /* for modern browsers */
 	height: auto !important; /* for modern browsers */
 	height: 350px; /* for IE5.x and IE6 */
 }
-#center { 
-	margin-left: 210px;
+td.center { 
 	background-color: #FFF; 
 	min-height: 350px; /* for modern browsers */
 	height: auto !important; /* for modern browsers */
@@ -52,18 +55,12 @@ body {
 	<div id="header">
 		<a href="admin.php?"><img src="<!-- $IMAGE_PATH$ -->logo.png" border="0px"></a>
 		</div>
-	<div id="left">
-		<!-- $NAV_BAR$ -->
-		<hr>
-		<!-- $NAV_LOGIN$ -->
-		<div class="left_content">
-			<!-- $LEFT_CONTENT$ -->
-			</div>
-		</div>
-	<div id="center">
-		<!-- $PAGE_MESSAGE$ -->
-		<!-- $CONTENT$ -->
-		</div>
+	<table class="main">
+		<tr>
+			<td class="left"><!-- $NAV_BAR$ --><br /><!-- $NAV_LOGIN$ --></td>
+			<td class="center"><!-- $CONTENT$ --></td>
+			</tr>		
+		</table>
 	<div id="footer">
   	<!-- $FOOTER$ -->
 		</div>

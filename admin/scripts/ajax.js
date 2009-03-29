@@ -56,4 +56,5 @@ datosServidor.prototype.enviar = function(urlget,datos) {
 	return false;
 }
 
+
 -->
