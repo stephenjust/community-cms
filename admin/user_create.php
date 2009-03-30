@@ -3,6 +3,9 @@
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		die ('You cannot access this page directly.');
 		}
+	if(!isset($_GET['create'])) {
+		$_GET['create'] = NULL;
+		}
 	if($_GET['create'] == 1) {
 		if(isset($_POST['username']) && isset($_POST['pass']) && isset($_POST['pass_conf']) && isset($_POST['first_name']) && isset($_POST['surname']) && isset($_POST['telephone']) && isset($_POST['address']) && isset($_POST['email'])) {
 			$content = NULL;
