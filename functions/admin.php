@@ -48,6 +48,7 @@ $("#menu").accordion({ header: "h3" }).accordion( "activate" , '.$page_index.' )
 	function log_action($message) {
 		global $db;
 		global $CONFIG;
+		$message_error = NULL;
 		$date = date('Y-m-d H:i:s');
 		$user = $_SESSION['userid'];
 		$ip_octet = $_SERVER['REMOTE_ADDR'];

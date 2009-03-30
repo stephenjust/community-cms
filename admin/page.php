@@ -3,6 +3,7 @@
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		die ('You cannot access this page directly.');
 		}
+	$message = NULL;
 	if ($_GET['action'] == 'new') {
 		$menu = checkbox($_POST['menu']);
 		$show_title = checkbox($_POST['show_title']);
@@ -218,6 +219,8 @@ VALUES ("'.$text_id.'","'.$_POST['title'].'",'.$show_title.',"'.$_POST['type'].'
 	$content = $message;
 	if($_GET['action'] == 'edit') {
 		$edit_tab = '<li><a href="#tabs-0">Edit Page</a></li>';
+		} else {
+		$edit_tab = NULL;
 		}
 	$content .= '<div id="tabs">
 		<ul>

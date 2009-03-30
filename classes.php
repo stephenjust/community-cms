@@ -131,13 +131,15 @@
 			$block_attribute_handle = $db->query($block_attribute_query);
 			$block = $block_attribute_handle->fetch_assoc();
 			$block_attribute_temp = $block['attributes'];
-			$block_attribute_temp = explode(",",$block_attribute_temp);
-			$block_attribute_count = count($block_attribute_temp);
-			$i = 0;
-			while($i < $block_attribute_count) {
+			if(strlen($block_attribute_temp) > 0) {
+				$block_attribute_temp = explode(",",$block_attribute_temp);
+				$block_attribute_count = count($block_attribute_temp);
+				} else {
+				$block_attribute_count = 0;
+				}
+			for ($i = 0; $i < $block_attribute_count; $i++) {
 				$attribute_temp = explode('=',$block_attribute_temp[$i]);
 				$this->attribute[$attribute_temp[0]] = $attribute_temp[1];
-				$i++;
 				}
 			return;
 			}

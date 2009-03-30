@@ -30,17 +30,19 @@
 		} elseif ($_GET['action'] == 'new') {
 		$type = addslashes($_POST['type']);
 		$attributes = addslashes($_POST['attributes']);
-		$attributes = explode(',',$attributes);
-		$attb_count = count($attributes);
-		$i = 1;
+		if(strlen($attributes) > 0) {
+			$attributes = explode(',',$attributes);
+			$attb_count = count($attributes);
+			} else {
+			$attb_count = 0;
+			}
 		$attributes_final = NULL;
-		while ($i <= $attb_count) {
-			$attributes_final .= $attributes[$i - 1].'='.addslashes($_POST[$attributes[$i-1]]);
-			if ($i != $attb_count) {
+		for ($i = 0; $i < $attb_count; $i++) {
+			$attributes_final .= $attributes[$i].'='.addslashes($_POST[$attributes[$i]]);
+			if ($i + 1 != $attb_count) {
 				$attributes_final .= ',';
 				}
-			$i++;
-			}
+			} // FOR
 		$new_query = 'INSERT INTO '.$CONFIG['db_prefix'].'blocks (type,attributes) VALUES ("'.$type.'","'.$attributes_final.'")';
 		$new_handle = $db->query($new_query);
 		if(!$new_handle) {
