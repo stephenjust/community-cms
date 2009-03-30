@@ -3,6 +3,9 @@
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		die ('You cannot access this page directly.');
 		}
+		if(!isset($_GET['edit'])) {
+			$_GET['edit'] = NULL;
+			}
 		if($_GET['edit'] != "") {
 			$_GET['id'] = $_GET['edit'];
 			}
@@ -34,7 +37,12 @@
 				$telephone_hide = $_POST['telephone_hide'];
 				$address_hide = $_POST['address_hide'];
 				$email_hide = $_POST['email_hide'];
-				$hide = $_POST['hide'];
+				if(!isset($_POST['hide'])) {
+					$hide = NULL;
+					} else {
+					$hide = $_POST['hide'];
+					}
+				$error = 0;
 				$message = $_POST['message'];
 				if(strlen($telephone) <= 11 || !eregi('^[0-9\-]+\-[0-9]+\-[0-9]+$',$telephone)) {
 					$content .= 'Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.<br />';
@@ -71,6 +79,9 @@ message='.$message.', hide='.$hide.' WHERE id = '.$_GET['edit'].' LIMIT 1';
 // ----------------------------------------------------------------------------
 
 				$current_name = explode(', ',$current_data['realname']);
+				if(!isset($current_name[1])) {
+					$current_name[1] = NULL;
+					}
 				$telephone_hide = checkbox($current_data['phone_hide'],1);
 				$address_hide = checkbox($current_data['address_hide'],1);
 				$email_hide = checkbox($current_data['email_hide'],1);

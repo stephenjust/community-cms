@@ -15,6 +15,7 @@
 		$last_heading = 'Main';
 		$result = NULL;
 		$list_index = 0;
+		$page_index = 0;
 		for($i = 0; $i < count($admin_pages); $i++) {
 			if(strlen($admin_pages[$i]) > 3) { // 1
 				$admin_menu_item[$i] = explode('#',$admin_pages[$i]);
