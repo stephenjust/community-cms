@@ -4,12 +4,15 @@
 		die ('You cannot access this page directly.');
 		}
 
+// ----------------------------------------------------------------------------
+
 	// Load template file
 	function load_template_file($filename = 'index.html') {
 		global $db; // Needed for db query
 		global $CONFIG; // Needed for db query
 		global $site_info; // Needed for db query
-		$template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates WHERE id = '.$site_info['template'];
+        $template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates
+            WHERE id = '.$site_info['template'];
 		$template_handle = $db->query($template_query);
 		if(!$template_handle) {
 			echo mysql_error($db);
@@ -25,39 +28,45 @@
 		return $tpl_file;
 		}
 
-	// File Upload Functions
-	function file_upload_box($show_dirs = 0) {	// Displays HTML for a file upload box
-		$return = '<form enctype="multipart/form-data" action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&'.$_SERVER['QUERY_STRING'].'" method="POST">
-Please choose a file: <input name="upload" type="file" /><br />
-';
-		if($show_dirs == 1) {
-			$return = $return.'Where would you like to save the file?<br />';
-			$dir = ROOT.'files';
-			$files = scandir($dir);
-			$num_files = count($files);
-			$i = 1;
-			$return = $return.'<select name="path">
-<option value="">Default</option>';
-			while($i < $num_files) {
+// ----------------------------------------------------------------------------
+
+    // Create file upload form
+    function file_upload_box($show_dirs = 0) {
+        $return = '<form enctype="multipart/form-data"
+            action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&'.
+            $_SERVER['QUERY_STRING'].'" method="POST">
+            Please choose a file: <input name="upload" type="file" /><br />'.
+            "\n";
+        if ($show_dirs == 1) {
+            $return = $return.'Where would you like to save the file?<br />';
+            $dir = ROOT.'files';
+            $files = scandir($dir);
+            $num_files = count($files);
+            $return .= '<select name="path">
+                <option value="">Default</option>';
+			for ($i = 1; $i < $num_files; $i++) {
 				if($files[$i] != '..' && is_dir(ROOT.'files/'.$files[$i])) {
-					$return = $return.'<option value="'.$files[$i].'">'.$files[$i].'</option>';
+					$return .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
 					}
-				$i++;
-				}
+				} // FOR
 			}
-			$return = $return.'</select><br />';
-			$return = $return.'<input type="submit" value="Upload" />
-</form>'; // Don't forget to send same 'GET' vars to script!
+			$return .= '</select><br />';
+			$return .= '<input type="submit" value="Upload" />
+                </form>';
+        // Don't forget to send same 'GET' vars to script!
 		return $return;
 		}
+
+// ----------------------------------------------------------------------------
+
 	function file_upload($path = "") {
 		if($path != "") {
-			$path = $path.'/';
+			$path .= '/';
 			}
 		$target = ROOT.'files/'.$path;
-		$target = $target . basename( $_FILES['upload']['name']) ;
+		$target .= basename( $_FILES['upload']['name']) ;
 		$ok=1;
-		if(move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
+		if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
 			$return = "The file ". basename( $_FILES['upload']['name']). " has been uploaded. ";
 			$return .= log_action ('Uploaded file '.$_FILES['upload']['name']);
 			} else {
@@ -65,7 +74,9 @@ Please choose a file: <input name="upload" type="file" /><br />
 			}
 		return $return;
 		}
-		
+
+// ----------------------------------------------------------------------------
+
 	// Create a folder list
 	function folder_list($directory = "",$current = "",$type = 0) {
 		$folder_root = './files/';
@@ -106,6 +117,8 @@ Please choose a file: <input name="upload" type="file" /><br />
 		return $return;
 		}
 
+// ----------------------------------------------------------------------------
+
 	// Create a file list
 	function file_list($directory = "", $type = 0, $selected = "") {
 		$return = NULL;
@@ -120,7 +133,7 @@ Please choose a file: <input name="upload" type="file" /><br />
 			if($type == 1) {
 				$return .= '<select name="file_list">';
 				} elseif($type == 2) {	// If type = 2, display icons for images, and display radio buttons next to each icon. If it is not an image,
-																// do not display it. Add a 'No image' link as well.
+                                        // do not display it. Add a 'No image' link as well.
 				$return .= '<input type="radio" name="image" value="" checked>No Image<br />';
 				$j++; // Make sure this is displayed even if there's no files. 
 				}
@@ -158,6 +171,9 @@ Please choose a file: <input name="upload" type="file" /><br />
 			}
 		return $return;
 		}
+
+// ----------------------------------------------------------------------------
+
 	function dynamic_file_list($directory = '') {
 		//
 		// Folder list portion:

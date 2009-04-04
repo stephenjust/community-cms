@@ -28,37 +28,19 @@
 			$content = 'Successfully added article. '.log_action('New news article \''.$title.'\'');
 			}
 		} else {
-		$content = '</form>
-<form method="POST" action="admin.php?module=news_new_article&action=new">
-<h1>Create New Article</h1>
-<table class="admintable">
-<input type="hidden" name="author" value="'.$_SESSION['name'].'" />
-<tr><td width="150" class="row1">Heading:</td><td class="row1"><input type="text" name="title" /></td></tr>
-<tr><td class="row2" valign="top">Content:</td>
-<td class="row2"><textarea name="content" rows="30"></textarea></td></tr>
-<tr><td width="150" class="row1">Page:</td><td class="row1">
-<select name="page">';
-		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 1 ORDER BY list ASC';
-		$page_query_handle = $db->query($page_query);
- 		$i = 1;
-		while ($i <= $page_query_handle->num_rows) {
-			$page = $page_query_handle->fetch_assoc();
-			$content = $content.'<option value="'.$page['id'].'" />'.$page['title'].'</option>';
-			$i++;
-			}
-		$content = $content.'<option value="0">No Page</option>
-</select></td></tr>
-<tr><td width="150" valign="top" class="row2">Image:</td><td class="row2">'.file_list('newsicons',2).'</td></tr>
-<tr><td width="150" class="row1" valign="top">Date:</td><td class="row1">
-<select name="date_params">
-<option value="0">Hide Date</option>
-<option value="1" selected>Show Date</option>
-<option value="2">Show Mini</option>
-</select>
-</td></tr>
-<tr><td width="150" class="row2">&nbsp;</td><td class="row2"><input type=\'submit\' value=\'Submit\' /></td></tr>
-</table>
-</form>
-<form method="POST" action="?module=news&action=del">';
+            $tab_layout = new tabs;
+            $form = new form;
+            $form->set_target('admin.php?module=news_new_article&amp;action=new');
+            $form->set_method('post');
+            $form->add_textbox('title','Heading');
+            $form->add_hidden('author',$_SESSION['name']);
+            $form->add_textarea('content','Content',NULL,'rows="30"');
+            $form->add_page_list('page','Page',1,1);
+            $form->add_icon_list('image','Image','newsicons');
+            $form->add_select('date_params','Date Settings',array(0,1,2),array('Hide','Show','Show Mini'),2);
+            $form->add_submit('submit','Create Article');
+            $tab_content['create'] .= $form;
+            $tab_layout->add_tab('Create Article',$tab_content['create']);
+            $content .= $tab_layout;
 		}
-	?>
+?>

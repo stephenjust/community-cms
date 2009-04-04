@@ -6,6 +6,14 @@ h1 {
     font-family: Cambria,Arial,Sans-Serif;
     }
 
+label {
+    width: 10em;
+    float: left;
+    text-align: right;
+    margin-right: 0.5em;
+    display: block;
+}
+
 /* 
  * Administration Specific Styles
  */
@@ -82,6 +90,15 @@ div.notice {
 	right: 10px;
 	width: 300px;
 	z-index: 3;
+}
+div.admin_form_element {
+    display: block;
+    float: left;
+    clear: left;
+}
+div.admin_image_list {
+    display: block;
+    float: left;
 }
 div.admin_image_list_item {
 	display: block;
