@@ -56,24 +56,20 @@
 // ----------------------------------------------------------------------------
 
 	$content = $message;
-	$content .= '<div id="tabs">
-		<ul>
-			<li><a href="#tabs-1">Manage Blocks</a></li>
-			<li><a href="#tabs-2">New Block</a></li>
-		</ul>';
-$content .= '<div id="tabs-1">
-<table style="border: 1px solid #000000;">
-<tr><td>ID</td><td width="350">Info:</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+	$tab_layout = new tabs;
+	$tab_content['manage'] = NULL;
+	$tab_content['manage'] .= '<table class="admintable">
+		<tr><th>ID</th><th width="350">Info:</th><th colspan="2"></th></tr>';
 	// Get block list by id
 	$block_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks ORDER BY id DESC';
 	$block_list_handle = $db->query($block_list_query);
  	if($block_list_handle->num_rows == 0) {
- 		$content .= '<tr><td></td><td class="adm_page_list_item">No blocks exist.</td><td></td><td></td></tr>';
+ 		$tab_content['manage'] .= '<tr><td></td><td class="adm_page_list_item">No blocks exist.</td><td></td><td></td></tr>';
  		} else {
  		$i = 1;
  		while ($i <= $block_list_handle->num_rows) {
  			$block_list = $block_list_handle->fetch_assoc();
- 			$content .= '<tr>
+ 			$tab_content['manage'] .= '<tr>
 <td>'.$block_list['id'].'</td>
 <td class="adm_page_list_item">'.$block_list['type'].' ('.$block_list['attributes'].')</td>
 <td><a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
@@ -82,41 +78,46 @@ $content .= '<div id="tabs-1">
 			$i++;
  			} 
  		}
-$content .= '</table></div>';
-$directory = 'content_blocks/';
-$folder_open = ROOT.$directory;
-$files = scandir($folder_open);
-unset($folder_open);
-unset($directory);
-$num_files = count($files);
-$i = 2;
-if($num_files < 4) { // ( ., .., blocks.info, and a block file)
-	$content .= 'No installed blocks.';
-	$bock_types_list = '<select name="type" disabled>';
-	} else {
-	$block_types_list = '<select name="type" id="adm_block_type_list" onChange="block_options_list_update()">';
-	while($i < $num_files) {
-		$block_type = explode('_',$files[$i]);
-		$block_type = $block_type[0];
-		if(!eregi('^\.',$files[$i]) && !eregi('~$',$files[$i]) && !eregi('\.info$',$files[$i])) {
-			$block_types_list .= '<option value="'.$block_type.'">'.$block_type.'</option>';
-			}
-		$i++;
-		unset($block_type);
-		}
-	$block_types_list .= '</select>';
+	$tab_content['manage'] .= '</table>';
+	$tabs['manage'] = $tab_layout->add_tab('Manage Blocks',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-	$content .= '<div id="tabs-2">
-	<form method="post" action="admin.php?module=block_manager&action=new">
-	<table style="border: 1px solid #000000;">
+	$tab_content['create'] = NULL;
+	$directory = 'content_blocks/';
+	$folder_open = ROOT.$directory;
+	$files = scandir($folder_open);
+	unset($folder_open);
+	unset($directory);
+	$num_files = count($files);
+	$i = 2;
+	if($num_files < 4) { // ( ., .., blocks.info, and a block file)
+		$tab_content['create'] .= 'No installed blocks.';
+		$bock_types_list = '<select name="type" disabled>';
+		} else {
+		$block_types_list = '<select name="type" id="adm_block_type_list" onChange="block_options_list_update()">';
+		while($i < $num_files) {
+			$block_type = explode('_',$files[$i]);
+			$block_type = $block_type[0];
+			if(!eregi('^\.',$files[$i]) && !eregi('~$',$files[$i]) && !eregi('\.info$',$files[$i])) {
+				$block_types_list .= '<option value="'.$block_type.'">'.$block_type.'</option>';
+				}
+			$i++;
+			unset($block_type);
+			}
+		$block_types_list .= '</select>';
+	
+// ----------------------------------------------------------------------------
+
+		$tab_content['create'] .= '<form method="post" action="admin.php?module=block_manager&action=new">
+	<table class="admintable">
 	<tr><td>Type:</td><td>'.$block_types_list.'</td></tr>
 	<tr><td>Options:</td><td><div id="adm_block_type_options"></div></td></tr>
-	<tr><td></td><td><input type="submit" value="Submit" /></td></tr>
+	<tr><td class="empty"></td><td><input type="submit" value="Submit" /></td></tr>
 	</table></form>
 	<script language="javascript" type="text/javascript">
-	block_options_list_update()</script></div>
-	</div>';
-	}
+	block_options_list_update()</script>';
+		}
+	$tab_layout->add_tab('Create Block',$tab_content['create']);
+	$content .= $tab_layout;
 ?>
