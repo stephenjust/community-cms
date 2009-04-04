@@ -132,12 +132,11 @@ div.admin_image_list_item {
 div.admin_image_list_item:hover {
     background: #fdaf2f;
     }
-}
 div.admin_image_list_item img {
-	width: 100px;
-	height: 100px;
-	padding: 2px;
-}
+    width: 100px;
+    height: 100px;
+    padding: 2px;
+    }
 
 
 /*
