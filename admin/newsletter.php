@@ -46,13 +46,50 @@
 		}
 	}
 $monthbox .= '</select>';
-	$content .= '<div id="tabs">
-		<ul>
-			<li><a href="#tabs-1">Manage Newsletters</a></li>
-			<li><a href="#tabs-2">Add Newsletter</a></li>
-		</ul>';
-$content .= '<div id="tabs-2">
-<form method="POST" action="admin.php?module=newsletter&action=new">
+$tab_layout = new tabs;
+$tab_content['manage'] = '<table class="admintable">
+<tr><td><form method="post" action="admin.php?module=newsletter"><select name="page">';
+		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 2 ORDER BY list ASC';
+		$page_query_handle = $db->query($page_query);
+ 		$i = 1;
+		while ($i <= $page_query_handle->num_rows) {
+			$page = $page_query_handle->fetch_assoc();
+			if(!isset($_POST['page'])) {
+				$_POST['page'] = $site_info['home'];
+				$first = 1;
+				}
+			if($page['id'] == $_POST['page']) {
+				$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
+				} else {
+				$tab_content['manage'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
+				if($first == 1 && $page['id'] != $_POST['page']) {
+					$_POST['page'] = $page['id'];
+					$first = 0;
+					}
+				}
+			$i++;
+			}
+		$tab_content['manage'] .= '</select></td><td colspan="3"><input type="submit" value="Change Page" /></form></td></tr>
+<tr><td width="350">Label:</td><td>Month</td><td>Year</td><td>Del</td></tr>';
+	// Get page message list in the order defined in the database. First is 0.
+	$nl_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'newsletters WHERE page = '.stripslashes($_POST['page']).' ORDER BY year DESC,month DESC';
+	$nl_handle = $db->query($nl_query);
+ 	$i = 1;
+ 	if($nl_handle->num_rows == 0) {
+ 		$tab_content['manage'] .= '<tr><td colspan="4">There are no newsletter entries on this page.</td></tr>';
+ 		}
+	while ($i <= $nl_handle->num_rows) {
+		$nl = $nl_handle->fetch_assoc();
+		$tab_content['manage'] .= '<tr>
+<td class="adm_page_list_item">'.strip_tags(stripslashes($nl['label']),'<br>').'</td>
+<td>'.$months[$nl['month']-1].'</td><td>'.$nl['year'].'</td>
+<td><a href="?module=newsletter&action=delete&id='.$nl['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+</tr>';
+		$i++;
+	}
+$tab_content['manage'] .= '</table>';
+$tab_layout->add_tab('Manage Newsletters',$tab_content['manage']);
+$tab_content['create'] = '<form method="POST" action="admin.php?module=newsletter&action=new">
 <table class="admintable">
 <tr><td class="row1">Label:</td><td class="row1"><input type="text" name="label" /></td></tr>
 <tr><td valign="top" class="row2">File:</td><td class="row2"><div id="dynamic_file_list">
@@ -68,53 +105,13 @@ $content .= '<div id="tabs-2">
  	$i = 1;
 	while ($i <= $page_query_handle->num_rows) {
 		$page = $page_query_handle->fetch_assoc();
-		$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
+		$tab_content['create'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
 		$i++;
 	}
-$content .= '</select></td></tr>
+$tab_content['create'] .= '</select></td></tr>
 <tr><td class="empty"></td><td class="row1"><input type="submit" value="Submit" /></td></tr>
 </table>
-</form></div>';
-$content .= '<div id="tabs-1">
-<table class="admintable">
-<tr><td><form method="post" action="admin.php?module=newsletter"><select name="page">';
-		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 2 ORDER BY list ASC';
-		$page_query_handle = $db->query($page_query);
- 		$i = 1;
-		while ($i <= $page_query_handle->num_rows) {
-			$page = $page_query_handle->fetch_assoc();
-			if(!isset($_POST['page'])) {
-				$_POST['page'] = $site_info['home'];
-				$first = 1;
-				}
-			if($page['id'] == $_POST['page']) {
-				$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
-				} else {
-				$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
-				if($first == 1 && $page['id'] != $_POST['page']) {
-					$_POST['page'] = $page['id'];
-					$first = 0;
-					}
-				}
-			$i++;
-			}
-		$content = $content.'</select></td><td colspan="3"><input type="submit" value="Change Page" /></form></td></tr>
-<tr><td width="350">Label:</td><td>Month</td><td>Year</td><td>Del</td></tr>';
-	// Get page message list in the order defined in the database. First is 0.
-	$nl_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'newsletters WHERE page = '.stripslashes($_POST['page']).' ORDER BY year DESC,month DESC';
-	$nl_handle = $db->query($nl_query);
- 	$i = 1;
- 	if($nl_handle->num_rows == 0) {
- 		$content .= '<tr><td colspan="4">There are no newsletter entries on this page.</td></tr>';
- 		}
-	while ($i <= $nl_handle->num_rows) {
-		$nl = $nl_handle->fetch_assoc();
-		$content .= '<tr>
-<td class="adm_page_list_item">'.strip_tags(stripslashes($nl['label']),'<br>').'</td>
-<td>'.$months[$nl['month']-1].'</td><td>'.$nl['year'].'</td>
-<td><a href="?module=newsletter&action=delete&id='.$nl['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
-</tr>';
-		$i++;
-	}
-$content .= '</table></div></div>';
+</form>';
+$tab_layout->add_tab('Create Newsletter',$tab_content['create']);
+$content .= $tab_layout;
 ?>

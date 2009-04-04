@@ -39,16 +39,16 @@
 				}
 			}
 		}
-$content = $message.'<form method="POST" action="?module=poll_new&action=new">
-<h1>New Poll</h1>
-<table class="admintable">
-<input type="hidden" name="author" value="'.$_SESSION['name'].'" />
-<tr><td width="150" class="row1">Question:</td><td class="row1"><input type="text" name="question" /></td></tr>
-<tr><td class="row2">Identifier:</td><td class="row2"><input type="text" name="short_name" value="exampleValue" /></td></tr>
-<tr><td width="150" class="row1">Answers:<br />(Put each answer on a separate line)</td><td class="row1">
-<textarea name="answers" class="mceNoEditor" rows="6" cols="30"></textarea>
-</td></tr>
-<tr><td width="150" class="row2">&nbsp;</td><td class="row2"><input type="submit" value="Submit" /></td></tr>
-</table>
-</form>';
+$tab_layout = new tabs;
+$form = new form;
+$form->set_target('admin.php?module=poll_new&amp;action=new');
+$form->set_method('post');
+$form->add_hidden('author',$_SESSION['author']);
+$form->add_textbox('question', 'Question');
+$form->add_textbox('short_name','Unique Identifier');
+$form->add_textarea('answers', 'Answers (One per line)', NULL, 'class="mceNoEditor"');
+$form->add_submit('submit','Create Poll');
+$tab_content['create'] = $form;
+$tab_layout->add_tab('Create Poll',$tab_content['create']);
+$content = $message.$tab_layout;
 ?>
