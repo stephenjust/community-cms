@@ -1,39 +1,14 @@
 /*
-COMMUNITY CMS ADMIN STYLESHEET
-*/
-
-/* ------------------------------------------------------------------------- */
+ * COMMUNITY CMS ADMIN STYLESHEET
+ */
 
 h1 {
-	font-family: Cambria,Arial,Sans-Serif;
-}
-div.head, td.head {
-  vertical-align: top;
-  height: 20px;
-  width: 200px;
-  overflow: hidden;
-  table-layout: fixed;
-}
-div.description, td.description {
-  vertical-align: top;
-  height: 20px;
-  overflow: hidden;
-  table-layout: fixed;
-}
-div.calendar_content {
-  width: 100%;
-  height: 65px;
-  overflow: hidden;
-}
+    font-family: Cambria,Arial,Sans-Serif;
+    }
 
-
-span.newsletter_year {
-  font-family: Arial;
-  font-size: larger;
-  font-style: italic;
-}
-
-/* Administration Specific Styles */
+/* 
+ * Administration Specific Styles
+ */
 span.nav_header {
 	font-family: Cambria,Arial,'Sans Serif',Serif;
 	font-weight: bold;
@@ -95,16 +70,6 @@ table.log_messages th {
 	text-align: left;
 	font-family: Cambria,'Times New Roman',Serif;
 }
-/* tr.row1 td {
-	background: #EEEEEE;
-	padding-left: 3px;
-	font-family: Calibri,Arial,Sans-Serif;
-}
-tr.row2 td {
-	background: #E6E6E6;
-	padding-left: 3px;
-	font-family: Calibri,Arial,Sans-Serif;
-} */
 
 .notice {
 	background: #f6ec8c;
@@ -138,10 +103,9 @@ div.admin_image_list_item img {
     padding: 2px;
     }
 
-
 /*
-Styles used only on help pages
-*/
+ * Styles used only on help pages
+ */
 #admin_help_toc {
 
 }
