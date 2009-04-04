@@ -74,6 +74,7 @@
 //	if(is_writeable('./config.php')) {
 //		$NOTIFICATION .= 'Please change the permissions on ./config.php to 0755 or something else that makes it unwriteable.<br />';
 //		}
+
 	// Load page information.
 	if($page_text_id != NULL) {
 		$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE text_id = \''.$page_text_id.'\'';
