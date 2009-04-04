@@ -10,13 +10,30 @@
 			} else {
 			$delete_group_query = 'DELETE FROM '.$CONFIG['db_prefix'].'user_groups WHERE id = '.$_GET['id'];
 			$delete_group = $db->query($delete_group_query);
-			if(!$delete_user) {
+			if(!$delete_group) {
 				$content .= 'Failed to delete group.<br />';
 				} else {
 				$content .= 'Successfully deleted group.<br />'.log_action('Deleted group #'.$_GET['id']);
 				}
 			}
 		} // IF 'delete'
+
+// ----------------------------------------------------------------------------
+
+	if ($_GET['action'] == 'new') {
+		if (strlen($_POST['group_name']) < 2) {
+			$content .= '<strong>Error: </strong>Your group name was too short.<br />';
+			} else {
+			$create_group_query = 'INSERT INTO '.$CONFIG['db_prefix'].'user_groups (`name`, `label_format`) 
+				VALUES ("'.addslashes($_POST['group_name']).'","'.addslashes($_POST['label_format']).'")';
+			$create_group_handle = $db->query($create_group_query);
+			if(!$create_group_handle) {
+				$content .= '<strong>Error: </strong>Failed to create group.<br />';
+				} else {
+				$content .= 'Created group \''.$_POST['group_name'].'\'.<br />'.log_action('Created user group \''.addslashes($_POST['group_name']).'\'');
+				}
+			}
+		}
 
 // ----------------------------------------------------------------------------
 
@@ -37,7 +54,7 @@
 			<td>'.$group_list['id'].'</td>
 			<td><span style="'.stripslashes($group_list['label_format']).'" 
 			id="user_group_'.$group_list['id'].'">'.stripslashes($group_list['name']).'</span></td>
-			<td><a href="#"><img src="<!-- $IMAGE_PATH$ -->delete.png" 
+			<td><a href="admin.php?module=user_groups&action=delete&id='.$group_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" 
 			alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 			<td><a href="#"><img src="<!-- $IMAGE_PATH$ -->edit.png" 
 			alt="Edit" width="16px" height="16px" border="0px" /></a></td>
@@ -58,6 +75,14 @@
 // ----------------------------------------------------------------------------
 
 	$tab_content['create'] = NULL;
+	$tab_content['create'] .= '<form method="POST" action="admin.php?module=user_groups&action=new"><table class="admintable">
+		<tr><td>Group Name:</td><td><input type="text" name="group_name" /></td>
+		</tr>
+		<tr><td>Styling:</td><td><input type="text" name="label_format" />CSS Code</td>
+		</tr>
+		<tr><td class="empty"></td><td><input type="submit" value="Create Group" /></td>
+		</tr>
+		</table></form>';
 	$tab['create'] = $tab_layout->add_tab('Create Group',$tab_content['create']);
 
 	$content .= $tab_layout;
