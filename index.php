@@ -68,6 +68,9 @@
 	if(file_exists('./install')) {
 		$NOTIFICATION .= 'Please delete your ./install directory.<br />';
 		}
+	if($site_info['active'] == 0) {
+		err_page(12);
+		}
 //	if(is_writeable('./config.php')) {
 //		$NOTIFICATION .= 'Please change the permissions on ./config.php to 0755 or something else that makes it unwriteable.<br />';
 //		}

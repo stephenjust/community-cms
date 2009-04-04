@@ -23,6 +23,10 @@
 			case 11:
 			  $errormesg = "This Community CMS powered site is currently disabled.";
 				break;
+			case 12:
+				$errormesg = "This Community CMS powered site is currently disabled.<br />";
+				$errormesg .= display_login_box();
+				break;
 			case 0001:
 			  $errormesg = "0001: A config file not found error has occured. If the problem still exists after five minutes, please attempt to contact the system administrator.";
 				break;
