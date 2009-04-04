@@ -14,13 +14,11 @@ of any administration page.
 </body>
 </html>');
 		}
-	// Back to table of contents	
+	// Back to table of contents
 	$return = '<br /><a href="admin.php?module=help">Table of Contents</a><br />';
 
-    $return .= '<a href="admin.php?module=help&page=tinymce_using_tinymce">Using the TinyMCE Editor</a>';
-
 	// Page header
-	$return .= '<div id="admin_help_page"><h3>What is TinyMCE?</h3>';
+	$return .= '<div id="admin_help_page"><h3>Using the TinyMCE Editor</h3>';
 
 	// Quick overview of what can be done
 	$return .= '<div class="admin_help_explanation">TinyMCE is a cross-platform
@@ -34,17 +32,15 @@ TinyMCE suitable for everybody.</div>';
 	$return .= '<div class="admin_help_quick_instructions">
 <h3>Quick Instructions</h3>
 <ul>
-<li>At the top of any TinyMCE-enabled field are the \'Button Toolbars\'.</li>
-<li>The top toolbar contains formatting options such as Bold, Italic,
-Underline, text alignment, font size, and preset styles.</li>
-<li>The second toolbar lets you cut, copy or paste text, and lets you
-insert links or images, and change font colours.</li>
-<li>In the third row are your table tools, and you can also insert
-video or view TinyMCE in Full Screen mode.</li>
-<li>Advanced tools such as layers or formatting marks are in the bottom
-toolbar.</li>
-<li>The bar on the bottom of the editor shows you where your cursor is in the
-heirarchy of HTML tags making up your document.</li>
+<li>TinyMCE is used like any ordinary word processor.</li>
+<li>You can type text, select what you\'ve typed, and click a button on one of
+the toolbars to edit the selected text.</li>
+<li>You can change the formatting options before you start typing.</li>
+<li>You can add tables, images and media from the toolbars.</li>
+<li>NOTE: Avoid copying and pasting from Microsft Word directly. Microsoft Word
+uses some non-friendly characters that may display incorrectly in some browsers.
+To prevent this from occuring, try copying the text from another program other
+than Microsoft Word.</li>
 </ul>
 </div>';
 
@@ -52,7 +48,7 @@ heirarchy of HTML tags making up your document.</li>
 
 	$return .= '</div>';
 
-	// Back to table of contents	
+	// Back to table of contents
 	$return .= '<br /><a href="admin.php?module=help">Table of Contents</a><br />';
 	return $return;
 ?>

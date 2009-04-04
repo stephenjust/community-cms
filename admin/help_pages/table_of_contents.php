@@ -30,6 +30,7 @@ of any administration page.
 </ol>';
 	$return .= '<h4>TinyMCE</h4>
 <ol>
+<li><a href="admin.php?module=help&page=tinymce_using_tinymce">Using the TinyMCE Editor</a></li>
 <li><a href="admin.php?module=help&page=tinymce_what_is_it">What is TinyMCE?</a></li>
 <li><a href="admin.php?module=help&page=tinymce_paste_in_firefox">Pasting in Firefox</a></li>
 </ol>';

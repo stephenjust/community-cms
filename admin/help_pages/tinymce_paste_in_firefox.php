@@ -17,9 +17,7 @@ of any administration page.
 	// Back to table of contents	
 	$return = '<br /><a href="admin.php?module=help">Table of Contents</a><br />';
 
-//
-// TODO: Add link to TinyMCE Editor Help page
-//
+    $return .= '<a href="admin.php?module=help&page=tinymce_using_tinymce">Using the TinyMCE Editor</a>';
 
 	// Page header
 	$return .= '<div id="admin_help_page"><h3>Why Can\'t I Paste My Content in Firefox?</h3>';
