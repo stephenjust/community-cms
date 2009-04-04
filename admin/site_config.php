@@ -30,32 +30,18 @@ if(!$config_handle) {
 	$tab_content['config'] .= 'Failed to load configuration information from the database.';
 	}
 $current_config = $config_handle->fetch_assoc();
-$tab_content['config'] .= '<form method="post" action="admin.php?module=site_config&action=save">
-<table class="admintable">
-<tr><td width="150">Site Name:</td>
-<td><input type="text" name="site_name" value="'.stripslashes($current_config['name']).'" /></td></tr>
-<tr><td width="150">Site Description:</td>
-<td><input type="text" name="site_desc" value="'.stripslashes($current_config['comment']).'" /></td></tr>
-<tr><td width="150">Site URL:</td>
-<td><input type="text" name="site_url" value="'.stripslashes($current_config['url']).'" /></td></tr>
-<tr><td width="150">Default Template:</td>
-<td>'.$current_config['template'].'</td></tr>
-<tr><td width="150">Page Footer:</td>
-<td><textarea name="footer">'.stripslashes($current_config['footer']).'</textarea></td></tr>
-<tr><td width="150">Site Active:</td>
-<td><input type="checkbox" name="active" '.checkbox($current_config['active'],1).' /> (Uncheck to disable site. To disable entire site including backend, disable the site by editing config.php)</td></tr>
-<tr><td width="150">Cookie Domain:</td>
-<td></td></tr>
-<tr><td width="150">Cookie Path:</td>
-<td></td></tr>
-<tr><td width="150">Cookie Name:</td>
-<td></td></tr>
-<tr><td width="150">Webmaster email:</td>
-<td></td></tr>
-<tr><td width="150">Disable messaging globally:</td><td></td></tr>
-<tr><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
-</table>
-</form>';
+$form = new form;
+$form->set_target('admin.php?module=site_config&amp;action=save');
+$form->set_method('post');
+$form->add_textbox('site_name','Site Name',stripslashes($current_config['name']));
+$form->add_textbox('site_desc','Site Description',stripslashes($current_config['comment']));
+$form->add_textbox('site_url','Site URL',stripslashes($current_config['url']));
+// TODO: $form->add_select('template','Default Template',$values,$strings);
+$form->add_textarea('footer','Footer Text',stripslashes($current_config['footer']));
+$form->add_checkbox('active','Site Active',$current_config['active']);
+// TODO: Cookie domain, path, name, webmaster email, disable messaging
+$form->add_submit('submit','Save Configuration');
+$tab_content['config'] .= $form;
 $tab['config'] = $tab_layout->add_tab('Configuration',$tab_content['config']);
 $content .= $tab_layout;
 

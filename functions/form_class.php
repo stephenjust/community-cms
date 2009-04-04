@@ -1,7 +1,6 @@
 <?php
 /**
  * Basic class for creating HTML forms. Most form input types are supported.
- * TODO: Add checkbox to form class.
  *
  * @author stephen
  */
@@ -74,6 +73,35 @@ class form {
             <label for="_'.$name.'">'.$label.'</label>
             <select name="'.$name.'" id="_'.$name.'" '.$props.'>'.$options.'</select>
             </div><br />';
+        $this->form .= $form_var;
+    }
+    function add_radio($name, $label, $values, $strings, $selected = 0, $props = NULL) {
+        if(count((array)$values) != count((array)$strings)) {
+            return;
+        }
+        $options = NULL;
+        for ($i = 1; $i <= count((array)$values); $i++) {
+            $select_this = NULL;
+            if($selected == $i) {
+                $select_this = 'checked';
+            }
+            $options .= '<input type="radio" name="'.$name.'"
+                value="'.$values[$i - 1].'" '.$select_this.' />'.$strings[$i - 1].'<br />'."\n";
+        }
+        $form_var = '<div class="admin_form_element">
+            <label for="_'.$name.'">'.$label.'</label>
+            <fieldset id="_'.$name.'">'.$options.'</fieldset></div><br />';
+        $this->form .= $form_var;
+    }
+    function add_checkbox($name, $label, $value = NULL, $params = NULL) {
+        if ($value == 1) {
+            $value = 'checked';
+        } else {
+            $value = NULL;
+        }
+        $form_var = '<div class="admin_form_element">
+            <label for="_'.$name.'">'.$label.'</label>
+            <input type="checkbox" name="'.$name.'" id="_'.$name.'" '.$params.' '.$value.' /></div>';
         $this->form .= $form_var;
     }
     function add_page_list($name, $label, $pagetype = '*', $nopageallowed = 0,

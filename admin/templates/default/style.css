@@ -13,6 +13,11 @@ label {
     margin-right: 0.5em;
     display: block;
 }
+fieldset {
+	display: block;
+	float: left;
+	border: 0px;
+}
 
 /* 
  * Administration Specific Styles
