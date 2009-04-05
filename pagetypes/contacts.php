@@ -36,7 +36,7 @@ Message to user:<br />
 		if(strlen($message) <= 10) {
 			$content .= 'Your message was too short.';
 			} else {
-			$recipient = addslashes($_POST['recipient']);
+			$recipient = (int)$_POST['recipient'];
 			$message_query = 'INSERT INTO '.$CONFIG['db_prefix']."messages (recipient,message) VALUES ($recipient,'$message')";
 			$message_handle = $db->query($message_query);
 			if(!$message_handle) {

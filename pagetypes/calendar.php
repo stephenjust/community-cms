@@ -3,11 +3,14 @@
 	if (@SECURITY != 1) {
 		die ('You cannot access this page directly.');
 		}
+    global $page_info;
 	switch($_GET['view']) {
 	// MONTH VIEW
 		default:
 			if(!isset($_GET['m'])) { $month = date('n'); } else { $month = $_GET['m']; }
 			if(!isset($_GET['y'])) { $year = date('Y'); } else { $year = $_GET['y']; }
+            $year = (int)$year;
+            $month = (int)$month;
 			if ($year < 2000 || $year > 9999) { $year = 2000; } // Validate month and year values
 			if ($month < 1) { $month = 12; $year--; }
 			if ($month > 12) { $month = 1; $year++; }
@@ -65,7 +68,7 @@
 				$day_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar date, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE date.month = \''.$month.'\' AND date.year = \''.$year.'\' AND date.day = \''.$counter_day.'\' AND date.category = cat.cat_id LIMIT 0,2';
 				$day_info_handle = $db->query($day_info_query);
 				if ($day_info_handle->num_rows > 0) {
-					$current_day->day_number = '<a href="?id='.$_GET['id'].'&view=day&m='.$month.'&y='.$year.'&d='.$counter_day.'" class="day_number">'.$counter_day.'</a>';
+					$current_day->day_number = '<a href="?id='.$page_info['id'].'&view=day&m='.$month.'&y='.$year.'&d='.$counter_day.'" class="day_number">'.$counter_day.'</a>';
 					} else {
 					$current_day->day_number = $counter_day;
 					}
@@ -75,7 +78,7 @@
 					if($day_info['colour'] == '') {
 						$day_info['colour'] = 'red';
 						}
-					$dates .= "<a href='?id=".$_GET['id']."&view=event&a=".$day_info['id'].'\' class="calendar_event">
+					$dates .= "<a href='?id=".$page_info['id']."&view=event&a=".$day_info['id'].'\' class="calendar_event">
 <img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png" width="16px" height="16px" alt="'.stripslashes($day_info['label']).'" border="0px" />
 '.stripslashes($day_info['header'])."</a><br />";
 					}
@@ -105,6 +108,9 @@
 	// EVENT VIEW
 		case "event":
 			$page = NULL;
+            if(!isset($_GET['a'])) {
+                $_GET['a'] = NULL;
+            }
 			$event_id = (int)$_GET['a'];
 			$event_query = 'SELECT cal.*, cat.label FROM '.$CONFIG['db_prefix'].'calendar cal, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE cal.id = '.$event_id.' AND cal.category = cat.cat_id LIMIT 1';
 			$event_handle = $db->query($event_query);
@@ -136,8 +142,8 @@
 				$template_event->event_category = stripslashes($event['label']);			
 				$template_event->event_description = stripslashes($event['description']);
 				$template_event->event_location = stripslashes($event['location']);
-				$page .= "<a href='?id=".$_GET['id']."&m=".$event['month']."&y=".$event['year']."'>Back to month view</a><br />";
-				$page .= "<a href='?id=".$_GET['id']."&view=day&d=".$event['day']."&m=".$event['month']."&y=".$event['year']."'>Back to day view</a><br />";
+				$page .= "<a href='?id=".$page_info['id']."&m=".$event['month']."&y=".$event['year']."'>Back to month view</a><br />";
+				$page .= "<a href='?id=".$page_info['id']."&view=day&d=".$event['day']."&m=".$event['month']."&y=".$event['year']."'>Back to day view</a><br />";
 				$page .= $template_event;
 				unset($template_event);
 				global $special_title;
@@ -151,6 +157,9 @@
 			if(!isset($_GET['m'])) { $month = date('n'); } else { $month = $_GET['m']; }
 			if(!isset($_GET['y'])) { $year = date('Y'); } else { $year = $_GET['y']; }
 			if(!isset($_GET['d'])) { $day = date('d'); } else { $day = $_GET['d']; }
+            $year = (int)$year;
+            $month = (int)$month;
+            $day = (int)$day;
 			if ($year < 2000 || $year > 9999) { $year = 2000; } // Validate month and year values
 			if ($month < 1 || $month > 12) { $month = 1; }
 			if ($day < 1 || $day > 31) { $day = 1; }
@@ -158,7 +167,7 @@
 			// Get events for current day from database
 			$day_events_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar WHERE year = '.$year.' AND month = '.$month.' AND day = '.$day.' ORDER BY starttime ASC';
 			$day_events_handle = $db->query($day_events_query);
-      $page .= "<a href='?id=".$_GET['id']."&m=".$month."&y=".$year."'>Back to month view</a><br />\n";
+      $page .= "<a href='?id=".$page_info['id']."&m=".$month."&y=".$year."'>Back to month view</a><br />\n";
 			if(!$day_events_handle) {
 				$page .= 'Failed to read list of events from the database.';
 				break;
