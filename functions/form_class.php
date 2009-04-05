@@ -157,6 +157,12 @@ class form {
             </div><br />';
         $this->form .= $form_var;
     }
+    function add_text($text) {
+        $form_var = '<div class="admin_form_element">
+            <div class="admin_form_text">'.$text.'</div>
+            </div><br />';
+        $this->form .= $form_var;
+    }
     function add_submit($name,$label) {
         $form_var = '<div class="admin_form_element">
             <label for"_'.$name.'">&nbsp;</label>

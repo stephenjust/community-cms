@@ -101,6 +101,11 @@ div.admin_form_element {
     float: left;
     clear: left;
 }
+div.admin_form_text {
+    display: block;
+    float: left;
+    margin-left: 10em;
+}
 div.admin_image_list {
     display: block;
     float: left;
