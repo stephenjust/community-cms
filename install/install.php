@@ -6,6 +6,7 @@
     $content = $content."Writable<br />\n";
     $i[1] = 1;
   } else {
+    $i[1] = 0;
     $content = $content."Not writable. If you do not have a config.php file, please create one.<br />\n";
   }
   $content = $content."files/ - ";
@@ -13,6 +14,7 @@
     $content = $content."Writable<br />\n";
     $i[2] = 1;
   } else {
+      $i[2] = 0;
     $content = $content."Not writable<br />\n";
   }
   $content = $content."templates/ - ";
@@ -20,6 +22,7 @@
     $content = $content."Writable<br />\n";
     $i[3] = 1;
   } else {
+      $i[3] = 0;
     $content = $content."Not writable<br />\n";
   }
   if($i[1] == 1 && $i[2] == 1 && $i[3] == 1) {

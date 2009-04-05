@@ -1,6 +1,7 @@
 <?php
   define('ROOT','../');
   define('SECURITY',1);
+  $error = 0;
   $nav_bar = "<div align='center'><span style='color: #00CC00;'>Check file permissions</span><hr />\n<span style='color: #00CC00;'>Configure settings</span><hr />\n<span style='color: #CCCC00;'>Download/save config file</span></div>\n";
   $content = "<h1>Installing...</h1>\n";
   include('../include.php');

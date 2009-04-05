@@ -6,7 +6,10 @@
     fclose($handle);
     $css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
     $image_path = $template_path.'images/';
-    switch($_GET[page]) {
+    if(!isset($_GET['page'])) {
+        $_GET['page'] = 1;
+    }
+    switch($_GET['page']) {
       default:
       include ('./install.php');
       break;
@@ -21,7 +24,7 @@
     $template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
     $template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
     $template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
-    $template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
+    $template = str_replace('<!-- $NAV_LOGIN$ -->',NULL,$template);
     $template = str_replace('<!-- $CONTENT$ -->',$content,$template);
     $template = str_replace('<!-- $FOOTER$ -->','Community CMS Copyright&copy; 2008 Stephen Just',$template);
     echo $template;

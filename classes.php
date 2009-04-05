@@ -3,7 +3,7 @@
 	if (@SECURITY != 1) {
 		die ('You cannot access this page directly.');
 		}
-    require('./functions/form_class.php');
+    require(ROOT.'functions/form_class.php');
 	class template {
 		public $template;
 		public $path;
