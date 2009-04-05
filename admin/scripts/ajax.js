@@ -1,60 +1,57 @@
 <!--
-//XMLHttpRequest class function
-function datosServidor() {
-};
-datosServidor.prototype.iniciar = function() {
-	try {
-		// Mozilla / Safari
-		this._xh = new XMLHttpRequest();
-	} catch (e) {
-		// Explorer
-		var _ieModelos = new Array(
-		'MSXML2.XMLHTTP.5.0',
-		'MSXML2.XMLHTTP.4.0',
-		'MSXML2.XMLHTTP.3.0',
-		'MSXML2.XMLHTTP',
-		'Microsoft.XMLHTTP'
-		);
-		var success = false;
-		for (var i=0;i < _ieModelos.length && !success; i++) {
-			try {
-				this._xh = new ActiveXObject(_ieModelos[i]);
-				success = true;
-			} catch (e) {
+function createXHR()
+{
+    var request = false;
+        try {
+            request = new ActiveXObject('Msxml2.XMLHTTP');
+        }
+        catch (err2) {
+            try {
+                request = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+            catch (err3) {
+		try {
+			request = new XMLHttpRequest();
+		}
+		catch (err1)
+		{
+			request = false;
+		}
+            }
+        }
+    return request;
+}
+
+/**
+	responseHTML
+	(c) 2007-2008 xul.fr
+	Licence Mozilla 1.1
+*/
+
+/**
+	Loads a HTML page
+	Put the content of the body tag into the current page.
+	Arguments:
+		url of the other HTML page to load
+		id of the tag that has to hold the content
+*/
+
+function loadHTML(url, storage)
+{
+	var xhr = createXHR();
+	xhr.onreadystatechange=function()
+	{
+		if(xhr.readyState == 4)
+		{
+			//if(xhr.status == 200)
+			{
+				storage.innerHTML = xhr.responseText;
 			}
 		}
-		if ( !success ) {
-			return false;
-		}
-		return true;
-	}
+	};
+
+	xhr.open("GET", url , true);
+	xhr.send(null);
+
 }
-
-datosServidor.prototype.ocupado = function() {
-	estadoActual = this._xh.readyState;
-	return (estadoActual && (estadoActual < 4));
-}
-
-datosServidor.prototype.procesa = function() {
-	if (this._xh.readyState == 4 && this._xh.status == 200) {
-		this.procesado = true;
-	}
-}
-
-datosServidor.prototype.enviar = function(urlget,datos) {
-	if (!this._xh) {
-		this.iniciar();
-	}
-	if (!this.ocupado()) {
-		this._xh.open("GET",urlget,false);
-		this._xh.send(datos);
-		if (this._xh.readyState == 4 && this._xh.status == 200) {
-			return this._xh.responseText;
-		}
-		
-	}
-	return false;
-}
-
-
 -->
