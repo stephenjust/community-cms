@@ -37,6 +37,13 @@
 				$telephone_hide = $_POST['telephone_hide'];
 				$address_hide = $_POST['address_hide'];
 				$email_hide = $_POST['email_hide'];
+                $groups = NULL;
+                if(isset($_POST['groups'])) {
+                    $num_sel_groups = count($_POST['groups']);
+                    for($i = 0; $i < $num_sel_groups; $i++) {
+                        $groups .= $_POST['groups'][$i].',';
+                    }
+                }
 				if(!isset($_POST['hide'])) {
 					$hide = NULL;
 					} else {
@@ -64,7 +71,7 @@
 					}
 				if($error == 0) {
 					$edit_query = 'UPDATE '.$CONFIG['db_prefix'].'users SET realname="'.$realname.'", 
-title="'.$title.'", phone="'.$telephone.'", email="'.$email.'", address="'.addslashes($_POST['address']).'", 
+title="'.$title.'", groups="'.$groups.'", phone="'.$telephone.'", email="'.$email.'", address="'.addslashes($_POST['address']).'",
 address_hide='.$address_hide.', email_hide='.$email_hide.', phone_hide='.$telephone_hide.', 
 message='.$message.', hide='.$hide.' WHERE id = '.$_GET['edit'].' LIMIT 1';
 					$edit_handle = $db->query($edit_query);
@@ -87,121 +94,52 @@ message='.$message.', hide='.$hide.' WHERE id = '.$_GET['edit'].' LIMIT 1';
 				$email_hide = checkbox($current_data['email_hide'],1);
 				$hide = checkbox($current_data['hide'],1);
 				$message = checkbox($current_data['message'],1);
-				$content = '<h1>Modify User</h1>
-<form method="POST" action="admin.php?module=user_edit&edit='.$_GET['id'].'">
-<table class="admintable">
-<tr>
-	<td class="row1">
-		New Password:
-		</td>
-	<td class="row1">
-		<input type="password" name="edit_pass" />
-		</td>
-	<td rowspan="3" class="row1">
-		If these password fields are filled correctly, your password will be changed.
-		Leave the password fields empty if you do not want to change your password.
-		</td>
-	</tr>
-<tr>
-	<td class="row2">
-		Confirm Password:
-		</td>
-	<td class="row2">
-		<input type="password" name="edit_pass_conf" />
-		</td>
-	</tr>
-<tr>
-	<td class="row1">
-		Old Password:
-		</td>
-	<td class="row1">
-		<input type="password" name="edit_old_pass" />
-		</td>
-	</tr>
-<tr>
-	<td class="row2">
-		First Name:
-		</td>
-	<td class="row2" colspan="2">
-		<input type="text" name="first_name" value="'.$current_name[1].'" />
-		</td>
-	</tr>
-<tr>
-	<td class="row1">
-		Surname:
-		</td>
-	<td class="row1" colspan="2">
-		<input type="text" name="surname" value="'.$current_name[0].'" />
-		</td>
-	</tr>
-<tr>
-	<td class="row2">
-		Title/Position:
-		</td>
-	<td class="row2" colspan="2">
-		<input type="text" name="title" value="'.$current_data['title'].'" />
-		</td>
-	</tr>
-<tr>
-	<td class="row1">
-		Phone Number:
-		</td>
-	<td class="row1" colspan="2">
-		<input type="text" name="telephone" value="'.$current_data['phone'].'" />
-		<input type="checkbox" name="telephone_hide" '.$telephone_hide.' />
-		</td>
-	</tr>
-<tr>
-	<td class="row2">
-		Address:
-		</td>
-	<td class="row2" colspan="2">
-		<input type="text" name="address" value="'.$current_data['address'].'" />
-		<input type="checkbox" name="address_hide" '.$address_hide.' />
-		</td>
-	</tr>
-<tr>
-	<td class="row1">
-		Email Address:
-		</td>
-	<td class="row1" colspan="2">
-		<input type="text" name="email" value="'.$current_data['email'].'" />
-		<input type="checkbox" name="email_hide" '.$email_hide.' />
-		</td>
-	</tr>
-<tr>
-	<td colspan="3" class="row2">
-		If you would not like your phone number, email, or address to be displayed publicly,
-		please check the boxes above. However, if you would like to allow people to see all
-		or some of this information, uncheck the boxes corresponding to the values that you
-		would like to be visible. You must enter this information so that the website
-		administrators may contact you if the need arises. To hide your contact entry
-		completely, check the box below.
-		</td>
-	</tr>
-<tr>
-	<td class="row1">
-		Hide on contacts page:
-		</td>
-	<td class="row1" colspan="2">
-		<input type="checkbox" name="hide" '.$hide.' />
-		</td>
-	</tr>
-<tr>
-	<td class="row2">
-		Allow recieving messages:
-		</td>
-	<td class="row2" colspan="2">
-		<input type="checkbox" name="message" '.$message.' />
-		</td>
-	</tr>
-<tr>
-	<td colspan="3" class="row1">
-		<input type="submit" value="Submit" />
-		</td>
-	</tr>
-</table>
-</form>';
+                $tab_layout = new tabs;
+                $form = new form;
+                $form->set_target('admin.php?module=user_edit&amp;edit='.$_GET['id']);
+                $form->set_method('post');
+                $form->add_password('edit_pass','Password');
+                $form->add_password('edit_pass_conf','Confirm Password');
+                $form->add_password('edit_old_conf','Old Password');
+                $form->add_text('If the above password fields are filled correctly,
+                    your password will be changed. Leave the password fields empty
+                    if you do not want to change your password.');
+                $form->add_textbox('first_name','First Name',$current_name[1]);
+                $form->add_textbox('surname','Surname',$current_name[0]);
+                $form->add_textbox('title','Title/Position',$current_data['title']);
+                $form->add_textbox('telephone','Phone Number',$current_data['phone']);
+                $form->add_checkbox('telephone_hide','Hide Phone Number',$current_data['phone_hide']);
+                $form->add_textbox('address','Address',$current_data['address']);
+                $form->add_checkbox('address_hide','Hide Address',$current_data['address_hide']);
+                $form->add_textbox('email','Email Address',$current_data['email']);
+                $form->add_checkbox('email_hide','Hide Email Address',$current_data['email_hide']);
+                $form->add_text('If you would not like your phone number, email, or
+                    address to be displayed publicly, please check the boxes above.
+                    However, if you would like to allow people to see all or some of
+                    this information, uncheck the boxes corresponding to the values
+                    that you would like to be visible. You must enter this information
+                    so that the website administrators may contact you if the need
+                    arises. To hide your contact entry completely, check the box
+                    below.');
+                $form->add_checkbox('hide','Hide on Contacts Page',$current_data['hide']);
+                $form->add_checkbox('message','Allow Recieving Messages',$current_data['message']);
+                $group_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'user_groups ORDER BY name ASC';
+                $group_list_handle = $db->query($group_list_query);
+                $group_list_rows = $group_list_handle->num_rows;
+                if($group_list_rows == 0) {
+                    $form->add_text(' An error may have occured. No groups were found.');
+                } else {
+                    for ($i = 0; $i < $group_list_rows; $i++) {
+                        $group_list = $group_list_handle->fetch_assoc();
+                        $group_list_id[$i] = $group_list['id'];
+                        $group_list_name[$i] = $group_list['name'];
+                    }
+                    $form->add_multiselect('groups','Groups',$group_list_id,$group_list_name,$current_data['groups']);
+                }
+                $form->add_submit('submit','Edit User');
+                $tab_content['edit'] = $form;
+                $tab_layout->add_tab('Edit User',$tab_content['edit']);
+                $content = $tab_layout;
 			}
 		}
 	?>

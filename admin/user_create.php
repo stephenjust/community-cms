@@ -25,6 +25,13 @@
 			if (strlen($title) <= 1) {
 				$title = NULL;
 				}
+            $groups = NULL;
+            if(isset($_POST['groups'])) {
+                $num_sel_groups = count($_POST['groups']);
+                for($i = 0; $i < $num_sel_groups; $i++) {
+                    $groups .= $_POST['groups'][$i].',';
+                }
+            }
 			$telephone = addslashes($_POST['telephone']);
 			$address = addslashes($_POST['address']);
 			$email = addslashes($_POST['email']);
@@ -64,7 +71,12 @@
 				$error = 1;
 				}
 			if ($error != 1) {
-				$create_user_query = 'INSERT INTO '.$CONFIG['db_prefix']."users (type,username,password,realname,title,phone,email,address,phone_hide,email_hide,address_hide,hide,message) VALUES (2,'$username','".md5($pass)."','$real_name','$title','$telephone','$email','$address',$telephone_hide,$email_hide,$address_hide,$hide,$message)";
+				$create_user_query = 'INSERT INTO '.$CONFIG['db_prefix']."users 
+                    (type,username,password,realname,title,groups,phone,email,
+                    address,phone_hide,email_hide,address_hide,hide,message)
+                    VALUES (2,'$username','".md5($pass)."','$real_name',
+                    '$title','$groups','$telephone','$email','$address',
+                    $telephone_hide,$email_hide,$address_hide,$hide,$message)";
 				$create_user = $db->query($create_user_query);
 				if (!$create_user) {
 					$content .= 'Your account could not be created.';
@@ -102,6 +114,19 @@
             below.');
         $form->add_checkbox('hide','Hide on Contacts Page');
         $form->add_checkbox('message','Allow Recieving Messages');
+        $group_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'user_groups ORDER BY name ASC';
+        $group_list_handle = $db->query($group_list_query);
+        $group_list_rows = $group_list_handle->num_rows;
+        if($group_list_rows == 0) {
+            $form->add_text(' An error may have occured. No groups were found.');
+        } else {
+            for ($i = 0; $i < $group_list_rows; $i++) {
+                $group_list = $group_list_handle->fetch_assoc();
+                $group_list_id[$i] = $group_list['id'];
+                $group_list_name[$i] = $group_list['name'];
+            }
+            $form->add_multiselect('groups','Groups',$group_list_id,$group_list_name);
+        }
         $form->add_submit('submit','Create User');
         $tab_content['create'] = $form;
         $tab_layout->add_tab('Create User',$tab_content['create']);

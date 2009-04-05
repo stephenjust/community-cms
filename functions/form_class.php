@@ -104,6 +104,29 @@ class form {
             <input type="checkbox" name="'.$name.'" id="_'.$name.'" '.$params.' '.$value.' /></div>';
         $this->form .= $form_var;
     }
+    function add_multiselect($name, $label, $values, $strings, $selected = NULL, $size = 5, $params = NULL) {
+        if(count((array)$values) != count((array)$strings)) {
+            return;
+        }
+        $selected = explode(',',$selected);
+        $options = NULL;
+        for ($i = 1; $i <= count((array)$values); $i++) {
+            $select_this = NULL;
+            $num_selected = count($selected);
+            for($count = 0; $count < $num_selected; $count++) {
+                if($selected[$count] == $values[$i - 1]) {
+                    $select_this = 'selected';
+                }
+            }
+            $options .= '<option value="'.$values[$i - 1].'" '.$select_this.'>'.$strings[$i - 1].'</option>'."\n";
+        }
+        $form_var = '<div class="admin_form_element">
+            <label for="_'.$name.'">'.$label.'</label>
+            <select name="'.$name.'[]" id="_'.$name.'" '.$props.'
+            size="'.(int)$size.'" multiple>'.$options.'</select>
+            </div><br />';
+        $this->form .= $form_var;
+    }
     function add_page_list($name, $label, $pagetype = '*', $nopageallowed = 0,
         $value = NULL, $props = NULL) {
         global $CONFIG;
