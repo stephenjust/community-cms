@@ -105,7 +105,7 @@
 	// EVENT VIEW
 		case "event":
 			$page = NULL;
-			$event_id = stripslashes($_GET['a']);
+			$event_id = (int)$_GET['a'];
 			$event_query = 'SELECT cal.*, cat.label FROM '.$CONFIG['db_prefix'].'calendar cal, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE cal.id = '.$event_id.' AND cal.category = cat.cat_id LIMIT 1';
 			$event_handle = $db->query($event_query);
 			if(!$event_handle || $event_handle->num_rows == 0) {

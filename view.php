@@ -6,6 +6,7 @@
 	define('SECURITY',1);
 	define('ROOT','./');
 	session_start();
+    $content = NULL;
 	// Load error handling code
 	require_once('./functions/error.php');
 	// Load database configuration
@@ -39,12 +40,13 @@
 	if(!isset($_GET['article_id'])) {
 		$_GET['article_id'] = "";
 		}
-		$template_handle = load_template_file('article_page.html');
-		$template = $template_handle['contents'];
-		$template_path = $template_handle['template_path'];
+    $_GET['article_id'] = (int)$_GET['article_id'];
+    $template_handle = load_template_file('article_page.html');
+    $template = $template_handle['contents'];
+    $template_path = $template_handle['template_path'];
 	// Get item contents.
 	if($_GET['article_id'] == "") {
-		$content = 'No article to be displayed.';
+		$content .= 'No article to be displayed.';
 		$page_title = 'Article Not Found';
 		header("HTTP/1.0 404 Not Found");
 		} else {
