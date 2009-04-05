@@ -59,7 +59,7 @@
 	$tab_layout = new tabs;
 	$tab_content['manage'] = NULL;
 	$tab_content['manage'] .= '<table class="admintable">
-		<tr><th>ID</th><th width="350">Info:</th><th colspan="2"></th></tr>';
+		<tr><th width="30">ID</th><th>Info:</th><th width="40" colspan="2"></th></tr>';
 	// Get block list by id
 	$block_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks ORDER BY id DESC';
 	$block_list_handle = $db->query($block_list_query);

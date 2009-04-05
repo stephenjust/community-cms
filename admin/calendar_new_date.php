@@ -3,13 +3,41 @@
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		die ('You cannot access this page directly.');
 		}
+    if(!isset($_POST['title'])) {
+        $_POST['title'] = NULL;
+    }
+    if(!isset($_POST['category'])) {
+        $_POST['category'] = NULL;
+    }
+    $category = $_POST['category'];
+    if(!isset($_POST['stime'])) {
+        $_POST['stime'] = NULL;
+    }
+    if(!isset($_POST['etime'])) {
+        $_POST['etime'] = NULL;
+    }
+    if(!isset($_POST['day'])) {
+        $_POST['day'] = NULL;
+    }
+    if(!isset($_POST['month'])) {
+        $_POST['month'] = NULL;
+    }
+    if(!isset($_POST['year'])) {
+        $_POST['year'] = NULL;
+    }
+    if(!isset($_POST['content'])) {
+        $_POST['content'] = NULL;
+    }
+    if(!isset($_POST['location'])) {
+        $_POST['location'] = NULL;
+    }
 	$content = NULL;
 	$date = date('Y-m-d H:i:s');
 	if ($_GET['action'] == 'new') {
 		$title = addslashes($_POST['title']);
 	  $image = $_POST['image'];
 	  if(!isset($image)) $image = 'NULL';
-	  $content = addslashes($_POST['content']);
+	  $item_content = addslashes($_POST['content']);
 	  $author = addslashes($_POST['author']);
 		$start_time = $_POST['stime'];
 		$end_time = $_POST['etime'];
@@ -24,25 +52,25 @@
 			$hide = '0';
 			}
 	  if($start_time == "" || $end_time == "" || $year == "" || $title == "") {
-	  	$message .= 'One or more fields was not filled out. Please complete the fields marked with a star and resubmit.';
+	  	$content .= 'One or more fields was not filled out. Please complete the fields marked with a star and resubmit.';
 	  	} else {
 			$stime = explode('-',$start_time);
 			$etime = explode('-',$end_time);
 			if (!eregi('^[0-2][0-9]\:[0-5][0-9]$',$start_time) || !eregi('^[0-2][0-9]\:[0-5][0-9]$',$end_time) || strlen($start_time) != 5 || strlen($end_time) != 5 || $start_time > $end_time ) {
-				$message .= "You did not fill out one or more of the times properly. Please fix the problem and resubmit.";
+				$content .= "You did not fill out one or more of the times properly. Please fix the problem and resubmit.";
 				} else {
 				$create_date_query = 'INSERT INTO '.$CONFIG['db_prefix'].'calendar (category,starttime,endtime,year,month,day,header,description,location,author,image,hidden) VALUES ("'.$category.'","'.$start_time.'","'.$end_time.'",
-				"'.$year.'","'.$month.'","'.$day.'","'.$title.'","'.$content.'","'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
+				"'.$year.'","'.$month.'","'.$day.'","'.$title.'","'.$item_content.'","'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
 				$create_date = $db->query($create_date_query);
 				if(!$create_date) {
-					$message .= 'Failed to create date information.<br />'.mysqli_error($db).$create_date_query;
+					$content .= 'Failed to create date information.<br />'.mysqli_error($db).$create_date_query;
 					} else {
-					$message .= 'Successfully created date information. '.log_action('New date entry on '.$day.'/'.$month.'/'.$year.' \''.$title.'\'');
+					$content .= 'Successfully created date information. '.log_action('New date entry on '.$day.'/'.$month.'/'.$year.' \''.$title.'\'');
 					}
 				}
 			}
 		}
-$content = $message.'<form method="POST" action="?module=calendar_new_date&action=new">
+$content .= '<form method="POST" action="?module=calendar_new_date&action=new">
 <h1>Create New Calendar Date</h1>
 <table class="admintable">
 <input type="hidden" name="author" value="'.stripslashes($_SESSION['name']).'" />
@@ -67,21 +95,30 @@ $content = $message.'<form method="POST" action="?module=calendar_new_date&actio
 
 $content .= '</select>
 </td></tr>
-<tr><td width="150" class="row1">*Start Time:</td><td class="row1"><input type="text" name="stime" value="'.$_POST['stime'].'" maxlength="5" /><div class="notice">Times are in 24 hour format. Insert the same time in both fields for an all day event. Times should be in hour:minute format. Please include leading zeroes (1 = 01)</div></td></tr>
-<tr><td width="150" class="row2">*End Time:</td><td class="row2"><input type="text" name="etime" value="'.$_POST['etime'].'" maxlength="5" /></td></tr>
-<tr><td width="150" class="row1">*Day:</td><td class="row1"><select name="day" value="'.$_POST['day'].'" >';
+<tr><td width="150" class="row1">*Start Time:</td><td class="row1">
+<input type="text" name="stime" value="'.$_POST['stime'].'" maxlength="5" />
+<div class="notice">Times are in 24 hour format. Insert the same time in both
+fields for an all day event. Times should be in hour:minute format. Please
+include leading zeroes (1 = 01)</div></td></tr>
+<tr><td width="150" class="row2">*End Time:</td><td class="row2">
+<input type="text" name="etime" value="'.$_POST['etime'].'" maxlength="5" /></td></tr>
+<tr><td width="150" class="row1">*Day:</td><td class="row1">
+<select name="day" value="'.$_POST['day'].'" >';
 $daycount = 1; 
 while ($daycount <= 31) {
 $content .= "<option value='".$daycount."'>".$daycount."</option>";
 $daycount++;
 }
-$months = array('January','February','March','April','May','June','July','August','September','October','November','December');
+$months = array('January','February','March','April','May','June','July',
+    'August','September','October','November','December');
 $content .= '</select></td></tr>
-<tr><td width="150" class="row2">*Month:</td><td class="row2"><select name="month" value="'.$_POST['month'].'" >';
+    <tr><td width="150" class="row2">*Month:</td><td class="row2">
+    <select name="month" value="'.$_POST['month'].'" >';
 $monthcount = 1; 
 while ($monthcount <= 12) {
 if(date('m') == $monthcount) {
-$content .= "<option value='".$monthcount."' selected >".$months[$monthcount-1]."</option>"; // Need [$monthcount-1] as arrays start at 0.
+$content .= "<option value='".$monthcount."' selected >".$months[$monthcount-1].
+    "</option>"; // Need [$monthcount-1] as arrays start at 0.
 $monthcount++;
 } else {
 $content .= "<option value='".$monthcount."'>".$months[$monthcount-1]."</option>";

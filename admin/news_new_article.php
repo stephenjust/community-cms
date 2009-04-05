@@ -3,8 +3,8 @@
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		die ('You cannot access this page directly.');
 		}
+    $content = NULL;
 	$root = "./";
-	$message = NULL;
 	$date = date('Y-m-d H:i:s');
 	if ($_GET['action'] == 'new') {
 		// Clean up variables.
@@ -23,9 +23,9 @@
 	  $new_article_query = 'INSERT INTO '.$CONFIG['db_prefix']."news (page,name,description,author,image,date,showdate) VALUES ($page,'$title','$content','$author','$image','$date','$showdate')";
 		$new_article = $db->query($new_article_query);
 		if(!$new_article) {
-			$content = 'Failed to add article. '.errormesg(mysqli_error());
+			$content .= 'Failed to add article. <br />';
 			} else {
-			$content = 'Successfully added article. '.log_action('New news article \''.$title.'\'');
+			$content .= 'Successfully added article. <br />'.log_action('New news article \''.$title.'\'');
 			}
 		} else {
             $tab_layout = new tabs;
@@ -39,7 +39,7 @@
             $form->add_icon_list('image','Image','newsicons');
             $form->add_select('date_params','Date Settings',array(0,1,2),array('Hide','Show','Show Mini'),2);
             $form->add_submit('submit','Create Article');
-            $tab_content['create'] .= $form;
+            $tab_content['create'] = $form;
             $tab_layout->add_tab('Create Article',$tab_content['create']);
             $content .= $tab_layout;
 		}

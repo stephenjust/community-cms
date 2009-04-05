@@ -14,6 +14,7 @@
 
 	$tab_layout = new tabs;
 	// Display log messages
+    $tab_content['activity'] = NULL;
 	$log_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'logs log, '.$CONFIG['db_prefix'].'users user WHERE log.user_id = user.id ORDER BY log.date DESC LIMIT 5';
 	$log_message_handle = $db->query($log_message_query);
 	if(!$log_message_handle) {
@@ -61,7 +62,7 @@
 
 // ----------------------------------------------------------------------------
 
-	$tab_content['database'] .= 'Database Version: '.$site_info['db_version'].'<br />
+	$tab_content['database'] = 'Database Version: '.$site_info['db_version'].'<br />
 		MySQL Version: '.$db->get_server_info();
 	$tab['database'] = $tab_layout->add_tab('Database Summary',$tab_content['database']);
 	$content = $tab_layout;

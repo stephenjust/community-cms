@@ -38,7 +38,7 @@
 // ----------------------------------------------------------------------------
 
 	$tab_layout = new tabs;
-	$tab_content['manage'] .= '<table class="admintable">
+	$tab_content['manage'] = '<table class="admintable">
 <tr><th>ID</th><th width="350">Name:</th><th colspan="4">&nbsp;</th></tr>';
 	$group_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'user_groups ORDER BY name ASC';
 	$group_list_handle = $db->query($group_list_query);

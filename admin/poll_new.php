@@ -43,7 +43,7 @@ $tab_layout = new tabs;
 $form = new form;
 $form->set_target('admin.php?module=poll_new&amp;action=new');
 $form->set_method('post');
-$form->add_hidden('author',$_SESSION['author']);
+$form->add_hidden('author',$_SESSION['name']);
 $form->add_textbox('question', 'Question');
 $form->add_textbox('short_name','Unique Identifier');
 $form->add_textarea('answers', 'Answers (One per line)', NULL, 'class="mceNoEditor"');

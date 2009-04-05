@@ -3,6 +3,7 @@
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		die ('You cannot access this page directly.');
 		}
+    $content = NULL;
 	if(!isset($_GET['create'])) {
 		$_GET['create'] = NULL;
 		}

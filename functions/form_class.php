@@ -122,7 +122,7 @@ class form {
         }
         $form_var = '<div class="admin_form_element">
             <label for="_'.$name.'">'.$label.'</label>
-            <select name="'.$name.'[]" id="_'.$name.'" '.$props.'
+            <select name="'.$name.'[]" id="_'.$name.'" '.$params.'
             size="'.(int)$size.'" multiple>'.$options.'</select>
             </div><br />';
         $this->form .= $form_var;
@@ -148,7 +148,7 @@ class form {
         $this->form .= $form_var;
     }
     function add_icon_list($name,$label,$folder,$selected = NULL) {
-        if(eregi('[.]',$directory)) {
+        if(eregi('[.]',$folder)) {
             return;
         }
         $relative_path = ROOT.'files/'.$folder;
@@ -188,7 +188,7 @@ class form {
     }
     function add_submit($name,$label) {
         $form_var = '<div class="admin_form_element">
-            <label for"_'.$name.'">&nbsp;</label>
+            <label for="_'.$name.'">&nbsp;</label>
             <input type="submit" name="'.$name.'" value="'.$label.'" id="_'.$name.'" />
             </div><br />';
         $this->form .= $form_var;
