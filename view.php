@@ -40,7 +40,6 @@
 	if(!isset($_GET['article_id'])) {
 		$_GET['article_id'] = "";
 		}
-    $_GET['article_id'] = (int)$_GET['article_id'];
     $template_handle = load_template_file('article_page.html');
     $template = $template_handle['contents'];
     $template_path = $template_handle['template_path'];
@@ -50,7 +49,7 @@
 		$page_title = 'Article Not Found';
 		header("HTTP/1.0 404 Not Found");
 		} else {
-		$article_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE id = '.$_GET['article_id'].' LIMIT 1';
+		$article_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE id = '.(int)$_GET['article_id'].' LIMIT 1';
 		$article_handle = $db->query($article_query);
 		$i = 1;
 		if($article_handle->num_rows == 0) {
