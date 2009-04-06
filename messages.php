@@ -87,13 +87,13 @@
 	$image_path = $template_path.'images/';
 	$nav_bar = display_nav_bar();
 	$nav_login = display_login_box($page_info,$site_info);
-	$template = str_replace('<!-- $PAGE_TITLE$ -->',$page_title,$template);
+	$template = str_replace('<!-- $PAGE_TITLE$ -->',stripslashes($page_title),$template);
 	$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
 	$template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
 	$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
 	$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
 	$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
-	$template = str_replace($site_info['footer'],$template);
+	$template = str_replace('<!-- $FOOTER$ -->',stripslashes($site_info['footer']),$template);
 	echo $template;
 	
 	// Close database connections and clean up loose ends.

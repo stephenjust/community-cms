@@ -42,9 +42,9 @@
 		} else {
 		if(isset($_GET['page'])) {
 			$page_id = NULL;
-			$page_text_id = $_GET['page'];
+			$page_text_id = addslashes($_GET['page']);
 			} else {
-			$page_id = $_GET['id'];
+			$page_id = (int)$_GET['id'];
 			$page_text_id = NULL;
 			}
 		}
