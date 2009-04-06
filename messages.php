@@ -35,6 +35,7 @@
 	if(!isset($_GET['del'])) {
 		$_GET['del'] = "";
 		}
+    $_GET['del'] = (int)$_GET['del'];
 	$content = NULL;
 	if($_GET['del'] != "") {
 		$del_query = 'DELETE FROM '.$CONFIG['db_prefix'].'messages WHERE id = '.$_GET['del'].' LIMIT 1';
@@ -52,7 +53,7 @@
 	$site_info = $site_info_handle->fetch_assoc();
 	
 	// Get message list
-	$message_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.$_SESSION['userid'].' ORDER BY id DESC';
+	$message_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.(int)$_SESSION['userid'].' ORDER BY id DESC';
 	$message_list_handle = $db->query($message_list_query);
 	$message_num_rows = $message_list_handle->num_rows;
 	$template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates WHERE id = '.$site_info['template'].' LIMIT 1';
@@ -92,8 +93,7 @@
 	$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
 	$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
 	$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
-	$template = str_replace('<!-- $FOOTER$ -->','<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a>
- Powered by Community CMS',$template);
+	$template = str_replace($site_info['footer'],$template);
 	echo $template;
 	
 	// Close database connections and clean up loose ends.
