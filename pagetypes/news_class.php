@@ -37,11 +37,44 @@ class news_item {
         $article_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news
             WHERE `id` = '.$this->article_id.' LIMIT 1';
         $article_handle = $db->query($article_query);
-        if(!$article_handle) {
-            return '<div class="notification">Could not load article.</div>';
-        }
-        if($article_handle->num_rows != 1) {
-            return '<div class="notification">Could not find requested article.</div>';
+        if($this->template == 'article_page') {
+            if(!$article_handle) {
+                header("HTTP/1.0 404 Not Found");
+                $this->article =  '<html>
+                    <head>
+                    <link rel="StyleSheet" type="text/css" href="./templates/default/style.css" />
+                    <title>Error</title>
+                    </head>
+                    <body>
+                    <div class="notification">Could not load article.</div>
+                    </body>
+                    </html>';
+                return;
+            }
+            if($article_handle->num_rows != 1) {
+                header("HTTP/1.0 404 Not Found");
+                $this->article = '<html>
+                    <head>
+                    <link rel="StyleSheet" type="text/css" href="./templates/default/style.css" />
+                    <title>Error</title>
+                    </head>
+                    <body>
+                    <div class="notification">Could not find requested article.</div>
+                    </body>
+                    </html>';
+                return;
+                }
+        } else {
+            if(!$article_handle) {
+                header("HTTP/1.0 404 Not Found");
+                $this->article =  '<div class="notification">Could not load article.</div>';
+                return;
+            }
+            if($article_handle->num_rows != 1) {
+                header("HTTP/1.0 404 Not Found");
+                $this->article = '<div class="notification">Could not find requested article.</div>';
+                return;
+                }
         }
         $article = $article_handle->fetch_assoc();
         $template_article = new template;
