@@ -93,7 +93,7 @@
 	$i = 2;
 	if($num_files < 4) { // ( ., .., blocks.info, and a block file)
 		$tab_content['create'] .= 'No installed blocks.';
-		$bock_types_list = '<select name="type" disabled>';
+		$block_types_list = '<select name="type" disabled>';
 		} else {
 		$block_types_list = '<select name="type" id="adm_block_type_list" onChange="block_options_list_update()">';
 		while($i < $num_files) {
