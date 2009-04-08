@@ -92,7 +92,8 @@ $tab_layout->add_tab('Manage Newsletters',$tab_content['manage']);
 $tab_content['create'] = '<form method="POST" action="admin.php?module=newsletter&action=new">
 <table class="admintable">
 <tr><td class="row1">Label:</td><td class="row1"><input type="text" name="label" /></td></tr>
-<tr><td valign="top" class="row2">File:</td><td class="row2"><div id="dynamic_file_list">
+<tr><td valign="top" class="row2">File:</td><td class="row2"><noscript>You need JavaScript enabled to browse for files.</noscript>
+<div id="dynamic_file_list">
 '.dynamic_file_list('newsletters').'</div>
 <input type="button" value="Upload File" onClick="window.open(\'./admin/upload_mini.php\',\'mywindow\',\'width=400,height=200\')" />
 <input type="button" value="Refresh List" onClick="update_dynamic_file_list()" />

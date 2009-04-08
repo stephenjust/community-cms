@@ -112,7 +112,8 @@
 		$tab_content['create'] .= '<form method="post" action="admin.php?module=block_manager&action=new">
 	<table class="admintable">
 	<tr><td>Type:</td><td>'.$block_types_list.'</td></tr>
-	<tr><td>Options:</td><td><div id="adm_block_type_options"></div></td></tr>
+	<tr><td>Options:</td><td><noscript>You need JavaScript enabled for the block options view to work properly.</noscript>
+    <div id="adm_block_type_options"></div></td></tr>
 	<tr><td class="empty"></td><td><input type="submit" value="Submit" /></td></tr>
 	</table></form>
 	<script language="javascript" type="text/javascript">
