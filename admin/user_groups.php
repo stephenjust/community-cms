@@ -8,12 +8,12 @@
 		if($_GET['id'] == 1) {
 			$message = 'Cannot delete Administrator group.';
 			} else {
-			$delete_group_query = 'DELETE FROM '.$CONFIG['db_prefix'].'user_groups WHERE id = '.$_GET['id'];
+			$delete_group_query = 'DELETE FROM '.$CONFIG['db_prefix'].'user_groups WHERE id = '.(int)$_GET['id'];
 			$delete_group = $db->query($delete_group_query);
 			if(!$delete_group) {
 				$content .= 'Failed to delete group.<br />';
 				} else {
-				$content .= 'Successfully deleted group.<br />'.log_action('Deleted group #'.$_GET['id']);
+				$content .= 'Successfully deleted group.<br />'.log_action('Deleted group #'.(int)$_GET['id']);
 				}
 			}
 		} // IF 'delete'

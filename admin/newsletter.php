@@ -48,7 +48,7 @@
 $monthbox .= '</select>';
 $tab_layout = new tabs;
 $tab_content['manage'] = '<table class="admintable">
-<tr><td><form method="post" action="admin.php?module=newsletter"><select name="page">';
+<tr><th><form method="post" action="admin.php?module=newsletter"><select name="page">';
 		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 2 ORDER BY list ASC';
 		$page_query_handle = $db->query($page_query);
  		$i = 1;
@@ -69,8 +69,8 @@ $tab_content['manage'] = '<table class="admintable">
 				}
 			$i++;
 			}
-		$tab_content['manage'] .= '</select></td><td colspan="3"><input type="submit" value="Change Page" /></form></td></tr>
-<tr><td width="350">Label:</td><td>Month</td><td>Year</td><td>Del</td></tr>';
+		$tab_content['manage'] .= '</select></th><th colspan="3"><input type="submit" value="Change Page" /></form></th></tr>
+<tr><th width="350">Label:</th><th>Month</th><th>Year</th><th>Del</th></tr>';
 	// Get page message list in the order defined in the database. First is 0.
 	$nl_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'newsletters WHERE page = '.stripslashes($_POST['page']).' ORDER BY year DESC,month DESC';
 	$nl_handle = $db->query($nl_query);

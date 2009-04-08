@@ -6,6 +6,7 @@
 	global $CONFIG;
 	global $db;
 	global $site_info;
+    global $page_info;
 	$content = NULL;
 	$current_contact = NULL;
 	$j = 1;
@@ -61,7 +62,7 @@ Message to user:<br />
 				$realname_firstlast = $contact_info['realname'];
 				}
 			if($contact_info['message'] == 1) {
-				$realname = '<a href="index.php?id='.$_GET['id'].'&message='.$contact_info['id'].'">'.$realname_firstlast.'</a>';
+				$realname = '<a href="index.php?id='.$page_info['id'].'&message='.$contact_info['id'].'">'.$realname_firstlast.'</a>';
 				} else {
 				$realname = $realname_firstlast;
 				}
