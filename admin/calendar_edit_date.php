@@ -36,7 +36,7 @@ image='$image',hidden='$hide' WHERE id = $id LIMIT 1";
 				if(!$edit_date) {
 					$content = 'Failed to edit date information.<br />'.mysqli_error($db).$edit_date_query;
 					} else {
-					$content = 'Successfully edited date information. '.log_action('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.$title.'\'');
+					$content = 'Successfully edited date information. '.log_action('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.stripslashes($title).'\'');
 					}
 				}
 			}
@@ -64,9 +64,9 @@ image='$image',hidden='$hide' WHERE id = $id LIMIT 1";
 	while ($b <= $category_list_handle->num_rows) {
 		$category_list = $category_list_handle->fetch_assoc();
 		if($date['category'] == $category_list['cat_id']) {
-			$content .= '<option value="'.$category_list['cat_id'].'" selected />'.$category_list['label'].'</option>';
+			$content .= '<option value="'.$category_list['cat_id'].'" selected />'.stripslashes($category_list['label']).'</option>';
 			} else {
-			$content .= '<option value="'.$category_list['cat_id'].'" />'.$category_list['label'].'</option>';
+			$content .= '<option value="'.$category_list['cat_id'].'" />'.stripslashes($category_list['label']).'</option>';
 			}
 		$b++;
 	}
