@@ -24,19 +24,19 @@
 		}
 	$i = 1;
 	$num_messages = $log_message_handle->num_rows;
-	$content .= '<table class="log_messages">
+	$tab_content['view'] = '<table class="admintable">
 <tr>
 <th>Date</th><th>Action</th><th>User</th><th>IP</th>
 </tr>';
 	if($num_messages == 0) {
-		$content .= '<tr class="row1">
+		$tab_content['view'] .= '<tr class="row1">
 <td colspan="4">No log messages.</td>
 </tr>';
 		}
 $rowtype = 1;
 	while($i <= $num_messages) {
 		$log_message = $log_message_handle->fetch_assoc();
-		$content .= '<tr class="row'.$rowtype.'">
+		$tab_content['view'] .= '<tr class="row'.$rowtype.'">
 <td>'.$log_message['date'].'</td>
 <td>'.$log_message['action'].'</td>
 <td>'.$log_message['realname'].'</td>
@@ -49,8 +49,12 @@ $rowtype = 1;
 			}
 		$i++;
 		}
-	$content .= '</table>
-<form method="post" action="admin.php?module=log_view&action=delete">
+	$tab_content['view'] .= '</table>';
+    $tab_content['delete'] = '<form method="post" action="admin.php?module=log_view&action=delete">
 <input type="submit" value="Clear Log Messages" />
 </form>';
+    $tab_layout = new tabs;
+    $tab_layout->add_tab('View Log Messages',$tab_content['view']);
+    $tab_layout->add_tab('Delete Log Messages',$tab_content['delete']);
+    $content .= $tab_layout;
 ?>
