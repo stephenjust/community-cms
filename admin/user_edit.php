@@ -100,7 +100,7 @@ message='.$message.', hide='.$hide.' WHERE id = '.$_GET['edit'].' LIMIT 1';
                 $form->set_method('post');
                 $form->add_password('edit_pass','Password');
                 $form->add_password('edit_pass_conf','Confirm Password');
-                $form->add_password('edit_old_conf','Old Password');
+                $form->add_password('edit_old_pass','Old Password');
                 $form->add_text('If the above password fields are filled correctly,
                     your password will be changed. Leave the password fields empty
                     if you do not want to change your password.');
