@@ -26,6 +26,9 @@
 	// Load global site information.
 	$site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
 	$site_info_handle = $db->query($site_info_query);
+    if(!$site_info_handle) {
+        err_page(1001);
+    }
 	$site_info = $site_info_handle->fetch_assoc();
 	
 	// Initialize some variables to keep PHP from complaining.

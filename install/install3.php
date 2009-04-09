@@ -23,15 +23,24 @@
 		} else {
 		$handle = fopen('./schema/MySQL.sql', "r");
 		if(!$handle) {
-			$content .= 'Failed to read default database schema.';
+			$content .= 'Failed to read default database schema.<br />';
 			$error = 1;
 			}
 		$query = fread($handle, filesize('./schema/MySQL.sql'));
 		fclose($handle);
 		$dbprefix = addslashes($_POST['dbpfix']);
 		$sitename = addslashes($_POST['sitename']);
+        $admin_user = addslashes(mysql_real_escape_string($_POST['admin_username'],$connect));
+        $admin_pwd = addslashes(mysql_real_escape_string($_POST['admin_pwd'],$connect));
+        $admin_pwd_conf = addslashes(mysql_real_escape_string($_POST['admin_pwd_conf'],$connect));
+        if($admin_pwd != $admin_pwd_conf) {
+            $error = 1;
+            $content .= 'Your Administrator passwords did not match.<br />';
+        }
 		$query = str_replace('<!-- $DB_PREFIX$ -->',$dbprefix,$query);
 		$query = str_replace('<!-- $SITE_NAME$ -->',$sitename,$query);
+        $query = str_replace('<!-- $ADMIN_USER$ -->',$admin_user,$query);
+        $query = str_replace('<!-- $ADMIN_PWD$ -->',md5($admin_pwd),$query);
 		$query = explode(';;',$query);
 		for ($i = 0; $i < count($query); $i++) {
 			if(!mysql_query($query[$i],$connect)) {
@@ -71,7 +80,7 @@
 		if($error != 1) {
 		$content .= 'Install Successful.<br />Please delete the install folder once you are able to confirm that the system is fully functional.
 <br />
-To log in, use the username \'admin\' and the password \'password\'. <a href="../index.php">Continue to Site</a>';
+To log in, use either the username and password you provided, or login as an unprivileged user with the username \'user\' and the password \'password\'. <a href="../index.php">Continue to Site</a>';
 		}
 	}
 	if($error == 1) {

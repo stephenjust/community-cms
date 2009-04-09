@@ -286,5 +286,5 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;;
 
 INSERT INTO `<!-- $DB_PREFIX$ -->users` (`id`, `type`, `username`, `password`, `groups`, `realname`, `phone`, `email`, `address`, `phone_hide`, `email_hide`, `address_hide`, `message`) VALUES
-(1, 1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'Administrator', '555-555-5555', 'admin@example.com','Unknown',1,1,1,1),
+(1, 1, '<!-- $ADMIN_USER$ -->', '<!-- $ADMIN_PWD$ -->', '1', 'Administrator', '555-555-5555', 'admin@example.com','Unknown',1,1,1,1),
 (2, 0, 'user', '5f4dcc3b5aa765d61d8327deb882cf99', NULL, 'Default User', '555-555-5555', 'user@example.com','Unknown',1,1,1,0)
