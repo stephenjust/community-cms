@@ -160,16 +160,17 @@ class form {
         for ($i = 1; $i <= $num_icons; $i++) {
             if(ereg('\.png|\.jpg$',$icon_list[$i - 1]) == 1) {
                 $options .= '<div class="admin_image_list_item">';
+                $file_info = get_file_info($relative_path.'/'.$icon_list[$i - 1]);
                 if($relative_path.'/'.$icon_list[$i - 1] == $selected) {
                     $options .= '<input type="radio" name="image"
                         value="'.$app_path.'/'.$icon_list[$i - 1].'" checked />
                         <br /><img src="'.$relative_path.'/'.$icon_list[$i - 1].'"
-                        alt="'.$icon_list[$i - 1].'" />';
+                        alt="'.$file_info['label'].'" />';
                 } else {
                     $options .= '<input type="radio" name="image"
                         value="'.$app_path.'/'.$icon_list[$i - 1].'" />
                         <br /><img src="'.$relative_path.'/'.$icon_list[$i - 1].'"
-                        alt="'.$icon_list[$i - 1].'" />';
+                        alt="'.$file_info['label'].'" />';
                 }
                 $options .= '</div>';
             }

@@ -146,10 +146,11 @@
 						} elseif($type == 2) {
 						if(ereg('\.png|\.jpg$',$files[$i]) == 1) {
 							$return .= '<div class="admin_image_list_item">';
+                            $file_info = get_file_info($folder_open_short.'/'.$files[$i]);
 							if($folder_open.'/'.$files[$i] == $selected) {
-								$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" checked /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" />';
+								$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" checked /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$file_info['label'].'" />';
 								} else {
-								$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$files[$i].'" />';
+								$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$file_info['label'].'" />';
 								}
 							$return .= '</div>';
 							$j++;

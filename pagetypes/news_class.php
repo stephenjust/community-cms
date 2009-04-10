@@ -81,9 +81,10 @@ class news_item {
         $template_article->load_file($this->template);
         if (!isset($article['image']) || $article['image'] == "") {
             $picture = "";
-            } else {
-            $picture = "<img src='".$article['image']."' alt='".$article['image']."' class='news_image' />";
-            }
+        } else {
+            $file_info = get_file_info($article['image']);
+            $picture = "<img src='".$article['image']."' alt='".$file_info['label']."' class='news_image' />";
+        }
         $date = substr($article['date'],0,10);
         $date_parts = explode('-',$date);
         $date_year = $date_parts[0];
