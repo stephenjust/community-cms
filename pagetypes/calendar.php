@@ -1,9 +1,11 @@
 <?php
-	// Security Check
-	if (@SECURITY != 1) {
-		die ('You cannot access this page directly.');
-		}
+    // Security Check
+    if (@SECURITY != 1) {
+        die ('You cannot access this page directly.');
+    }
     global $page_info;
+    global $site_info;
+    include(ROOT.'pagetypes/calendar_class.php');
 	switch($_GET['view']) {
 	// MONTH VIEW
 		default:
@@ -105,6 +107,9 @@
 			$template_month->replace_range('week',$all_weeks);
 			$page .= $template_month;
 			break;
+
+// ----------------------------------------------------------------------------
+
 	// EVENT VIEW
 		case "event":
 			$page = NULL;
@@ -112,45 +117,14 @@
                 $_GET['a'] = NULL;
             }
 			$event_id = (int)$_GET['a'];
-			$event_query = 'SELECT cal.*, cat.label FROM '.$CONFIG['db_prefix'].'calendar cal, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE cal.id = '.$event_id.' AND cal.category = cat.cat_id LIMIT 1';
-			$event_handle = $db->query($event_query);
-			if(!$event_handle || $event_handle->num_rows == 0) {
-				header('HTTP/1.1 404 Not Found');
-				$page .= 'The event you are trying to view could not be found.';
-				} else {
-				$event = $event_handle->fetch_assoc();
-				if($event['starttime'] == $event['endtime']) {
-					$event_start = mktime(0,0,0,$event['month'],$event['day'],$event['year']);
-					$event_time = 'All day, '.date('l, F j Y',$event_start);
-					unset($event_start);
-					} else {
-					$event_stime = explode(':',$event['starttime']);
-					$event_etime = explode(':',$event['endtime']);
-					$event_start = mktime($event_stime[0],$event_stime[1],0,$event['month'],$event['day'],$event['year']);
-					$event_end = mktime($event_etime[0],$event_etime[1],0,$event['month'],$event['day'],$event['year']);
-					$event_time = date('g:ia -',$event_start).date(' g:ia',$event_end)."<br />".date(' l, F j Y',$event_start);
-					unset($event_stime);
-					unset($event_etime);
-					unset($event_start);
-					unset($event_end);
-					}
-				$template_event = new template;
-				$template_event->load_file('calendar_event');
-				$template_event->event_heading = stripslashes($event['header']);
-				$template_event->event_author = stripslashes($event['author']);
-				$template_event->event_time = $event_time;
-				$template_event->event_category = stripslashes($event['label']);			
-				$template_event->event_description = stripslashes($event['description']);
-				$template_event->event_location = stripslashes($event['location']);
-				$page .= "<a href='?id=".$page_info['id']."&m=".$event['month']."&y=".$event['year']."'>Back to month view</a><br />";
-				$page .= "<a href='?id=".$page_info['id']."&view=day&d=".$event['day']."&m=".$event['month']."&y=".$event['year']."'>Back to day view</a><br />";
-				$page .= $template_event;
-				unset($template_event);
-				global $special_title;
-				$special_title = stripslashes($event['header']).' - ';
-				unset($event);
-				}
+            $event = new calendar_event;
+            $event->get_event($event_id);
+            $page .= $event;
+            unset($event);
 			break;
+
+// ----------------------------------------------------------------------------
+
 	// DAY VIEW
 		case "day":
 			// Validate month, year and day values

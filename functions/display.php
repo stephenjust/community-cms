@@ -50,9 +50,7 @@
 				$right_blocks_content .= get_block($right_blocks[$bk - 1]);
 				} // FOR
 			global $special_title;
-			$page_title = $page_info['title'].' - '.$special_title.$site_info['name'];
 			}
-		$template_page->page_title = $page_title;
 		$template_page->page_message = $page_message;
 		$template_page->left_content = $left_blocks_content;
 		$template_page->right_content = $right_blocks_content;
@@ -68,6 +66,8 @@
 		if(strlen($NOTIFICATION) > 0) {
 			$NOTIFICATION = '<div class="notification">'.$NOTIFICATION.'</div>';
 			}
+        $page_title = $page_info['title'].' - '.$special_title.$site_info['name'];
+		$template_page->page_title = $page_title;
 		$template_page->notification = $NOTIFICATION;
 		echo $template_page;
 		unset($template_page);
