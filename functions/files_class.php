@@ -42,8 +42,6 @@ class file_list {
         if(strlen($this->folder) < 1) {
             return;
         }
-        global $db;
-        global $CONFIG;
         $this->file_array = scandir($this->folder);
         $num_files = count($this->file_array);
         $return = '<table class="admintable">'."\n<tr>\n<th>File Name</th>
@@ -52,19 +50,7 @@ class file_list {
         for ($i = 1; $i <= $num_files; $i++) {
             if (!is_dir($this->folder.'/'.$this->file_array[$i - 1]) &&
                 !eregi('^\.|\.$',$this->file_array[$i - 1])) {
-                $file_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'files
-                    WHERE `path` = \''.addslashes(mysqli_real_escape_string($db,
-                    $this->script_folder.'/'.$this->file_array[$i - 1])).'\' LIMIT 1';
-                $file_info_handle = $db->query($file_info_query);
-                if (!$file_info_handle) {
-                    $file_info['label'] = 'Could not read information.';
-                } else {
-                    if ($file_info_handle->num_rows != 1) {
-                        $file_info['label'] = NULL;
-                    } else {
-                        $file_info = $file_info_handle->fetch_assoc();
-                    }
-                }
+                $file_info = get_file_info($this->script_folder.'/'.$this->file_array[$i - 1]);
                 $return .= '<tr><td><a href="'.$this->script_folder.'/'
                     .$this->file_array[$i - 1].'">'.$this->file_array[$i - 1].'
                     </a></td><td>'.$file_info['label'].'</td><td><a href="admin.php?module='.$_GET['module'].'&action=edit&file='.

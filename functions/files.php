@@ -214,5 +214,25 @@
 
 		$return .= file_list($directory,1);
 		return $return;
-		}
+    }
+
+// ----------------------------------------------------------------------------
+
+    function get_file_info($file) {
+        global $db;
+        global $CONFIG;
+        $file_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'files WHERE
+            `path` = \''.addslashes(mysqli_real_escape_string($db, $file)).'\' LIMIT 1';
+        $file_info_handle = $db->query($file_info_query);
+        if (!$file_info_handle) {
+            $file_info['label'] = 'Could not read information.';
+        } else {
+            if ($file_info_handle->num_rows != 1) {
+                $file_info['label'] = NULL;
+            } else {
+                $file_info = $file_info_handle->fetch_assoc();
+            }
+        }
+        return $file_info;
+    }
 	?>
