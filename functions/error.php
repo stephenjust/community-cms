@@ -10,9 +10,11 @@
 		return $message;
 		}
 
-	// This function creates a generic error page whose content is governed by
-	// the error code passed to the function. Error codes are documented in the 
-	// 'docs/errorcodes.txt' file.
+    /**
+     * err_page - Generate an error page based on the error code. Error codes
+     * are listed in './docs/errorcodes.txt'
+     * @param int $code Error code
+     */
 	function err_page($code = 0) {
 		
 		// The following block of code determines the error message to be displayed.

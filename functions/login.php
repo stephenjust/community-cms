@@ -72,14 +72,24 @@
 			return false;
 			}
 		return false; // Even if you are not required to be logged in, return false
-		}
+    }
+    /**
+     * checkuser_admin - Check if a user is logged in as an administrator
+     * @global array $CONFIG
+     * @global resource $db
+     * @return bool
+     */
 	function checkuser_admin() {
 		global $CONFIG;
 		global $db;
 		if($_SESSION['type'] < 1) {
 			err_page(3004);
 			}
-		$query = 'SELECT username,password,realname,type,lastlogin FROM '.$CONFIG['db_prefix'].'users WHERE username = \''.$_SESSION['user'].'\' AND password = \''.$_SESSION['pass'].'\' AND type = \''.$_SESSION['type'].'\' AND lastlogin = '.addslashes($_SESSION['last_login']).' AND realname = \''.$_SESSION['name'].'\'';
+		$query = 'SELECT username,password,realname,type,lastlogin FROM '
+            .$CONFIG['db_prefix'].'users WHERE username = \''.$_SESSION['user'].'\'
+            AND password = \''.$_SESSION['pass'].'\' AND type = \''.$_SESSION['type'].'\'
+            AND lastlogin = '.addslashes($_SESSION['last_login']).' AND
+            realname = \''.$_SESSION['name'].'\'';
 		$access = $db->query($query);
 		$num_rows = $access->num_rows;
 	  if($num_rows != 1) {

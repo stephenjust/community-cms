@@ -76,40 +76,49 @@
 		$template_page_bottom->image_path = $image_path;
 		echo $template_page_bottom;
 		unset($template_page_bottom);
-		}
+    }
 
-	function display_nav_bar($mode = 1) {
-		global $page_info;
-		global $db;
-		global $CONFIG;
-		$nav_menu_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE menu = '.$mode.' ORDER BY list ASC';
-		$nav_menu_handle = $db->query($nav_menu_query);
-		$return = NULL;
-		for ($i = 1; $nav_menu_handle->num_rows >= $i; $i++) {
-			$nav_menu = $nav_menu_handle->fetch_assoc();
-			if ($nav_menu['id'] == $page_info['id']) {
-				$return .= $nav_menu['title']."<br />";
-				} else {
-				if($nav_menu['type'] == 0) {
-					$link = explode('<LINK>',$nav_menu['title']); // Check if menu entry is a link
-					$link_path = $link[1];
-					$link_name = $link[0];
-					unset($link);
-					$return .= "<a href='".$link_path."'>".$link_name."</a><br />";
-					unset($link_name);
-					unset($link_path);
-					} else {
-					if(strlen($nav_menu['text_id']) > 0) {
-						$return .= "<a href='index.php?page=".$nav_menu['text_id']."'>".$nav_menu['title']."</a><br />";
-						} else {
-						$return .= "<a href='index.php?id=".$nav_menu['id']."'>".$nav_menu['title']."</a><br />";
-						}
-					} // IF is link
-				} // IF is not current page
-			} // FOR
-		return $return;
-		}
-	
+    /**
+     * display_nav_bar - Display a list of links to other pages on the web site
+     * @global array $page_info
+     * @global resource $db
+     * @global array $CONFIG
+     * @param int $mode Type of page to display (1 means visible pages, 0 means
+     * hidden pages)
+     * @return string
+     */
+    function display_nav_bar($mode = 1) {
+        global $page_info;
+        global $db;
+        global $CONFIG;
+        $nav_menu_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE menu = '.$mode.' ORDER BY list ASC';
+        $nav_menu_handle = $db->query($nav_menu_query);
+        $return = NULL;
+        for ($i = 1; $nav_menu_handle->num_rows >= $i; $i++) {
+            $nav_menu = $nav_menu_handle->fetch_assoc();
+            if ($nav_menu['id'] == $page_info['id']) {
+                $return .= $nav_menu['title']."<br />";
+            } else {
+                if($nav_menu['type'] == 0) {
+                    $link = explode('<LINK>',$nav_menu['title']); // Check if menu entry is a link
+                    $link_path = $link[1];
+                    $link_name = $link[0];
+                    unset($link);
+                    $return .= "<a href='".$link_path."'>".$link_name."</a><br />";
+                    unset($link_name);
+                    unset($link_path);
+                } else {
+                    if(strlen($nav_menu['text_id']) > 0) {
+                        $return .= "<a href='index.php?page=".$nav_menu['text_id']."'>".$nav_menu['title']."</a><br />";
+                    } else {
+                        $return .= "<a href='index.php?id=".$nav_menu['id']."'>".$nav_menu['title']."</a><br />";
+                    }
+                } // IF is link
+            } // IF is not current page
+        } // FOR
+        return $return;
+    }
+
 	function display_login_box() {
 		global $page_info;
 		global $site_info;
