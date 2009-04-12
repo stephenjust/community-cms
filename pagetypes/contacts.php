@@ -25,12 +25,12 @@
 		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0"); // HTTP/1.1
 		header("Cache-Control: post-check=0, pre-check=0", false);
 		header("Pragma: no-cache"); // HTTP/1.0
-		$content .= '<form method="POST" action="index.php?id='.$_GET['id'].'&action=send">
-<input type="hidden" name="recipient" value="'.$_GET['message'].'" />
+		$content .= '<form method="POST" action="index.php?id='.$page_info['id'].'&action=send">
+<input type="hidden" name="recipient" value="'.(int)$_GET['message'].'" />
 Message to user:<br />
 <textarea name="message" rows="5" cols="50"></textarea><br />
 <input type="submit" value="Send Message" />
-</form><form method="POST" action="index.php?id='.$_GET['id'].'"><input type="submit" value="Cancel" /></form>';
+</form><form method="POST" action="index.php?id='.$page_info['id'].'"><input type="submit" value="Cancel" /></form>';
 	}
 	if($_GET['action'] == 'send') {
 		$message = addslashes($_POST['message']);
