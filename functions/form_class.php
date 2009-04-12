@@ -248,6 +248,32 @@ class form {
         $this->form .= $form_var;
     }
     /**
+     * add_file_list - Add a file list defaulting to the specified directory
+     * @param string $name Unique name for the field
+     * @param string $label Text displayed beside field
+     * @param string $directory Name of the directory to start in, NULL for ./files/
+     */
+    function add_file_list($name,$label,$directory) {
+        $form_var = '<div class="admin_form_element">
+            <label for="_'.$name.'">'.$label.'</label>
+            <noscript>You need JavaScript enabled to browse for files.</noscript>
+            <div id="_'.$name.'" class="admin_file_list">
+            <div id="dynamic_file_list">'.dynamic_file_list($directory).'</div>
+            <input type="button" value="Refresh List" onClick="update_dynamic_file_list()" />
+            </div></div>';
+        $this->form .= $form_var;
+    }
+    /**
+     * add_file_upload - Add a button to upload a file
+     * @param <type> $name
+     */
+    function add_file_upload($name) {
+        $this->form .= '<div class="admin_form_element">
+            <label for="_'.$name.'">&nbsp;</label><input type="button" value="Upload File"
+            onClick="window.open(\'./admin/upload_mini.php\',\'mywindow\',
+            \'width=400,height=200\')" id="_'.$name.'" />';
+    }
+    /**
      * add_text - Add a block of text to a form
      * @param string $text Text to be displayed
      */

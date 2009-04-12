@@ -34,18 +34,6 @@
 			}
 		}
 		$content = $message;
-		$monthbox = '<select name="month">';
-		$monthcount = 1; 
-		while ($monthcount <= 12) {
-		if(date('m') == $monthcount) {
-			$monthbox .= "<option value='".$monthcount."' selected >".$months[$monthcount-1]."</option>"; // Need [$monthcount-1] as arrays start at 0.
-			$monthcount++;
-			} else {
-			$monthbox .= "<option value='".$monthcount."'>".$months[$monthcount-1]."</option>";
-			$monthcount++;
-		}
-	}
-$monthbox .= '</select>';
 $tab_layout = new tabs;
 $tab_content['manage'] = '<table class="admintable">
 <tr><th><form method="post" action="admin.php?module=newsletter"><select name="page">';
@@ -89,30 +77,19 @@ $tab_content['manage'] = '<table class="admintable">
 	}
 $tab_content['manage'] .= '</table>';
 $tab_layout->add_tab('Manage Newsletters',$tab_content['manage']);
-$tab_content['create'] = '<form method="POST" action="admin.php?module=newsletter&action=new">
-<table class="admintable">
-<tr><td class="row1">Label:</td><td class="row1"><input type="text" name="label" /></td></tr>
-<tr><td valign="top" class="row2">File:</td><td class="row2"><noscript>You need JavaScript enabled to browse for files.</noscript>
-<div id="dynamic_file_list">
-'.dynamic_file_list('newsletters').'</div>
-<input type="button" value="Upload File" onClick="window.open(\'./admin/upload_mini.php\',\'mywindow\',\'width=400,height=200\')" />
-<input type="button" value="Refresh List" onClick="update_dynamic_file_list()" />
-</td></tr>
-<tr><td class="row1">Date:</td><td class="row1">'.$monthbox.'<input type="text" name="year" maxlength="4" size="4" value="'.date('Y').'" /></td></tr>
-<tr><td width="150" class="row2">Page:</td><td class="row2">
-<select name="page">';
-	$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 2 ORDER BY list ASC';
-	$page_query_handle = $db->query($page_query);
- 	$i = 1;
-	while ($i <= $page_query_handle->num_rows) {
-		$page = $page_query_handle->fetch_assoc();
-		$tab_content['create'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
-		$i++;
-	}
-$tab_content['create'] .= '</select></td></tr>
-<tr><td class="empty"></td><td class="row1"><input type="submit" value="Submit" /></td></tr>
-</table>
-</form>';
+$form = new form;
+$form->set_target('admin.php?module=newsletter&amp;action=new');
+$form->set_method('post');
+$form->add_textbox('label','Label');
+$form->add_file_list('file','File','newsletters');
+$form->add_file_upload('upload');
+$form->add_select('month','Month',array(1,2,3,4,5,6,7,8,9,10,11,12),array('January',
+    'February','March','April','May','June','July','August','September','October',
+    'November','December'),date('m'));
+$form->add_textbox('year','Year',date('Y'),'maxlength="4" size="4"');
+$form->add_page_list('page','Page',2);
+$form->add_submit('submit','Create Newsletter');
+$tab_content['create'] = $form;
 $tab_layout->add_tab('Create Newsletter',$tab_content['create']);
 $content .= $tab_layout;
 ?>
