@@ -4,7 +4,7 @@
 		die ('You cannot access this page directly.');
 		}
 	$root = "./";
-	$message = NULL;
+	$content = NULL;
 	$date = date('Y-m-d H:i:s');
   if ($_GET['action'] == 'edit') {
 		if(strlen($_POST['image']) <= 3) {
@@ -23,9 +23,9 @@
 		$edit_article_query = 'UPDATE '.$CONFIG['db_prefix']."news SET name='$name',description='$edit_content',page='$page',image='$image',date_edited='$date',showdate='$showdate' WHERE id = $edit_id";
 		$edit_article = $db->query($edit_article_query);
 		if(!$edit_article) {
-			$content = 'Failed to edit article. '.mysqli_error($db);
+			$content .= 'Failed to edit article. <br />';
 			} else {
-			$content = 'Successfully edited article. '.log_action('Edited news article \''.$name.'\'');
+			$content .= 'Successfully edited article. <br />'.log_action('Edited news article \''.$name.'\'');
 			}
 		} else {
 		$edit_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE id = '.addslashes($_GET['id']).' LIMIT 1';
@@ -64,7 +64,11 @@
 			$date_params['show'] = NULL;
 			$date_params['mini'] = 'selected';
 			}
-		if($edit['page'] == 0) { $no_page = 'selected'; }
+		if($edit['page'] == 0) {
+            $no_page = 'selected';
+        } else {
+            $no_page = NULL;
+        }
 		$content .= '<option value="0" '.$no_page.'>No Page</option>
 </select></td></tr>
 <tr><td width="150" class="row2" valign="top">Image:</td><td class="row2">'.file_list('newsicons',2,$edit['image']).'</td></tr>
