@@ -99,6 +99,7 @@ span.news_title a {
 }
 div.news_content {
 	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
+    font-size: small;
 }
 img.news_image {
   width: 100px;
