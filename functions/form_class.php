@@ -25,12 +25,27 @@ class form {
     function __set($name,$value) {
         $this->$name = $value;
     }
+    /**
+     * set_target - Set the page that the form links to.
+     * @param string $target File that the form links to
+     */
     function set_target($target) {
         $this->target = $target;
     }
+    /**
+     * set_method - Set whether the form POSTs or GETs
+     * @param sting $method 'post' or 'get'
+     */
     function set_method($method) {
         $this->method = $method;
     }
+    /**
+     * add_textbox - Add a text box to a form
+     * @param string $name Unique name for the field
+     * @param string $label Text displayed beside field
+     * @param string $value Default value of field
+     * @param string $props Extra HTML properties for field
+     */
     function add_textbox($name, $label, $value = NULL, $props = NULL) {
         $form_var = '<div class="admin_form_element">
             <label for="_'.$name.'">'.$label.'</label>
@@ -38,6 +53,13 @@ class form {
             value="'.$value.'" '.$props.' /></div><br />';
         $this->form .= $form_var;
     }
+    /**
+     * add_password - Add a password box to a form
+     * @param string $name Unique name for the field
+     * @param string $label Text displayed beside field
+     * @param string $value Default value of field
+     * @param string $props Extra HTML properties for field
+     */
     function add_password($name, $label, $value = NULL, $props = NULL) {
         $form_var = '<div class="admin_form_element">
             <label for="_'.$name.'">'.$label.'</label>
@@ -45,11 +67,23 @@ class form {
             value="'.$value.'" '.$props.' /></div><br />';
         $this->form .= $form_var;
     }
+    /**
+     * add_hidden - Add a hidden field to a form
+     * @param string $name Unique name for the field
+     * @param string $value Default value of field
+     */
     function add_hidden($name, $value) {
         $form_var = '<input type="hidden" name="'.$name.'" id="_'.$name.'"
             value="'.$value.'" />';
         $this->form .= $form_var;
     }
+    /**
+     * add_textarea - Add a text area to a form
+     * @param string $name Unique name for the field
+     * @param string $label Text displayed beside field
+     * @param string $value Default value of field
+     * @param string $props Extra HTML properties for field
+     */
     function add_textarea($name, $label, $value = NULL, $props = NULL) {
         $form_var = '<div class="admin_form_element">
             <label for="_'.$name.'">'.$label.'</label>
@@ -57,6 +91,16 @@ class form {
             </div><br />';
         $this->form .= $form_var;
     }
+    /**
+     * add_select - Add a list box to a form
+     * @param string $name Unique name for the field
+     * @param string $label Text displayed beside field
+     * @param array $values Array of values for each entry
+     * @param array $strings Array of labels for each entry
+     * @param int $selected Entry selected by default
+     * @param string $props Extra HTML properties for field
+     * @return null
+     */
     function add_select($name, $label, $values, $strings, $selected = 0, $props = NULL) {
         if(count((array)$values) != count((array)$strings)) {
             return;
@@ -75,6 +119,7 @@ class form {
             </div><br />';
         $this->form .= $form_var;
     }
+    // TODO: Add documentation
     function add_radio($name, $label, $values, $strings, $selected = 0, $props = NULL) {
         if(count((array)$values) != count((array)$strings)) {
             return;
@@ -93,6 +138,7 @@ class form {
             <fieldset id="_'.$name.'">'.$options.'</fieldset></div><br />';
         $this->form .= $form_var;
     }
+    // TODO: Add documentation
     function add_checkbox($name, $label, $value = NULL, $params = NULL) {
         if ($value == 1) {
             $value = 'checked';
@@ -104,6 +150,7 @@ class form {
             <input type="checkbox" name="'.$name.'" id="_'.$name.'" '.$params.' '.$value.' /></div>';
         $this->form .= $form_var;
     }
+    // TODO: Add documentation
     function add_multiselect($name, $label, $values, $strings, $selected = NULL, $size = 5, $params = NULL) {
         if(count((array)$values) != count((array)$strings)) {
             return;
@@ -127,6 +174,17 @@ class form {
             </div><br />';
         $this->form .= $form_var;
     }
+    /**
+     * add_page_list - Add a page list to a form
+     * @global array $CONFIG Database configuration information
+     * @global resource $db Databasee connection resource
+     * @param string $name Unique name for the field
+     * @param string $label Text to display beside field
+     * @param int $pagetype ID of type of page to list
+     * @param bool $nopageallowed Add the 'No Page' list item
+     * @param int $value Page ID of default selected page
+     * @param string $props Extra HTML properties for field
+     */
     function add_page_list($name, $label, $pagetype = '*', $nopageallowed = 0,
         $value = NULL, $props = NULL) {
         global $CONFIG;
@@ -147,6 +205,14 @@ class form {
             '.$options.'</select></div><br />';
         $this->form .= $form_var;
     }
+    /**
+     * add_icon_list - Add a list of icons from a specified folder to a form
+     * @param string $name Unique name for the field
+     * @param string $label Text displayed beside field
+     * @param string $folder Directory to look for images (relative to ./files)
+     * @param string $selected File name (with path) to default selected file
+     * @return null
+     */
     function add_icon_list($name,$label,$folder,$selected = NULL) {
         if(eregi('[.]',$folder)) {
             return;
@@ -181,12 +247,17 @@ class form {
             </div><br />';
         $this->form .= $form_var;
     }
+    /**
+     * add_text - Add a block of text to a form
+     * @param string $text Text to be displayed
+     */
     function add_text($text) {
         $form_var = '<div class="admin_form_element">
             <div class="admin_form_text">'.$text.'</div>
             </div><br />';
         $this->form .= $form_var;
     }
+    // TODO: Add documentation
     function add_submit($name,$label) {
         $form_var = '<div class="admin_form_element">
             <label for="_'.$name.'">&nbsp;</label>
