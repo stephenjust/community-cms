@@ -5,11 +5,12 @@ img.logo {
 }
 div.nav_menu {
   background: url('./images/menubg.png');
-  width: 190px;
-  padding-left: 10px;
+  clear: both;
   color: #000;
   float: left;
-  clear: both;
+  font-size: small;
+  padding-left: 10px;
+  width: 190px;
 }
 div.nav_menu_top {
 	background: url('./images/menutop.png');
@@ -145,9 +146,12 @@ NEWS BLOCK
 div.news_block {
 	padding: 3px;
 }
+span.news_block_author {
+    font-size: small;
+}
 span.news_block_title {
 	font-weight: bold;
-	size: large;
+	font-size: medium;
 }
 
 /*
@@ -180,6 +184,7 @@ div.events_upcoming_block span.header {
 div.events_upcoming_block table.events {
 	background: #FFF;
 	border: 1px solid #000;
+    font-size: small;
 	width: 100%;
 }
 
