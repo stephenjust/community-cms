@@ -98,12 +98,7 @@ span.news_title a {
 	text-decoration: none;
 }
 div.news_content {
-	font-family: Calibri,
-							Tahoma,
-							Verdana,
-							Arial,
-							"DejaVu Sans",
-							sans-serif;
+	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
 }
 img.news_image {
   width: 100px;
@@ -264,12 +259,7 @@ span.newsletter_year {
 
 div.errormessage {
   color: #FF0000;
-	font-family: Calibri,
-							Tahoma,
-							Verdana,
-							Arial,
-							"DejaVu Sans",
-							sans-serif;
+	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
   font-size: small;
   background: #FFFFCC;
   border: 1px dashed #FFFF66;
