@@ -1,4 +1,13 @@
 <?php
+/**
+ * Community CMS Installer
+ *
+ *
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @version SVN
+ * @package CommunityCMS.install
+ */
     $template_path = '../templates/default/';
     $template_file = $template_path."index.html";
     $handle = fopen($template_file, "r");

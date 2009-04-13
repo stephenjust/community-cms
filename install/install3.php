@@ -1,4 +1,12 @@
 <?php
+/**
+ * Community CMS Installer
+ *
+ *
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.install
+ */
   define('ROOT','../');
   define('SECURITY',1);
   $error = 0;

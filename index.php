@@ -1,4 +1,13 @@
 <?php
+/**
+ * Community CMS
+ *
+ *
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @version SVN
+ * @package CommunityCMS.main
+ */
 	// Report all PHP errors
 	error_reporting(E_ALL);
 	header('Content-type: text/html; charset=UTF-8');

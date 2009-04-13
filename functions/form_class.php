@@ -1,6 +1,10 @@
 <?php
 /**
- * Basic class for creating HTML forms. Most form input types are supported.
+ * generate a form
+ * 
+ * Basic class for creating HTML forms. Most form input types are supported. 
+ * When the appropriate fields have been added to the form, pass the form variable
+ * to a command, and it will return the HTML for a form.
  *
  * @author stephen
  */

@@ -1,4 +1,12 @@
 <?php
+/**
+ * Community CMS Installer
+ *
+ *
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.install
+ */
   $nav_bar = "<div align='center'><span style='color: #00CC00;'>Check file permissions</span><hr />\n<span style='color: #CCCC00;'>Configure settings</span><hr />\n<span style='color: #CC0000;'>Download/save config file</span></div>\n";
   $content = "<h1>Configure Settings</h1>\n";
   $content .= "<form method='post' action='index.php?page=3'>\n";
