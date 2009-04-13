@@ -29,6 +29,7 @@
 						$answer = $answer_handle->fetch_assoc();
 						$responses_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'poll_responses WHERE answer_id = '.$answer['answer_id'];
 						$response_handle = $db->query($responses_query);
+                        // TODO: Add graphical results display.
 						if(!$response_handle) {
 							$num_rows = 'Could not read responses from database.';
 							} else {

@@ -47,4 +47,5 @@
 		$return .= $template_poll_block;
 		}
 	return $return;
+    // TODO: Add graphical results display.
 	?>
