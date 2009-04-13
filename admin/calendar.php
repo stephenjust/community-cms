@@ -35,21 +35,21 @@
 		} else {
 		$_POST['year'] = date('Y');
 		}
-	$content .= '<h1>Delete Date</h1>
-<form method="post" action="?module=calendar"><select name="month">';
+$tab_layout = new tabs;
+	$tab_content['manage'] = '<form method="post" action="?module=calendar"><select name="month">';
 	$months = array('January','February','March','April','May','June','July','August','September','October','November','December');
 	$monthcount = 1; 
 	while ($monthcount <= 12) {
 		if($_POST['month'] == $monthcount) {
-			$content .= "<option value='".$monthcount."' selected >".$months[$monthcount-1]."</option>"; // Need [$monthcount-1] as arrays start at 0.
+			$tab_content['manage'] .= "<option value='".$monthcount."' selected >".$months[$monthcount-1]."</option>"; // Need [$monthcount-1] as arrays start at 0.
 			$monthcount++;
 			} else {
-			$content .= "<option value='".$monthcount."'>".$months[$monthcount-1]."</option>";
+			$tab_content['manage'] .= "<option value='".$monthcount."'>".$months[$monthcount-1]."</option>";
 			$monthcount++;
 			}
 		}
-	$content .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$_POST['year'].'" /><input type="submit" value="Change" /></form>';
-	$content .= '<form method="post" action="?module=calendar&action=delete">
+	$tab_content['manage'] .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$_POST['year'].'" /><input type="submit" value="Change" /></form>';
+	$tab_content['manage'] .= '<form method="post" action="?module=calendar&action=delete">
 <table class="admintable">
 <tr><th>&nbsp;</th><th>Date:</th><th>Heading:</th><th></th></tr>';
 	$rowcount = 1;
@@ -57,13 +57,13 @@
 	$date_handle = $db->query($date_query);
  	$i = 1;
  	if($date_handle->num_rows == 0) {
- 		$content .= '<tr><td colspan="4" class="row1">There are no dates in this month.</td></tr>';
+ 		$tab_content['manage'] .= '<tr><td colspan="4" class="row1">There are no dates in this month.</td></tr>';
  		$rowcount = 2;
  		}
 	while ($i <= $date_handle->num_rows) {
 		$cal = $date_handle->fetch_assoc();
 		$cal_time = mktime(0,0,0,$cal['month'],$cal['day'],$cal['year']);
-		$content .= '<tr><td class="row'.$rowcount.'"><input type="radio" name="date_del" value="'.$cal['id'].'" /></td>
+		$tab_content['manage'] .= '<tr><td class="row'.$rowcount.'"><input type="radio" name="date_del" value="'.$cal['id'].'" /></td>
 <td class="row'.$rowcount.'">'.date('M d, Y',$cal_time).'</td>
 <td class="row'.$rowcount.'">'.stripslashes($cal['header']).'</td>
 <td class="row'.$rowcount.'"><a href="admin.php?module=calendar_edit_date&id='.$cal['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td></tr>';
@@ -74,7 +74,112 @@
 			$rowcount = 1;
 			}
 		}
-	$content .= '<tr><td class="row'.$rowcount.'">&nbsp;</td><td colspan="3" class="row'.$rowcount.'"><input type="submit" value="Delete" /></td></tr>
+	$tab_content['manage'] .= '<tr><td class="row'.$rowcount.'">&nbsp;</td><td colspan="3" class="row'.$rowcount.'"><input type="submit" value="Delete" /></td></tr>
 </table>
 </form>';
+$tab_layout->add_tab('Manage Events',$tab_content['manage']);
+    if(!isset($_POST['title'])) {
+        $_POST['title'] = NULL;
+    }
+    if(!isset($_POST['category'])) {
+        $_POST['category'] = NULL;
+    }
+    $category = $_POST['category'];
+    if(!isset($_POST['stime'])) {
+        $_POST['stime'] = NULL;
+    }
+    if(!isset($_POST['etime'])) {
+        $_POST['etime'] = NULL;
+    }
+    if(!isset($_POST['day'])) {
+        $_POST['day'] = NULL;
+    }
+    if(!isset($_POST['month'])) {
+        $_POST['month'] = NULL;
+    }
+    if(!isset($_POST['year'])) {
+        $_POST['year'] = NULL;
+    }
+    if(!isset($_POST['content'])) {
+        $_POST['content'] = NULL;
+    }
+    if(!isset($_POST['location'])) {
+        $_POST['location'] = NULL;
+    }
+	$content = NULL;
+	$date = date('Y-m-d H:i:s');
+	if ($_GET['action'] == 'new') {
+		$title = addslashes($_POST['title']);
+	  $image = $_POST['image'];
+	  if(!isset($image)) $image = 'NULL';
+	  $item_content = addslashes($_POST['content']);
+	  $author = addslashes($_POST['author']);
+		$start_time = $_POST['stime'];
+		$end_time = $_POST['etime'];
+		$year = $_POST['year'];
+		$month = $_POST['month'];
+		$day = $_POST['day'];
+		$category = $_POST['category'];
+	  $location = $_POST['location'];
+		if($_POST['hide'] == "on") {
+			$hide = '1';
+			} else {
+			$hide = '0';
+			}
+	  if($start_time == "" || $end_time == "" || $year == "" || $title == "") {
+	  	$content .= 'One or more fields was not filled out. Please complete the fields marked with a star and resubmit.';
+	  	} else {
+			$stime = explode('-',$start_time);
+			$etime = explode('-',$end_time);
+			if (!eregi('^[0-2][0-9]\:[0-5][0-9]$',$start_time) || !eregi('^[0-2][0-9]\:[0-5][0-9]$',$end_time) || strlen($start_time) != 5 || strlen($end_time) != 5 || $start_time > $end_time ) {
+				$content .= "You did not fill out one or more of the times properly. Please fix the problem and resubmit.";
+				} else {
+				$create_date_query = 'INSERT INTO '.$CONFIG['db_prefix'].'calendar (category,starttime,endtime,year,month,day,header,description,location,author,image,hidden) VALUES ("'.$category.'","'.$start_time.'","'.$end_time.'",
+				"'.$year.'","'.$month.'","'.$day.'","'.$title.'","'.$item_content.'","'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
+				$create_date = $db->query($create_date_query);
+				if(!$create_date) {
+					$content .= 'Failed to create date information.<br />'.mysqli_error($db).$create_date_query;
+					} else {
+					$content .= 'Successfully created date information. '.log_action('New date entry on '.$day.'/'.$month.'/'.$year.' \''.$title.'\'');
+					}
+				}
+			}
+		}
+$form_create = new form;
+$form_create->set_target('admin.php?module=calendar&amp;action=new');
+$form_create->set_method('post');
+$form_create->add_hidden('author',stripslashes($_SESSION['name']));
+$form_create->add_textbox('title','Heading*',stripslashes($_POST['title']));
+$category_list_query = 'SELECT cat_id,label FROM '.$CONFIG['db_prefix'].'calendar_categories ORDER BY cat_id ASC';
+$category_list_handle = $db->query($category_list_query);
+if(!$category_list_handle) {
+    $category_ids = array('0');
+    $category_names = array('Error');
+}
+for ($b = 1; $b <= $category_list_handle->num_rows; $b++) {
+    $category_list = $category_list_handle->fetch_assoc();
+    $category_ids[$b - 1] = $category_list['cat_id'];
+    $category_names[$b - 1] = $category_list['label'];
+}
+$form_create->add_select('category','Category',$category_ids,$category_names,$category);
+$form_create->add_textbox('stime','Start Time*',$_POST['stime'],'maxlength="5"');
+$form_create->add_textbox('etime','End Time*',$_POST['etime'],'maxlength="5"');
+$form_create->add_text('Times are in 24 hour format. Insert the same time in both
+    fields for an all day event. Times should be in hour:minute format. Please
+    include leading zeroes (1 = 01)');
+$form_create->add_select('day','Day*',array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+    16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,21),array(1,2,3,4,5,6,7,8,9,10,
+    11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),$_POST['day']);
+$form_create->add_select('month','Month*',array(1,2,3,4,5,6,7,8,9,10,11,12),
+    array('January','February','March','April','May','June','July','August',
+    'September','October','November','December'),$_POST['month']);
+$form_create->add_textbox('year','Year*',$_POST['year'],'maxlength="4"');
+$form_create->add_textarea('content','Description',stripslashes($_POST['content']));
+$form_create->add_textbox('location','Location',stripslashes($_POST['location']));
+$form_create->add_icon_list('image','Image','newsicons',$_POST['image']);
+$form_create->add_checkbox('hide','Hidden',$hide);
+$form_create->add_submit('submit','Create Event');
+$tab_content['create'] = $form_create;
+$tab_layout->add_tab('Create Event',$tab_content['create']);
+$content .= $tab_layout;
 ?>

@@ -4,9 +4,8 @@ Blocks#1#Block Manager#block_manager
 News#1#New Article#news_new_article
 News#1#Article Manager#news
 News#0#Edit Article#news_edit_article
-Calendar#1#Dates#calendar
+Calendar#1#Manage Events#calendar
 Calendar#1#Settings#calendar_settings
-Calendar#1#New Date#calendar_new_date
 Calendar#0#Edit Date#calendar_edit_date
 Files#1#Upload File#upload
 Files#1#Manage#filemanager
