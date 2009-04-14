@@ -3,7 +3,7 @@
 	if (@SECURITY != 1) {
 		die('You cannot access this page directly.');
 		}
-
+    include (ROOT.'functions/page_class.php');
 	function get_page_content($id,$type = 1,$view = "") {
 		if($type == "") {
 			$type = 0;

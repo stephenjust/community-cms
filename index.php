@@ -90,11 +90,15 @@
 //		}
 
 	// Load page information.
+    $page = new page;
+    $page->page_id = $page_id;
+    $page->page_text_id = $page_text_id;
 	if($page_text_id != NULL) {
 		$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE text_id = \''.$page_text_id.'\'';
 		} else {
 		$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = \''.$page_id.'\'';
 		}
+    // TODO: Finish page as a class implementation.
 	$page_info_handle = $db->query($page_info_query);
 	$page_info = $page_info_handle->fetch_assoc();
 	
