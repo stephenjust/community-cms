@@ -3,7 +3,7 @@
     if (@SECURITY != 1) {
         die ('You cannot access this page directly.');
     }
-    global $page_info;
+    global $page_content_info;
     global $site_info;
     include(ROOT.'pagetypes/calendar_class.php');
 	switch($_GET['view']) {
@@ -23,7 +23,7 @@
 			$prev_month = $month - 1;
 			$next_year = $year + 1;
 			$next_month = $month + 1;
-			$page = NULL;
+			$page_content = NULL;
 			$template_month = new template;
 			$template_month->load_file('calendar_month');
 			global $special_title;
@@ -70,7 +70,7 @@
 				$day_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar date, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE date.month = \''.$month.'\' AND date.year = \''.$year.'\' AND date.day = \''.$counter_day.'\' AND date.category = cat.cat_id LIMIT 0,2';
 				$day_info_handle = $db->query($day_info_query);
 				if ($day_info_handle->num_rows > 0) {
-					$current_day->day_number = '<a href="?id='.$page_info['id'].'&view=day&m='.$month.'&y='.$year.'&d='.$counter_day.'" class="day_number">'.$counter_day.'</a>';
+					$current_day->day_number = '<a href="?'.$page->url_reference.'&view=day&m='.$month.'&y='.$year.'&d='.$counter_day.'" class="day_number">'.$counter_day.'</a>';
 					} else {
 					$current_day->day_number = $counter_day;
 					}
@@ -80,7 +80,7 @@
 					if($day_info['colour'] == '') {
 						$day_info['colour'] = 'red';
 						}
-					$dates .= "<a href='?id=".$page_info['id']."&view=event&a=".$day_info['id'].'\' class="calendar_event">
+					$dates .= "<a href='?".$page->url_reference."&view=event&a=".$day_info['id'].'\' class="calendar_event">
 <img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png" width="16px" height="16px" alt="'.stripslashes($day_info['label']).'" border="0px" />
 '.stripslashes($day_info['header'])."</a><br />";
 					}
@@ -105,21 +105,21 @@
 				unset($day_info);
 				}
 			$template_month->replace_range('week',$all_weeks);
-			$page .= $template_month;
+			$page_content .= $template_month;
 			break;
 
 // ----------------------------------------------------------------------------
 
 	// EVENT VIEW
 		case "event":
-			$page = NULL;
+			$page_content = NULL;
             if(!isset($_GET['a'])) {
                 $_GET['a'] = NULL;
             }
 			$event_id = (int)$_GET['a'];
             $event = new calendar_event;
             $event->get_event($event_id);
-            $page .= $event;
+            $page_content .= $event;
             unset($event);
 			break;
 
@@ -137,18 +137,18 @@
 			if ($year < 2000 || $year > 9999) { $year = 2000; } // Validate month and year values
 			if ($month < 1 || $month > 12) { $month = 1; }
 			if ($day < 1 || $day > 31) { $day = 1; }
-			$page = NULL;
+			$page_content = NULL;
 			// Get events for current day from database
 			$day_events_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar WHERE year = '.$year.' AND month = '.$month.' AND day = '.$day.' ORDER BY starttime ASC';
 			$day_events_handle = $db->query($day_events_query);
-      $page .= "<a href='?id=".$page_info['id']."&m=".$month."&y=".$year."'>Back to month view</a><br />\n";
+      $page_content .= "<a href='?".$page->url_reference."&m=".$month."&y=".$year."'>Back to month view</a><br />\n";
 			if(!$day_events_handle) {
-				$page .= 'Failed to read list of events from the database.';
+				$page_content .= 'Failed to read list of events from the database.';
 				break;
 				}
 			if($day_events_handle->num_rows == 0) {
 				header('HTTP/1.1 404 Not Found');
-				$page .= 'There are no events to display.';
+				$page_content .= 'There are no events to display.';
 				break;
 				}
 			$day_template = load_template_file('calendar_day.html');
@@ -159,7 +159,7 @@
 			$day_template_foot = $day_template_temp[1];
 			unset($day_template);
 			unset($day_template_temp);
-			$page .= $day_template_head;
+			$page_content .= $day_template_head;
 			unset($day_template_head);
 			for($i = 1; $day_events_handle->num_rows >= $i; $i++) {
 				$day_events = $day_events_handle->fetch_assoc();
@@ -177,10 +177,10 @@
 				$current_event = str_replace('<!-- $EVENT_TIME$ -->',$event_time,$current_event);
 				$current_event = str_replace('<!-- $EVENT_HEADING$ -->',stripslashes($day_events['header']),$current_event);
 				$current_event = str_replace('<!-- $EVENT_DESCRIPTION$ -->',stripslashes($day_events['description']),$current_event);
-				$page .= $current_event;
+				$page_content .= $current_event;
 				}
 			$month_temp = $event_start;
-			$page .= $day_template_foot;
+			$page_content .= $day_template_foot;
 			unset($day_template_foot);
 			unset($event_template);
 			unset($day_events_query);
@@ -191,5 +191,5 @@
 			$special_title = $month_text.' '.$day.', '.$year.' - ';
 			break;
 		}
-	return $page;
+	return $page_content;
 ?>

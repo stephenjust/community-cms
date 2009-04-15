@@ -46,11 +46,12 @@ div.nav_menu a {
 div.notification {
 	width: 100%;
 	margin: 3px;
-	border-radius: 0.2em;
+	-webkit-border-radius: 0.2em;
 	-moz-border-radius: 0.2em;
 	text-align: center;
 	font-size: x-large;
 	background: #FFCCCC;
+    border: 1px solid #CC3333;
 }
 #left div.notification {
 	clear: both;

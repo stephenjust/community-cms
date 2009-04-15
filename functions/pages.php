@@ -10,6 +10,7 @@
 			}
 		$id = (int)$id;
 		global $CONFIG;
+        global $page;
 		global $db;
 		global $NOTIFICATION;
 		if(isset($_POST['vote']) && isset($_POST['vote_poll'])) {
@@ -29,7 +30,7 @@
 		try {
 			if($page_type_handle->num_rows == 1) {
 				$page_type = $page_type_handle->fetch_assoc();
-				$page = include(ROOT.'pagetypes/'.$page_type['filename']);
+				$pg = include(ROOT.'pagetypes/'.$page_type['filename']);
 				} else {
 				header("HTTP/1.0 404 Not Found");
 				global $page_not_found;
@@ -38,9 +39,9 @@
 				}
 			}
 		catch(Exception $e) {
-			$NOTIFICATION .= '<b>Error:</b> '.$e->getMessage();
-			$page = NULL;
+			$page->notification .= '<b>Error:</b> '.$e->getMessage();
+			$pg = NULL;
 			}
-		return $page;
+		return $pg;
 		}
 ?>

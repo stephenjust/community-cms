@@ -79,21 +79,18 @@
 		logout();
 		}
 	checkuser();
-	if(file_exists('./install')) {
-		$NOTIFICATION .= 'Please delete your ./install directory.<br />';
-		}
 	if($site_info['active'] == 0) {
 		err_page(12);
 		}
-//	if(is_writeable('./config.php')) {
-//		$NOTIFICATION .= 'Please change the permissions on ./config.php to 0755 or something else that makes it unwriteable.<br />';
-//		}
 
 	// Load page information.
     $page = new page;
-    $page->page_id = $page_id;
-    $page->page_text_id = $page_text_id;
-	if($page_text_id != NULL) {
+    $page->set_id($page_id);
+    $page->set_text_id($page_text_id);
+	if(file_exists('./install')) {
+		$page->notification .= 'Please delete your ./install directory.<br />';
+		}
+	if(strlen($page_text_id) > 1) {
 		$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE text_id = \''.$page_text_id.'\'';
 		} else {
 		$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = \''.$page_id.'\'';
@@ -103,8 +100,10 @@
 	$page_info = $page_info_handle->fetch_assoc();
 	
 	// Display the page.
+    $page->display_header();
 	display_page($page_info,$site_info,$_GET['view']);
-	
+	$page->display_footer();
+
 	// Close database connections and clean up loose ends.
 	$db->close();
 ?>

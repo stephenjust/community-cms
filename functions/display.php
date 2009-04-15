@@ -6,7 +6,10 @@
 	function display_page($page_info,$site_info,$view="") {
 		global $db;
 		global $CONFIG;
+        global $page;
+        // FIXME: Make sure this is unused.
 		global $NOTIFICATION;
+        $page->notification .= $NOTIFICATION;
 		$template_page = new template;
 		$template_page->load_file();
 		$page_message = NULL;
@@ -16,7 +19,7 @@
 		// Check if the page acutally exists before anything else is done
 		global $page_not_found;
 		if($page_not_found == 1) {
-			$page_title = 'Page Not Found - '.$site_info['name'];
+			$page->title = 'Page Not Found - '.$site_info['name'];
 			} else {
 			// Initialize session variable if unset.
 			if(!isset($_SESSION['type'])) {
@@ -59,20 +62,23 @@
 		$template_page->nav_login = display_login_box();
 		$template_page->css_include = $css_include;
 		$template_page->admin_include = $admin_include;
-		$template_page->page_id = $page_info['id'];
+		$template_page->page_id = $page->id;
+        $template_page->page_ref = $page->url_reference;
 		$template_page->image_path = $image_path;
 		$template_page_bottom = $template_page->split('content');
-		$content = get_page_content($page_info['id'],$page_info['type'],$view);
-		if(strlen($NOTIFICATION) > 0) {
-			$NOTIFICATION = '<div class="notification">'.$NOTIFICATION.'</div>';
+        $content = $page->get_page_content();
+//		$content = get_page_content($page_info['id'],$page_info['type'],$view);
+		if(strlen($page->notification) > 0) {
+			$page->notification = '<div class="notification">'.$page->notification.'</div>';
 			}
-        $page_title = $page_info['title'].' - '.$special_title.$site_info['name'];
-		$template_page->page_title = $page_title;
-		$template_page->notification = $NOTIFICATION;
+        $page->title .= ' - '.$special_title.$site_info['name'];
+		$template_page->page_title = $page->title;
+		$template_page->notification = $page->notification;
 		echo $template_page;
 		unset($template_page);
 		$template_page_bottom->content = $content;
-		$template_page_bottom->page_id = $page_info['id'];
+		$template_page_bottom->page_id = $page->id;
+        $template_page_bottom->page_ref = $page->url_reference;
 		$template_page_bottom->image_path = $image_path;
 		echo $template_page_bottom;
 		unset($template_page_bottom);
@@ -136,11 +142,16 @@
 	    $return = $_SESSION['name']."<br />\n<a href='index.php?".$_SERVER['QUERY_STRING']."&amp;login=2'>Log Out</a><br />\n";
 	    $check_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.$_SESSION['userid'];
 	    $check_message_handle = $db->query($check_message_query);
-	    $check_message = $check_message_handle->num_rows;
-	    $return .= '<a href="messages.php">'.$check_message." new messages</a><br />\n";
-	    $return .= mysqli_error($db);
+        if (!$check_message_handle) {
+            $return .= 'Could not check messages.';
+        } else {
+            $check_message = $check_message_handle->num_rows;
+            $return .= '<a href="messages.php">'.$check_message." new messages</a><br />\n";
+        }
+        unset($check_message_handle);
+        unset($check_message_query);
 	    if($_SESSION['type'] >= 1) {
-	      $return .= "<a href='admin.php?".SID."'>Admin</a>";
+	      $return .= '<a href="admin.php">Admin</a>';
 	    }
 	  }
 	  return $return;

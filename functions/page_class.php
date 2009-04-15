@@ -20,63 +20,86 @@ class page {
      * Unique identifier for page
      * @var int Page ID
      */
-    public $page_id;
+    public $id = NULL;
     /**
      * Marker that records whether the page exists or not
-     * @var int Set if page exists, unset if it does not.
+     * @var bool True if page exists, false if it does not.
      */
-    public $page_exists;
+    public $exists = 0;
     /**
      * Unique string identifier for page
      * @var string Page Text ID
      */
-    public $page_text_id;
+    public $text_id = NULL;
     /**
      * Notification to display in the notification area of the page
      * @var string 
      */
-    public $notification;
+    public $notification = '';
+    /**
+     * How scripts should reference the page
+     * @var string Either Text ID or ID
+     */
+    public $url_reference = NULL;
+    /**
+     * Text to display at the top of a page.
+     * @var string Text
+     */
+    public $title = NULL;
+    /**
+     * Page type ID
+     * @var int Page type
+     */
+    public $type = 0;
     function __construct() {
-        $this->page_id = NULL;
-        $this->page_text_id = NULL;
-        $this->notification = '';
+
     }
     function __destruct() {
 
     }
-    function __get($name) {
-        return $this->$name;
-    }
-    function __set($name,$value) {
-        switch($name) {
-            default:
-                $this->$name = $value;
-                break;
-            case 'page_id':
-                $this->$name = (int)$value;
-                $this->get_page_information();
-                break;
-            case 'page_text_id':
-                $this->$name = (string)$value;
-                $this->get_page_information();
-                break;
+    /**
+     * Set the page's ID
+     * @param int $id Page id
+     * @return void
+     */
+    public function set_id($id) {
+        if($this->id == $id) {
+            return;
         }
+        $this->id = (int)$id;
+        $this->get_page_information();
+        return;
+    }
+    /**
+     * Set the page's Text ID
+     * @param string $id Text ID
+     * @return void 
+     */
+    public function set_text_id($id) {
+        if($this->text_id == $id) {
+            return;
+        }
+        if(strlen($id) > 1) {
+            $this->text_id = (string)$id;
+            $this->get_page_information();
+        }
+        return;
     }
     /**
      * If a page exists, collect all information about it from the database.
-     * @global resource $db
-     * @global array $CONFIG
+     * @global resource $db Database connection resource
+     * @global array $CONFIG Array of configuration information
      * @return void
      */
-    private function get_page_information() {
+    public function get_page_information() {
         global $db;
         global $CONFIG;
-        if (isset($this->page_id)) {
-            if ($this->page_id == 0) {
+        if (isset($this->id)) {
+            if ($this->id == 0) {
                 return;
             }
             $page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE
-                `id` = '.$this->page_id.' LIMIT 1';
+                `id` = "'.$this->id.'" LIMIT 1';
             $page_handle = $db->query($page_query);
             if (!$page_handle) {
                 return;
@@ -85,13 +108,14 @@ class page {
                 return;
             }
             $page = $page_handle->fetch_assoc();
-            $this->page_text_id = $page['text_id'];
-        } elseif (isset($this->page_text_id)) {
-            if (strlen($this->page_text_id) == 0) {
+            $this->text_id = $page['text_id'];
+            $this->exists = 1;
+        } elseif (isset($this->text_id)) {
+            if (strlen($this->text_id) == 0) {
                 return;
             }
             $page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE
-                `text_id` = '.$this->page_text_id.' LIMIT 1';
+                `text_id` = "'.$this->text_id.'" LIMIT 1';
             $page_handle = $db->query($page_query);
             if (!$page_handle) {
                 return;
@@ -100,51 +124,40 @@ class page {
                 return;
             }
             $page = $page_handle->fetch_assoc();
-            $this->page_id = $page['id'];
+            $this->id = $page['id'];
+            $this->exists = 1;
         } else {
             return;
         }
-        $this->page_exists = 1;
+        if (strlen($this->text_id) < 1) {
+            $this->url_reference = 'id='.$this->id;
+        } else {
+            $this->url_reference = 'page='.$this->text_id;
+        }
+        $this->title = $page['title'];
+        $this->type = $page['type'];
         return;
     }
-	function get_page_content($id,$type = 1,$view = "") {
-		if($type == "") {
-			$type = 0;
-			}
-		$id = (int)$id;
-		global $CONFIG;
-		global $db;
-		global $NOTIFICATION;
-		if(isset($_POST['vote']) && isset($_POST['vote_poll'])) {
-			$question_id = $_POST['vote_poll'];
-			$answer_id = $_POST['vote'];
-			$user_ip = $_SERVER['REMOTE_ADDR'];
-			$query = 'INSERT INTO '.$CONFIG['db_prefix'].'poll_responses (question_id ,answer_id ,value ,ip_addr) VALUES ('.$question_id.', '.$answer_id.', NULL, \''.ip2long($user_ip).'\');';
-			$handle = $db->query($query);
-			if(!$handle) {
-				$NOTIFICATION .= 'Failed to submit your vote.<br />';
-				} else {
-				$NOTIFICATION .= 'Thank you for voting.<br />';
-				}
-			}
-		$page_type_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pagetypes WHERE id = '.$type.' LIMIT 1';
-		$page_type_handle = $db->query($page_type_query);
-		try {
-			if($page_type_handle->num_rows == 1) {
-				$page_type = $page_type_handle->fetch_assoc();
-				$page = include(ROOT.'pagetypes/'.$page_type['filename']);
-				} else {
-				header("HTTP/1.0 404 Not Found");
-				global $page_not_found;
-				$page_not_found = 1;
-				throw new Exception('Page not found.');
-				}
-			}
-		catch(Exception $e) {
-			$NOTIFICATION .= '<b>Error:</b> '.$e->getMessage();
-			$page = NULL;
-			}
-		return $page;
-		}
+    public function get_page_content() {
+        global $db;
+        global $CONFIG;
+        if ($this->exists == 0) {
+            header("HTTP/1.0 404 Not Found");
+            $this->title .= 'Page Not Found';
+            $this->notification .= '<strong>Error: </strong>The requested page
+                could not be found.<br />';
+            return;
+        } else {
+            return get_page_content($this->id,$this->type,$_GET['view']);
+            // FIXME: Stub;
+            return;
+        }
+    }
+    public function display_header() {
+        // FIXME: Stub
+    }
+    public function display_footer() {
+        // FIXME: Stub
+    }
 }
 ?>

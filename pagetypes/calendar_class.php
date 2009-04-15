@@ -29,6 +29,7 @@ class calendar_event {
     function get_event($id) {
         global $db;
         global $CONFIG;
+        global $page;
         global $page_info;
         global $site_info;
         $this->event_query = 'SELECT cal.*, cat.label FROM
@@ -71,10 +72,12 @@ class calendar_event {
         $template_event->event_category = stripslashes($event_info['label']);
         $template_event->event_description = stripslashes($event_info['description']);
         $template_event->event_location = stripslashes($event_info['location']);
-        $this->event_text .= "<a href='?id=".$page_info['id']."&m=".$event_info['month']."
-            &y=".$event_info['year']."'>Back to month view</a><br />";
-        $this->event_text .= "<a href='?id=".$page_info['id']."&view=day&d=".$event_info['day']."
-            &m=".$event_info['month']."&y=".$event_info['year']."'>Back to day view</a><br />";
+        $this->event_text .= "<a href='?".$page->url_reference."&m=".
+            $event_info['month']."&y=".$event_info['year']."'>Back to month
+            view</a><br />";
+        $this->event_text .= "<a href='?".$page->url_reference."&view=day&d=".
+            $event_info['day']."&m=".$event_info['month']."&y=".$event_info['year'].
+            "'>Back to day view</a><br />";
         $this->event_text .= $template_event;
         unset($template_event);
         global $special_title;
