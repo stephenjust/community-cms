@@ -85,6 +85,12 @@
 
 	// Load page information.
     $page = new page;
+    if(isset($_POST['vote']) && isset($_POST['vote_poll'])) {
+        $question_id = $_POST['vote_poll'];
+        $answer_id = $_POST['vote'];
+        $user_ip = $_SERVER['REMOTE_ADDR'];
+        poll_vote($question_id,$answer_id,$user_ip);
+    }
     $page->set_id($page_id);
     $page->set_text_id($page_text_id);
 	if(file_exists('./install')) {

@@ -30,4 +30,7 @@
 	if(!include_once(ROOT.'functions/forms.php')) {
 		err_page(2001);
 		}
+    if(!include_once(ROOT.'functions/poll.php')) {
+        err_page(2001);
+    }
 ?>
