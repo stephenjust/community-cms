@@ -76,6 +76,32 @@
 
 // ----------------------------------------------------------------------------
 
+if ($_GET['action'] == 'delete') {
+    if (!isset($_GET['filename'])) {
+        $content .= 'No file was specified to delete.<br />';
+    } elseif (eregi('^\.\.|\.\.',$_GET['filename']) || !file_exists($_GET['filename'])) {
+        $content .= 'Invalid file name.<br />';
+    } else {
+        $del = unlink($_GET['filename']);
+        if(!$del) {
+            $content .= 'Failed to delete file.<br />';
+        } else {
+            $content .= 'Successfully deleted '.$_GET['filename'].'.<br />'.
+                log_action('Deleted file \''.$_GET['filename'].'\'');
+            $delete_info_query = 'DELETE FROM '.$CONFIG['db_prefix'].'files WHERE
+                `path` = "'.addslashes($_GET['filename']).'" LIMIT 1';
+            $delete_info_handle = $db->query($delete_info_query);
+            if(!$delete_info_handle) {
+                $content .= 'Failed to delete information for this file.<br />';
+            } else {
+                $content .= 'Deleted information associated with the file.<br />';
+            }
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+
     $tab_layout = new tabs;
     if($_GET['action'] == 'edit') {
         $tab_content['edit'] = NULL;

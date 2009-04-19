@@ -45,7 +45,7 @@ class file_list {
         $this->file_array = scandir($this->folder);
         $num_files = count($this->file_array);
         $return = '<table class="admintable">'."\n<tr>\n<th>File Name</th>
-            <th>Label</th><th></th></tr>\n";
+            <th>Label</th><th colspan='2'></th></tr>\n";
         $display_count = 0;
         for ($i = 1; $i <= $num_files; $i++) {
             if (!is_dir($this->folder.'/'.$this->file_array[$i - 1]) &&
@@ -55,12 +55,15 @@ class file_list {
                     .$this->file_array[$i - 1].'">'.$this->file_array[$i - 1].'
                     </a></td><td>'.$file_info['label'].'</td><td><a href="admin.php?module='.$_GET['module'].'&action=edit&file='.
                     $this->script_folder.'/'.$this->file_array[$i - 1].'"><img src="<!-- $IMAGE_PATH$ -->edit.png"
-                    alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td></tr>';
+                    alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td><td>
+                    <a href="admin.php?module='.$_GET['module'].'&action=delete&filename='.
+                    $this->script_folder.'/'.$this->file_array[$i - 1].'">
+                    <img src="<!-- $IMAGE_PATH$ -->delete.png" width="16px" height="16px" border="0px"></a></tr>';
                 $display_count++;
             }
         }
         if($display_count == 0) {
-            $return .= '<tr><td colspan="3">There are no files in this folder.</td></tr>';
+            $return .= '<tr><td colspan="4">There are no files in this folder.</td></tr>';
         }
         $return .= '</table>';
         $this->file_list = $return;
