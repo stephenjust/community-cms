@@ -150,6 +150,7 @@
         }
         unset($check_message_handle);
         unset($check_message_query);
+        $return .= '<a href="settings.php">Settings</a><br />';
 	    if($_SESSION['type'] >= 1) {
 	      $return .= '<a href="admin.php">Admin</a>';
 	    }

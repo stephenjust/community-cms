@@ -47,15 +47,43 @@ class page {
      */
     public $title = NULL;
     /**
-     * Page type ID
-     * @var int Page type
+     * Page type
+     * @var string Page type
      */
-    public $type = 0;
+    public $type = 'news';
     function __construct() {
 
     }
     function __destruct() {
 
+    }
+    /**
+     * Set type of page to load for pages without ID
+     * @param string $type Name of page type to load
+     * @return void
+     */
+    public function set_type($type) {
+        switch ($type) {
+            default:
+                return;
+                break;
+            case 'settings_main':
+                $this->type = 'settings_main.php';
+                if(!checkuser(1)) {
+                    return;
+                }
+                $this->exists = 1;
+                $this->title = 'Settings - Main';
+                break;
+            case 'settings_profile':
+                $this->type = 'settings_profile.php';
+                if(!checkuser(1)) {
+                    return;
+                }
+                $this->exists = 1;
+                $this->title = 'Settings - Profile';
+                break;
+        }
     }
     /**
      * Set the page's ID
@@ -135,7 +163,14 @@ class page {
             $this->url_reference = 'page='.$this->text_id;
         }
         $this->title = $page['title'];
-        $this->type = $page['type'];
+        $page_type_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pagetypes
+            WHERE id = '.$page['type'].' LIMIT 1';
+        $page_type_handle = $db->query($page_type_query);
+        if(!$page_type_handle) {
+            return;
+        }
+        $page_type = $page_type_handle->fetch_assoc();
+        $this->type = $page_type['filename'];
         return;
     }
     public function get_page_content() {
@@ -148,6 +183,9 @@ class page {
                 could not be found.<br />';
             return;
         } else {
+            if (!isset($_GET['view'])) {
+                $_GET['view'] = NULL;
+            }
             return get_page_content($this->id,$this->type,$_GET['view']);
             // FIXME: Stub;
             return;

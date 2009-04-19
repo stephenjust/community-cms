@@ -8,13 +8,9 @@
  * @version SVN
  * @package CommunityCMS.main
  */
-	// Report all PHP errors
-	error_reporting(E_ALL);
-	header('Content-type: text/html; charset=UTF-8');
 	// The not-so-secure security check.
 	define('SECURITY',1);
 	define('ROOT','./');
-	session_start();
 	// Load error handling code
 	require_once('./functions/error.php');
 	// Load database configuration
@@ -28,24 +24,12 @@
 		err_page(11);
 		}
 	$NOTIFICATION = NULL;
-	// Try to establish a connection to the MySQL server using the MySQLi classes.		
-	@ $db = new mysqli($CONFIG['db_host'],$CONFIG['db_user'],$CONFIG['db_pass'],$CONFIG['db_name']);
-	if(mysqli_connect_errno()) {
-		err_page(1001); // Database connect error.
-		}
 
 	// Once the database connections are made, include all other necessary files.
 	if(!include_once('./include.php')) {
 		err_page(2001); // File not found error.
 		}
-		
-	// Load global site information.
-	$site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
-	$site_info_handle = $db->query($site_info_query);
-    if(!$site_info_handle) {
-        err_page(1001);
-    }
-	$site_info = $site_info_handle->fetch_assoc();
+    initialize();
 		
 	// Initialize some variables to keep PHP from complaining.
 	if(!isset($_GET['id']) && !isset($_GET['page'])) {
@@ -110,6 +94,5 @@
 	display_page($page_info,$site_info,$_GET['view']);
 	$page->display_footer();
 
-	// Close database connections and clean up loose ends.
-	$db->close();
+	clean_up();
 ?>

@@ -6,6 +6,9 @@
 	if(!eregi('^[/\.]+$',ROOT)) {
 		die ('Invalid ROOT value.');
 		}
+    if(!include_once(ROOT.'functions/main.php')) {
+        err_page(2001);
+    }
 	if(!include_once(ROOT.'functions/mysql.php')) {
 		err_page(2001);
 		}
