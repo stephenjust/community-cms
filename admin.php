@@ -62,7 +62,7 @@
 		$page_title = 'Community CMS Administration';
 		$css_include = '<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
 		$image_path = $template_page->path.'images/';
-		$template_page->scripts = '<link type="text/css" href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />	
+		$template_page->scripts = '<link type="text/css" href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
 <script language="javascript" type="text/javascript" src="./scripts/tiny_mce/tiny_mce_gzip.js"></script>
 <script language="javascript" type="text/javascript" src="./admin/scripts/ajax.js"></script>
 <script language="javascript" type="text/javascript" src="./scripts/jquery.js"></script>

@@ -8,7 +8,7 @@
  * @version SVN
  * @package CommunityCMS.install
  */
-    $template_path = '../templates/default/';
+    $template_path = './files/';
     $template_file = $template_path."index.html";
     $handle = fopen($template_file, "r");
     $template = fread($handle, filesize($template_file));
@@ -35,6 +35,7 @@
     $template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
     $template = str_replace('<!-- $NAV_LOGIN$ -->',NULL,$template);
     $template = str_replace('<!-- $CONTENT$ -->',$content,$template);
-    $template = str_replace('<!-- $FOOTER$ -->','Community CMS Copyright&copy; 2008 Stephen Just',$template);
+    $template = str_replace('<!-- $UPDATE_CONTENT$ -->',include('./update.php'),$template);
+    $template = str_replace('<!-- $FOOTER$ -->','Community CMS Copyright&copy; 2007 - 2009 Stephen Just',$template);
     echo $template;
 ?>
