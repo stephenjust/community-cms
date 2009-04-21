@@ -47,4 +47,26 @@ function clean_up() {
     global $db;
     $db->close();
 }
+
+/**
+ * Truncate string
+ * @param string $text Text to truncate
+ * @param int $numb Maximum number of characters to allow
+ * @return string Truncated string
+ */
+function truncate($text,$numb) {
+    $text = html_entity_decode($text, ENT_QUOTES);
+    if (strlen($text) > $numb) {
+        $text = substr($text, 0, $numb);
+        $text = substr($text,0,strrpos($text," "));
+        //This strips the full stop:
+        if ((substr($text, -1)) == ".") {
+            $text = substr($text,0,(strrpos($text,".")));
+        }
+        $etc = "...";
+        $text .= $etc;
+    }
+    $text = htmlentities($text, ENT_QUOTES);
+    return $text;
+}
 ?>

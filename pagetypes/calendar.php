@@ -176,7 +176,7 @@
 				$current_event = str_replace('<!-- $EVENT_ID$ -->',$day_events['id'],$current_event);
 				$current_event = str_replace('<!-- $EVENT_TIME$ -->',$event_time,$current_event);
 				$current_event = str_replace('<!-- $EVENT_HEADING$ -->',stripslashes($day_events['header']),$current_event);
-				$current_event = str_replace('<!-- $EVENT_DESCRIPTION$ -->',stripslashes($day_events['description']),$current_event);
+				$current_event = str_replace('<!-- $EVENT_DESCRIPTION$ -->',stripslashes(truncate(strip_tags($day_events['description']),100)),$current_event);
 				$page_content .= $current_event;
 				}
 			$month_temp = $event_start;

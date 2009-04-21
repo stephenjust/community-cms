@@ -3,21 +3,7 @@
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		die ('You cannot access this page directly.');
 		}
-	function truncate($text,$numb) {
-		$text = html_entity_decode($text, ENT_QUOTES);
-		if (strlen($text) > $numb) {
-			$text = substr($text, 0, $numb);
-			$text = substr($text,0,strrpos($text," "));
-			//This strips the full stop:
-			if ((substr($text, -1)) == ".") {
-        $text = substr($text,0,(strrpos($text,".")));
-    		}
-			$etc = "...";
-			$text = $text.$etc;
-			}
-		$text = htmlentities($text, ENT_QUOTES);
-		return $text;
-		}
+
 	$root = "./";
 	$message = NULL;
 	$date = date('Y-m-d H:i:s');
