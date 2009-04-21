@@ -44,8 +44,6 @@
 			$page_text_id = NULL;
 			}
 		}
-    // TODO: Change header to use 'text id' instead of 'id' if 'id' is given
-    // header("Location: http://www.example.com/");
 	if(!isset($_GET['view'])) {
 		$_GET['view'] = NULL;
 		}

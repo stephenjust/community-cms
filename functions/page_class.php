@@ -160,6 +160,14 @@ class page {
         if (strlen($this->text_id) < 1) {
             $this->url_reference = 'id='.$this->id;
         } else {
+            if(isset($_GET['id'])) {
+                header("HTTP/1.1 301 Moved Permanently");
+                $matches = NULL;
+                $old_page_address = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+                eregi('id=[0-9]+',$old_page_address,$matches);
+                $new_page_address = str_replace($matches,'page='.$this->text_id,$old_page_address);
+                header('Location: '.$new_page_address);
+            }
             $this->url_reference = 'page='.$this->text_id;
         }
         $this->title = $page['title'];
