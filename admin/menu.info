@@ -1,8 +1,7 @@
 Main#1#Configuration#site_config
 Help#0#Help#help
 Blocks#1#Block Manager#block_manager
-News#1#New Article#news_new_article
-News#1#Article Manager#news
+News#1#Articles#news
 News#0#Edit Article#news_edit_article
 Calendar#1#Manage Events#calendar
 Calendar#1#Settings#calendar_settings
