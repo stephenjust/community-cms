@@ -69,4 +69,27 @@ function truncate($text,$numb) {
     $text = htmlentities($text, ENT_QUOTES);
     return $text;
 }
+
+/**
+ * validate_int - Validate values of integers
+ * @param int $value Integer to be validated
+ * @return int -1 if false
+ */
+function validate_int($value) {
+    if($value !== (int)$value) {
+        return -1;
+    } else {
+        return $value;
+    }
+}
+
+function validate_string($value) {
+    // FIXME: Stub
+    return $value;
+}
+
+function validate_array($value) {
+    // FIXME: Stub
+    return $value;
+}
 ?>
