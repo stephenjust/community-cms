@@ -20,8 +20,11 @@
 		// The following block of code determines the error message to be displayed.
 		switch($code) {
 			default:
-			  $errormesg = "An unknown error has occured. Please file a bug report on the Community CMS SourceForge page describing what you were doing when the error occured so that we may fix the problem or create a more detailed error message.";
+			    $errormesg = "An unknown error has occured. Please file a bug report on the Community CMS SourceForge page describing what you were doing when the error occured so that we may fix the problem or create a more detailed error message.";
 				break;
+            case 10:
+                $errormesg = 'Please update your Community CMS installation; the database is not the correct version.';
+                break;
 			case 11:
 			  $errormesg = "This Community CMS powered site is currently disabled.";
 				break;

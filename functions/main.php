@@ -76,11 +76,8 @@ function truncate($text,$numb) {
  * @return int -1 if false
  */
 function validate_int($value) {
-    if($value !== (int)$value) {
-        return -1;
-    } else {
-        return $value;
-    }
+    // FIXME: Stub
+    return $value;
 }
 
 function validate_string($value) {

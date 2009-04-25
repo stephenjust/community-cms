@@ -8,7 +8,10 @@
 	$message = NULL;
 	$date = date('Y-m-d H:i:s');
 		if ($_GET['action'] == 'delete') {
-		$read_message_query = 'SELECT message.message_id,message.page_id,page.title,page.id FROM '.$CONFIG['db_prefix'].'page_messages message, '.$CONFIG['db_prefix'].'pages page WHERE message.message_id = '.$_GET['id'].' AND message.page_id = page.id LIMIT 1';
+		$read_message_query = 'SELECT message.message_id,message.page_id,
+            page.title,page.id FROM '.$CONFIG['db_prefix'].'page_messages message,
+            '.$CONFIG['db_prefix'].'pages page WHERE message.message_id = '.$_GET['id'].'
+            AND message.page_id = page.id LIMIT 1';
 		$read_message_handle = $db->query($read_message_query);
 		if(!$read_message_handle) {
 			$message .= 'Failed to read message information. '.mysqli_error($db);

@@ -67,10 +67,16 @@
 					} else {
 					$current_day->template = $template_day;
 					}
-				$day_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar date, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE date.month = \''.$month.'\' AND date.year = \''.$year.'\' AND date.day = \''.$counter_day.'\' AND date.category = cat.cat_id LIMIT 0,2';
+				$day_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar 
+                    date, '.$CONFIG['db_prefix'].'calendar_categories cat WHERE
+                    date.month = \''.$month.'\' AND date.year = \''.$year.'\'
+                    AND date.day = \''.$counter_day.'\' AND date.category =
+                    cat.cat_id LIMIT 0,2';
 				$day_info_handle = $db->query($day_info_query);
 				if ($day_info_handle->num_rows > 0) {
-					$current_day->day_number = '<a href="?'.$page->url_reference.'&view=day&m='.$month.'&y='.$year.'&d='.$counter_day.'" class="day_number">'.$counter_day.'</a>';
+					$current_day->day_number = '<a href="?'.$page->url_reference.
+                        '&view=day&m='.$month.'&y='.$year.'&d='.$counter_day.
+                        '" class="day_number">'.$counter_day.'</a>';
 					} else {
 					$current_day->day_number = $counter_day;
 					}
@@ -139,9 +145,12 @@
 			if ($day < 1 || $day > 31) { $day = 1; }
 			$page_content = NULL;
 			// Get events for current day from database
-			$day_events_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar WHERE year = '.$year.' AND month = '.$month.' AND day = '.$day.' ORDER BY starttime ASC';
+			$day_events_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'calendar 
+                WHERE year = '.$year.' AND month = '.$month.' AND day = '.$day.'
+                ORDER BY starttime ASC';
 			$day_events_handle = $db->query($day_events_query);
-      $page_content .= "<a href='?".$page->url_reference."&m=".$month."&y=".$year."'>Back to month view</a><br />\n";
+            $page_content .= '<a href="?'.$page->url_reference.'&m='.$month.
+                '&y='.$year.'">Back to month view</a><br />'."\n";
 			if(!$day_events_handle) {
 				$page_content .= 'Failed to read list of events from the database.';
 				break;
