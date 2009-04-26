@@ -32,7 +32,7 @@ people that it needs to reach.</div>';
 <ul>
 <li>In the navigation menu of any administration page, click the \'Newsletters\'
 link in the \'Newsletter\' category.</li>
-<li>In the \'Add Newsletter\' section of the page, first give your newsletter a
+<li>In the \'Create Newsletter\' tab, first give your newsletter a
 descriptive label, such as \'Community Spring Newsletter\'.</li>
 <li>Using the file browser below, select a file on the server to use as
 a newsletter. You can also click the \'Upload File\' button to copy a file from

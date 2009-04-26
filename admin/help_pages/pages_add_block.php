@@ -31,9 +31,9 @@ page, so you can miz and match your pages.</div>';
 <ul>
 <li>In the navigation menu of any administration page, click the \'Pages\'
 link in the \'Pages\' category.</li>
-<li>In the \'Page Manager\' section of the page, click the edit button next to the page
+<li>In the \'Manage Pages\' tab, click the edit button next to the page
 you would like to add a block to.</li>
-<li>In the \'Edit Page\' section, list fill the \'Blocks\' fields with the IDs of the
+<li>In the \'Edit Page\' tab, list fill the \'Blocks\' fields with the IDs of the
 blocks that you want to display. Block IDs can be found on the \'Block Manager\' page.</li>
 <li>Make sure that the lists of Block IDs are comma separated, with no spaces, and no
 comma at the end of the list.</li>

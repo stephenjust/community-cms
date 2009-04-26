@@ -32,8 +32,9 @@ create a page to remove some of the clutter on your site.</div>';
 <ul>
 <li>In the navigation menu of any administration page, click the \'Pages\'
 link in the \'Pages\' category.</li>
-<li>In the \'Add Page\' section of the page, first give your pate a title,
+<li>In the \'Create Page\' tab, first give your pate a title,
 such as \'Community News\'.</li>
+<li>Give your new page a unique Text ID that can be used to reference it.</li>
 <li>Choose whether or not you would like the page\'s title to be displayed at the 
 top of the page.</li>
 <li>Choose whether or not you would like your page to appear in your site\'s menu.</li>

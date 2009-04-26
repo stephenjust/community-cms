@@ -36,8 +36,8 @@ news articles that fill their desired purpose.</div>';
 	$return .= '<div class="admin_help_quick_instructions">
 <h3>Quick Instructions</h3>
 <ul>
-<li>In the navigation menu of any administration page, click the \'New Article\'
-link in the \'News\' category.</li>
+<li>In the navigation menu of any administration page, click the \'Articles\'
+link in the \'News\' category, and switch to the \'Create Article\' tab.</li>
 <li>Choose an appropriate title for your new article or page. This will be
 displayed at the top of the article. It can contain any character.</li>
 <li>Using the TinyMCE Editor, give your article some content.</li>
