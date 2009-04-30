@@ -75,7 +75,7 @@
 				$day_info_handle = $db->query($day_info_query);
 				if ($day_info_handle->num_rows > 0) {
 					$current_day->day_number = '<a href="?'.$page->url_reference.
-                        '&view=day&m='.$month.'&y='.$year.'&d='.$counter_day.
+                        '&amp;view=day&amp;m='.$month.'&amp;y='.$year.'&amp;d='.$counter_day.
                         '" class="day_number">'.$counter_day.'</a>';
 					} else {
 					$current_day->day_number = $counter_day;
@@ -86,7 +86,7 @@
 					if($day_info['colour'] == '') {
 						$day_info['colour'] = 'red';
 						}
-					$dates .= "<a href='?".$page->url_reference."&view=event&a=".$day_info['id'].'\' class="calendar_event">
+					$dates .= "<a href='?".$page->url_reference."&amp;view=event&amp;a=".$day_info['id'].'\' class="calendar_event">
 <img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png" width="16px" height="16px" alt="'.stripslashes($day_info['label']).'" border="0px" />
 '.stripslashes($day_info['header'])."</a><br />";
 					}

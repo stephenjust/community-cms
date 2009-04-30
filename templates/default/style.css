@@ -206,6 +206,10 @@ table.calendar td {
 	overflow: hidden;
 	table-layout: fixed;
 }
+table.calendar td.today {
+    background: #FFFFCC;
+    border: 1px #000000 solid;
+}
 table.calendar a.day_number {
 	text-decoration: none;
 	font-weight: bold;
