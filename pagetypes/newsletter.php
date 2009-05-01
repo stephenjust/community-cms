@@ -4,9 +4,11 @@
 		die ('You cannot access this page directly.');
 		}
 	$return = NULL;
-	global $page_info;
+    global $CONFIG;
+    global $db;
+    global $page;
 	$i = 1;
-		$newsletter_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'newsletters WHERE page = '.$id.' ORDER BY year desc, month desc LIMIT 0,30';
+		$newsletter_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'newsletters WHERE page = '.$page->id.' ORDER BY year desc, month desc LIMIT 0,30';
 		$newsletter_handle = $db->query($newsletter_query);
 		if($newsletter_handle->num_rows == 0) {
 			$return .= "No newsletters to display";

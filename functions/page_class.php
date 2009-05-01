@@ -51,6 +51,31 @@ class page {
      * @var string Page type
      */
     public $type = 'news';
+    /**
+     * Stores the full content of the page before it is parsed.
+     * @var string Content of page
+     */
+    private $fullcontent;
+    /**
+     * Stores the content of the body
+     * @var string 
+     */
+    public $content;
+    /**
+     * Stores the page header
+     * @var string 
+     */
+    private $header;
+    /**
+     * Stores the main page body
+     * @var string
+     */
+    private $body;
+    /**
+     * Stores the page footer
+     * @var string
+     */
+    private $footer;
     function __construct() {
 
     }
@@ -179,6 +204,13 @@ class page {
         }
         $page_type = $page_type_handle->fetch_assoc();
         $this->type = $page_type['filename'];
+        if(!isset($this->content)) {
+            $this->content = include(ROOT.'pagetypes/'.$this->type);
+            if(!$this->content) {
+                $this->exists = 0;
+                $this->notification = '<strong>Error: </strong>System file not found.';
+            }
+        }
         return;
     }
     public function get_page_content() {
@@ -194,12 +226,13 @@ class page {
             if (!isset($_GET['view'])) {
                 $_GET['view'] = NULL;
             }
-            return get_page_content($this->id,$this->type,$_GET['view']);
-            // FIXME: Stub;
-            return;
+            return $this->content;
         }
     }
     public function display_header() {
+        // FIXME: Stub
+    }
+    public function display_content() {
         // FIXME: Stub
     }
     public function display_footer() {

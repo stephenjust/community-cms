@@ -96,6 +96,7 @@
 	
 	// Display the page.
     $page->display_header();
+    $page->display_content();
 	display_page($page_info,$site_info,$_GET['view']);
 	$page->display_footer();
 

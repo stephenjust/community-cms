@@ -3,15 +3,18 @@
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
+global $page;
 global $site_info;
 global $page_info;
+global $CONFIG;
+global $db;
 include(ROOT.'pagetypes/news_class.php');
 if(!isset($_GET['start']) || $_GET['start'] == "" || $_GET['start'] < 0) {
     $_GET['start'] = 0;
 }
 $start = (int)$_GET['start'];
 $first_date = NULL;
-$news_query = 'SELECT id FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$page_info['id'].' ORDER BY date DESC LIMIT '.$start.',10';
+$news_query = 'SELECT id FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$page->id.' ORDER BY date DESC LIMIT '.$start.',10';
 $news_handle = $db->query($news_query);
 $news_num_rows = $news_handle->num_rows;
 // Initialize session variable if not initialized to prevent warnings.
@@ -32,10 +35,10 @@ if($news_num_rows == 0) {
         unset($article);
     }
 }
-$news_first_query = 'SELECT date FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date DESC LIMIT 1';
+$news_first_query = 'SELECT date FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$page->id.' ORDER BY date DESC LIMIT 1';
 $news_first_handle = $db->query($news_first_query);
 $news_first = $news_first_handle->fetch_assoc();
-$news_last_query = 'SELECT date FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$id.' ORDER BY date ASC LIMIT 1';
+$news_last_query = 'SELECT date FROM '.$CONFIG['db_prefix'].'news WHERE page = '.$page->id.' ORDER BY date ASC LIMIT 1';
 $news_last_handle = $db->query($news_last_query);
 $news_last = $news_last_handle->fetch_assoc();
 $template_pagination = new template;
