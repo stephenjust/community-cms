@@ -65,6 +65,7 @@ div.notification {
 /* NEWS */
 div.news_item_container {
 	position: relative;
+    background: url('./images/news_topleft.png') no-repeat;
 }
 div.news_item {
 	position: relative;
