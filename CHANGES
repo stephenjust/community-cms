@@ -1,6 +1,25 @@
 Changes
 -------
-Last updated Mar 10, 2009
+Last updated May 12, 2009
+----------
+0.5 -> 0.6
+----------
+ADMIN
+-Use jQery and jQuery-UI to improve interface
+-Users can now be assigned groups, groups can be created, etc.
+-Files can now be assigned attributes (label)
+NEWS
+-Standalone article view uses a better template
+CALENDAR
+-'Today' stands out more
+FEATURES
+-Pages can be assigned 'Text IDs' to make URLs more readable
+-Added Database Updater script
+SECURITY
+-Fixed several possible SQL injection attacks
+BUG FIXES
+-Fixed some undefined-variable related problems
+
 ----------
 0.4 -> 0.5
 ----------

@@ -51,7 +51,11 @@
 								</div>
 		<div class="info-box-body">
 			<div class="var-summary">
-																																																																								<div class="var-title">
+																																																																																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$content" title="details" class="var-name">$content</a>
+				</div>
+																<div class="var-title">
 					<span class="var-type">bool</span>
 					<a href="#$exists" title="details" class="var-name">$exists</a>
 				</div>
@@ -72,7 +76,7 @@
 					<a href="#$title" title="details" class="var-name">$title</a>
 				</div>
 																<div class="var-title">
-					<span class="var-type">int</span>
+					<span class="var-type">string</span>
 					<a href="#$type" title="details" class="var-name">$type</a>
 				</div>
 																<div class="var-title">
@@ -95,7 +99,7 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																				
+																																																																																				
 												<div class="method-definition">
 											<span class="method-result">page</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
@@ -104,6 +108,11 @@
 																<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#__destruct" title="details" class="method-name">__destruct</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#display_content" title="details" class="method-name">display_content</a>
 										()
 									</div>
 																<div class="method-definition">
@@ -136,6 +145,11 @@
 										<a href="#set_text_id" title="details" class="method-name">set_text_id</a>
 											(<span class="var-type">string</span>&nbsp;<span class="var-name">$id</span>)
 									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#set_type" title="details" class="method-name">set_type</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$type</span>)
+									</div>
 								</div>
 		</div>
 	</div>		
@@ -153,7 +167,29 @@
 							
 					</div>
 		<div class="info-box-body">
-			<a name="var$exists" id="$exists"><!-- --></A>
+			<a name="var$content" id="$content"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$content</span>
+						(line <span class="line-number">63</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Stores the content of the body</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$exists" id="$exists"><!-- --></A>
 <div class="oddrow">
 
 	<div class="var-header">
@@ -272,14 +308,14 @@
 
 	<div class="var-header">
 		<span class="var-title">
-			<span class="var-type">int</span>
+			<span class="var-type">string</span>
 			<span class="var-name">$type</span>
-			 = <span class="var-default"> 0</span>			(line <span class="line-number">53</span>)
+			 = <span class="var-default"> 'news'</span>			(line <span class="line-number">53</span>)
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Page type ID</p>
+<p class="short-description">Page type</p>
 	<ul class="tags">
 				<li><span class="field">var:</span> Page type</li>
 				<li><span class="field">access:</span> public</li>
@@ -333,7 +369,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number">54</span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">79</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -353,7 +389,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">Destructor __destruct</span> (line <span class="line-number">57</span>)
+		<span class="method-title">Destructor __destruct</span> (line <span class="line-number">82</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -369,11 +405,34 @@
 		
 			
 	</div>
-<a name="methoddisplay_footer" id="display_footer"><!-- --></a>
+<a name="methoddisplay_content" id="display_content"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">display_footer</span> (line <span class="line-number">159</span>)
+		<span class="method-title">display_content</span> (line <span class="line-number">235</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			display_content
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methoddisplay_footer" id="display_footer"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">display_footer</span> (line <span class="line-number">238</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -393,10 +452,10 @@
 			
 	</div>
 <a name="methoddisplay_header" id="display_header"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">display_header</span> (line <span class="line-number">156</span>)
+		<span class="method-title">display_header</span> (line <span class="line-number">232</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -416,10 +475,10 @@
 			
 	</div>
 <a name="methodget_page_content" id="get_page_content"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_page_content</span> (line <span class="line-number">141</span>)
+		<span class="method-title">get_page_content</span> (line <span class="line-number">216</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -439,10 +498,10 @@
 			
 	</div>
 <a name="methodget_page_information" id="get_page_information"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">get_page_information</span> (line <span class="line-number">94</span>)
+		<span class="method-title">get_page_information</span> (line <span class="line-number">147</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -463,10 +522,10 @@
 			
 	</div>
 <a name="methodset_id" id="set_id"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">set_id</span> (line <span class="line-number">65</span>)
+		<span class="method-title">set_id</span> (line <span class="line-number">118</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -492,10 +551,10 @@
 			
 	</div>
 <a name="methodset_text_id" id="set_text_id"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">set_text_id</span> (line <span class="line-number">78</span>)
+		<span class="method-title">set_text_id</span> (line <span class="line-number">131</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -520,13 +579,42 @@
 		
 			
 	</div>
+<a name="methodset_type" id="set_type"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">set_type</span> (line <span class="line-number">90</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Set type of page to load for pages without ID</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			set_type
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$type</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$type</span><span class="var-description">: Name of page type to load</span>			</li>
+				</ul>
+		
+			
+	</div>
 						
 		</div>
 	</div>
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Tue, 14 Apr 2009 20:00:21 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+		Documentation generated on Sat, 02 May 2009 12:29:47 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
 	</p>
 	</div></body>
 </html>
