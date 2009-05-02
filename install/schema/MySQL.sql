@@ -68,10 +68,6 @@ INSERT INTO `<!-- $DB_PREFIX$ -->config` (`db_version`,`name`, `url`, `comment`,
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `<!-- $DB_PREFIX$ -->files`
---
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   `id` int(11) NOT NULL auto_increment,
   `type` int(11) NOT NULL,
@@ -80,6 +76,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   `log_id` int(11) NOT NULL auto_increment,
@@ -90,9 +87,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   PRIMARY KEY  (`log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
---
--- Table structure for table `<!-- $DB_PREFIX$ -->news`
---
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
   `id` int(11) NOT NULL auto_increment,
@@ -108,18 +103,22 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
   KEY `page` (`page`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;;
 
---
--- Dumping data for table `<!-- $DB_PREFIX$ -->news`
---
-
 INSERT INTO `<!-- $DB_PREFIX$ -->news` (`id`, `page`, `name`, `description`, `author`, `date`, `image`) VALUES
 (0, 1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `<!-- $DB_PREFIX$ -->newsletters`
---
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news_settings` (
+    `default_date_setting` INT(3) NOT NULL ,
+    `show_author` INT(3) NOT NULL ,
+    `show_edit_time` INT(3) NOT NULL
+) ENGINE = MYISAM ;
+
+INSERT INTO `<!-- $DB_PREFIX$ -->news_settings`
+    (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
+('1', '1', '1');
+
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
   `id` int(11) NOT NULL auto_increment,

@@ -64,21 +64,21 @@ div.notification {
 
 /* NEWS */
 div.news_item_container {
-	position: relative;
+    position: relative;
     background: url('./images/news_topleft.png') no-repeat;
 }
 div.news_item {
-	position: relative;
+    position: relative;
 }
 div.news_item_date {
-	display: block;
-	float: left;
-	width: 100px;
-	height: 100px;
-	background-image: url('./images/news_article_date.png');
-	text-align: center;
-	vertical-align: middle;
-	z-index: 1;
+    display: block;
+    float: left;
+    width: 100px;
+    height: 100px;
+    background-image: url('./images/news_article_date.png');
+    text-align: center;
+    vertical-align: middle;
+    z-index: 1;
 }
 span.news_item_date_month {
 	display: block;
@@ -99,6 +99,10 @@ span.news_title {
 span.news_title a {
 	color: #000000;
 	text-decoration: none;
+}
+span.news_author {
+    font-size: small;
+    font-style: italic;
 }
 div.news_content {
 	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
@@ -164,7 +168,7 @@ div.minipoll_block {
 }
 span.minipoll_question {
 	font-weight: bold;
-	size: large;
+	font-size: large;
 }
 
 /*

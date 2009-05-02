@@ -23,8 +23,16 @@ $query[2] = 'CREATE TABLE IF NOT EXISTS '.$CONFIG['db_prefix'].'user_groups (
  ("Administrator","font-weight: bold; color: #009900;")';
 $query[4] = 'ALTER TABLE '.$CONFIG['db_prefix'].'users ADD `groups` TEXT NULL AFTER `password`';
 $query[5] = 'UPDATE '.$CONFIG['db_prefix'].'users SET `groups` = "1" WHERE `id` = 1 LIMIT 1';
+$query[6] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'news_settings` (
+    `default_date_setting` INT(3) NOT NULL ,
+    `show_author` INT(3) NOT NULL ,
+    `show_edit_time` INT(3) NOT NULL
+) ENGINE = MYISAM';
+$query[7] = 'INSERT INTO `'.$CONFIG['db_prefix'].'news_settings`
+    (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
+(\'1\', \'1\', \'1\')';
 
-$query[6] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `db_version` = 0.02';
+$query[8] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `db_version` = 0.02';
 
 // ----------------------------------------------------------------------------
 $num_queries = count($query);

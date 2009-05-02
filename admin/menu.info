@@ -3,6 +3,7 @@ Help#0#Help#help
 Blocks#1#Block Manager#block_manager
 News#1#Articles#news
 News#0#Edit Article#news_edit_article
+News#1#Module Settings#news_settings
 Calendar#1#Manage Events#calendar
 Calendar#1#Settings#calendar_settings
 Calendar#0#Edit Date#calendar_edit_date
