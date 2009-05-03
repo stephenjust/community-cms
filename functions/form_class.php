@@ -101,7 +101,7 @@ class form {
      * @param string $label Text displayed beside field
      * @param array $values Array of values for each entry
      * @param array $strings Array of labels for each entry
-     * @param int $selected Entry selected by default
+     * @param int $selected Entry selected by default (numerical, starts at 1)
      * @param string $props Extra HTML properties for field
      * @return null
      */

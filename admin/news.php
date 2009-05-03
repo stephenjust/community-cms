@@ -6,6 +6,18 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 $root = "./";
 $content = NULL;
 $date = date('Y-m-d H:i:s');
+
+$news_config_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news_settings LIMIT 1';
+$news_config_handle = $db->query($news_config_query);
+if (!$news_config_handle) {
+    $content .= 'Could not load configuration from the database.<br />';
+} elseif ($news_config_handle->num_rows == 0) {
+    $content .= 'There is no configuration record in the database.<br />';
+}
+$news_config = $news_config_handle->fetch_assoc();
+
+// ----------------------------------------------------------------------------
+
 if ($_GET['action'] == 'delete') {
     $read_article_query = 'SELECT news.id,news.name,page.title FROM '.$CONFIG['db_prefix'].'news news, '.$CONFIG['db_prefix'].'pages page WHERE news.id = '.$_GET['id'].' AND news.page = page.id LIMIT 1';
     $read_article_handle = $db->query($read_article_query);
@@ -122,7 +134,7 @@ $form->add_hidden('author',$_SESSION['name']);
 $form->add_textarea('content','Content',NULL,'rows="20"');
 $form->add_page_list('page','Page',1,1);
 $form->add_icon_list('image','Image','newsicons');
-$form->add_select('date_params','Date Settings',array(0,1,2),array('Hide','Show','Show Mini'),2);
+$form->add_select('date_params','Date Settings',array(0,1,2),array('Hide','Show','Show Mini'),$news_config['default_date_setting'] + 1);
 $form->add_submit('submit','Create Article');
 $tab_content['create'] = $form;
 $tab_layout->add_tab('Create Article',$tab_content['create']);

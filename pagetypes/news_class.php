@@ -9,11 +9,22 @@ class news_item {
     public $article;
     public $date;
     public $template;
+    public $news_config;
     function __construct() {
         $this->article_id = NULL;
         $this->article = NULL;
         $this->date = NULL;
         $this->template = 'article';
+        global $CONFIG;
+        global $db;
+        $news_config_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news_settings LIMIT 1';
+        $news_config_handle = $db->query($news_config_query);
+        if (!$news_config_handle) {
+            $this->destruct();
+        } elseif ($news_config_handle->num_rows == 0) {
+            $this->destruct();
+        }
+        $this->news_config = $news_config_handle->fetch_assoc();
     }
     function __destruct() {
 
@@ -111,7 +122,11 @@ class news_item {
         $template_article->article_date_day = $date_day;
         $template_article->article_date_year = $date_year;
         $template_article->article_date = $date;
-        $template_article->article_author = stripslashes($article['author']);
+        if($this->news_config['show_author'] == 0) {
+            $template_article->replace_range('article_author',NULL);
+        } else {
+            $template_article->article_author = stripslashes($article['author']);
+        }
         $this->article = (string)$template_article;
         unset($template_article);
         return;
