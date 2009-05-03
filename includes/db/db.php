@@ -17,6 +17,17 @@ if (@SECURITY != 1) {
  * @package CommunityCMS.database
  */
 class db {
+    /**
+     * Data-Base system to use
+     */
+    var $dbms = '';
+    /**
+     * Name of Data-Base connection
+     */
+    var $db_connect_id = '';
 
+    function sql_close() {
+        // FIXME: Stub
+    }
 }
 ?>

@@ -17,6 +17,17 @@ if (@SECURITY != 1) {
  * @package CommunityCMS.database
  */
 class db_mysqli extends db {
-
+    function __construct() {
+        $this->dbms = mysqli;
+    }
+    function sql_connect() {
+        // FIXME: Stub
+    }
+    function sql_server_info() {
+        // FIXME: Stub
+    }
+    function _sql_close() {
+        // FIXME: Stub
+    }
 }
 ?>
