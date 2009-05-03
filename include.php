@@ -12,6 +12,7 @@
 	if(!include_once(ROOT.'functions/mysql.php')) {
 		err_page(2001);
 		}
+    require(ROOT . 'includes/db/db.php');
 	if(!include_once(ROOT.'functions/page_class.php')) {
 		err_page(2001);
 		}
