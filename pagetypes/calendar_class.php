@@ -32,23 +32,23 @@ class calendar_event {
         global $page;
         global $page_info;
         global $site_info;
-        $this->event_query = 'SELECT cal.*, cat.label FROM
-            '.$CONFIG['db_prefix'].'calendar cal, '.$CONFIG['db_prefix'].'calendar_categories cat
+        $this->event_query = 'SELECT cal.*, cat.label 
+			FROM ' . CALENDAR_TABLE . ' cal, ' . CALENDAR_CATEGORY_TABLE . ' cat
             WHERE cal.id = '.(int)$id.' AND cal.category = cat.cat_id LIMIT 1';
-        $event_handle = $db->query($this->event_query);
-        if(!$event_handle) {
+        $event_handle = $db->sql_query($this->event_query);
+        if($db->error[$event_handle] === 1) {
             header('HTTP/1.1 404 Not Found');
             $this->event_text = '<div class="notification">
                 Failed to retrieve event from the database.</div>';
             return;
         }
-        if($event_handle->num_rows != 1) {
+        if($db->sql_num_rows($event_handle) != 1) {
             header('HTTP/1.1 404 Not Found');
             $this->event_text = '<div class="notification">
                 The event could not be found.</div>';
             return;
         }
-        $event_info = $event_handle->fetch_assoc();
+        $event_info = $db->sql_fetch_assoc($event_handle);
         if($event_info['starttime'] == $event_info['endtime']) {
             $event_start = mktime(0,0,0,$event_info['month'],$event_info['day'],$event_info['year']);
             $event_time = 'All day, '.date('l, F j Y',$event_start);

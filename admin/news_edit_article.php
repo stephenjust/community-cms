@@ -20,18 +20,18 @@
 		$showdate = $_POST['date_params'];
 		$image = $_POST['image'];
 		$page = $_POST['page'];
-		$edit_article_query = 'UPDATE '.$CONFIG['db_prefix']."news SET name='$name',description='$edit_content',page='$page',image='$image',date_edited='$date',showdate='$showdate' WHERE id = $edit_id";
-		$edit_article = $db->query($edit_article_query);
-		if(!$edit_article) {
+		$edit_article_query = 'UPDATE ' . NEWS_TABLE . " SET name='$name',description='$edit_content',page='$page',image='$image',date_edited='$date',showdate='$showdate' WHERE id = $edit_id";
+		$edit_article = $db->sql_query($edit_article_query);
+		if($db->error[$edit_article] === 1) {
 			$content .= 'Failed to edit article. <br />';
 			} else {
 			$content .= 'Successfully edited article. <br />'.log_action('Edited news article \''.$name.'\'');
 			}
 		} else {
 		$edit_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE id = '.addslashes($_GET['id']).' LIMIT 1';
-		$edit_handle = $db->query($edit_query);
-		if($edit_handle->num_rows != 0) {
-			$edit = $edit_handle->fetch_assoc();
+		$edit_handle = $db->sql_query($edit_query);
+		if($db->sql_num_rows($edit_handle) != 0) {
+			$edit = $db->sql_fetch_assoc($edit_handle);
 			$content .= '<form method="POST" action="admin.php?module=news_edit_article&action=edit">
 <h1>Edit Existing Article</h1>
 <table class="admintable">
@@ -39,11 +39,12 @@
 <tr><td width="150" class="row1">Heading:</td><td class="row1"><input type="text" name="title" value="'.stripslashes($edit['name']).'" /></td></tr>
 <tr><td class="row2" valign="top">Content:</td><td class="row2"><textarea name="update_content" rows="30">'.stripslashes($edit['description']).'</textarea></td></tr>
 <tr><td width="150" class="row1" valign="top">Page:</td><td class="row1"><select name="page">';
-		$page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE type = 1 ORDER BY list ASC';
-		$page_query_handle = $db->query($page_query);
+		$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
+			WHERE type = 1 ORDER BY list ASC';
+		$page_query_handle = $db->sql_query($page_query);
  		$i = 1;
-		while ($i <= $page_query_handle->num_rows) {
-			$page = $page_query_handle->fetch_assoc();
+		while ($i <= $db->sql_num_rows($page_query_handle)) {
+			$page = $db->sql_fetch_assoc($page_query_handle);
 			if($page['id'] == $edit['page']) {
 				$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
 				} else {

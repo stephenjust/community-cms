@@ -17,14 +17,14 @@ class news_item {
         $this->template = 'article';
         global $CONFIG;
         global $db;
-        $news_config_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news_settings LIMIT 1';
-        $news_config_handle = $db->query($news_config_query);
-        if (!$news_config_handle) {
+        $news_config_query = 'SELECT * FROM ' . NEWS_CONFIG_TABLE . ' LIMIT 1';
+        $news_config_handle = $db->sql_query($news_config_query);
+        if ($db->error[$news_config_handle] === 1) {
             $this->destruct();
-        } elseif ($news_config_handle->num_rows == 0) {
+        } elseif ($db->sql_num_rows($news_config_handle) == 0) {
             $this->destruct();
         }
-        $this->news_config = $news_config_handle->fetch_assoc();
+        $this->news_config = $db->sql_fetch_assoc($news_config_handle);
     }
     function __destruct() {
 
@@ -45,11 +45,11 @@ class news_item {
     public function get_article() {
         global $db;
         global $CONFIG;
-        $article_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news
+        $article_query = 'SELECT * FROM ' . NEWS_TABLE . '
             WHERE `id` = '.$this->article_id.' LIMIT 1';
-        $article_handle = $db->query($article_query);
+        $article_handle = $db->sql_query($article_query);
         if($this->template == 'article_page') {
-            if(!$article_handle) {
+            if($db->error[$article_handle] === 1) {
                 header("HTTP/1.0 404 Not Found");
                 $this->article =  '<html>
                     <head>
@@ -62,7 +62,7 @@ class news_item {
                     </html>';
                 return;
             }
-            if($article_handle->num_rows != 1) {
+            if($db->sql_num_rows($article_handle) != 1) {
                 header("HTTP/1.0 404 Not Found");
                 $this->article = '<html>
                     <head>
@@ -76,18 +76,18 @@ class news_item {
                 return;
                 }
         } else {
-            if(!$article_handle) {
+            if($db->error[$article_handle] === 1) {
                 header("HTTP/1.0 404 Not Found");
                 $this->article =  '<div class="notification">Could not load article.</div>';
                 return;
             }
-            if($article_handle->num_rows != 1) {
+            if($db->sql_num_rows($article_handle) != 1) {
                 header("HTTP/1.0 404 Not Found");
                 $this->article = '<div class="notification">Could not find requested article.</div>';
                 return;
                 }
         }
-        $article = $article_handle->fetch_assoc();
+        $article = $db->sql_fetch_assoc($article_handle);
         $template_article = new template;
         $template_article->load_file($this->template);
         if (!isset($article['image']) || $article['image'] == "") {

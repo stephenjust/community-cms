@@ -6,6 +6,7 @@
 	header("Pragma: no-cache"); // HTTP/1.0
 	define('SECURITY',1);
 	define('ROOT','../../');
+	include(ROOT.'config.php');
 	include(ROOT.'include.php');
 	$referer = $_SERVER['HTTP_REFERER'];
 	if(ereg('/$',$referer)) {

@@ -5,7 +5,6 @@
 	// The not-so-secure security check.
 	define('SECURITY',1);
 	define('ROOT','./');
-	session_start();
 	// Load error handling code
 	require_once('./functions/error.php');
 	// Load database configuration
@@ -16,16 +15,11 @@
 	if($CONFIG['disabled'] == 1) {
 		err_page(1);
 		}
-	// Try to establish a connection to the MySQL server using the MySQLi classes.		
-	@ $db = new mysqli($CONFIG['db_host'],$CONFIG['db_user'],$CONFIG['db_pass'],$CONFIG['db_name']);
-	if(mysqli_connect_errno()) {
-		err_page(1001); // Database connect error.
-		}
 
 	// Once the database connections are made, include all other necessary files.
-	if(!include_once('./include.php')) {
-		err_page(2001); // File not found error.
-		}
+	require('./include.php');
+	initialize();
+
 	// Initialize some variables to keep PHP from complaining.
 	if(!isset($_GET['view'])) {
 		$_GET['view'] = NULL;
@@ -47,18 +41,13 @@
 			}
 		}
 	
-	// Load global site information.
-	$site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
-	$site_info_handle = $db->query($site_info_query);
-	$site_info = $site_info_handle->fetch_assoc();
-	
 	// Get message list
 	$message_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.(int)$_SESSION['userid'].' ORDER BY id DESC';
-	$message_list_handle = $db->query($message_list_query);
-	$message_num_rows = $message_list_handle->num_rows;
-	$template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates WHERE id = '.$site_info['template'].' LIMIT 1';
-	$template_handle = $db->query($template_query);
-	$template = $template_handle->fetch_assoc();
+	$message_list_handle = $db->sql_query($message_list_query);
+	$message_num_rows = $db->sql_num_rows($message_list_handle);
+	$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . ' WHERE id = '.$site_info['template'].' LIMIT 1';
+	$template_handle = $db->sql_query($template_query);
+	$template = $db->sql_fetch_assoc($template_handle);
 	$template_path = $template['path'];
 	$message_list_template_file_path = $template_path."messages.html";
 	$message_list_file_handle = fopen($message_list_template_file_path, "r");
@@ -69,7 +58,7 @@
 		$content .= 'No messages to be displayed.';
 		}
 	while($message_num_rows >= $i) {
-		$message = $message_list_handle->fetch_assoc();
+		$message = $db->sql_fetch_assoc($message_list_handle);
 		$current_message = $message_list_template_file;
 		$current_message = str_replace('<!-- $MESSAGE_BODY$ -->',stripslashes($message['message']),$current_message);
 		$current_message = str_replace('<!-- $MESSAGE_ID$ -->',stripslashes($message['id']),$current_message);
@@ -97,5 +86,5 @@
 	echo $template;
 	
 	// Close database connections and clean up loose ends.
-	$db->close();
+	clean_up();
 ?>

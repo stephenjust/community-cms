@@ -1,68 +1,53 @@
 <?php
-	DEFINE('SECURITY',1);
-	DEFINE('ADMIN',1);
-	define('ROOT','./');
-	session_start();
-	$content = NULL;
-	// Load error handling code
-	require_once('./functions/error.php');
-	// Load database configuration
-	if(!include_once('./config.php')) {
-		err_page(0001);
-		}
-	// Check if site is disabled.
-	if($CONFIG['disabled'] == 1) {
-		err_page(1);
-		}
-	// Try to establish a connection to the MySQL server using the MySQLi classes.		
-	@ $db = new mysqli($CONFIG['db_host'],$CONFIG['db_user'],$CONFIG['db_pass'],$CONFIG['db_name']);
-	if(mysqli_connect_errno()) {
-		err_page(1001);
-		}
-	// Once the database connections are made, include all other necessary files.
-	if(!include_once('./include.php')) {
-		err_page(2001);
-		}
-	// Load global site information.
-	$site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
-	$site_info_handle = $db->query($site_info_query);
-    if(!$site_info_handle) {
-        err_page(1001);
-    }
-	$site_info = $site_info_handle->fetch_assoc();
-	
-	// Initialize some variables to keep PHP from complaining.
-	if(!isset($_GET['id'])) {
-		$_GET['id'] = 1;
-		}
-	if(!isset($_GET['view'])) {
-		$_GET['view'] = NULL;
-		}
-	if(!isset($_GET['login'])) {
-		$_GET['login'] = NULL;
-		}
-	if(!isset($_GET['module'])) {
-		$_GET['module'] = NULL;
-		}
-		if(!isset($_GET['action'])) {
-		$_GET['action'] = NULL;
-		}
-	if(!isset($_GET['id'])) {
-		$_GET['id'] = NULL;
-		}
-	// Run login checks.
-	checkuser_admin();
-	include('./functions/admin.php');
-	function display_admin() {
-		global $CONFIG;
-		global $db;
-		global $site_info;
-		$template_page = new template;
-		$template_page->load_admin_file();
-		$page_title = 'Community CMS Administration';
-		$css_include = '<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
-		$image_path = $template_page->path.'images/';
-		$template_page->scripts = '<link type="text/css" href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
+DEFINE('SECURITY',1);
+DEFINE('ADMIN',1);
+define('ROOT','./');
+$content = NULL;
+// Load error handling code
+require_once('./functions/error.php');
+// Load database configuration
+if(!include_once('./config.php')) {
+	err_page(0001);
+	}
+// Check if site is disabled.
+if($CONFIG['disabled'] == 1) {
+	err_page(1);
+	}
+// Once the database connections are made, include all other necessary files.
+if(!include_once('./include.php')) {
+	err_page(2001);
+	}
+initialize();
+
+// Initialize some variables to keep PHP from complaining.
+if(!isset($_GET['view'])) {
+	$_GET['view'] = NULL;
+	}
+if(!isset($_GET['login'])) {
+	$_GET['login'] = NULL;
+	}
+if(!isset($_GET['module'])) {
+	$_GET['module'] = NULL;
+	}
+	if(!isset($_GET['action'])) {
+	$_GET['action'] = NULL;
+	}
+if(!isset($_GET['id'])) {
+	$_GET['id'] = NULL;
+	}
+// Run login checks.
+checkuser_admin();
+include('./functions/admin.php');
+function display_admin() {
+	global $CONFIG;
+	global $db;
+	global $site_info;
+	$template_page = new template;
+	$template_page->load_admin_file();
+	$page_title = 'Community CMS Administration';
+	$css_include = '<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
+	$image_path = $template_page->path.'images/';
+	$template_page->scripts = '<link type="text/css" href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
 <script language="javascript" type="text/javascript" src="./scripts/tiny_mce/tiny_mce_gzip.js"></script>
 <script language="javascript" type="text/javascript" src="./admin/scripts/ajax.js"></script>
 <script language="javascript" type="text/javascript" src="./scripts/jquery.js"></script>
@@ -121,11 +106,16 @@ tinyMCE.init({
 			}
 		$template_page_bottom->content = $content;
 		$template_page_bottom->image_path = $image_path;
-		$template_page_bottom->footer = 'Powered by Community CMS';
+		if(DEBUG === 1) {
+			$query_debug = $db->print_error_query();
+		} else {
+			$query_debug = NULL;
+		}
+		$template_page_bottom->footer = 'Powered by Community CMS'.$query_debug;
 		echo $template_page_bottom;
 		unset($template_page_bottom);
 		}
 	display_admin($content);
 
-	$db->close();
+	clean_up();
 ?>

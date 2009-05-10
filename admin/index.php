@@ -16,11 +16,11 @@
 	// Display log messages
     $tab_content['activity'] = NULL;
 	$log_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'logs log, '.$CONFIG['db_prefix'].'users user WHERE log.user_id = user.id ORDER BY log.date DESC LIMIT 5';
-	$log_message_handle = $db->query($log_message_query);
+	$log_message_handle = $db->sql_query($log_message_query);
 	if(!$log_message_handle) {
-		$tab_content['activity'] .= 'Failed to read log messages. '.mysqli_error($db).'<br />';
+		$tab_content['activity'] .= 'Failed to read log messages.<br />';
 		}
-	$num_messages = $log_message_handle->num_rows;
+	$num_messages = $db->sql_num_rows($log_message_handle);
 	$tab_content['activity'] .= '<table class="ui-corner-all admintable">
 <tr>
 <th>Date</th><th>Action</th><th>User</th><th>IP</th>
@@ -32,7 +32,7 @@
 </tr>';
 		}
 	for ($i = 1; $i <= $num_messages; $i++) {
-		$log_message = $log_message_handle->fetch_assoc();
+		$log_message = $db->sql_fetch_assoc($log_message_handle);
 		$tab_content['activity'] .= '<tr class="row'.$rowtype.'">
 <td>'.$log_message['date'].'</td><td>'.$log_message['action'].'</td><td>'.$log_message['realname'].'</td><td>'.long2ip($log_message['ip_addr']).'</td>
 </tr>';
@@ -49,11 +49,11 @@
 
 // ----------------------------------------------------------------------------
 
-	$user_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'users ORDER BY id DESC';
-	$user_handle = $db->query($user_query);
+	$user_query = 'SELECT * FROM ' . USER_TABLE . ' ORDER BY id DESC';
+	$user_handle = $db->sql_query($user_query);
 	if($user_handle) {
-		$user = $user_handle->fetch_assoc();
-		$tab_content['user'] = 'Number of users: '.$user_handle->num_rows.'<br />
+		$user = $db->sql_fetch_assoc($user_handle);
+		$tab_content['user'] = 'Number of users: '.$db->sql_num_rows($user_handle).'<br />
 			Newest user: '.$user['username'];
 		} else {
 		$tab_content['user'] = 'Could not find user information.';
@@ -63,7 +63,7 @@
 // ----------------------------------------------------------------------------
 
 	$tab_content['database'] = 'Database Version: '.$site_info['db_version'].'<br />
-		MySQL Version: '.$db->get_server_info();
+		MySQL Version: '.$db->sql_server_info();
 	$tab['database'] = $tab_layout->add_tab('Database Summary',$tab_content['database']);
 	$content = $tab_layout;
 ?>

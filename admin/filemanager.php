@@ -106,20 +106,20 @@ if ($_GET['action'] == 'delete') {
     if($_GET['action'] == 'edit') {
         $tab_content['edit'] = NULL;
         $file_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'files WHERE
-            `path` = \''.addslashes(mysqli_real_escape_string($db,$_GET['file'])).'\' LIMIT 1';
-        $file_info_handle = $db->query($file_info_query);
-        if(!$file_info_handle) {
+            `path` = \''.addslashes($db->sql_escape_string($_GET['file'])).'\' LIMIT 1';
+        $file_info_handle = $db->sql_query($file_info_query);
+        if($db->error[$file_info_handle] === 1) {
             $tab_content['edit'] .= 'Could not read file information from database.';
             $file_info['label'] = NULL;
             $file_info['id'] = NULL;
             $file_info['path'] = $_GET['file'];
         } else {
-            if($file_info_handle->num_rows != 1) {
+            if($db->sql_num_rows($file_info_handle) != 1) {
                 $file_info['label'] = NULL;
                 $file_info['id'] = NULL;
                 $file_info['path'] = $_GET['file'];
             } else {
-                $file_info = $file_info_handle->fetch_assoc();
+                $file_info = $db->sql_fetch_assoc($file_info_handle);
             }
         }
         $form = new form;

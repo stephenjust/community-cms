@@ -12,7 +12,9 @@ if(!include_once(ROOT.'functions/main.php')) {
 if(!include_once(ROOT.'functions/mysql.php')) {
     err_page(2001);
 }
+require(ROOT . 'includes/constants.php');
 require(ROOT . 'includes/db/db.php');
+require(ROOT . 'functions/login.php');
 if(!include_once(ROOT.'functions/page_class.php')) {
     err_page(2001);
 }
@@ -23,9 +25,6 @@ if(!include_once(ROOT.'functions/display.php')) {
     err_page(2001);
 }
 if(!include_once(ROOT.'functions/blocks.php')) {
-    err_page(2001);
-}
-if(!include_once(ROOT.'functions/login.php')) {
     err_page(2001);
 }
 if(!include_once(ROOT.'functions/files.php')) {

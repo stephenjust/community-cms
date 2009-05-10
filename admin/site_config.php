@@ -11,8 +11,8 @@ if($_GET['action'] == 'save') {
 	$footer = addslashes($_POST['footer']);
 	$site_info_update_query = 'UPDATE '.$CONFIG['db_prefix']."config 
 		SET name='$site_name',url='$site_url',comment='$site_desc',active=".checkbox($_POST['active']).",footer='$footer' LIMIT 1";
-	$site_info_update_handle = $db->query($site_info_update_query);
-	if(!$site_info_update_handle) {
+	$site_info_update_handle = $db->sql_query($site_info_update_query);
+	if($db->error[$site_info_update_handle] === 1) {
 		$content .= 'Failed to update site information.<br />';
 		} else {
 		$content .= 'Successfully edited site information.<br />'.log_action('Updated site information.');
@@ -24,12 +24,12 @@ if($_GET['action'] == 'save') {
 $tab_layout = new tabs;
 
 $tab_content['config'] = NULL;
-$config_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config LIMIT 1';
-$config_handle = $db->query($config_query);
+$config_query = 'SELECT * FROM ' . CONFIG_TABLE . ' LIMIT 1';
+$config_handle = $db->sql_query($config_query);
 if(!$config_handle) {
 	$tab_content['config'] .= 'Failed to load configuration information from the database.';
 	}
-$current_config = $config_handle->fetch_assoc();
+$current_config = $db->sql_fetch_assoc($config_handle);
 $form = new form;
 $form->set_target('admin.php?module=site_config&amp;action=save');
 $form->set_method('post');

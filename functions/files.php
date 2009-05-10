@@ -12,13 +12,14 @@
 		global $db; // Needed for db query
 		global $CONFIG; // Needed for db query
 		global $site_info; // Needed for db query
-        $template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates
+        $template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
             WHERE id = '.$site_info['template'];
-		$template_handle = $db->query($template_query);
-		if(!$template_handle) {
-			echo mysql_error($db);
+		$template_handle = $db->sql_query($template_query);
+		if($db->error[$template_handle] === 1) {
+			echo 'Failed to read template information.';
+			return;
 			} else {
-			$template = $template_handle->fetch_assoc();
+			$template = $db->sql_fetch_assoc($template_handle);
 			}
 		$template_path = $template['path'];
 		$template_file = $template_path.$filename;
@@ -222,16 +223,16 @@
     function get_file_info($file) {
         global $db;
         global $CONFIG;
-        $file_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'files WHERE
-            `path` = \''.addslashes(mysqli_real_escape_string($db, $file)).'\' LIMIT 1';
-        $file_info_handle = $db->query($file_info_query);
-        if (!$file_info_handle) {
+        $file_info_query = 'SELECT * FROM ' . FILE_TABLE . '
+			WHERE path = \''.addslashes($db->sql_escape_string($file)).'\' LIMIT 1';
+        $file_info_handle = $db->sql_query($file_info_query);
+        if ($db->error[$file_info_handle] === 1) {
             $file_info['label'] = 'Could not read information.';
         } else {
-            if ($file_info_handle->num_rows != 1) {
+            if ($db->sql_num_rows($file_info_handle) != 1) {
                 $file_info['label'] = NULL;
             } else {
-                $file_info = $file_info_handle->fetch_assoc();
+                $file_info = $db->sql_fetch_assoc($file_info_handle);
             }
         }
         return $file_info;

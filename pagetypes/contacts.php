@@ -2,17 +2,17 @@
 // Security Check
 	if (@SECURITY != 1) {
 		die('You cannot access this page directly.');
-		}
-	global $CONFIG;
+	}
 	global $db;
 	global $site_info;
-    global $page_info;
+    global $page;
 	$content = NULL;
 	$current_contact = NULL;
 	$j = 1;
-	$contact_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'users WHERE hide = 0 ORDER BY realname ASC';
-	$contact_list_handle = $db->query($contact_list_query);
-	$contact_list_num_rows = $contact_list_handle->num_rows;
+	$contact_list_query = 'SELECT * FROM ' . USER_TABLE . '
+		WHERE hide = 0 ORDER BY realname ASC';
+	$contact_list_handle = $db->sql_query($contact_list_query);
+	$contact_list_num_rows = $db->sql_num_rows($contact_list_handle);
 	if(!isset($_GET['message'])) {
 		$_GET['message'] = '';
 		}
@@ -25,12 +25,12 @@
 		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0"); // HTTP/1.1
 		header("Cache-Control: post-check=0, pre-check=0", false);
 		header("Pragma: no-cache"); // HTTP/1.0
-		$content .= '<form method="POST" action="index.php?id='.$page_info['id'].'&action=send">
+		$content .= '<form method="POST" action="index.php?'.$page->url_reference.'&action=send">
 <input type="hidden" name="recipient" value="'.(int)$_GET['message'].'" />
 Message to user:<br />
 <textarea name="message" rows="5" cols="50"></textarea><br />
 <input type="submit" value="Send Message" />
-</form><form method="POST" action="index.php?id='.$page_info['id'].'"><input type="submit" value="Cancel" /></form>';
+</form><form method="POST" action="index.php?'.$page->url_reference.'"><input type="submit" value="Cancel" /></form>';
 	}
 	if($_GET['action'] == 'send') {
 		$message = addslashes($_POST['message']);
@@ -38,9 +38,10 @@ Message to user:<br />
 			$content .= 'Your message was too short.';
 			} else {
 			$recipient = (int)$_POST['recipient'];
-			$message_query = 'INSERT INTO '.$CONFIG['db_prefix']."messages (recipient,message) VALUES ($recipient,'$message')";
-			$message_handle = $db->query($message_query);
-			if(!$message_handle) {
+			$message_query = 'INSERT INTO ' . MESSAGE_TABLE . "
+				(recipient,message) VALUES ($recipient,'$message')";
+			$message_handle = $db->sql_query($message_query);
+			if($db->error[$message_handle] === 1) {
 				$content .= 'An error occured. Falied to send message.';
 				} else {
 				$content .= 'Message sent.';
@@ -53,7 +54,7 @@ Message to user:<br />
 		while ($contact_list_num_rows >= $j) {
 			$template_contact = new template;
 			$template_contact->load_file('contactlist');
-			$contact_info = $contact_list_handle->fetch_assoc();
+			$contact_info = $db->sql_fetch_assoc($contact_list_handle);
 			$contact_email = NULL;
 			if(eregi(',',$contact_info['realname'])) {
 				$firstlast = explode(', ',$contact_info['realname']);
@@ -62,7 +63,7 @@ Message to user:<br />
 				$realname_firstlast = $contact_info['realname'];
 				}
 			if($contact_info['message'] == 1) {
-				$realname = '<a href="index.php?id='.$page_info['id'].'&message='.$contact_info['id'].'">'.$realname_firstlast.'</a>';
+				$realname = '<a href="index.php?'.$page->url_reference.'&message='.$contact_info['id'].'">'.$realname_firstlast.'</a>';
 				} else {
 				$realname = $realname_firstlast;
 				}

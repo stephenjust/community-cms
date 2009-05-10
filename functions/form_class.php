@@ -193,12 +193,12 @@ class form {
         $value = NULL, $props = NULL) {
         global $CONFIG;
         global $db;
-        $page_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages
+        $page_query = 'SELECT * FROM ' . PAGE_TABLE . '
             WHERE type = '.$pagetype.' ORDER BY list ASC';
-        $page_query_handle = $db->query($page_query);
+        $page_query_handle = $db->sql_query($page_query);
         $options = NULL;
-		for ($i = 1; $i <= $page_query_handle->num_rows; $i++) {
-			$page = $page_query_handle->fetch_assoc();
+		for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
+			$page = $db->sql_fetch_assoc($page_query_handle);
 			$options .= '<option value="'.$page['id'].'" >'.$page['title'].'</option>'."\n";
 			}
         if($nopageallowed == 1) {

@@ -53,9 +53,12 @@ $("#menu").accordion({ header: "h3" }).accordion( "activate" , '.$page_index.' )
 		$user = $_SESSION['userid'];
 		$ip_octet = $_SERVER['REMOTE_ADDR'];
 		$ip_int = ip2long($ip_octet);
-		$log_query = 'INSERT INTO '.$CONFIG['db_prefix'].'logs (user_id,action,date,ip_addr) VALUES ('.$user.',"'.$message.'","'.$date.'",'.$ip_int.')';
-		if(!$db->query($log_query)) {
-			$message_error = mysqli_error($db);
+		$log_query = 'INSERT INTO '.$CONFIG['db_prefix'].'logs
+			(user_id,action,date,ip_addr)
+			VALUES ('.$user.',"'.$message.'","'.$date.'",'.$ip_int.')';
+		$log_handle = $db->sql_query($log_query);
+		if ($db->error[$log_handle] === 1) {
+			$message_error = $db->_print_error_query($log_handle);
 			}
 		return $message_error;
 		}
