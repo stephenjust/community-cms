@@ -15,7 +15,7 @@
 	$tab_layout = new tabs;
 	// Display log messages
     $tab_content['activity'] = NULL;
-	$log_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'logs log, '.$CONFIG['db_prefix'].'users user WHERE log.user_id = user.id ORDER BY log.date DESC LIMIT 5';
+	$log_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'logs log, '.$CONFIG['db_prefix'].'users u WHERE log.user_id = u.id ORDER BY log.date DESC LIMIT 5';
 	$log_message_handle = $db->sql_query($log_message_query);
 	if(!$log_message_handle) {
 		$tab_content['activity'] .= 'Failed to read log messages.<br />';
@@ -62,8 +62,8 @@
 
 // ----------------------------------------------------------------------------
 
-	$tab_content['database'] = 'Database Version: '.$site_info['db_version'].'<br />
-		MySQL Version: '.$db->sql_server_info();
+	$tab_content['database'] = 'Database Content Version: '.$site_info['db_version'].'<br />
+		Database Software Version: '.$db->sql_server_info();
 	$tab['database'] = $tab_layout->add_tab('Database Summary',$tab_content['database']);
 	$content = $tab_layout;
 ?>

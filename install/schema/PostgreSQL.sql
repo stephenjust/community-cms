@@ -70,7 +70,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->files (
 
 CREATE TABLE <!-- $DB_PREFIX$ -->logs (
   log_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->logs_id_seq'),
-  timestamp timestamp NULL default CURRENT_TIMESTAMP,
+  date timestamp NULL default CURRENT_TIMESTAMP,
   user_id integer NOT NULL,
   action text NOT NULL,
   ip_addr integer NOT NULL,

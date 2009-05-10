@@ -135,7 +135,7 @@ if($db->error[$page_list_handle] === 1) {
 	// Make sure no page has the same order number.
 	$page_list = $db->sql_fetch_assoc($page_list_handle);
 	$move_page_query = 'UPDATE ' . PAGE_TABLE . '
-		SET list = 0 WHERE id = '.$page_list['id'].' LIMIT 1';
+		SET list = 0 WHERE id = '.$page_list['id'];
 	$move_page = $db->sql_query($move_page_query);
 	if ($db->error[$move_page] === 1) {
 		$content = 'Failed to optimize page order.<br />';
@@ -219,7 +219,10 @@ if ($_GET['action'] == 'move_up') {
 
 if ($_GET['action'] == 'editsave') {
 	$set_text_id = NULL;
-	if ($text_id == $_POST['text_id']) {
+	if(!isset($_POST['text_id'])) {
+		$_POST['text_id'] = NULL;
+	}
+	if ($text_id == $_POST['text_id'] && $text_id != NULL) {
 		$set_text_id = "text_id='$text_id',";
 	}
 	$title = addslashes($_POST['title']);
@@ -230,7 +233,7 @@ if ($_GET['action'] == 'editsave') {
 	$save_query = 'UPDATE ' . PAGE_TABLE . "
 		SET {$set_text_id}title='$title',menu=$menu,show_title=$show_title,
 		blocks_left='$blocks_left',blocks_right='$blocks_right'
-		WHERE id = $page_id LIMIT 1";
+		WHERE id = $page_id";
 	$save_handle = $db->sql_query($save_query);
 	if ($db->error[$save_handle] === 1) {
 		$content .= 'Failed to edit page.<br />';

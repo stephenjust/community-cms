@@ -28,7 +28,7 @@ class db_mysqli extends db {
 		return $this->connect;
     }
 	function sql_server_info() {
-		return mysqli_get_server_info($this->connect);
+		return mysqli_get_server_info($this->connect).' (mysqli)';
 	}
 	function sql_query($query) {
 		if ($this->connect === (false || true)) {

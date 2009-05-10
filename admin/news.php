@@ -29,17 +29,44 @@ if ($_GET['action'] == 'delete') {
     if ($db->sql_num_rows($read_article_handle) == 1) {
         $delete_article_query = 'DELETE FROM ' . NEWS_TABLE . '
 			WHERE id = '.$_GET['id'];
-        $delete_article = $db->query($delete_article_query);
-        if (!$delete_article) {
+        $delete_article = $db->sql_query($delete_article_query);
+        if ($db->error[$delete_article] === 1) {
             $content .= 'Failed to delete article.<br />';
         } else {
             $read_article = $db->sql_fetch_assoc($read_article_handle);
-            $content .= 'Successfully deleted article. <br />'.log_action('Deleted news article \''.stripslashes($read_article['name']).'\' from \''.addslashes($read_article['title']).'\'');
+            $content .= 'Successfully deleted article. <br />'.log_action('Deleted news article \''.stripslashes($read_article['name']).'\' from \''.stripslashes($read_article['title']).'\'');
         }
     } else {
         $content .= 'Could not find the article you asked to delete.<br />';
     }
 } // IF 'delete'
+
+// ----------------------------------------------------------------------------
+
+if ($_GET['action'] == 'new') {
+    // Clean up variables.
+    $title = addslashes($_POST['title']);
+    $title = str_replace('"','&quot;',$title);
+    $title = str_replace('<','&lt;',$title);
+    $title = str_replace('>','&gt;',$title);
+    $article_content = addslashes($_POST['content']);
+    $author = addslashes($_POST['author']);
+    $image = addslashes($_POST['image']);
+    $page = addslashes($_POST['page']);
+    $showdate = $_POST['date_params'];
+    if(strlen($image) <= 3) {
+        $image = NULL;
+    }
+    $new_article_query = 'INSERT INTO ' . NEWS_TABLE . "
+		(page,name,description,author,image,date,showdate)
+		VALUES ($page,'$title','$article_content','$author','$image','".DATE_TIME."','$showdate')";
+    $new_article = $db->sql_query($new_article_query);
+    if($db->error[$new_article] === 1) {
+        $content .= 'Failed to add article. <br />';
+    } else {
+        $content .= 'Successfully added article. <br />'.log_action('New news article \''.$title.'\'');
+    }
+}
 
 // ----------------------------------------------------------------------------
 
@@ -106,31 +133,6 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 $tab_content['manage'] .= '</table>';
 $tab_layout->add_tab('Manage News',$tab_content['manage']);
 
-$date = date('Y-m-d H:i:s');
-if ($_GET['action'] == 'new') {
-    // Clean up variables.
-    $title = addslashes($_POST['title']);
-    $title = str_replace('"','&quot;',$title);
-    $title = str_replace('<','&lt;',$title);
-    $title = str_replace('>','&gt;',$title);
-    $article_content = addslashes($_POST['content']);
-    $author = addslashes($_POST['author']);
-    $image = addslashes($_POST['image']);
-    $page = addslashes($_POST['page']);
-    $showdate = $_POST['date_params'];
-    if(strlen($image) <= 3) {
-        $image = NULL;
-    }
-    $new_article_query = 'INSERT INTO ' . NEWS_TABLE . "
-		(page,name,description,author,image,date,showdate)
-		VALUES ($page,'$title','$article_content','$author','$image','$date','$showdate')";
-    $new_article = $db->sql_query($new_article_query);
-    if($db->error[$new_article] === 1) {
-        $content .= 'Failed to add article. <br />';
-    } else {
-        $content .= 'Successfully added article. <br />'.log_action('New news article \''.$title.'\'');
-    }
-}
 $form = new form;
 $form->set_target('admin.php?module=news&amp;action=new');
 $form->set_method('post');

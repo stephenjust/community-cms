@@ -42,7 +42,8 @@ class template {
 		global $db; // Used for query
 		global $CONFIG; // Used for query
 		global $site_info; //Used for query
-		$template_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'templates WHERE id = '.$site_info['template'].' LIMIT 1';
+		$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
+			WHERE id = '.$site_info['template'].' LIMIT 1';
 		$template_handle = $db->sql_query($template_query);
 		try {
 			if (!$template_handle || $db->sql_num_rows($template_handle) == 0) {
@@ -130,9 +131,10 @@ class block {
 		}
 		global $CONFIG;
 		global $db;
-		$block_attribute_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$this->block_id.' LIMIT 1';
-		$block_attribute_handle = $db->query($block_attribute_query);
-		$block = $block_attribute_handle->fetch_assoc();
+		$block_attribute_query = 'SELECT * FROM ' . BLOCK_TABLE . '
+			WHERE id = '.$this->block_id.' LIMIT 1';
+		$block_attribute_handle = $db->sql_query($block_attribute_query);
+		$block = $db->sql_fetch_assoc($block_attribute_handle);
 		$block_attribute_temp = $block['attributes'];
 		if (strlen($block_attribute_temp) > 0) {
 			$block_attribute_temp = explode(",",$block_attribute_temp);

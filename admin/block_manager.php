@@ -45,7 +45,7 @@ if ($_GET['action'] == 'delete') {
 		}
 	} // FOR
 	$new_query = 'INSERT INTO ' . BLOCK_TABLE . ' (type,attributes)
-		VALUES ("'.$type.'","'.$attributes_final.'")';
+		VALUES (\''.$type.'\',\''.$attributes_final.'\')';
 	$new_handle = $db->sql_query($new_query);
 	if($db->error[$new_handle] === 1) {
 		$message .= 'Failed to create block.';

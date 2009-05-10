@@ -29,7 +29,8 @@ class db_postgresql extends db {
 		return $this->connect;
 	}
 	function sql_server_info() {
-		// FIXME: Stub
+		$v = pg_version($this->connect);
+		return $v['client'].' (postgresql)';
 	}
 	function sql_query($query) {
 		$this->query[$this->query_count] = pg_query($this->connect,$query);
@@ -55,6 +56,9 @@ class db_postgresql extends db {
 	}
 	function sql_close() {
 		pg_close($this->connect);
+	}
+	function _print_error_query($query) {
+		return pg_last_error($this->connect);
 	}
 }
 ?>

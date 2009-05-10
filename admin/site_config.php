@@ -10,7 +10,8 @@ if($_GET['action'] == 'save') {
 	$site_url = addslashes(strip_tags($_POST['site_url']));
 	$footer = addslashes($_POST['footer']);
 	$site_info_update_query = 'UPDATE '.$CONFIG['db_prefix']."config 
-		SET name='$site_name',url='$site_url',comment='$site_desc',active=".checkbox($_POST['active']).",footer='$footer' LIMIT 1";
+		SET name='$site_name',url='$site_url',comment='$site_desc',
+		active=".checkbox($_POST['active']).",footer='$footer'";
 	$site_info_update_handle = $db->sql_query($site_info_update_query);
 	if($db->error[$site_info_update_handle] === 1) {
 		$content .= 'Failed to update site information.<br />';
