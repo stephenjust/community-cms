@@ -143,7 +143,6 @@ if ($_GET['action'] == 'delete') {
     $file_list = new file_list;
     $file_list->set_directory($_POST['folder_list']);
     $file_list->get_list();
-    // TODO: Allow deleting files
 	$tab_content['list'] .= $file_list;
 	$tab_content['list'] .= '<br />
 <br />
