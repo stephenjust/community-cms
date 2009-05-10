@@ -35,6 +35,9 @@ class db_postgresql extends db {
 		$this->query[$this->query_count] = pg_query($this->connect,$query);
 		if (!$this->query[$this->query_count]) {
 			$this->error[$this->query_count] = 1;
+			if (DEBUG == 1) {
+				echo $query.'<br />';
+			}
 		} else {
 			$this->error[$this->query_count] = 0;
 		}

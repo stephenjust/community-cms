@@ -46,7 +46,7 @@ class news_item {
         global $db;
         global $CONFIG;
         $article_query = 'SELECT * FROM ' . NEWS_TABLE . '
-            WHERE `id` = '.$this->article_id.' LIMIT 1';
+            WHERE id = '.$this->article_id.' LIMIT 1';
         $article_handle = $db->sql_query($article_query);
         if($this->template == 'article_page') {
             if($db->error[$article_handle] === 1) {
