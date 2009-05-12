@@ -243,36 +243,30 @@ if ($_GET['action'] == 'editsave') {
 } // IF 'editsave'
 
 // ----------------------------------------------------------------------------
-// FIXME: Use tab class
 
-$edit_tab = ($_GET['action'] == 'edit') ?
-	'<li><a href="#tabs-0">Edit Page</a></li>' : NULL;
-$content .= '<div id="tabs"><ul>'.$edit_tab.'
-	<li><a href="#tabs-1">Manage Pages</a></li>
-	<li><a href="#tabs-2">Add Page</a></li>
-	<li><a href="#tabs-3">Add Link to External Page</a></li>
-	</ul>';
+$tab_layout = new tabs;
 
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'edit') {
+	$tab_content['edit'] = NULL;
 	$edit_page_query = 'SELECT * FROM ' . PAGE_TABLE . "
 		WHERE id = $page_id LIMIT 1";
 	$edit_page_handle = $db->sql_query($edit_page_query);
 	if ($db->error[$edit_page_handle] === 1) {
-		$content .= 'Failed to load page data.';
+		$tab_content['edit'] .= 'Failed to load page data.';
 	} else {
 		$edit_page = $db->sql_fetch_assoc($edit_page_handle);
 		$show_title = checkbox($edit_page['show_title'],1);
 		$hidden = checkbox($edit_page['menu'],1);
-		$content .= '<form method="POST" action="admin.php?module=page&action=editsave">
+		$tab_content['edit'] .= '<form method="POST" action="admin.php?module=page&action=editsave">
 			<div id="tabs-0">
 			<table class="admintable">
 			<input type="hidden" name="id" value="'.$page_id.'" />';
 		if(strlen($edit_page['text_id']) < 1) {
-			$content .= '<tr class="row2"><td width="150">Text ID:</td><td><input type="text" name="text_id" value="" /></td></tr>';
+			$tab_content['edit'] .= '<tr class="row2"><td width="150">Text ID:</td><td><input type="text" name="text_id" value="" /></td></tr>';
 		}
-		$content .= '<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
+		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 			<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
 			<tr class="row2"><td valign="top">Blocks:<br>(Comma separated block IDs)</td><td>Left:<br />
@@ -285,12 +279,13 @@ if ($_GET['action'] == 'edit') {
 			</div>
 			</form>';
 	}
+	$tab_layout->add_tab('Edit Page',$tab_content['edit']);
 }
 
 // ----------------------------------------------------------------------------
 
-$content .= '<div id="tabs-1">
-<table class="admintable">
+$tab_content['manage'] = NULL;
+$tab_content['manage'] .= '<table class="admintable">
 <tr><th width="350">Page:</th><th colspan="5">&nbsp;</th></tr>';
 // Get page list in the order defined in the database. First is 0.
 $page_list_query = 'SELECT * FROM '.PAGE_TABLE.' ORDER BY list ASC';
@@ -305,18 +300,18 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		$page_list['title'] = $page_list['title'][0].' (Link)';
 	}
 	global $site_info;
-	$content .= '<tr class="'.$rowstyle.'"><td>';
+	$tab_content['manage'] .= '<tr class="'.$rowstyle.'"><td>';
 	if (strlen($page_list['text_id']) == 0 && $page_list['type'] != 0) {
-		$content .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
+		$tab_content['manage'] .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
 	}
-	$content .= $page_list['title'].' ';
+	$tab_content['manage'] .= $page_list['title'].' ';
 	if ($page_list['id'] == $site_info['home']) {
-		$content .= '(Default)';
+		$tab_content['manage'] .= '(Default)';
 	}
 	if ($page_list['menu'] == 0) {
-		$content .= '(Hidden)';
+		$tab_content['manage'] .= '(Hidden)';
 	}
-	$content .= '</td>
+	$tab_content['manage'] .= '</td>
 		<td><a href="?module=page&action=del&id='.$page_list['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 		<td><a href="?module=page&action=move_up&id='.$page_list['id'].'">
@@ -324,13 +319,13 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		<td><a href="?module=page&action=move_down&id='.$page_list['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>';
 	if ($page_list['type'] != 0) {
-		$content .= '<td><a href="?module=page&action=edit&id='.$page_list['id'].'">
+		$tab_content['manage'] .= '<td><a href="?module=page&action=edit&id='.$page_list['id'].'">
 			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 			<td><a href="?module=page&action=home&id='.$page_list['id'].'">
 			<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>
 			</tr>';
 	} else {
-		$content .= '<td>&nbsp;</td><td>&nbsp;</td>';
+		$tab_content['manage'] .= '<td>&nbsp;</td><td>&nbsp;</td>';
 	}
 	if($rowstyle == 'row1') {
 		$rowstyle = 'row2';
@@ -338,11 +333,13 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		$rowstyle = 'row1';
 	}
 } // FOR
-$content .= '</table></div>';
+$tab_content['manage'] .= '</table>';
+$tab_layout->add_tab('Manage Pages',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-$content .= '<div id="tabs-2"><form method="POST" action="admin.php?module=page&action=new">
+$tab_content['add'] = NULL;
+$tab_content['add'] .= '<form method="POST" action="admin.php?module=page&action=new">
 	<table class="admintable">
 	<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
 	<tr class="row2"><td width="150">Text ID</td><td><input type="text" name="text_id" value="" /></td></tr>
@@ -355,17 +352,18 @@ $pagetypes_handle = $db->sql_query($pagetypes_query);
 $i = 1;
 while ($i <= $db->sql_num_rows($pagetypes_handle)) {
 	$pagetypes = $db->sql_fetch_assoc($pagetypes_handle);
-	$content .= '<option value="'.$pagetypes['id'].'">'.$pagetypes['name'].'</option>';
+	$tab_content['add'] .= '<option value="'.$pagetypes['id'].'">'.$pagetypes['name'].'</option>';
 	$i++;
 }
-$content .= '</select>
+$tab_content['add'] .= '</select>
 	</td></td></tr>
 	<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
-	</table></form></div>';
+	</table></form>';
+$tab_layout->add_tab('Add Page',$tab_content['add']);
 
 // ----------------------------------------------------------------------------
 
-$content .= '<div id="tabs-3"><form method="POST" action="admin.php?module=page&action=new_link">
+$tab_content['addlink'] = '<div id="tabs-3"><form method="POST" action="admin.php?module=page&action=new_link">
 	<table class="admintable" id="adm_pg_table_create_link">
 	<tr class="row1"><td width="150">Link Text:</td><td><input type="text" name="title" value="" /></td></tr>
 	<tr class="row2"><td valign="top">URL:</td><td>
@@ -373,5 +371,7 @@ $content .= '<div id="tabs-3"><form method="POST" action="admin.php?module=page&
 	</td></td></tr>
 	<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
 	</table></form></div></div>';
+$tab_layout->add_tab('Add Link to External Page',$tab_content['addlink']);
+$content .= $tab_layout;
 
 ?>
