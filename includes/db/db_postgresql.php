@@ -33,6 +33,7 @@ class db_postgresql extends db {
 		return $v['client'].' (postgresql)';
 	}
 	function sql_query($query) {
+		$query = str_replace('`','"',$query);
 		$this->query[$this->query_count] = pg_query($this->connect,$query);
 		if (!$this->query[$this->query_count]) {
 			$this->error[$this->query_count] = 1;
