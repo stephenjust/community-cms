@@ -10,8 +10,7 @@
 
 /**
  * Add a user's vote to a poll
- * @global resource $db
- * @global array $CONFIG
+ * @global class $db
  * @global class $page
  * @param int $question ID of the question that was responded to
  * @param int $response ID of the answer choice chosen
@@ -29,7 +28,6 @@ function poll_vote($question,$response,$ip) {
     }
     $ip = ip2long($ip);
     global $db;
-    global $CONFIG;
     global $page;
     $vote_query = 'INSERT INTO ' . POLL_RESPONSE_TABLE . '
         (question_id ,answer_id ,value ,ip_addr) VALUES ('.$question.',
