@@ -7,8 +7,7 @@ News#1#Module Settings#news_settings
 Calendar#1#Manage Events#calendar
 Calendar#1#Settings#calendar_settings
 Calendar#0#Edit Date#calendar_edit_date
-Files#1#Upload File#upload
-Files#1#Manage#filemanager
+Files#1#Manage Files#filemanager
 Newsletters#1#Newsletters#newsletter
 Polls#1#Poll Manager#poll_manager
 Polls#1#New Poll#poll_new

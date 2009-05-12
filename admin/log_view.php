@@ -2,7 +2,8 @@
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
-	}
+}
+
 $content = NULL;
 if ($_GET['action'] == 'delete') {
 	$delete_query = 'TRUNCATE TABLE ' . LOG_TABLE;
@@ -10,18 +11,17 @@ if ($_GET['action'] == 'delete') {
 	if ($db->error[$delete_handle] === 1) {
 		$content .= 'Failed to clear log messages.<br />';
 	} else {
-		$content .= 'Cleared log messages.';
+		$content .= 'Cleared log messages.<br />'.log_action('Cleared log messages.');
 	}
-	log_action('Cleared log messages.');
 }
 
 // ----------------------------------------------------------------------------
 
-$log_message_query = 'SELECT * FROM ' . LOG_TABLE . ' log, ' . USER_TABLE . ' user
-	WHERE log.user_id = user.id ORDER BY log.date DESC';
+$log_message_query = 'SELECT * FROM ' . LOG_TABLE . ' l, ' . USER_TABLE . ' u
+	WHERE l.user_id = u.id ORDER BY l.date DESC';
 $log_message_handle = $db->sql_query($log_message_query);
 if ($db->error[$log_message_handle] === 1) {
-	$content .= 'Failed to read log messages. '.mysqli_error($db).'<br />';
+	$content .= 'Failed to read log messages.<br />';
 }
 $i = 1;
 $num_messages = $db->sql_num_rows($log_message_handle);
