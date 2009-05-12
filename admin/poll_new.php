@@ -15,8 +15,8 @@ if ($_GET['action'] == 'new') {
 		$message .= 'Not enough answer choices';
 	} else {
 		$i = 1;
-		$new_question_query = 'INSERT INTO ' . POLL_QUESTION_TABLE . '
-			(question,short_name) VALUES ("'.$question.'","'.$short_name.'")';
+		$new_question_query = 'INSERT INTO ' . POLL_QUESTION_TABLE . "
+			(question,short_name) VALUES ('$question','$short_name')";
 		$new_question_handle = $db->sql_query($new_question_query);
 		if ($db->error[$new_question_handle] === 0) {
 			$question_check_query = 'SELECT * FROM ' . POLL_QUESTION_TABLE . '
@@ -27,7 +27,7 @@ if ($_GET['action'] == 'new') {
 				$current_answer = $answer_array[$i - 1];
 				if (strlen($current_answer) > 0) {
 					$new_answer_query = 'INSERT INTO ' . POLL_ANSWER_TABLE . '
-						(question_id,answer,answer_order) VALUES ('.$question_check['question_id'].',"'.$current_answer.'",'.$i.')';
+						(question_id,answer,answer_order) VALUES ('.$question_check['question_id'].',\''.$current_answer.'\','.$i.')';
 					$new_answer_handle = $db->sql_query($new_answer_query);
 					if ($db->error[$new_answer_handle] === 1) {
 						$content .= 'Failed to create poll answer.<br />';
