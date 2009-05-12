@@ -112,11 +112,11 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news_settings` (
     `default_date_setting` INT(3) NOT NULL ,
     `show_author` INT(3) NOT NULL ,
     `show_edit_time` INT(3) NOT NULL
-) ENGINE = MYISAM ;
+) ENGINE = MYISAM ;;
 
 INSERT INTO `<!-- $DB_PREFIX$ -->news_settings`
     (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
-('1', '1', '1');
+('1', '1', '1');;
 
 -- --------------------------------------------------------
 

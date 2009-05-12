@@ -20,7 +20,7 @@ class news_item {
         $news_config_query = 'SELECT * FROM ' . NEWS_CONFIG_TABLE . ' LIMIT 1';
         $news_config_handle = $db->sql_query($news_config_query);
         if ($db->error[$news_config_handle] === 1) {
-            $this->destruct();
+            $this->__destruct();
         } elseif ($db->sql_num_rows($news_config_handle) == 0) {
             $this->destruct();
         }
