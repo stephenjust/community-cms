@@ -178,9 +178,81 @@ class form {
             </div><br />';
         $this->form .= $form_var;
     }
+	/**
+	 * add_date - Add a date selector to a form
+	 * @param string $name Unique name for the field
+	 * @param string $label Text to display beside field
+	 * @param string $format String of characters D, M, and Y, may be any order
+	 * @param array $value Array of values (in order of $format), current date if empty
+	 * @param string $props Unused
+	 * @return null
+	 */
+	function add_date($name, $label, $format = 'MDY', $value = array(), $props = NULL) {
+		$form_var = NULL;
+		if (!ereg('^[DMY]+$',$format)) {
+			return;
+		}
+		$num_fields = strlen($format);
+		if ($value == array()) {
+			for ($i = 0; $i < $num_fields; $i++) {
+				$value[$i] = NULL;
+			}
+		}
+		if (count($value) != $num_fields) {
+			return;
+		}
+		for ($i = 1; $i <= $num_fields; $i++) {
+			switch (substr($format,$i - 1, 1)) {
+				default:
+					return;
+					break;
+				case 'D':
+					$suffix = '_day';
+					if ($value[$i - 1] == NULL) {
+						$value[$i - 1] = date('d');
+					}
+					$form_var .= '<input type="text" name="'.$name.$suffix.'"
+						id="_'.$name.$suffix.'" size="2" maxlength="2"
+						value="'.$value[$i - 1].'" />';
+					break;
+				case 'M':
+					$suffix = '_month';
+					if ($value[$i - 1] == NULL) {
+						$value[$i - 1] = date('m');
+					}
+					$months = array('January','February','March','April','May',
+						'June','July','August','September','October','November',
+						'December');
+					$form_var .= '<select name="'.$name.$suffix.'" id="_'.$name.$suffix.'">';
+					for ($monthcount = 1; $monthcount <= 12; $monthcount++) {
+						if(date('m') == $monthcount) {
+							$form_var .= "<option value='".$monthcount."' selected >".$months[$monthcount-1]."</option>";
+						} else {
+							$form_var .= "<option value='".$monthcount."'>".$months[$monthcount-1]."</option>";
+						}
+					}
+					$form_var .= '</select>';
+					break;
+				case 'Y':
+					$suffix = '_year';
+					if ($value[$i - 1] == NULL) {
+						$value[$i - 1] = date('Y');
+					}
+					$form_var .= '<input type="text" name="'.$name.$suffix.'"
+						id="_'.$name.$suffix.'" size="4" maxlength="4"
+						value="'.$value[$i - 1].'" />';
+					break;
+			}
+			if ($i == 1) {
+				$first_field_name = $name.$suffix;
+			}
+		}
+		$form_var = '<div class="admin_form_element">
+            <label for="_'.$first_field_name.'">'.$label.'</label>'.$form_var.'</div><br />';
+		$this->form .= $form_var;
+	}
     /**
      * add_page_list - Add a page list to a form
-     * @global array $CONFIG Database configuration information
      * @global resource $db Databasee connection resource
      * @param string $name Unique name for the field
      * @param string $label Text to display beside field
@@ -191,7 +263,6 @@ class form {
      */
     function add_page_list($name, $label, $pagetype = '*', $nopageallowed = 0,
         $value = NULL, $props = NULL) {
-        global $CONFIG;
         global $db;
         $page_query = 'SELECT * FROM ' . PAGE_TABLE . '
             WHERE type = '.$pagetype.' ORDER BY list ASC';
