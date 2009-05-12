@@ -49,6 +49,9 @@ class db_postgresql extends db {
 	function sql_num_rows($query) {
 		return pg_num_rows($this->query[$query]);
 	}
+	function sql_affected_rows($query) {
+		return pg_affected_rows($this->query[$query]);
+	}
 	function sql_fetch_assoc($query) {
 		return pg_fetch_assoc($this->query[$query]);
 	}
