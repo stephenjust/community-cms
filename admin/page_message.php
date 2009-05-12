@@ -31,9 +31,10 @@ if ($_GET['action'] == 'delete') {
 
 // ----------------------------------------------------------------------------
 
-$content .= '<h1>Page Messages</h1>
-<table style="border: 1px solid #000000;">
-<tr><td><form method="post" action="admin.php?module=page_message"><select name="page">';
+$tab_layout = new tabs;
+$tab_content['manage'] = NULL;
+$tab_content['manage'] .= '<table class="admintable">
+<tr><th><form method="post" action="admin.php?module=page_message"><select name="page">';
 $page_query = 'SELECT * FROM ' . PAGE_TABLE . ' ORDER BY list ASC';
 $page_query_handle = $db->sql_query($page_query);
 $i = 1;
@@ -44,37 +45,39 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
 	}
 	if (!eregi('<LINK>',$page['title'])) {
 		if ($page['id'] == $_POST['page']) {
-			$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
+			$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
 		} else {
-			$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
+			$tab_content['manage'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
 		}
 	}
 	$i++;
 }
-$content .= '</select></td><td colspan="2"><input type="submit" value="Change Page" /></form></td></tr>
-<tr><td width="350">Content:</td><td>Del</td><td>Edit</td></tr>';
+$tab_content['manage'] .= '</select></th><th colspan="2"><input type="submit" value="Change Page" /></form></th></tr>
+<tr><th width="350">Content:</th><th colspan="2"></th></tr>';
 // Get page message list in the order defined in the database. First is 0.
 $page_message_query = 'SELECT * FROM '.PAGE_MESSAGE_TABLE.'
 	WHERE page_id = '.addslashes($_POST['page']);
 $page_message_handle = $db->sql_query($page_message_query);
 $i = 1;
-if($db->sql_num_rows($page_message_handle) == 0) {
-	$content .= '<tr><td colspan="3">There are no page messages present on this page.</td></tr>';
-	}
+if ($db->sql_num_rows($page_message_handle) == 0) {
+	$tab_content['manage'] .= '<tr><td colspan="3">There are no page messages present on this page.</td></tr>';
+}
 while ($i <= $db->sql_num_rows($page_message_handle)) {
 	$page_message = $db->sql_fetch_assoc($page_message_handle);
-	$content .= '<tr>
+	$tab_content['manage'] .= '<tr>
 		<td class="adm_page_list_item">'.truncate(strip_tags(stripslashes($page_message['text']),'<br>'),75).'</td>
 		<td><a href="?module=page_message&action=delete&id='.$page_message['message_id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 		<td><a href="?module=page_message_edit&id='.$page_message['message_id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 		</tr>';
 	$i++;
 }
-$content .= '<tr>
+$tab_content['manage'] .= '<tr>
 <td colspan="3">
-<form method="post" action="?module=page_message_new&amp;page='.$_POST['page'].'">
+<form method="post" action="?module=page_message_new&amp;page='.(int)$_POST['page'].'">
 <input type="submit" value="New Page Message" />
 </form>
 </td>
 </tr></table>';
+$tab_layout->add_tab('Manage Page Messages',$tab_content['manage']);
+$content .= $tab_layout;
 ?>
