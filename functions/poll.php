@@ -21,21 +21,21 @@
 function poll_vote($question,$response,$ip) {
     $question = (int)$question;
     $response = (int)$response;
-    if(!eregi('^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$',$ip)) {
+    if (!eregi('^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$',$ip)) {
         return;
     }
-    if($question == 0 || $response == 0) {
+    if ($question == 0 || $response == 0) {
         return;
     }
     $ip = ip2long($ip);
     global $db;
     global $CONFIG;
     global $page;
-    $vote_query = 'INSERT INTO '.$CONFIG['db_prefix'].'poll_responses
+    $vote_query = 'INSERT INTO ' . POLL_RESPONSE_TABLE . '
         (question_id ,answer_id ,value ,ip_addr) VALUES ('.$question.',
         '.$response.', NULL, \''.$ip.'\')';
-    $vote_handle = $db->query($vote_query);
-    if(!$vote_handle) {
+    $vote_handle = $db->sql_query($vote_query);
+    if ($db->error[$vote_handle] === 1) {
         $page->notification .= 'Failed to record your vote.<br />';
     } else {
         $page->notification .= 'Thank you for voting.<br />';
