@@ -18,6 +18,13 @@ body {
 	right: 0px;
 	z-index: 1000;
 }
+#feedbackbutton {
+	text-align: right;
+	position: absolute;
+	top: 40px;
+	right: 0px;
+	z-index: 1000;
+}
 #header {
 	width: 100%;
 	background-color: #EEE;
@@ -64,6 +71,11 @@ td.center {
 	<div id="footer">
   	<!-- $FOOTER$ -->
 		</div>
+	<div id="feedbackbutton">
+		<a href="admin.php?module=feedback">
+			<button>Send Feedback</button>
+		</a>
+	</div>
 	<div id="helpbutton">
 		<a href="admin.php?module=help" target="_blank">
 		<img src="<!-- $IMAGE_PATH$ -->help.png" alt="HELP" border="0px" /></a>
