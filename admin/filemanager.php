@@ -90,7 +90,7 @@ if (!isset($_GET['filename'])) {
 		$content .= 'Successfully deleted '.$_GET['filename'].'.<br />'.
 			log_action('Deleted file \''.$_GET['filename'].'\'');
 		$delete_info_query = 'DELETE FROM ' . FILE_TABLE . '
-			WHERE `path` = "'.addslashes($_GET['filename']).'" LIMIT 1';
+			WHERE `path` = \''.addslashes($_GET['filename']).'\'';
 		$delete_info_handle = $db->sql_query($delete_info_query);
 		if($db->error[$delete_info_handle] === 1) {
 			$content .= 'Failed to delete information for this file.<br />';
