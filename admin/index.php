@@ -15,7 +15,8 @@
 	$tab_layout = new tabs;
 	// Display log messages
     $tab_content['activity'] = NULL;
-	$log_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'logs log, '.$CONFIG['db_prefix'].'users u WHERE log.user_id = u.id ORDER BY log.date DESC LIMIT 5';
+	$log_message_query = 'SELECT * FROM ' . LOG_TABLE . ' log, ' . USER_TABLE . ' u
+		WHERE log.user_id = u.id ORDER BY log.date DESC LIMIT 5';
 	$log_message_handle = $db->sql_query($log_message_query);
 	if(!$log_message_handle) {
 		$tab_content['activity'] .= 'Failed to read log messages.<br />';

@@ -9,7 +9,7 @@ if($_GET['action'] == 'save') {
 	$site_desc = addslashes(strip_tags($_POST['site_desc']));
 	$site_url = addslashes(strip_tags($_POST['site_url']));
 	$footer = addslashes($_POST['footer']);
-	$site_info_update_query = 'UPDATE '.$CONFIG['db_prefix']."config 
+	$site_info_update_query = 'UPDATE ' . CONFIG_TABLE . "
 		SET name='$site_name',url='$site_url',comment='$site_desc',
 		active=".checkbox($_POST['active']).",footer='$footer'";
 	$site_info_update_handle = $db->sql_query($site_info_update_query);

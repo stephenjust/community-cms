@@ -28,7 +28,7 @@
 			$content .= 'Successfully edited article. <br />'.log_action('Edited news article \''.$name.'\'');
 			}
 		} else {
-		$edit_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'news WHERE id = '.addslashes($_GET['id']).' LIMIT 1';
+		$edit_query = 'SELECT * FROM ' . NEWS_TABLE . ' WHERE id = '.addslashes($_GET['id']).' LIMIT 1';
 		$edit_handle = $db->sql_query($edit_query);
 		if($db->sql_num_rows($edit_handle) != 0) {
 			$edit = $db->sql_fetch_assoc($edit_handle);

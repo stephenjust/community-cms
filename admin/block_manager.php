@@ -13,7 +13,8 @@ if ($_GET['action'] == 'delete') {
 		$message .= 'Failed to read block information. '.mysqli_error($db);
 	} else {
 		if($db->sql_num_rows($block_exists_handle) == 1) {
-			$delete_block_query = 'DELETE FROM '.$CONFIG['db_prefix'].'blocks WHERE id = '.$_GET['id'];
+			$delete_block_query = 'DELETE FROM ' . BLOCK_TABLE . '
+				WHERE id = '.(int)$_GET['id'];
 			$delete_block = $db->sql_query($delete_block_query);
 			if(!$db->error[$delete_block] === 1) {
 				$message .= 'Failed to delete block. '.$db->_print_error_query($delete_block);
@@ -63,7 +64,7 @@ $tab_content['manage'] = NULL;
 $tab_content['manage'] .= '<table class="admintable">
 	<tr><th width="30">ID</th><th>Info:</th><th width="40" colspan="2"></th></tr>';
 // Get block list by id
-$block_list_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'blocks ORDER BY id DESC';
+$block_list_query = 'SELECT * FROM ' . BLOCK_TABLE . ' ORDER BY id DESC';
 $block_list_handle = $db->sql_query($block_list_query);
 if($db->sql_num_rows($block_list_handle) == 0) {
 	$tab_content['manage'] .= '<tr><td></td><td class="adm_page_list_item">No blocks exist.</td><td></td><td></td></tr>';

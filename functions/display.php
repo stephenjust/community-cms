@@ -17,7 +17,6 @@ if (@SECURITY != 1) {
  */
 function display_page($page_info,$site_info,$view="") {
 	global $db;
-	global $CONFIG;
 	global $page;
 	// FIXME: Make sure this is unused.
 	global $NOTIFICATION;
@@ -114,8 +113,8 @@ function display_page($page_info,$site_info,$view="") {
 function display_nav_bar($mode = 1) {
 	global $page_info;
 	global $db;
-	global $CONFIG;
-	$nav_menu_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE menu = '.$mode.' ORDER BY list ASC';
+	$nav_menu_query = 'SELECT * FROM ' . PAGE_TABLE . '
+		WHERE menu = '.$mode.' ORDER BY list ASC';
 	$nav_menu_handle = $db->sql_query($nav_menu_query);
 	$return = NULL;
 	for ($i = 1; $db->sql_num_rows($nav_menu_handle) >= $i; $i++) {
@@ -150,7 +149,6 @@ function display_login_box() {
 	global $page_info;
 	global $site_info;
 	global $db;
-	global $CONFIG;
 	if (!checkuser()) {
 		$template_loginbox = new template;
 		$template_loginbox->load_file('login');
@@ -161,7 +159,8 @@ function display_login_box() {
 		unset($template_loginbox);
 	} else {
 		$return = $_SESSION['name']."<br />\n<a href='index.php?".$_SERVER['QUERY_STRING']."&amp;login=2'>Log Out</a><br />\n";
-		$check_message_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'messages WHERE recipient = '.$_SESSION['userid'];
+		$check_message_query = 'SELECT * FROM ' . MESSAGE_TABLE . '
+			WHERE recipient = '.$_SESSION['userid'];
 		$check_message_handle = $db->sql_query($check_message_query);
 		if (!$check_message_handle) {
 			$return .= 'Could not check messages.';
