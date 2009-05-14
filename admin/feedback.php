@@ -23,7 +23,8 @@ if ($_GET['send'] == 1) {
 	}
 	$subject .= $_SERVER['SERVER_ADDR'].' ('.$_SERVER['SERVER_NAME'].')';
 	$message = addslashes(strip_tags($_POST['content']));
-	$headers = 'X-Mailer: PHP/' . phpversion();
+	$headers = 'From: communitycms-feedback@lists.sf.net'."\r\n".
+		'X-Mailer: PHP/' . phpversion();
 	if(mail($to,$subject,$message,$headers)) {
 		$content .= 'Message sent.';
 	} else {
