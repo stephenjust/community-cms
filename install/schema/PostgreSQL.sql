@@ -53,6 +53,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->config (
 	db_version decimal(6,2) NOT NULL,
 	name text NOT NULL,
 	url text NOT NULL,
+	admin_email text NULL,
 	comment text NOT NULL,
 	template integer NOT NULL,
 	footer text NOT NULL,

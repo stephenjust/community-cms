@@ -31,8 +31,9 @@ $query[6] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'news_settings` 
 $query[7] = 'INSERT INTO `'.$CONFIG['db_prefix'].'news_settings`
     (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
 (\'1\', \'1\', \'1\')';
+$query[8] = 'ALTER TABLE '.$CONFIG['db_prefix'].'config ADD `admin_email` TEXT NULL AFTER `url`';
 
-$query[8] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `db_version` = 0.02';
+$query[9] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `db_version` = 0.02';
 
 // ----------------------------------------------------------------------------
 $num_queries = count($query);
