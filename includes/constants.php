@@ -18,7 +18,13 @@ if (!defined('SECURITY')) {
 define('COMCMS_VERSION', 'SVN');
 define('DEBUG', 1);
 
+// DATE - TIME
 define('DATE_TIME', date('Y-m-d H:i:s'));
+define('DATE', date('Y-m-d'));
+define('TIME_24_SEC', date('H:i:s'));
+define('TIME_24', date('H:i'));
+define('TIME_12_SEC', date('h:i:sa'));
+define('TIME_12', date('h:ia'));
 
 // DATABASE TABLES
 define('BLOCK_TABLE', $CONFIG['db_prefix'] . 'blocks');
