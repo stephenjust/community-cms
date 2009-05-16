@@ -40,7 +40,6 @@ class template {
 
 	private function load_template($path,$file) {
 		global $db; // Used for query
-		global $CONFIG; // Used for query
 		global $site_info; //Used for query
 		$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
 			WHERE id = '.$site_info['template'].' LIMIT 1';
@@ -129,7 +128,6 @@ class block {
 		if (!isset($this->block_id)) {
 			return false;
 		}
-		global $CONFIG;
 		global $db;
 		$block_attribute_query = 'SELECT * FROM ' . BLOCK_TABLE . '
 			WHERE id = '.$this->block_id.' LIMIT 1';

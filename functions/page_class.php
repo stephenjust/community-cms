@@ -143,13 +143,11 @@ class page {
 	}
 	/**
 	 * If a page exists, collect all information about it from the database.
-	 * @global resource $db Database connection resource
-	 * @global array $CONFIG Array of configuration information
+	 * @global object $db Database connection object
 	 * @return void
 	 */
 	public function get_page_information() {
 		global $db;
-		global $CONFIG;
 		if ($this->id != 0 && strlen($this->text_id) == 0) {
 			$page_query = 'SELECT * FROM ' . PAGE_TABLE . ' WHERE
 				id = '.$this->id.' LIMIT 1';
@@ -193,7 +191,7 @@ class page {
 			$this->url_reference = 'page='.$this->text_id;
 		}
 		$this->title = $page['title'];
-		$page_type_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pagetypes
+		$page_type_query = 'SELECT * FROM ' . PAGE_TYPE_TABLE . '
 			WHERE id = '.$page['type'].' LIMIT 1';
 		$page_type_handle = $db->sql_query($page_type_query);
 		if(!$page_type_handle) {
@@ -217,7 +215,6 @@ class page {
 
 	public function get_page_content() {
 		global $db;
-		global $CONFIG;
 		if ($this->exists == 0) {
 			header("HTTP/1.0 404 Not Found");
 			$this->title .= 'Page Not Found';

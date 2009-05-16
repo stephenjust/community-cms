@@ -16,7 +16,6 @@ if (@SECURITY != 1) {
 /**
  * Initializes many required variables
  * 
- * @global array $CONFIG
  * @global resource $db
  * @global array $site_info
  */
@@ -27,17 +26,11 @@ function initialize() {
 
 	session_start();
 
-	global $CONFIG;
 	global $db;
 	global $site_info;
-	// Try to establish a connection to the MySQL server using the MySQLi classes.
-//    @ $db = new mysqli($CONFIG['db_host'],$CONFIG['db_user'],$CONFIG['db_pass'],$CONFIG['db_name']);
-//    if(mysqli_connect_errno()) {
-//        err_page(1001); // Database connect error.
-//    }
 	$db->sql_connect();
 	// Load global site information.
-	$site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
+	$site_info_query = 'SELECT * FROM ' . CONFIG_TABLE;
 	$site_info_handle = $db->sql_query($site_info_query);
 	if ($db->error[$site_info_handle]) {
 		die('Failed to get site information.');

@@ -6,7 +6,6 @@ if (@SECURITY != 1) {
 global $page;
 global $site_info;
 global $page_info;
-global $CONFIG;
 global $db;
 include(ROOT.'pagetypes/news_class.php');
 if(!isset($_GET['start']) || $_GET['start'] == "" || $_GET['start'] < 0) {

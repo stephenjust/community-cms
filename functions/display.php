@@ -105,7 +105,6 @@ function display_page($page_info,$site_info,$view="") {
  * display_nav_bar - Display a list of links to other pages on the web site
  * @global array $page_info
  * @global resource $db
- * @global array $CONFIG
  * @param int $mode Type of page to display (1 means visible pages, 0 means
  * hidden pages)
  * @return string

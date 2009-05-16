@@ -4,7 +4,6 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 $return = NULL;
-global $CONFIG;
 global $db;
 global $page;
 $newsletter_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . '

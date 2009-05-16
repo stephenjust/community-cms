@@ -28,7 +28,6 @@ class calendar_event {
     }
     function get_event($id) {
         global $db;
-        global $CONFIG;
         global $page;
         global $page_info;
         global $site_info;

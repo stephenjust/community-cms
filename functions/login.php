@@ -4,8 +4,13 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
+/**
+ * login - Check given login information and log in a user
+ * @global object $db Database connection object
+ * @param string $user Username provided by input
+ * @param string $passwd Unencrypted password provided by input
+ */
 function login($user,$passwd) {
-	global $CONFIG;
 	global $db;
 	$user = addslashes($db->sql_escape_string($user));
 	$passwd = addslashes($db->sql_escape_string($passwd));
@@ -57,13 +62,11 @@ function logout() {
  * checkuser - Return true if the user is logged in. If you must be logged in,
  * and are not, an error page will be displayed in the place of the expected
  * content.
- * @global array $CONFIG Database configuration values
  * @global object $db Database connection object
  * @param boolean $mustbeloggedin If 1, require logged in status to continue
  * @return boolean
  */
 function checkuser($mustbeloggedin = 0) {
-	global $CONFIG;
 	global $db;
 	if(isset($_SESSION['user'])) {
 		if(!isset($_SESSION['pass']) || !isset($_SESSION['name'])) {
@@ -96,12 +99,10 @@ function checkuser($mustbeloggedin = 0) {
 }
 /**
  * checkuser_admin - Check if a user is logged in as an administrator
- * @global array $CONFIG
  * @global resource $db
  * @return bool
  */
 function checkuser_admin() {
-	global $CONFIG;
 	global $db;
 	if($_SESSION['type'] < 1) {
 		err_page(3004);
