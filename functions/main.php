@@ -65,10 +65,45 @@ function truncate($text,$numb) {
 }
 
 /**
- * validate_int - Validate values of integers
- * @param int $value Integer to be validated
- * @return int -1 if false
+ * array2csv - Convert an array to a list of comma separated values
+ * @param array $array Array of values that will appear in the result string
+ * @return string Comma separated list of values
  */
+function array2csv($array) {
+	if (count($array) == 0) {
+		return '';
+	}
+	$string = NULL;
+	for ($i = 0; $i < count($array); $i++) {
+		if (strlen($array[$i] > 0)) {
+			$string .= $array[$i];
+		}
+		if ($i != count($array) - 1) {
+			$string .= ',';
+		}
+	}
+	return $string;
+}
+
+/**
+ * csv2array - Convert a comma separated list of values to an array
+ * @param string $string Comma separated list of values to insert into result array
+ * @return array Array of values
+ */
+function csv2array($string) {
+	if (strlen($string) == 0) {
+		return array();
+	}
+	$array = array();
+	$temp_array = explode(',',$string);
+	for ($i = 0; $i < count($temp_array); $i++) {
+		if (strlen($temp_array) != 0) {
+			$array[] = $temp_array[$i];
+		}
+	}
+	return $array;
+}
+
 function validate_int($value) {
     // FIXME: Stub
     return $value;
