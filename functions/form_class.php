@@ -1,6 +1,15 @@
 <?php
 /**
- * generate a form
+ * Community CMS
+ * $Id$
+ *
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.main
+ */
+
+/**
+ * Generate a form
  * 
  * Basic class for creating HTML forms. Most form input types are supported. 
  * When the appropriate fields have been added to the form, pass the form variable

@@ -1,4 +1,12 @@
 <?php
+/**
+ * Community CMS
+ * $Id$
+ *
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.main
+ */
 // Security Check
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
@@ -6,7 +14,7 @@ if (@SECURITY != 1) {
 
 /**
  * get_block - Get contents of a block
- * @global resource $db
+ * @global object $db
  * @param int $block_id ID of block to display
  * @return string
  */

@@ -7,9 +7,14 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
+
+/**
+ * @ignore
+ */
 DEFINE('SECURITY',1);
 DEFINE('ADMIN',1);
 define('ROOT','./');
+
 $content = NULL;
 // Load error handling code
 require_once('./functions/error.php');

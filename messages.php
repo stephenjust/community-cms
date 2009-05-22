@@ -1,4 +1,12 @@
 <?php
+/**
+ * Community CMS
+ * $Id$
+ *
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.main
+ */
 header('Content-type: text/html; charset=utf-8');
 // The not-so-secure security check.
 define('SECURITY',1);
