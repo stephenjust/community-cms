@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>phpDocumentor Parser Errors and Warnings</title>
+			<link rel="stylesheet" href="media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+						<a href="#Post-parsing">Post-parsing</a><br>
+<a href="#adminupdate.php">adminupdate.php</a><br>
+<a href="#blocks.php">blocks.php</a><br>
+<a href="#block_manager.php">block_manager.php</a><br>
+<a href="#block_options.php">block_options.php</a><br>
+<a href="#body.style.php">body.style.php</a><br>
+<a href="#calendar.php">calendar.php</a><br>
+<a href="#calendarcategories_block.php">calendarcategories_block.php</a><br>
+<a href="#calendar_class.php">calendar_class.php</a><br>
+<a href="#calendar_edit_date.php">calendar_edit_date.php</a><br>
+<a href="#calendar_settings.php">calendar_settings.php</a><br>
+<a href="#classes.php">classes.php</a><br>
+<a href="#config.php">config.php</a><br>
+<a href="#config.temp.php">config.temp.php</a><br>
+<a href="#contacts.php">contacts.php</a><br>
+<a href="#display.php">display.php</a><br>
+<a href="#dynamic_file_list.php">dynamic_file_list.php</a><br>
+<a href="#EnchantSpell.php">EnchantSpell.php</a><br>
+<a href="#error.php">error.php</a><br>
+<a href="#events_block.php">events_block.php</a><br>
+<a href="#feedback.php">feedback.php</a><br>
+<a href="#filemanager.php">filemanager.php</a><br>
+<a href="#files.php">files.php</a><br>
+<a href="#files_class.php">files_class.php</a><br>
+<a href="#footer.style.php">footer.style.php</a><br>
+<a href="#forms.php">forms.php</a><br>
+<a href="#form_class.php">form_class.php</a><br>
+<a href="#general.php">general.php</a><br>
+<a href="#GoogleSpell.php">GoogleSpell.php</a><br>
+<a href="#header.style.php">header.style.php</a><br>
+<a href="#help.php">help.php</a><br>
+<a href="#help_create.php">help_create.php</a><br>
+<a href="#include.php">include.php</a><br>
+<a href="#index.php">index.php</a><br>
+<a href="#install3.php">install3.php</a><br>
+<a href="#JSON.php">JSON.php</a><br>
+<a href="#Logger.php">Logger.php</a><br>
+<a href="#login.php">login.php</a><br>
+<a href="#log_view.php">log_view.php</a><br>
+<a href="#main.php">main.php</a><br>
+<a href="#messages.php">messages.php</a><br>
+<a href="#minipoll_vote.php">minipoll_vote.php</a><br>
+<a href="#mysql.php">mysql.php</a><br>
+<a href="#news.php">news.php</a><br>
+<a href="#newsletter.php">newsletter.php</a><br>
+<a href="#newsletter_new_newsletter.php">newsletter_new_newsletter.php</a><br>
+<a href="#news_class.php">news_class.php</a><br>
+<a href="#news_edit_article.php">news_edit_article.php</a><br>
+<a href="#news_new_article.php">news_new_article.php</a><br>
+<a href="#news_settings.php">news_settings.php</a><br>
+<a href="#page.php">page.php</a><br>
+<a href="#pagemessage_what_is_it.php">pagemessage_what_is_it.php</a><br>
+<a href="#pages_add_block.php">pages_add_block.php</a><br>
+<a href="#pages_create_page.php">pages_create_page.php</a><br>
+<a href="#page_class.php">page_class.php</a><br>
+<a href="#page_message.php">page_message.php</a><br>
+<a href="#page_message_edit.php">page_message_edit.php</a><br>
+<a href="#page_message_new.php">page_message_new.php</a><br>
+<a href="#poll.php">poll.php</a><br>
+<a href="#poll_block.php">poll_block.php</a><br>
+<a href="#poll_manager.php">poll_manager.php</a><br>
+<a href="#poll_new.php">poll_new.php</a><br>
+<a href="#poll_results.php">poll_results.php</a><br>
+<a href="#PSpell.php">PSpell.php</a><br>
+<a href="#PSpellShell.php">PSpellShell.php</a><br>
+<a href="#rpc.php">rpc.php</a><br>
+<a href="#settings.php">settings.php</a><br>
+<a href="#site_config.php">site_config.php</a><br>
+<a href="#SpellChecker.php">SpellChecker.php</a><br>
+<a href="#table_of_contents.php">table_of_contents.php</a><br>
+<a href="#text_block.php">text_block.php</a><br>
+<a href="#tinymce_paste_in_firefox.php">tinymce_paste_in_firefox.php</a><br>
+<a href="#tinymce_using_tinymce.php">tinymce_using_tinymce.php</a><br>
+<a href="#tinymce_what_is_it.php">tinymce_what_is_it.php</a><br>
+<a href="#tiny_mce_gzip.php">tiny_mce_gzip.php</a><br>
+<a href="#update.php">update.php</a><br>
+<a href="#update_db.php">update_db.php</a><br>
+<a href="#upload_mini.php">upload_mini.php</a><br>
+<a href="#user.php">user.php</a><br>
+<a href="#user_create.php">user_create.php</a><br>
+<a href="#user_edit.php">user_edit.php</a><br>
+<a href="#user_groups.php">user_groups.php</a><br>
+<a href="#user_permission.php">user_permission.php</a><br>
+<a href="#view.php">view.php</a><br>
+<a name="Post-parsing"></a>
+<h1>Post-parsing</h1>
+<h2>Warnings:</h2><br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/admin.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/scripts/minipoll_vote.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/settings.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ADMIN" in file /home/stephen/communitycms/comcms/trunk/admin.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ROOT" in file /home/stephen/communitycms/comcms/trunk/admin/scripts/block_options.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/scripts/adminupdate.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/view.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/admin/scripts/block_options.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/install/update_db.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/install/update.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/messages.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ROOT" in file /home/stephen/communitycms/comcms/trunk/admin/scripts/dynamic_file_list.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "SECURITY" in file /home/stephen/communitycms/comcms/trunk/admin/scripts/dynamic_file_list.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ROOT" in file /home/stephen/communitycms/comcms/trunk/messages.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ROOT" in file /home/stephen/communitycms/comcms/trunk/settings.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ROOT" in file /home/stephen/communitycms/comcms/trunk/scripts/minipoll_vote.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ROOT" in file /home/stephen/communitycms/comcms/trunk/admin.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ROOT" in file /home/stephen/communitycms/comcms/trunk/view.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate define element "ROOT" in file /home/stephen/communitycms/comcms/trunk/scripts/adminupdate.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<a name="admin.php"></a>
+<h1>admin.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 75</b> - File "/home/stephen/communitycms/comcms/trunk/functions/admin.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<b>Warning on line 120</b> - File "/home/stephen/communitycms/comcms/trunk/admin.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<h2>Errors:</h2><br>
+<b>Error on line 11</b> - global variable $db Database class specified in @global tag was never found<br>
+<b>Error on line 59</b> - global variable $db Database class specified in @global tag was never found<br>
+<a name="adminupdate.php"></a>
+<h1>adminupdate.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 40</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/adminupdate.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="blocks.php"></a>
+<h1>blocks.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 32</b> - File "/home/stephen/communitycms/comcms/trunk/functions/blocks.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<h2>Errors:</h2><br>
+<b>Error on line 12</b> - global variable $db specified in @global tag was never found<br>
+<a name="block_manager.php"></a>
+<h1>block_manager.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 126</b> - File "/home/stephen/communitycms/comcms/trunk/admin/block_manager.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="block_options.php"></a>
+<h1>block_options.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 90</b> - File "/home/stephen/communitycms/comcms/trunk/admin/scripts/block_options.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="body.style.php"></a>
+<h1>body.style.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 8</b> - File "/home/stephen/communitycms/comcms/trunk/admin/templates/default/body.style.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<b>Warning on line 8</b> - File "/home/stephen/communitycms/comcms/trunk/admin/templates/blue/body.style.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="calendar.php"></a>
+<h1>calendar.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 179</b> - File "/home/stephen/communitycms/comcms/trunk/admin/calendar.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<b>Warning on line 202</b> - File "/home/stephen/communitycms/comcms/trunk/pagetypes/calendar.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="calendarcategories_block.php"></a>
+<h1>calendarcategories_block.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 25</b> - File "/home/stephen/communitycms/comcms/trunk/content_blocks/calendarcategories_block.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="calendar_class.php"></a>
+<h1>calendar_class.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - no @package tag was used in a DocBlock for class calendar_event<br>
+<b>Warning on line 87</b> - File "/home/stephen/communitycms/comcms/trunk/pagetypes/calendar_class.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="calendar_edit_date.php"></a>
+<h1>calendar_edit_date.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 124</b> - File "/home/stephen/communitycms/comcms/trunk/admin/calendar_edit_date.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="calendar_settings.php"></a>
+<h1>calendar_settings.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 85</b> - File "/home/stephen/communitycms/comcms/trunk/admin/calendar_settings.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="classes.php"></a>
+<h1>classes.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - no @package tag was used in a DocBlock for class template<br>
+<b>Warning on line 117</b> - no @package tag was used in a DocBlock for class block<br>
+<b>Warning on line 156</b> - no @package tag was used in a DocBlock for class tabs<br>
+<b>Warning on line 186</b> - File "/home/stephen/communitycms/comcms/trunk/classes.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="config.php"></a>
+<h1>config.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 18</b> - File "/home/stephen/communitycms/comcms/trunk/config.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<b>Warning on line 21</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/tiny_mce/plugins/spellchecker/config.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="config.temp.php"></a>
+<h1>config.temp.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 18</b> - File "/home/stephen/communitycms/comcms/trunk/config.temp.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="contacts.php"></a>
+<h1>contacts.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 119</b> - File "/home/stephen/communitycms/comcms/trunk/pagetypes/contacts.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="dynamic_file_list.php"></a>
+<h1>dynamic_file_list.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 24</b> - File "/home/stephen/communitycms/comcms/trunk/admin/scripts/dynamic_file_list.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="EnchantSpell.php"></a>
+<h1>EnchantSpell.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - no @package tag was used in a DocBlock for class EnchantSpell<br>
+<b>Warning on line 65</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/tiny_mce/plugins/spellchecker/classes/EnchantSpell.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="error.php"></a>
+<h1>error.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 77</b> - File "/home/stephen/communitycms/comcms/trunk/functions/error.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="events_block.php"></a>
+<h1>events_block.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 54</b> - File "/home/stephen/communitycms/comcms/trunk/content_blocks/events_block.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="feedback.php"></a>
+<h1>feedback.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 56</b> - File "/home/stephen/communitycms/comcms/trunk/admin/feedback.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="filemanager.php"></a>
+<h1>filemanager.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 167</b> - File "/home/stephen/communitycms/comcms/trunk/admin/filemanager.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="files.php"></a>
+<h1>files.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 237</b> - File "/home/stephen/communitycms/comcms/trunk/functions/files.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="files_class.php"></a>
+<h1>files_class.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - no @package tag was used in a DocBlock for class file_list<br>
+<b>Warning on line 72</b> - File "/home/stephen/communitycms/comcms/trunk/functions/files_class.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="footer.style.php"></a>
+<h1>footer.style.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 5</b> - File "/home/stephen/communitycms/comcms/trunk/admin/templates/blue/footer.style.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<b>Warning on line 5</b> - File "/home/stephen/communitycms/comcms/trunk/admin/templates/default/footer.style.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="forms.php"></a>
+<h1>forms.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 28</b> - File "/home/stephen/communitycms/comcms/trunk/functions/forms.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="form_class.php"></a>
+<h1>form_class.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - no @package tag was used in a DocBlock for class form<br>
+<b>Warning on line 369</b> - File "/home/stephen/communitycms/comcms/trunk/functions/form_class.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<h2>Errors:</h2><br>
+<b>Error on line 369</b> - global variable $db Databasee connection resource specified in @global tag was never found<br>
+<a name="general.php"></a>
+<h1>general.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 12</b> - Page-level DocBlock precedes "require_once dirname(__FILE__)."/../classes/utils/Logger.php"", use another DocBlock to document the source element<br>
+<a name="GoogleSpell.php"></a>
+<h1>GoogleSpell.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 8</b> - no @package tag was used in a DocBlock for class GoogleSpell<br>
+<b>Warning on line 157</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/tiny_mce/plugins/spellchecker/classes/GoogleSpell.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="header.style.php"></a>
+<h1>header.style.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 23</b> - File "/home/stephen/communitycms/comcms/trunk/admin/templates/blue/header.style.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<b>Warning on line 23</b> - File "/home/stephen/communitycms/comcms/trunk/admin/templates/default/header.style.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="help.php"></a>
+<h1>help.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 13</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="help_create.php"></a>
+<h1>help_create.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 52</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/help_create.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="include.php"></a>
+<h1>include.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 38</b> - File "/home/stephen/communitycms/comcms/trunk/include.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="index.php"></a>
+<h1>index.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 11</b> - Page-level DocBlock precedes "define SECURITY", use another DocBlock to document the source element<br>
+<b>Warning on line 22</b> - Page-level DocBlock precedes "include './install.php'", use another DocBlock to document the source element<br>
+<b>Warning on line 69</b> - File "/home/stephen/communitycms/comcms/trunk/admin/index.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="install3.php"></a>
+<h1>install3.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 9</b> - Page-level DocBlock precedes "define ROOT", use another DocBlock to document the source element<br>
+<a name="JSON.php"></a>
+<h1>JSON.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 9</b> - Page-level DocBlock precedes "define JSON_BOOL", use another DocBlock to document the source element<br>
+<b>Warning on line 25</b> - no @package tag was used in a DocBlock for class Moxiecode_JSONReader<br>
+<a name="Logger.php"></a>
+<h1>Logger.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - Page-level DocBlock precedes "define MC_LOGGER_DEBUG", use another DocBlock to document the source element<br>
+<b>Warning on line 20</b> - no @package tag was used in a DocBlock for class Moxiecode_Logger<br>
+<a name="login.php"></a>
+<h1>login.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 132</b> - File "/home/stephen/communitycms/comcms/trunk/functions/login.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<h2>Errors:</h2><br>
+<b>Error on line 12</b> - global variable $db Database connection object specified in @global tag was never found<br>
+<b>Error on line 68</b> - global variable $db Database connection object specified in @global tag was never found<br>
+<b>Error on line 104</b> - global variable $db specified in @global tag was never found<br>
+<a name="log_view.php"></a>
+<h1>log_view.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 58</b> - File "/home/stephen/communitycms/comcms/trunk/admin/log_view.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="messages.php"></a>
+<h1>messages.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 91</b> - File "/home/stephen/communitycms/comcms/trunk/messages.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="minipoll_vote.php"></a>
+<h1>minipoll_vote.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 37</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/minipoll_vote.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="mysql.php"></a>
+<h1>mysql.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - File "/home/stephen/communitycms/comcms/trunk/functions/mysql.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="news.php"></a>
+<h1>news.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 9</b> - Page-level DocBlock precedes "include ROOT.'pagetypes/news_class.php'", use another DocBlock to document the source element<br>
+<b>Warning on line 64</b> - File "/home/stephen/communitycms/comcms/trunk/pagetypes/news.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<b>Warning on line 149</b> - File "/home/stephen/communitycms/comcms/trunk/admin/news.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="newsletter.php"></a>
+<h1>newsletter.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 33</b> - File "/home/stephen/communitycms/comcms/trunk/pagetypes/newsletter.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<b>Warning on line 100</b> - File "/home/stephen/communitycms/comcms/trunk/admin/newsletter.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="newsletter_new_newsletter.php"></a>
+<h1>newsletter_new_newsletter.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 57</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/newsletter_new_newsletter.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="news_class.php"></a>
+<h1>news_class.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 7</b> - no @package tag was used in a DocBlock for class news_item<br>
+<b>Warning on line 132</b> - File "/home/stephen/communitycms/comcms/trunk/pagetypes/news_class.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="news_edit_article.php"></a>
+<h1>news_edit_article.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 88</b> - File "/home/stephen/communitycms/comcms/trunk/admin/news_edit_article.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="news_new_article.php"></a>
+<h1>news_new_article.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 63</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/news_new_article.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="news_settings.php"></a>
+<h1>news_settings.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 49</b> - File "/home/stephen/communitycms/comcms/trunk/admin/news_settings.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="page.php"></a>
+<h1>page.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 376</b> - File "/home/stephen/communitycms/comcms/trunk/admin/page.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="pagemessage_what_is_it.php"></a>
+<h1>pagemessage_what_is_it.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 37</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/pagemessage_what_is_it.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="pages_add_block.php"></a>
+<h1>pages_add_block.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 52</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/pages_add_block.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="pages_create_page.php"></a>
+<h1>pages_create_page.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 57</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/pages_create_page.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="page_class.php"></a>
+<h1>page_class.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 17</b> - no @package tag was used in a DocBlock for class page<br>
+<h2>Errors:</h2><br>
+<b>Error on line 240</b> - global variable $db Database connection object specified in @global tag was never found<br>
+<a name="page_message.php"></a>
+<h1>page_message.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 82</b> - File "/home/stephen/communitycms/comcms/trunk/admin/page_message.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="page_message_edit.php"></a>
+<h1>page_message_edit.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 100</b> - File "/home/stephen/communitycms/comcms/trunk/admin/page_message_edit.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="page_message_new.php"></a>
+<h1>page_message_new.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 49</b> - File "/home/stephen/communitycms/comcms/trunk/admin/page_message_new.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="poll_block.php"></a>
+<h1>poll_block.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 55</b> - File "/home/stephen/communitycms/comcms/trunk/content_blocks/poll_block.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="poll_manager.php"></a>
+<h1>poll_manager.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 60</b> - File "/home/stephen/communitycms/comcms/trunk/admin/poll_manager.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="poll_new.php"></a>
+<h1>poll_new.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 55</b> - File "/home/stephen/communitycms/comcms/trunk/admin/poll_new.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="poll_results.php"></a>
+<h1>poll_results.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 54</b> - File "/home/stephen/communitycms/comcms/trunk/admin/poll_results.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="PSpell.php"></a>
+<h1>PSpell.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 8</b> - no @package tag was used in a DocBlock for class PSpell<br>
+<b>Warning on line 80</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/tiny_mce/plugins/spellchecker/classes/PSpell.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="PSpellShell.php"></a>
+<h1>PSpellShell.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 8</b> - no @package tag was used in a DocBlock for class PSpellShell<br>
+<b>Warning on line 111</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/tiny_mce/plugins/spellchecker/classes/PSpellShell.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="rpc.php"></a>
+<h1>rpc.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 110</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/tiny_mce/plugins/spellchecker/rpc.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="settings.php"></a>
+<h1>settings.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - Page-level DocBlock precedes "define SECURITY", use another DocBlock to document the source element<br>
+<a name="site_config.php"></a>
+<h1>site_config.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 51</b> - File "/home/stephen/communitycms/comcms/trunk/admin/site_config.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="SpellChecker.php"></a>
+<h1>SpellChecker.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 8</b> - no @package tag was used in a DocBlock for class SpellChecker<br>
+<b>Warning on line 60</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/tiny_mce/plugins/spellchecker/classes/SpellChecker.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="table_of_contents.php"></a>
+<h1>table_of_contents.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 43</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/table_of_contents.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="text_block.php"></a>
+<h1>text_block.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 44</b> - File "/home/stephen/communitycms/comcms/trunk/content_blocks/text_block.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="tinymce_paste_in_firefox.php"></a>
+<h1>tinymce_paste_in_firefox.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 75</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/tinymce_paste_in_firefox.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="tinymce_using_tinymce.php"></a>
+<h1>tinymce_using_tinymce.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 53</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/tinymce_using_tinymce.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="tinymce_what_is_it.php"></a>
+<h1>tinymce_what_is_it.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 57</b> - File "/home/stephen/communitycms/comcms/trunk/admin/help_pages/tinymce_what_is_it.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="tiny_mce_gzip.php"></a>
+<h1>tiny_mce_gzip.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 182</b> - File "/home/stephen/communitycms/comcms/trunk/scripts/tiny_mce/tiny_mce_gzip.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="update.php"></a>
+<h1>update.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 3</b> - Page-level DocBlock precedes "define SECURITY", use another DocBlock to document the source element<br>
+<b>Warning on line 27</b> - File "/home/stephen/communitycms/comcms/trunk/install/update.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="update_db.php"></a>
+<h1>update_db.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 58</b> - File "/home/stephen/communitycms/comcms/trunk/install/update_db.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="upload_mini.php"></a>
+<h1>upload_mini.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 24</b> - File "/home/stephen/communitycms/comcms/trunk/admin/upload_mini.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="user.php"></a>
+<h1>user.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 50</b> - File "/home/stephen/communitycms/comcms/trunk/admin/user.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="user_create.php"></a>
+<h1>user_create.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 133</b> - File "/home/stephen/communitycms/comcms/trunk/admin/user_create.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="user_edit.php"></a>
+<h1>user_edit.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 146</b> - File "/home/stephen/communitycms/comcms/trunk/admin/user_edit.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="user_groups.php"></a>
+<h1>user_groups.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 91</b> - File "/home/stephen/communitycms/comcms/trunk/admin/user_groups.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="user_permission.php"></a>
+<h1>user_permission.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 11</b> - File "/home/stephen/communitycms/comcms/trunk/admin/user_permission.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="view.php"></a>
+<h1>view.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 57</b> - File "/home/stephen/communitycms/comcms/trunk/view.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="display.php"></a>
+<h1>display.php</h1>
+<h2>Errors:</h2><br>
+<b>Error on line 111</b> - global variable $db specified in @global tag was never found<br>
+<a name="main.php"></a>
+<h1>main.php</h1>
+<h2>Errors:</h2><br>
+<b>Error on line 21</b> - global variable $site_info specified in @global tag was never found<br>
+<a name="poll.php"></a>
+<h1>poll.php</h1>
+<h2>Errors:</h2><br>
+<b>Error on line 19</b> - global variable $page specified in @global tag was never found<br>
+	<p class="notes" id="credit">
+		Documentation generated on Fri, 22 May 2009 12:22:42 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</body>
+</html>
