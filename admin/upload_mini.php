@@ -1,4 +1,12 @@
 <?php
+/**
+ * Community CMS
+ * $Id$
+ *
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.admin
+ */
 define('SECURITY',1);
 define('ADMIN',1);
 define('ROOT','../');
