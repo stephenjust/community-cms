@@ -15,8 +15,9 @@ if (@SECURITY != 1) {
 
 /**
  * Initializes many required variables
- * 
- * @global resource $db
+ *
+ * @global object $acl
+ * @global object $db
  * @global array $site_info
  */
 function initialize() {
