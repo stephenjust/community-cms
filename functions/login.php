@@ -17,7 +17,7 @@ function login($user,$passwd) {
 	if($user == "" || $passwd == "") {
 		err_page(3001);
 	} else {
-		$query = 'SELECT id,username,password,realname,type
+		$query = 'SELECT id,username,password,realname,type,groups
 			FROM ' . USER_TABLE . ' WHERE username = \''.$user.'\'
 			AND password = \''.md5($passwd).'\'';
 		$access = $db->sql_query($query);
@@ -33,6 +33,7 @@ function login($user,$passwd) {
 			$_SESSION['pass'] = md5($passwd);
 			$_SESSION['name'] = $result['realname'];
 			$_SESSION['type'] = $result['type'];
+			$_SESSION['groups'] = array2csv($result['groups']);
 			$_SESSION['last_login'] = time();
 			define('USERINFO',$result['id'].','.$result['realname'].','.$result['type']);
 			// Set latest login time
@@ -55,6 +56,7 @@ function logout() {
 	unset($_SESSION['pass']);
 	unset($_SESSION['name']);
 	unset($_SESSION['type']);
+	unset($_SESSION['groups']);
 	unset($_SESSION['lastlogin']);
 	session_destroy();
 }
@@ -104,6 +106,9 @@ function checkuser($mustbeloggedin = 0) {
  */
 function checkuser_admin() {
 	global $db;
+	if(!isset($_SESSION['type'])) {
+		err_page(3004);
+	}
 	if($_SESSION['type'] < 1) {
 		err_page(3004);
 	}

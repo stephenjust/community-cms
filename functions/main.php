@@ -28,6 +28,8 @@ function initialize() {
 
 	global $db;
 	global $site_info;
+	global $acl;
+	$acl = new acl;
 	$db->sql_connect();
 	// Load global site information.
 	$site_info_query = 'SELECT * FROM ' . CONFIG_TABLE;
