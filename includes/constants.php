@@ -27,6 +27,7 @@ define('TIME_12_SEC', date('h:i:sa'));
 define('TIME_12', date('h:ia'));
 
 // DATABASE TABLES
+define('ACL_TABLE', $CONFIG['db_prefix'] . 'acl');
 define('BLOCK_TABLE', $CONFIG['db_prefix'] . 'blocks');
 define('CALENDAR_TABLE', $CONFIG['db_prefix'] . 'calendar');
 define('CALENDAR_CATEGORY_TABLE', $CONFIG['db_prefix'] . 'calendar_categories');

@@ -1,3 +1,4 @@
+create sequence <!-- $DB_PREFIX$ -->acl_id_seq;;
 create sequence <!-- $DB_PREFIX$ -->blocks_id_seq;;
 create sequence <!-- $DB_PREFIX$ -->calendar_id_seq;;
 create sequence <!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq;;
@@ -16,6 +17,14 @@ create sequence <!-- $DB_PREFIX$ -->templates_id_seq;;
 create sequence <!-- $DB_PREFIX$ -->messages_id_seq;;
 create sequence <!-- $DB_PREFIX$ -->user_groups_id_seq;;
 create sequence <!-- $DB_PREFIX$ -->users_id_seq;;
+
+CREATE TABLE "<!-- $DB_PREFIX$ -->acl" (
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->acl_id_seq') PRIMARY KEY,
+	"acl_key" text NOT NULL,
+	"user" integer NOT NULL,
+	"is_group" integer NOT NULL default 0,
+	"allow" integer NOT NULL
+);;
 
 CREATE TABLE <!-- $DB_PREFIX$ -->blocks (
 	id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->blocks_id_seq') PRIMARY KEY ,
@@ -215,6 +224,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->users (
 	PRIMARY KEY  (id)
 );;
 
+select setval('<!-- $DB_PREFIX$ -->acl_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->acl));;
 select setval('<!-- $DB_PREFIX$ -->blocks_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->blocks));;
 select setval('<!-- $DB_PREFIX$ -->calendar_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->calendar));;
 select setval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq', (select max(cat_id) from <!-- $DB_PREFIX$ -->calendar_categories));;
@@ -234,39 +244,41 @@ select setval('<!-- $DB_PREFIX$ -->messages_id_seq', (select max(id) from <!-- $
 select setval('<!-- $DB_PREFIX$ -->user_groups_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->user_groups));;
 select setval('<!-- $DB_PREFIX$ -->users_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->users));;
 
+INSERT INTO "<!-- $DB_PREFIX$ -->acl" ("acl_key", "user", "is_group", "allow") VALUES
+('all', 1, 0, 1);;
 
-INSERT INTO <!-- $DB_PREFIX$ -->calendar_categories (cat_id, label, colour, description) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->calendar_categories" ("cat_id", "label", "colour", "description") VALUES
 (0, 'Default Category', 'red', ''),
 (1, 'Other', 'yellow', '');;
 
-INSERT INTO <!-- $DB_PREFIX$ -->config (db_version,name, url, comment, template, footer, active) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->config" (db_version,name, url, comment, template, footer, active) VALUES
 ('0.02','<!-- $SITE_NAME$ -->', 'http://localhost/', 'Sourceforge.net', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);;
 
-INSERT INTO <!-- $DB_PREFIX$ -->news (page, name, description, author, timestamp, image) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->news" ("page", "name", "description", "author", "timestamp", "image") VALUES
 (1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
 
-INSERT INTO <!-- $DB_PREFIX$ -->news_settings
+INSERT INTO "<!-- $DB_PREFIX$ -->news_settings"
     (default_date_setting ,show_author ,show_edit_time) VALUES
 ('1', '1', '1');;
 
-INSERT INTO <!-- $DB_PREFIX$ -->pages (text_id, title, type, menu, list) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->pages" (text_id, title, type, menu, list) VALUES
 ('home', 'Home', 1, 1, 0),
 ('calendar', 'Calendar', 3, 1, 1),
 ('newsletters', 'Newsletters', 2, 1, 2);;
 
-INSERT INTO <!-- $DB_PREFIX$ -->pagetypes (id, name, description, author, filename) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->pagetypes" (id, name, description, author, filename) VALUES
 (1, 'News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', 'news.php'),
 (2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by timestamp. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
 (3, 'Calendar', 'A complex timestamp management system supporting a full month view, week view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
 (4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php');;
 
-INSERT INTO <!-- $DB_PREFIX$ -->templates (id, path, name, description, author) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->templates" ("id", "path", "name", "description", "author") VALUES
 (1, 'templates/default/', 'Community CMS Default Template', 'Default template.', 'Stephen J');;
 
-INSERT INTO <!-- $DB_PREFIX$ -->user_groups
-(name,label_format) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->user_groups"
+("name","label_format") VALUES
 ('Administrator','font-weight: bold;; color: #009900;;');;
 
-INSERT INTO <!-- $DB_PREFIX$ -->users (id, type, username, password, groups, realname, phone, email, address, phone_hide, email_hide, address_hide, message) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->users" (id, type, username, password, groups, realname, phone, email, address, phone_hide, email_hide, address_hide, message) VALUES
 (1, 1, '<!-- $ADMIN_USER$ -->', '<!-- $ADMIN_PWD$ -->', '1', 'Administrator', '555-555-5555', 'admin@example.com','Unknown',1,1,1,1),
 (2, 0, 'user', '5f4dcc3b5aa765d61d8327deb882cf99', NULL, 'Default User', '555-555-5555', 'user@example.com','Unknown',1,1,1,0)

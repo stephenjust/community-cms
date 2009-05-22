@@ -1,4 +1,15 @@
-CREATE TABLE IF NOT EXISTS <!-- $DB_PREFIX$ -->blocks (
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl` (
+	`id` INT NOT NULL auto_increment PRIMARY KEY,
+	`acl_key` TEXT NOT NULL,
+	`user` INT NOT NULL,
+	`is_group` INT(1) NOT NULL DEFAULT 0,
+	`allow` INT(1) NOT NULL
+) ENGINE=MYISAM CHARACTER SET=utf8 ;;
+
+INSERT INTO `<!-- $DB_PREFIX$ -->acl` (`acl_key`, `user`, `is_group`, `allow`) VALUES
+('all', 1, 0, 1);;
+
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 	`id` INT NOT NULL auto_increment PRIMARY KEY ,
 	`type` TEXT NOT NULL,
 	`attributes` TEXT NOT NULL
@@ -22,10 +33,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
   KEY `category` (`category`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
---
--- Table structure for table `<!-- $DB_PREFIX$ -->calendar_categories`
---
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
   `cat_id` int(11) NOT NULL auto_increment,
   `label` text NOT NULL,
@@ -34,19 +41,9 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
   PRIMARY KEY  (`cat_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;;
 
---
--- Dumping data for table `<!-- $DB_PREFIX$ -->calendar_categories`
---
-
 INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
 (0, 'Default Category', 'red', ''),
 (1, 'Other', 'yellow', '');;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `<!-- $DB_PREFIX$ -->config`
---
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`db_version` decimal(6,2) NOT NULL,
@@ -60,14 +57,8 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`home` int(4) NOT NULL default '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;;
 
---
--- Dumping data for table `<!-- $DB_PREFIX$ -->config`
---
-
 INSERT INTO `<!-- $DB_PREFIX$ -->config` (`db_version`,`name`, `url`, `comment`, `template`, `footer`, `active`) VALUES
 ('0.02','<!-- $SITE_NAME$ -->', 'http://localhost/', 'Sourceforge.net', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);;
-
--- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   `id` int(11) NOT NULL auto_increment,
@@ -77,8 +68,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
--- --------------------------------------------------------
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   `log_id` int(11) NOT NULL auto_increment,
   `date` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
@@ -87,8 +76,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   `ip_addr` INT(10) unsigned NOT NULL,
   PRIMARY KEY  (`log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
-
--- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
   `id` int(11) NOT NULL auto_increment,
@@ -107,8 +94,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 INSERT INTO `<!-- $DB_PREFIX$ -->news` (`id`, `page`, `name`, `description`, `author`, `date`, `image`) VALUES
 (0, 1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
 
--- --------------------------------------------------------
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news_settings` (
     `default_date_setting` INT(3) NOT NULL ,
     `show_author` INT(3) NOT NULL ,
@@ -118,8 +103,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news_settings` (
 INSERT INTO `<!-- $DB_PREFIX$ -->news_settings`
     (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
 ('1', '1', '1');;
-
--- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
   `id` int(11) NOT NULL auto_increment,
@@ -131,10 +114,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
   `hidden` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
-
---
--- Table structure for table `<!-- $DB_PREFIX$ -->pages`
---
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
   `id` int(11) NOT NULL auto_increment,
@@ -148,10 +127,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
   `blocks_right` text NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;;
-
---
--- Dumping data for table `<!-- $DB_PREFIX$ -->pages`
---
 
 INSERT INTO `<!-- $DB_PREFIX$ -->pages` (`text_id`, `title`, `type`, `menu`, `list`) VALUES
 ('home', 'Home', 1, 1, 0),
@@ -168,9 +143,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_messages` (
 	`order` INT NOT NULL,
 	INDEX ( `page_id`,`order` )
 ) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
---
--- Table structure for table `<!-- $DB_PREFIX$ -->pagetypes`
---
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
   `id` int(4) NOT NULL auto_increment,
@@ -181,24 +153,18 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;;
 
---
--- Dumping data for table `<!-- $DB_PREFIX$ -->pagetypes`
---
-
 INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (`id`, `name`, `description`, `author`, `filename`) VALUES
 (1, 'News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', 'news.php'),
 (2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by date. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
 (3, 'Calendar', 'A complex date management system supporting a full month view, week view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
 (4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php');;
 
--- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->permissions` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	`user` INT NOT NULL ,
 	`files` INT(4) NOT NULL DEFAULT '0',
 	INDEX (`user`)
 ) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
-
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_questions` (
   `question_id` int(5) NOT NULL auto_increment,
@@ -208,7 +174,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_questions` (
   `active` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`question_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
-
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_answers` (
   `answer_id` int(6) NOT NULL auto_increment,
@@ -227,7 +192,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
   PRIMARY KEY  (`response_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
   `id` int(3) NOT NULL auto_increment,
   `path` text NOT NULL,
@@ -240,16 +204,12 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
 INSERT INTO `<!-- $DB_PREFIX$ -->templates` (`id`, `path`, `name`, `description`, `author`) VALUES
 (1, 'templates/default/', 'Community CMS Default Template', 'Default template.', 'Stephen J');;
 
--- --------------------------------------------------------
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`recipient` INT(5) NOT NULL DEFAULT '1',
 	`message` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
 	) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
-
--- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->user_groups` (
 	`id` int(5) NOT NULL auto_increment,
@@ -261,8 +221,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->user_groups` (
 INSERT INTO `<!-- $DB_PREFIX$ -->user_groups`
 (`name`,`label_format`) VALUES
 ('Administrator','font-weight: bold; color: #009900;');;
-
--- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`id` int(5) NOT NULL auto_increment,
