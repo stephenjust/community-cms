@@ -1,24 +1,25 @@
-Main#1#Configuration#site_config
-Help#0#Help#help
-Feedback#0#Feedback#feedback
-Blocks#1#Block Manager#block_manager
-News#1#Articles#news
-News#0#Edit Article#news_edit_article
-News#1#Module Settings#news_settings
-Calendar#1#Manage Events#calendar
-Calendar#1#Settings#calendar_settings
-Calendar#0#Edit Date#calendar_edit_date
-Files#1#Manage Files#filemanager
-Newsletters#1#Newsletters#newsletter
-Polls#1#Poll Manager#poll_manager
-Polls#1#New Poll#poll_new
-Polls#0#Poll Results#poll_results
-Pages#1#Pages#page
-Pages#1#Page Messages#page_message
-Pages#0#Create Page Message#page_message_new
-Pages#0#Edit Page Message#page_message_edit
-Users#1#New User#user_create
-Users#1#User List#user
-Users#0#Edit User#user_edit
-Users#1#Groups#user_groups
-Logs#1#View Logs#log_view
+// Category	#Show	#LinkText			#FileName			#ACLPerm
+Main		#1		#Configuration		#site_config		#adm_site_config
+Help		#0		#Help				#help				#adm_help
+Feedback	#0		#Feedback			#feedback			#adm_feedback
+Blocks		#1		#Block Manager		#block_manager		#adm_block_manager
+News		#1		#Articles			#news				#adm_news
+News		#0		#Edit Article		#news_edit_article	#adm_news_edit_article
+News		#1		#Module Settings	#news_settings		#adm_news_settings
+Calendar	#1		#Manage Events		#calendar			#adm_calendar
+Calendar	#1		#Settings			#calendar_settings	#adm_calendar_settings
+Calendar	#0		#Edit Date			#calendar_edit_date	#adm_calendar_edit_date
+Files		#1		#Manage Files		#filemanager		#adm_filemanager
+Newsletters	#1		#Newsletters		#newsletter			#adm_newsletter
+Polls		#1		#Poll Manager		#poll_manager		#adm_poll_manager
+Polls		#1		#New Poll			#poll_new			#adm_poll_new
+Polls		#0		#Poll Results		#poll_results		#adm_poll_results
+Pages		#1		#Pages				#page				#adm_page
+Pages		#1		#Page Messages		#page_message		#adm_page_message
+Pages		#0		#Create Page Message#page_message_new	#adm_page_message_new
+Pages		#0		#Edit Page Message	#page_message_edit	#adm_page_message_edit
+Users		#1		#New User			#user_create		#adm_user_create
+Users		#1		#User List			#user				#adm_user
+Users		#0		#Edit User			#user_edit			#adm_user_edit
+Users		#1		#Groups				#user_groups		#adm_user_groups
+Logs		#1		#View Logs			#log_view			#adm_log_view
