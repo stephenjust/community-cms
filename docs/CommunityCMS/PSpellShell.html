@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class PSpellShell</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class PSpellShell</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">$Id: editor_plugin_src.js 201 2007-02-12 15:56:56Z spocke $</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Moxiecode</li>
+				<li><span class="field">copyright:</span> Copyright © 2004-2007, Moxiecode Systems AB, All rights reserved.</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_comcms---trunk---scripts---tiny_mce---plugins---spellchecker---classes---PSpellShell.php.html">/comcms/trunk/scripts/tiny_mce/plugins/spellchecker/classes/PSpellShell.php</a> (line <span class="field">9</span>)
+		</p>
+		
+				
+		<pre><a href="../CommunityCMS/SpellChecker.html">SpellChecker</a>
+   |
+   --PSpellShell</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																												
+												<div class="method-definition">
+											<span class="method-result">{Array}</span>
+										<a href="#checkWords" title="details" class="method-name">&amp;checkWords</a>
+											(<span class="var-type">{String}</span>&nbsp;<span class="var-name">$lang</span>, <span class="var-type">{Array}</span>&nbsp;<span class="var-name">$words</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">{Array}</span>
+										<a href="#getSuggestions" title="details" class="method-name">&amp;getSuggestions</a>
+											(<span class="var-type">{String}</span>&nbsp;<span class="var-name">$lang</span>, <span class="var-type">{String}</span>&nbsp;<span class="var-name">$word</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#_getCMD" title="details" class="method-name">_getCMD</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$lang</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="methodcheckWords" id="checkWords"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">checkWords</span> (line <span class="line-number">17</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Spellchecks an array of words.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Array of misspelled words.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">{Array}</span>
+		<span class="method-name">
+			&amp;checkWords
+		</span>
+					(<span class="var-type">{String}</span>&nbsp;<span class="var-name">$lang</span>, <span class="var-type">{Array}</span>&nbsp;<span class="var-name">$words</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">{String}</span>
+				<span class="var-name">$lang</span><span class="var-description">: Language code like sv or en.</span>			</li>
+					<li>
+				<span class="var-type">{Array}</span>
+				<span class="var-name">$words</span><span class="var-description">: Array of words to spellcheck.</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../CommunityCMS/SpellChecker.html#methodcheckWords">SpellChecker::checkWords()</a></dt>
+						<dd>Spellchecks an array of words.</dd>
+					</dl>
+			
+	</div>
+<a name="methodgetSuggestions" id="getSuggestions"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSuggestions</span> (line <span class="line-number">59</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns suggestions of for a specific word.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Array of suggestions for the specified word.</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">{Array}</span>
+		<span class="method-name">
+			&amp;getSuggestions
+		</span>
+					(<span class="var-type">{String}</span>&nbsp;<span class="var-name">$lang</span>, <span class="var-type">{String}</span>&nbsp;<span class="var-name">$word</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">{String}</span>
+				<span class="var-name">$lang</span><span class="var-description">: Language code like sv or en.</span>			</li>
+					<li>
+				<span class="var-type">{String}</span>
+				<span class="var-name">$word</span><span class="var-description">: Specific word to get suggestions for.</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../CommunityCMS/SpellChecker.html#methodgetSuggestions">SpellChecker::getSuggestions()</a></dt>
+						<dd>Returns suggestions of for a specific word.</dd>
+					</dl>
+			
+	</div>
+<a name="method_getCMD" id="_getCMD"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_getCMD</span> (line <span class="line-number">102</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			_getCMD
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$lang</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$lang</span>			</li>
+				</ul>
+		
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../CommunityCMS/SpellChecker.html">SpellChecker</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../CommunityCMS/SpellChecker.html#methodSpellChecker">SpellChecker::SpellChecker()</a></span><br>
+													<span class="method-name"><a href="../CommunityCMS/SpellChecker.html#methodcheckWords">SpellChecker::checkWords()</a></span><br>
+													<span class="method-name"><a href="../CommunityCMS/SpellChecker.html#methodgetSuggestions">SpellChecker::getSuggestions()</a></span><br>
+													<span class="method-name"><a href="../CommunityCMS/SpellChecker.html#methodloopback">SpellChecker::loopback()</a></span><br>
+													<span class="method-name"><a href="../CommunityCMS/SpellChecker.html#methodthrowError">SpellChecker::throwError()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Fri, 22 May 2009 12:27:39 -0600 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</div></body>
+</html>
