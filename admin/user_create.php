@@ -28,13 +28,8 @@ if ($_GET['create'] == 1) {
 		if (strlen($title) <= 1) {
 			$title = NULL;
 		}
-		$groups = NULL;
-		if (isset($_POST['groups'])) {
-			$num_sel_groups = count($_POST['groups']);
-			for ($i = 0; $i < $num_sel_groups; $i++) {
-				$groups .= $_POST['groups'][$i].',';
-			}
-		}
+		$groups = (isset($_POST['groups']) && is_array($_POST['groups']))
+			? array2csv($_POST['groups']) : NULL;
 		$telephone = addslashes($_POST['telephone']);
 		$address = addslashes($_POST['address']);
 		$email = addslashes($_POST['email']);
@@ -64,7 +59,7 @@ if ($_GET['create'] == 1) {
 			$error = 1;
 		}
 		$check_user_query = 'SELECT * FROM ' . USER_TABLE . '
-			WHERE username = "'.$username.'"';
+			WHERE username = \''.$username.'\'';
 		$check_user_handle = $db->sql_query($check_user_query);
 		if ($db->error[$check_user_handle] === 1) {
 			$content .= 'Failed to check if your username is already taken.<br />';

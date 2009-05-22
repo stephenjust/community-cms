@@ -22,7 +22,7 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 		if ($_POST['edit_old_pass'] != "" && md5($_POST['edit_old_pass']) == $current_data['password']) {
 			if ($_POST['edit_pass'] == $_POST['edit_pass_conf'] && strlen($_POST['edit_pass']) >= 8) {
 				$change_password_query = 'UPDATE ' . USER_TABLE . '
-					SET password = "'.md5($_POST['edit_pass']).'" WHERE id = '.$_GET['edit'].' LIMIT 1';
+					SET password = \''.md5($_POST['edit_pass']).'\' WHERE id = '.(int)$_GET['edit'];
 				$change_password_handle = $db->sql_query($change_password_query);
 				if ($db->error[$change_password_query] === 1) {
 					$content .= 'Failed to change password.<br />';
@@ -38,20 +38,15 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 		$telephone = addslashes($_POST['telephone']);
 		$email = addslashes($_POST['email']);
 		$title = addslashes($_POST['title']);
-		$telephone_hide = $_POST['telephone_hide'];
-		$address_hide = $_POST['address_hide'];
-		$email_hide = $_POST['email_hide'];
-		$groups = NULL;
-		if (isset($_POST['groups'])) {
-			$num_sel_groups = count($_POST['groups']);
-			for ($i = 0; $i < $num_sel_groups; $i++) {
-				$groups .= $_POST['groups'][$i].',';
-			}
-		}
+		$telephone_hide = (int)$_POST['telephone_hide'];
+		$address_hide = (int)$_POST['address_hide'];
+		$email_hide = (int)$_POST['email_hide'];
+		$groups = (isset($_POST['groups']) && is_array($_POST['groups']))
+			? array2csv($_POST['groups']) : NULL;
 		if (!isset($_POST['hide'])) {
 			$hide = NULL;
 		} else {
-			$hide = $_POST['hide'];
+			$hide = (int)$_POST['hide'];
 		}
 		$error = 0;
 		$message = (isset($_POST['message'])) ? $_POST['message'] : NULL;
@@ -75,12 +70,12 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 		}
 		if ($error == 0) {
 			$edit_query = 'UPDATE ' . USER_TABLE . '
-				SET realname="'.$realname.'", title="'.$title.'",
-				groups="'.$groups.'", phone="'.$telephone.'",
-				email="'.$email.'", address="'.addslashes($_POST['address']).'",
+				SET realname=\''.$realname.'\', title=\''.$title.'\',
+				groups=\''.$groups.'\', phone=\''.$telephone.'\',
+				email=\''.$email.'\', address=\''.addslashes($_POST['address']).'\',
 				address_hide='.$address_hide.', email_hide='.$email_hide.',
 				phone_hide='.$telephone_hide.', message='.$message.',
-				hide='.$hide.' WHERE id = '.$_GET['edit'].' LIMIT 1';
+				hide='.$hide.' WHERE id = '.(int)$_GET['edit'];
 			$edit_handle = $db->sql_query($edit_query);
 			if($db->error[$edit_handle] === 1) {
 				$content .= 'Failed to update user information. ';
