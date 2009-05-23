@@ -100,7 +100,7 @@ function csv2array($string) {
 	$array = array();
 	$temp_array = explode(',',$string);
 	for ($i = 0; $i < count($temp_array); $i++) {
-		if (strlen($temp_array) != 0) {
+		if (strlen($temp_array[$i]) != 0) {
 			$array[] = $temp_array[$i];
 		}
 	}

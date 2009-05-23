@@ -27,12 +27,14 @@ class acl {
 	 * @param string $acl_key Name of property in Access Control List
 	 * @param int $user Not Used
 	 * @param int $group Not Used
+	 * @global object $db Database connection object
 	 * @return bool True if allowed to complete action, false if not.
 	 */
 	public function check_permission($acl_key, $user = 0, $group = 0) {
 		if ($this->allow_all === true) {
 			return true;
 		}
+		global $db;
 		if (isset($_SESSION['userid'])) {
 			// Check if user has the dangerous 'all' property
 			$acl_all_query = 'SELECT `allow` FROM `' . ACL_TABLE . '`
@@ -53,7 +55,7 @@ class acl {
 		// Check group properties
 		$group_allow = false;
 		$group_list = (isset($_SESSION['groups'])) ? $_SESSION['groups'] : array(0);
-		foreach ($_SESSION['groups'] as $group) {
+		foreach ($group_list as $group) {
 			// Check if group has the 'all' property
 			$acl_all_query = 'SELECT `allow` FROM `' . ACL_TABLE . '`
 				WHERE `acl_key` = \'all\' 

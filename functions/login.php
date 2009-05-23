@@ -33,7 +33,7 @@ function login($user,$passwd) {
 			$_SESSION['pass'] = md5($passwd);
 			$_SESSION['name'] = $result['realname'];
 			$_SESSION['type'] = $result['type'];
-			$_SESSION['groups'] = array2csv($result['groups']);
+			$_SESSION['groups'] = csv2array($result['groups']);
 			$_SESSION['last_login'] = time();
 			define('USERINFO',$result['id'].','.$result['realname'].','.$result['type']);
 			// Set latest login time

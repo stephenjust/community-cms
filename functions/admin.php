@@ -14,11 +14,13 @@ if (@SECURITY != 1) {
 
 /**
  * admin_nav - Generate the navigation bar for administration pages
+ * @global object $acl Access Control List class
  * @global object $db Database class
  * @return string Menu HTML
  */
 function admin_nav() {
 	global $db;
+	global $acl;
 	$pl_file = ROOT.'admin/menu.info';
 	$pl_handle = fopen($pl_file,'r');
 	$page_list = fread($pl_handle,filesize($pl_file));
@@ -31,7 +33,7 @@ function admin_nav() {
 	$list_index = 0;
 	$page_index = 0;
 	for ($i = 0; $i < count($admin_pages); $i++) {
-		if (strlen($admin_pages[$i]) > 3 || !eregi('//',$admin_pages[$i])) { // 1
+		if (strlen($admin_pages[$i]) > 3 && !eregi('//',$admin_pages[$i]) && $acl->check_permission($admin_pages[$i][4])) { // 1
 			$admin_menu_item[$i] = explode('#',$admin_pages[$i]);
 			if (isset($admin_menu_item[$i][3])) { // 2
 				if ($admin_menu_item[$i][0] != $last_heading && $admin_menu_item[$i][1] == 1) { // 3
@@ -49,8 +51,6 @@ function admin_nav() {
 						.$admin_menu_item[$i][3].'">'.$admin_menu_item[$i][2].'</a><br />';
 				} // 4
 			} // 2
-		} else {
-			$list_index++;
 		}
 	} // FOR
 	$result .= '</div></div></div>';

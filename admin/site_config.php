@@ -13,6 +13,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 }
 $content = NULL;
 
+if (!$acl->check_permission('adm_site_config')) {
+	$content .= 'You do not have the necessary permissions to access this module.';
+	return true;
+}
+
 if ($_GET['action'] == 'save') {
 	$site_name = addslashes(strip_tags($_POST['site_name']));
 	$site_desc = addslashes(strip_tags($_POST['site_desc']));
