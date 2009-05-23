@@ -17,49 +17,45 @@ if (!defined('SECURITY')) {
 
 class acl {
 	/**
-	 * $allow_all - Allows bypassing permission checks
-	 * @var bool If true, bypass all permission checks
-	 */
-	private $allow_all = false;
-
-	/**
 	 * check_permission - Read from the ACL and check if user is allowed to complete action
 	 * @param string $acl_key Name of property in Access Control List
-	 * @param int $user Not Used
-	 * @param int $group Not Used
+	 * @param int $usr User to check (current user if not set)
+	 * @param array $groups Groups to check (current groups if not set)
 	 * @global object $db Database connection object
 	 * @return bool True if allowed to complete action, false if not.
 	 */
-	public function check_permission($acl_key, $user = 0, $group = 0) {
-		if ($this->allow_all === true) {
-			return true;
-		}
+	public function check_permission($acl_key, $usr = 0, $groups = NULL) {
 		global $db;
-		if (isset($_SESSION['userid'])) {
-			// Check if user has the dangerous 'all' property
-			$acl_all_query = 'SELECT `allow` FROM `' . ACL_TABLE . '`
-				WHERE `acl_key` = \'all\'
-				AND `user` = '.$_SESSION['userid'].'
-				AND `is_group` = 0';
-			$acl_all_handle = $db->sql_query($acl_all_query);
-			if ($db->error[$acl_all_handle] === 1) {
-				return false;
-			} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
-				$this->allow_all = true;
-				return true;
-			} else {
-				unset($acl_all_query);
-				unset($acl_all_handle);
+		if ($groups == NULL) {
+			$user = ($usr == 0 && isset($_SESSION['userid'])) ? $_SESSION['userid'] : $usr;
+			if ($user != 0) {
+				// Check if user has the dangerous 'all' property
+				$acl_all_query = 'SELECT `allow` FROM `' . ACL_TABLE . '`
+					WHERE `acl_key` = \'all\'
+					AND `user` = '.$user.'
+					AND `is_group` = 0';
+				$acl_all_handle = $db->sql_query($acl_all_query);
+				if ($db->error[$acl_all_handle] === 1) {
+					return false;
+				} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
+					return true;
+				} else {
+					unset($acl_all_query);
+					unset($acl_all_handle);
+				}
 			}
 		}
 		// Check group properties
 		$group_allow = false;
-		$group_list = (isset($_SESSION['groups'])) ? $_SESSION['groups'] : array(0);
-		foreach ($group_list as $group) {
+		if (!isset($_SESSION['groups'])) {
+			$_SESSION['groups'] = array();
+		}
+		$group_list = ($groups == NULL) ? $_SESSION['groups'] : $groups;
+		for ($i = 0; $i < count($group_list); $i++) {
 			// Check if group has the 'all' property
 			$acl_all_query = 'SELECT `allow` FROM `' . ACL_TABLE . '`
 				WHERE `acl_key` = \'all\' 
-				AND `user` = '.$group.' 
+				AND `user` = '.$group_list[$i].'
 				AND `is_group` = 1';
 			$acl_all_handle = $db->sql_query($acl_all_query);
 			if ($db->error[$acl_all_handle] === 1) {
@@ -78,12 +74,12 @@ class acl {
 			// Check if group has requested property
 			$acl_group_query = 'SELECT `allow` FROM `' . ACL_TABLE . '`
 				WHERE `acl_key` = \''.$acl_key.'\' 
-				AND `user` = '.$group.' 
+				AND `user` = '.$group_list[$i].'
 				AND `is_group` = 1';
 			$acl_group_handle = $db->sql_query($acl_group_query);
 			if ($db->error[$acl_group_handle] === 1) {
 				return false;
-			} elseif ($db->sql_num_rows($acl_group_handle)) {
+			} elseif ($db->sql_num_rows($acl_group_handle) != 0) {
 				$result = $db->sql_fetch_assoc($acl_group_handle);
 				if ($result['allow'] == 1) {
 					$group_allow = true;
@@ -95,35 +91,67 @@ class acl {
 				unset($acl_group_handle);
 			}
 		}
-		unset($group);
-		if (isset($_SESSION['userid'])) {
-			// Check if user has the requested property
-			$acl_all_query = 'SELECT `allow` FROM `' . ACL_TABLE . '`
-				WHERE `acl_key` = \''.$acl_key.'\'
-				AND `user` = '.$_SESSION['userid'].'
-				AND `is_group` = 0';
-			$acl_all_handle = $db->sql_query($acl_all_query);
-			if ($db->error[$acl_all_handle] === 1) {
-				return false;
-			} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
-				$result = $db->sql_fetch_assoc($acl_all_handle);
-				if ($result['allow'] == 1) {
-					return true;
-				}
-			} elseif ($db->sql_num_rows($acl_all_handle) === 0 && $group_allow === 1) {
+		// Check if user has the requested property
+		$acl_all_query = 'SELECT `allow` FROM `' . ACL_TABLE . '`
+			WHERE `acl_key` = \''.$acl_key.'\'
+			AND `user` = '.$user.'
+			AND `is_group` = 0';
+		$acl_all_handle = $db->sql_query($acl_all_query);
+		if ($db->error[$acl_all_handle] === 1) {
+			return false;
+		} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
+			$result = $db->sql_fetch_assoc($acl_all_handle);
+			if ($result['allow'] == 1) {
 				return true;
-			} else {
-				unset($acl_all_query);
-				unset($acl_all_handle);
 			}
+		} elseif ($db->sql_num_rows($acl_all_handle) === 0 && $group_allow == 1) {
+			return true;
 		} else {
-			return $group_allow;
+			unset($acl_all_query);
+			unset($acl_all_handle);
 		}
-		return false;
+		return $group_allow;
 	}
 	
-	public function set_permission($acl_key, $user = 0, $group = 0) {
-		// FIXME: Stub
+	public function set_permission($acl_key, $allow, $usr = 0, $group = 0) {
+		global $db;
+		$allow = (int)$allow;
+		if (!$this->check_permission('set_permissions')) {
+			return false;
+		}
+		if ($group != 0) {
+			$user = $group;
+			$is_group = 1;
+		} elseif ($usr != 0) {
+			$user = $usr;
+			$is_group = 0;
+		} else {
+			$user = $_SESSION['userid'];
+			$is_group = 0;
+		}
+		$check_if_exists_query = 'SELECT id,allow FROM `' . ACL_TABLE . '`
+			WHERE `acl_key` = \''.$acl_key.'\'
+			AND `user` = '.$user.'
+			AND `is_group` = '.$is_group;
+		$check_if_exists_handle = $db->sql_query($check_if_exists_query);
+		if ($db->error[$check_if_exists_handle] === 1) {
+			return false;
+		}
+		if ($db->sql_num_rows($check_if_exists_handle) == 1) {
+			$check_if_exists = $db->sql_fetch_assoc($check_if_exists_handle);
+			$set_permission_query = 'UPDATE `' . ACL_TABLE . '`
+				SET `allow` = '.$allow.'
+				WHERE `id` = '.$check_if_exists['id'];
+		} else {
+			$set_permission_query = 'INSERT INTO `' . ACL_TABLE . '`
+				(`acl_key`,`user`,`is_group`,`allow`)
+				VALUES (\''.$acl_key.'\','.$user.','.$is_group.','.$allow.')';
+		}
+		$set_permission_handle = $db->sql_query($set_permission_query);
+		if ($db->error[$set_permission_handle] === 1) {
+			return false;
+		}
+		return true;
 	}
 }
 

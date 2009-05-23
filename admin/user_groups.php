@@ -36,7 +36,7 @@ if ($_GET['action'] == 'new') {
 	} else {
 		$create_group_query = 'INSERT INTO ' . USER_GROUPS_TABLE . '
 			(`name`, `label_format`) VALUES
-			("'.addslashes($_POST['group_name']).'","'.addslashes($_POST['label_format']).'")';
+			(\''.addslashes($_POST['group_name']).'\',\''.addslashes($_POST['label_format']).'\')';
 		$create_group_handle = $db->sql_query($create_group_query);
 		if($db->error[$create_group_handle] === 1) {
 			$content .= '<strong>Error: </strong>Failed to create group.<br />';
@@ -46,12 +46,66 @@ if ($_GET['action'] == 'new') {
 	}
 }
 
+// ----------------------------------------------------------------------------
+
+$permlist_file = ROOT.'admin/acl_prop_list.info';
+$permlist_handle = fopen($permlist_file,'r');
+$permlist = fread($permlist_handle,filesize($permlist_file));
+fclose($permlist_handle);
+$permlist = explode("\n",$permlist);
+if ($_GET['action'] == 'permsave') {
+	$set_perm_error = 0;
+	if (!isset($_POST['id'])) {
+		$content .= 'Failed to update permissions.<br />';
+	} else {
+		$id = (int)$_POST['id'];
+		unset($_POST['id']);
+		foreach ($permlist as $perm) {
+			if (!isset($_POST[$perm])) {
+				$_POST[$perm] = NULL;
+			}
+		}
+		unset($perm);
+		foreach ($_POST as $form_var => $form_var_value) {
+			if (in_array($form_var,$permlist)) {
+				$set_perm = $acl->set_permission($form_var,checkbox($form_var_value),0,$id);
+				if (!$set_perm) {
+					$set_perm_error = 1;
+				}
+				unset($set_perm);
+			}
+		}
+		unset($form_var);
+		unset($form_var_value);
+		if ($set_perm_error == 0) {
+			$content .= 'Updated permissions for group.<br />'.log_action('Updated group permissions');
+		} else {
+			$content .= 'Failed to update permissions.<br />';
+		}
+	}
+	// in_array($string,$array)
+}
+
+// ----------------------------------------------------------------------------
+
 $tab_layout = new tabs;
 
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'perm') {
-	$tab_content['permission'] = '';
+	$tab_content['permission'] = NULL;
+	$form = new form;
+	$form->set_target('admin.php?module=user_groups&action=permsave');
+	$form->set_method('post');
+	$form->add_hidden('id',(int)$_GET['id']);
+	foreach ($permlist as $permission) {
+		$acl_current[$permission] = $acl->check_permission($permission,0,array((int)$_GET['id']));
+		$form->add_checkbox($permission,$permission,$acl_current[$permission]);
+	}
+	$form->add_submit('submit','Save');
+	$tab_content['permission'] .= $form;
+	unset($permission);
+
 	$tab_layout->add_tab('Manage Group Permissions',$tab_content['permission']);
 }
 
