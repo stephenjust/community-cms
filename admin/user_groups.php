@@ -46,9 +46,17 @@ if ($_GET['action'] == 'new') {
 	}
 }
 
+$tab_layout = new tabs;
+
 // ----------------------------------------------------------------------------
 
-$tab_layout = new tabs;
+if ($_GET['action'] == 'perm') {
+	$tab_content['permission'] = '';
+	$tab_layout->add_tab('Manage Group Permissions',$tab_content['permission']);
+}
+
+// ----------------------------------------------------------------------------
+
 $tab_content['manage'] = '<table class="admintable">
 <tr><th>ID</th><th width="350">Name:</th><th colspan="4">&nbsp;</th></tr>';
 $group_list_query = 'SELECT * FROM ' . USER_GROUPS_TABLE . ' ORDER BY name ASC';
@@ -66,10 +74,11 @@ for ($i = 1; $i <= $group_list_rows; $i++) {
 		<td><span style="'.stripslashes($group_list['label_format']).'"
 		id="user_group_'.$group_list['id'].'">'.stripslashes($group_list['name']).'</span></td>
 		<td><a href="admin.php?module=user_groups&action=delete&id='.$group_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png"
-		alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+		alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>
 		<td><a href="#"><img src="<!-- $IMAGE_PATH$ -->edit.png"
-		alt="Edit" width="16px" height="16px" border="0px" /></a></td>
-		<td><a href="#"><img src="<!-- $IMAGE_PATH$ -->permissions.png"
+		alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>
+		<td><a href="admin.php?module=user_groups&action=perm&id='.$group_list['id'].'">
+		<img src="<!-- $IMAGE_PATH$ -->permissions.png"
 		alt="Permissions" width="16px" height="16px" border="0px" /></a></td>
 		<td><a href="#"><img src="<!-- $IMAGE_PATH$ -->members.png"
 		alt="Members" width="16px" height="16px" border="0px" /></a></td>
