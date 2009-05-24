@@ -96,37 +96,41 @@ if ($_GET['action'] == 'home') {
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'del') {
-	// Delete page from database if no files exist on that page.
-	$page_type_query = 'SELECT page.id, page.title, pagetype.filename 
-		FROM ' . PAGE_TABLE . ' page, ' . PAGE_TYPE_TABLE ." pagetype
-		WHERE page.id = $page_id AND page.type = pagetype.id";
-	$page_type = $db->sql_query($page_type_query);
-	$page_type_info = $db->sql_fetch_assoc($page_type);
-	if ($page_type_info['filename'] == 'news.php') {
-		$check_page_query = 'SELECT * FROM ' . NEWS_TABLE . "
-			WHERE page = $page_id";
-	} elseif ($page_type_info['filename'] == 'newsletter.php') {
-		$check_page_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . "
-			WHERE page = $page_id";
-	}
-	$notempty = 0;
-	if (isset($check_page_query)) {
-		$check_page = $db->sql_query($check_page_query);
-		if ($db->sql_num_rows($check_page) != 0) {
-			$notempty = 1;
-		}
-	}
-	if ($notempty != 0) {
-		$content .= 'Failed to delete page as it is not empty.<br />';
+	if (!$acl->check_permission('page_delete')) {
+		$content .= 'You are not authorized to delete pages.<br />';
 	} else {
-		$del_page_query = 'DELETE FROM ' . PAGE_TABLE . "
-			WHERE id = $page_id";
-		$del_page = $db->sql_query($del_page_query);
-		if ($db->error[$del_page] === 1) {
-			$content .= 'Failed to delete page.<br />';
+		// Delete page from database if no files exist on that page.
+		$page_type_query = 'SELECT page.id, page.title, pagetype.filename
+			FROM ' . PAGE_TABLE . ' page, ' . PAGE_TYPE_TABLE ." pagetype
+			WHERE page.id = $page_id AND page.type = pagetype.id";
+		$page_type = $db->sql_query($page_type_query);
+		$page_type_info = $db->sql_fetch_assoc($page_type);
+		if ($page_type_info['filename'] == 'news.php') {
+			$check_page_query = 'SELECT * FROM ' . NEWS_TABLE . "
+				WHERE page = $page_id";
+		} elseif ($page_type_info['filename'] == 'newsletter.php') {
+			$check_page_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . "
+				WHERE page = $page_id";
+		}
+		$notempty = 0;
+		if (isset($check_page_query)) {
+			$check_page = $db->sql_query($check_page_query);
+			if ($db->sql_num_rows($check_page) != 0) {
+				$notempty = 1;
+			}
+		}
+		if ($notempty != 0) {
+			$content .= 'Failed to delete page as it is not empty.<br />';
 		} else {
-			$content .= 'Successfully deleted page.<br />'
-				.log_action('Deleted page with id \''.stripslashes($page_type_info['title']).'\'');
+			$del_page_query = 'DELETE FROM ' . PAGE_TABLE . "
+				WHERE id = $page_id";
+			$del_page = $db->sql_query($del_page_query);
+			if ($db->error[$del_page] === 1) {
+				$content .= 'Failed to delete page.<br />';
+			} else {
+				$content .= 'Successfully deleted page.<br />'
+					.log_action('Deleted page with id \''.stripslashes($page_type_info['title']).'\'');
+			}
 		}
 	}
 } // IF 'del'
@@ -271,7 +275,7 @@ if ($_GET['action'] == 'edit') {
 			<div id="tabs-0">
 			<table class="admintable">
 			<input type="hidden" name="id" value="'.$page_id.'" />';
-		if(strlen($edit_page['text_id']) < 1) {
+		if (strlen($edit_page['text_id']) < 1) {
 			$tab_content['edit'] .= '<tr class="row2"><td width="150">Text ID:</td><td><input type="text" name="text_id" value="" /></td></tr>';
 		}
 		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
@@ -293,8 +297,12 @@ if ($_GET['action'] == 'edit') {
 // ----------------------------------------------------------------------------
 
 $tab_content['manage'] = NULL;
+$numopts = 4;
+if ($acl->check_permission('page_delete')) {
+	$numopts++;
+}
 $tab_content['manage'] .= '<table class="admintable">
-<tr><th width="350">Page:</th><th colspan="5">&nbsp;</th></tr>';
+<tr><th width="350">Page:</th><th colspan="'.$numopts.'">&nbsp;</th></tr>';
 // Get page list in the order defined in the database. First is 0.
 $page_list_query = 'SELECT * FROM '.PAGE_TABLE.' ORDER BY list ASC';
 $page_list_handle = $db->sql_query($page_list_query);
@@ -319,9 +327,13 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 	if ($page_list['menu'] == 0) {
 		$tab_content['manage'] .= '(Hidden)';
 	}
-	$tab_content['manage'] .= '</td>
-		<td><a href="?module=page&action=del&id='.$page_list['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+	$tab_content['manage'] .= '</td>';
+	if ($acl->check_permission('page_delete')) {
+		$tab_content['manage'] .= '
+			<td><a href="?module=page&action=del&id='.$page_list['id'].'">
+			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>';
+	}
+	$tab_content['manage'] .= '
 		<td><a href="?module=page&action=move_up&id='.$page_list['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
 		<td><a href="?module=page&action=move_down&id='.$page_list['id'].'">

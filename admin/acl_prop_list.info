@@ -26,4 +26,5 @@ adm_user_create
 adm_user_edit
 adm_user_groups
 adm_user_permission
+page_delete
 set_permissions
