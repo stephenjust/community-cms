@@ -338,19 +338,19 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 	if ($acl->check_permission('page_delete')) {
 		$tab_content['manage'] .= '
 			<td><a href="?module=page&action=del&id='.$page_list['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>';
+			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>';
 	}
 	$tab_content['manage'] .= '
 		<td><a href="?module=page&action=move_up&id='.$page_list['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" /></a></td>
+		<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" />Move Up</a></td>
 		<td><a href="?module=page&action=move_down&id='.$page_list['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>';
+		<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" />Move Down</a></td>';
 	if ($page_list['type'] != 0) {
 		$tab_content['manage'] .= '<td><a href="?module=page&action=edit&id='.$page_list['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>';
+			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>';
 		if ($acl->check_permission('page_set_home')) {
 			$tab_content['manage'] .= '<td><a href="?module=page&action=home&id='.$page_list['id'].'">
-				<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>';
+				<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" />Make Home</a></td>';
 		}
 	} else {
 		$tab_content['manage'] .= '<td>&nbsp;</td><td>&nbsp;</td>';
