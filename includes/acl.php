@@ -26,6 +26,7 @@ class acl {
 	 */
 	public function check_permission($acl_key, $usr = 0, $groups = NULL) {
 		global $db;
+		$user = 0;
 		if ($groups == NULL) {
 			$user = ($usr == 0 && isset($_SESSION['userid'])) ? $_SESSION['userid'] : $usr;
 			if ($user != 0) {
