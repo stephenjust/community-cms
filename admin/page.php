@@ -14,6 +14,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 $content = NULL;
 
+if (!$acl->check_permission('adm_page')) {
+	$content .= 'You do not have the necessary permissions to access this module.';
+	return true;
+}
+
 $page_id = (isset($_GET['id']) && (int)$_GET['id'] != 0) ? (int)$_GET['id'] : NULL;
 $page_id = (isset($_POST['id']) && (int)$_POST['id'] != 0 && $page_id == NULL) ? (int)$_POST['id'] : $page_id;
 $text_id = NULL;
