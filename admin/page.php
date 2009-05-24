@@ -72,24 +72,28 @@ if ($_GET['action'] == 'new_link') {
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'home') {
-	$check_page_query = 'SELECT id,title FROM ' . PAGE_TABLE . "
-		WHERE id = $page_id LIMIT 1";
-	$check_page_handle = $db->sql_query($check_page_query);
-	if ($db->error[$check_page_handle] === 1) {
-		$content .= 'Failed to check if page exists.<br />';
-	}
-	if ($db->sql_num_rows($check_page_handle) == 1) {
-		$home_query = 'UPDATE ' . CONFIG_TABLE . " SET home=$page_id";
-		$home = $db->sql_query($home_query);
-		if($db->error[$home] === 1) {
-			$content .= 'Failed to change home page.<br />';
-		} else {
-			$check_page = $db->sql_fetch_assoc($check_page_handle);
-			$content .= 'Successfully changed home page. '.log_action('Set home page to \''.$check_page['title'].'\'');
-			$site_info['home'] = $page_id; // Site info was gathered on admin.php, a while back, so we need to reset it to the current value.
-		}
+	if (!$acl->check_permission('page_set_home')) {
+		$content .= 'You are not authorized to change the default page.<br />';
 	} else {
-		$content .= 'Could not find the page you are trying to delete.';
+		$check_page_query = 'SELECT id,title FROM ' . PAGE_TABLE . "
+			WHERE id = $page_id LIMIT 1";
+		$check_page_handle = $db->sql_query($check_page_query);
+		if ($db->error[$check_page_handle] === 1) {
+			$content .= 'Failed to check if page exists.<br />';
+		}
+		if ($db->sql_num_rows($check_page_handle) == 1) {
+			$home_query = 'UPDATE ' . CONFIG_TABLE . " SET home=$page_id";
+			$home = $db->sql_query($home_query);
+			if($db->error[$home] === 1) {
+				$content .= 'Failed to change home page.<br />';
+			} else {
+				$check_page = $db->sql_fetch_assoc($check_page_handle);
+				$content .= 'Successfully changed home page. '.log_action('Set home page to \''.$check_page['title'].'\'');
+				$site_info['home'] = $page_id; // Site info was gathered on admin.php, a while back, so we need to reset it to the current value.
+			}
+		} else {
+			$content .= 'Could not find the page you are trying to delete.';
+		}
 	}
 } // IF 'home'
 
@@ -297,8 +301,11 @@ if ($_GET['action'] == 'edit') {
 // ----------------------------------------------------------------------------
 
 $tab_content['manage'] = NULL;
-$numopts = 4;
+$numopts = 3;
 if ($acl->check_permission('page_delete')) {
+	$numopts++;
+}
+if ($acl->check_permission('page_set_home')) {
 	$numopts++;
 }
 $tab_content['manage'] .= '<table class="admintable">
@@ -340,13 +347,15 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" /></a></td>';
 	if ($page_list['type'] != 0) {
 		$tab_content['manage'] .= '<td><a href="?module=page&action=edit&id='.$page_list['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
-			<td><a href="?module=page&action=home&id='.$page_list['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>
-			</tr>';
+			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>';
+		if ($acl->check_permission('page_set_home')) {
+			$tab_content['manage'] .= '<td><a href="?module=page&action=home&id='.$page_list['id'].'">
+				<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" /></a></td>';
+		}
 	} else {
 		$tab_content['manage'] .= '<td>&nbsp;</td><td>&nbsp;</td>';
 	}
+	$tab_content['manage'] .= '</tr>';
 	if($rowstyle == 'row1') {
 		$rowstyle = 'row2';
 	} else {
