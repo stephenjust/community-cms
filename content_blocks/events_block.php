@@ -31,7 +31,7 @@ switch($event_block->attribute['mode']) {
 		$template_upcoming_events->load_file('mini_events_upcoming');
 		$bl_single_event = $template_upcoming_events->get_range('event');
 		$bl_all_events = NULL;
-		for($i = 1; $i <= $upcoming_event_handle->num_rows; $i++) {
+		for($i = 1; $i <= $db->sql_num_rows($upcoming_event_handle); $i++) {
 			$upcoming_event = $db->sql_fetch_assoc($upcoming_event_handle);
 			$template_single_event = clone $template_upcoming_events;
 			$template_single_event->template = $bl_single_event;
