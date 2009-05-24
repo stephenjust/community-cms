@@ -11,10 +11,19 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
+
+$content = NULL;
+
 if ($_GET['action'] == 'new_log') {
-	$log_message = strip_tags($_POST['message']);
-	if (strlen($log_message) > 5) {
-		log_action($log_message);
+	if (!$acl->check_permission('log_post_custom_message')) {
+		$content .= 'You are not authorized to post custom log messages.<br />';
+	} else {
+		$log_message = strip_tags($_POST['message']);
+		if (strlen($log_message) > 5) {
+			log_action($log_message);
+		} else {
+			$content .= 'The log message you entered was too short.<br />';
+		}
 	}
 } // IF 'new_log'
 
@@ -42,7 +51,7 @@ if ($num_messages == 0) {
 for ($i = 1; $i <= $num_messages; $i++) {
 	$log_message = $db->sql_fetch_assoc($log_message_handle);
 	$tab_content['activity'] .= '<tr class="row'.$rowtype.'">
-<td>'.$log_message['date'].'</td><td>'.$log_message['action'].'</td><td>'.$log_message['realname'].'</td><td>'.long2ip($log_message['ip_addr']).'</td>
+<td>'.$log_message['date'].'</td><td>'.stripslashes($log_message['action']).'</td><td>'.stripslashes($log_message['realname']).'</td><td>'.long2ip($log_message['ip_addr']).'</td>
 </tr>';
 	if ($rowtype == 1) {
 		$rowtype = 2;
@@ -51,8 +60,11 @@ for ($i = 1; $i <= $num_messages; $i++) {
 	}
 } // FOR $i
 $tab_content['activity'] .= '</table>';
-$tab_content['activity'] .= '<form method="post" action="?action=new_log"><input type="text" name="message" /><input type="submit" value="Add Message" />
-	</form>';
+if ($acl->check_permission('log_post_custom_message')) {
+	$tab_content['activity'] .= '<form method="post" action="?action=new_log">
+		<input type="text" name="message" /><input type="submit" value="Add Message" />
+		</form>';
+}
 $tab['activity'] = $tab_layout->add_tab('Recent Activity',$tab_content['activity']);
 
 // ----------------------------------------------------------------------------
@@ -73,5 +85,5 @@ $tab['users'] = $tab_layout->add_tab('User Summary',$tab_content['user']);
 $tab_content['database'] = 'Database Content Version: '.$site_info['db_version'].'<br />
 	Database Software Version: '.$db->sql_server_info();
 $tab['database'] = $tab_layout->add_tab('Database Summary',$tab_content['database']);
-$content = $tab_layout;
+$content .= $tab_layout;
 ?>
