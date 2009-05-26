@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!ELEMENT blocklist (block)*>
+
+<!ELEMENT block (name,attribute*)>
+
+<!ELEMENT name (#PCDATA)>
+
+<!ELEMENT attribute (attbname,label,type,values?)>
+
+<!ELEMENT attbname (#PCDATA)>
+
+<!ELEMENT label (#PCDATA)>
+
+<!ELEMENT type (#PCDATA)>
+
+<!ELEMENT values (value+)>
+
+<!ELEMENT value (#PCDATA)>
