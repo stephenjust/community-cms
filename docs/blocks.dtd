@@ -2,17 +2,17 @@
 
 <!ELEMENT blocklist (block)*>
 
-<!ELEMENT block (name,attribute*)>
+<!ELEMENT block (attribute*)>
+<!ATTLIST block
+	name CDATA #REQUIRED
+>
 
-<!ELEMENT name (#PCDATA)>
-
-<!ELEMENT attribute (attbname,label,type,values?)>
-
-<!ELEMENT attbname (#PCDATA)>
-
-<!ELEMENT label (#PCDATA)>
-
-<!ELEMENT type (#PCDATA)>
+<!ELEMENT attribute (values?)>
+<!ATTLIST attribute
+	name CDATA #REQUIRED
+	label CDATA #IMPLIED
+	type CDATA #REQUIRED
+>
 
 <!ELEMENT values (value+)>
 

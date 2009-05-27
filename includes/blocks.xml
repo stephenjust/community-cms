@@ -1,40 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE blocklist SYSTEM "../docs/blocks.dtd">
 <blocklist>
-	<block>
-		<name>poll</name>
-		<attribute>
-			<attbname>question_id</attbname>
-			<label>Question ID</label>
-			<type>int</type>
+	<block name="poll">
+		<attribute name="question_id" label="Question ID" type="int">
 		</attribute>
 	</block>
-	<block>
-		<name>text</name>
-		<attribute>
-			<attbname>article_id</attbname>
-			<label>Article ID</label>
-			<type>int</type>
+	<block name="text">
+		<attribute name="article_id" label="Article ID" type="int">
 		</attribute>
 	</block>
-	<block>
-		<name>events</name>
-		<attribute>
-			<attbname>mode</attbname>
-			<label>Display Mode</label>
-			<type>option</type>
+	<block name="events">
+		<attribute name="mode" label="Display Mode" type="option">
 			<values>
 				<value>upcoming</value>
 				<value>past</value>
 			</values>
 		</attribute>
-		<attribute>
-			<attbname>num</attbname>
-			<label>Number of Entries</label>
-			<type>int</type>
+		<attribute name="num" label="Number of Entries" type="int">
 		</attribute>
 	</block>
-	<block>
-		<name>calendarcategories</name>
+	<block name="calendarcategories">
 	</block>
 </blocklist>
