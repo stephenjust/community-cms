@@ -2,12 +2,13 @@
 
 <!ELEMENT propertylist (category+)>
 
-<!ELEMENT category (catname,item+)>
+<!ELEMENT category (item+)>
+<!ATTLIST category
+    name CDATA #REQUIRED
+  >
 
-<!ELEMENT catname (#PCDATA)>
-
-<!ELEMENT item (name,label?)>
-
-<!ELEMENT label (#PCDATA)>
-
-<!ELEMENT name (#PCDATA)>
+<!ELEMENT item EMPTY>
+<!ATTLIST item
+    label CDATA #IMPLIED
+    name CDATA #REQUIRED
+  >
