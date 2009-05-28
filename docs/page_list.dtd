@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!ELEMENT pagelist (category+)>
+
+<!ELEMENT category (link+)>
+<!ATTLIST category
+    name CDATA #REQUIRED
+>
+
+<!ELEMENT link EMPTY>
+<!ATTLIST link
+    hide CDATA #IMPLIED
+    permission CDATA #IMPLIED
+    module CDATA #REQUIRED
+    label CDATA #IMPLIED
+>

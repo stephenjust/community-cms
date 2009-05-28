@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pagelist SYSTEM "../docs/page_list.dtd">
+<pagelist>
+	<category name="Main">
+		<link label="Configuration" module="site_config" permission="adm_site_config"></link>
+	</category>
+	<category name="Help">
+		<link label="Help" module="help" permission="adm_help" hide="1"></link>
+	</category>
+	<category name="Feedback">
+		<link label="Feedback" module="feedback" permission="adm_feedback" hide="1"></link>
+	</category>
+	<category name="Blocks">
+		<link label="Block Manager" module="block_manager" permission="adm_block_manager"></link>
+	</category>
+	<category name="News">
+		<link label="Articles" module="news" permission="adm_news"></link>
+		<link label="Edit Article" module="news_edit_article" permission="adm_news_edit_article" hide="1"></link>
+		<link label="Module Settings" module="news_settings" permission="adm_news_settings"></link>
+	</category>
+	<category name="calendar">
+		<link label="Manage Events" module="calendar" permission="adm_calendar"></link>
+		<link label="Settings" module="calendar_settings" permission="adm_calendar_settings"></link>
+		<link label="Edit Date" module="calendar_edit_date" permission="adm_calendar_edit_date" hide="1"></link>
+	</category>
+	<category name="Files">
+		<link label="Manage Files" module="filemanager" permission="adm_filemanager"></link>
+	</category>
+	<category name="Newsletters">
+		<link label="Newsletters" module="newsletter" permission="adm_newsletter"></link>
+	</category>
+	<category name="Pages">
+		<link label="Pages" module="page" permission="adm_page"></link>
+		<link label="Page Messages" module="page_message" permission="adm_page_message"></link>
+		<link label="Create Page Message" module="page_message_new" permission="adm_page_message_new" hide="1"></link>
+		<link label="Edit Page Message" module="page_message_edit" permission="adm_page_message_edit" hide="1"></link>
+	</category>
+	<category name="Users">
+		<link label="New User" module="user_create" permission="adm_user_create"></link>
+		<link label="User List" module="user" permission="adm_user"></link>
+		<link label="Edit User" module="user_edit" permission="adm_user_edit" hide="1"></link>
+		<link label="Groups" module="user_groups" permission="adm_user_groups"></link>
+	</category>
+	<category name="Logs">
+		<link label="View Logs" module="log_view" permission="adm_log_view"></link>
+	</category>
+</pagelist>
