@@ -23,6 +23,7 @@ if(!include_once(ROOT.'functions/mysql.php')) {
 require(ROOT . 'includes/constants.php');
 require(ROOT . 'includes/db/db.php');
 require(ROOT . 'includes/acl.php');
+require(ROOT . 'includes/xml.php');
 require(ROOT . 'functions/login.php');
 if(!include_once(ROOT.'functions/page_class.php')) {
     err_page(2001);

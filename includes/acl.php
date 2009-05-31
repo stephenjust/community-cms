@@ -16,6 +16,8 @@ if (!defined('SECURITY')) {
 }
 
 class acl {
+	private $permission_list = array();
+
 	/**
 	 * check_permission - Read from the ACL and check if user is allowed to complete action
 	 * @param string $acl_key Name of property in Access Control List
@@ -153,6 +155,35 @@ class acl {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * load_permission_list - Load the list of permissions from an XML file
+	 */
+	public function load_permission_list() {
+		$xml = new xml;
+		$xml->open_file('includes/acl.xml');
+		$xml_structure = $xml->parse();
+		$xml_values = $xml_structure['values'];
+		$xml_index = $xml_structure['index'];
+		unset($xml_structure);
+		$propcount = 0;
+		$proplist = array();
+		foreach ($xml_values as $tag_num => $tag) {
+			if ($tag['tag'] == 'CATEGORY' && $tag['type'] == 'open') {
+				$last_cat = $tag['attributes']['NAME'];
+			} elseif ($tag['tag'] == 'ITEM') {
+				$proplist[$propcount]['name'] = $tag['attributes']['NAME'];
+				$proplist[$propcount]['category'] = $last_cat;
+				$proplist[$propcount]['label'] = (isset($tag['attributes']['LABEL']))
+					? $tag['attributes']['LABEL'] : NULL;
+				$propcount++;
+			}
+		}
+		unset($tag_num);
+		unset($tag);
+		unset($xml);
+		$this->permission_list = $proplist;
 	}
 }
 
