@@ -7,48 +7,50 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.install
  */
-  define('ROOT','../');
-  define('SECURITY',1);
-  $error = 0;
-  $nav_bar = "<div align='center'><span style='color: #00CC00;'>Check file permissions</span><hr />\n<span style='color: #00CC00;'>Configure settings</span><hr />\n<span style='color: #CCCC00;'>Download/save config file</span></div>\n";
-  $content = "<h1>Installing...</h1>\n";
-  include('../include.php');
+define('ROOT','../');
+define('SECURITY',1);
+$error = 0;
+$nav_bar = "<div align='center'><span style='color: #00CC00;'>Check file permissions</span><hr />\n<span style='color: #00CC00;'>Configure settings</span><hr />\n<span style='color: #CCCC00;'>Download/save config file</span></div>\n";
+$content = "<h1>Installing...</h1>\n";
+$CONFIG['db_prefix'] = $_POST['dbpfix'];
+$CONFIG['db_engine'] = 'mysqli';
+include('../include.php');
 	$connect = mysql_connect($_POST['dbhost'],$_POST['dbuser'],$_POST['dbpass']);
 	if (!$connect) {
 		$content = 'One or more fields was filled out incorrectly. Please hit your browser\'s back button and correct the mistake. Could not connect to database.<br />';
 		$error = 1;
-		} else {
+	} else {
 		// Try to open the database that is used by Community CMS.
 		$select_db = mysql_select_db($_POST['dbname'],$connect);
-		if(!$select_db) {
+		if (!$select_db) {
 			$content = 'One or more fields was filled out incorrectly. Please hit your browser\'s back button and correct the mistake. Could not find database.<br />';
 			$error = 1;
-			}
 		}
-	if(!$connect) {
+	}
+	if (!$connect) {
 		$content = 'One or more fields was filled out incorrectly. Please hit your browser\'s back button and correct the mistake.<br />';
 		$error = 1;
-		} else {
+	} else {
 		$handle = fopen('./schema/MySQL.sql', "r");
-		if(!$handle) {
+		if (!$handle) {
 			$content .= 'Failed to read default database schema.<br />';
 			$error = 1;
-			}
+		}
 		$query = fread($handle, filesize('./schema/MySQL.sql'));
 		fclose($handle);
 		$dbprefix = addslashes($_POST['dbpfix']);
 		$sitename = addslashes($_POST['sitename']);
-        $admin_user = addslashes(mysql_real_escape_string($_POST['admin_username'],$connect));
-        $admin_pwd = addslashes(mysql_real_escape_string($_POST['admin_pwd'],$connect));
-        $admin_pwd_conf = addslashes(mysql_real_escape_string($_POST['admin_pwd_conf'],$connect));
-        if($admin_pwd != $admin_pwd_conf) {
-            $error = 1;
-            $content .= 'Your Administrator passwords did not match.<br />';
-        }
+		$admin_user = addslashes(mysql_real_escape_string($_POST['admin_username'],$connect));
+		$admin_pwd = addslashes(mysql_real_escape_string($_POST['admin_pwd'],$connect));
+		$admin_pwd_conf = addslashes(mysql_real_escape_string($_POST['admin_pwd_conf'],$connect));
+		if ($admin_pwd != $admin_pwd_conf) {
+			$error = 1;
+			$content .= 'Your Administrator passwords did not match.<br />';
+		}
 		$query = str_replace('<!-- $DB_PREFIX$ -->',$dbprefix,$query);
 		$query = str_replace('<!-- $SITE_NAME$ -->',$sitename,$query);
-        $query = str_replace('<!-- $ADMIN_USER$ -->',$admin_user,$query);
-        $query = str_replace('<!-- $ADMIN_PWD$ -->',md5($admin_pwd),$query);
+		$query = str_replace('<!-- $ADMIN_USER$ -->',$admin_user,$query);
+		$query = str_replace('<!-- $ADMIN_PWD$ -->',md5($admin_pwd),$query);
 		$query = explode(';;',$query);
 		for ($i = 0; $i < count($query); $i++) {
 			if(!mysql_query($query[$i],$connect)) {
