@@ -12,11 +12,6 @@
 define('SECURITY',1);
 define('ROOT','./');
 
-$time = microtime();
-$time = explode(" ", $time);
-$time = $time[1] + $time[0];
-$starttime = $time;
-
 $required_db_version = 0.02;
 // Load error handling code
 require_once('./functions/error.php');
@@ -30,12 +25,20 @@ if(@ !include_once('./config.php')) {
 if (@$CONFIG['disabled'] == 1 || @ $CONFIG['not_installed'] == 1) {
 	err_page(11);
 }
-$NOTIFICATION = NULL;
 
 // Once the database connections are made, include all other necessary files.
 if(!include_once('./include.php')) {
 	err_page(2001); // File not found error.
 }
+
+// Page load timer
+if (DEBUG === 1) {
+	$time = microtime();
+	$time = explode(" ", $time);
+	$time = $time[1] + $time[0];
+	$starttime = $time;
+}
+
 initialize();
 
 // Check for up-to-date database
@@ -93,9 +96,11 @@ if (file_exists('./install')) {
 	$page->notification .= 'Please delete your ./install directory.<br />';
 }
 if (strlen($page_text_id) > 1) {
-	$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE text_id = \''.$page_text_id.'\'';
+	$page_info_query = 'SELECT * FROM ' . PAGE_TABLE . '
+		WHERE text_id = \''.$page_text_id.'\'';
 } else {
-	$page_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'pages WHERE id = \''.$page_id.'\'';
+	$page_info_query = 'SELECT * FROM ' . PAGE_TABLE . '
+		WHERE id = \''.$page_id.'\'';
 }
 // TODO: Finish page as a class implementation.
 $page_info_handle = $db->sql_query($page_info_query);
@@ -108,12 +113,14 @@ display_page($page_info,$site_info,$_GET['view']);
 $page->display_footer();
 
 clean_up();
-$time = microtime();
-$time = explode(" ", $time);
-$time = $time[1] + $time[0];
-$endtime = $time;
-$totaltime = ($endtime - $starttime);
+
+// Page load timer
 if (DEBUG === 1) {
+	$time = microtime();
+	$time = explode(" ", $time);
+	$time = $time[1] + $time[0];
+	$endtime = $time;
+	$totaltime = ($endtime - $starttime);
 	printf ("This page took %f seconds to load.", $totaltime);
 }
 ?>
