@@ -72,9 +72,9 @@ td.center {
   	<!-- $FOOTER$ -->
 		</div>
 	<div id="feedbackbutton">
-		<a href="admin.php?module=feedback">
-			<button>Send Feedback</button>
-		</a>
+		<form method="post" action="admin.php?module=feedback">
+			<input type="submit" value="Send Feedback" />
+		</form>
 	</div>
 	<div id="helpbutton">
 		<a href="admin.php?module=help" target="_blank">
