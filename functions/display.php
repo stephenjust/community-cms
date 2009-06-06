@@ -145,9 +145,8 @@ function display_nav_bar($mode = 1) {
  * display_login_box - FIXME: Needs proper documentation
  */
 function display_login_box() {
-	global $page_info;
-	global $site_info;
 	global $db;
+	global $acl;
 	if (!checkuser()) {
 		$template_loginbox = new template;
 		$template_loginbox->load_file('login');
@@ -170,7 +169,7 @@ function display_login_box() {
 		unset($check_message_handle);
 		unset($check_message_query);
 		$return .= '<a href="settings.php">Settings</a><br />';
-		if ($_SESSION['type'] >= 1) {
+		if ($acl->check_permission('admin_access')) {
 			$return .= '<a href="admin.php">Admin</a>';
 		}
 	}

@@ -3,6 +3,7 @@
 <propertylist>
 	<category name="Uncategorized">
 		<item name="all" label="All Permissions"></item>
+		<item name="admin_access" label="Administration Backend Access"></item>
 		<item name="adm_block_manager"></item>
 		<item name="adm_calendar"></item>
 		<item name="adm_calendar_edit_date"></item>

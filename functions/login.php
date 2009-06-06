@@ -101,15 +101,17 @@ function checkuser($mustbeloggedin = 0) {
 }
 /**
  * checkuser_admin - Check if a user is logged in as an administrator
- * @global resource $db
+ * @global object $acl Access Control List object
+ * @global object $db Database connection object
  * @return bool
  */
 function checkuser_admin() {
+	global $acl;
 	global $db;
 	if(!isset($_SESSION['type'])) {
 		err_page(3004);
 	}
-	if($_SESSION['type'] < 1) {
+	if(!$acl->check_permission('admin_access')) {
 		err_page(3004);
 	}
 	$query = 'SELECT username,password,realname,type,lastlogin FROM '
