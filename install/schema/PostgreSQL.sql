@@ -26,20 +26,20 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->acl" (
 	"allow" integer NOT NULL
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->blocks (
-	id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->blocks_id_seq') PRIMARY KEY ,
-	type text NOT NULL,
-	attributes text NOT NULL
+CREATE TABLE "<!-- $DB_PREFIX$ -->blocks" (
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->blocks_id_seq') PRIMARY KEY ,
+	"type" text NOT NULL,
+	"attributes" text NOT NULL
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->calendar (
+CREATE TABLE "<!-- $DB_PREFIX$ -->calendar" (
   id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->calendar_id_seq'),
   category integer NOT NULL,
   starttime timestamp NOT NULL,
   endtime timestamp NOT NULL,
-  year integer NOT NULL,
-  month integer NOT NULL,
-  day integer NOT NULL,
+  "year" integer NOT NULL,
+  "month" integer NOT NULL,
+  "day" integer NOT NULL,
   header text NOT NULL,
   description text,
   location text,
@@ -60,7 +60,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->calendar_categories (
 
 CREATE TABLE <!-- $DB_PREFIX$ -->config (
 	db_version decimal(6,2) NOT NULL,
-	name text NOT NULL,
+	"name" text NOT NULL,
 	url text NOT NULL,
 	admin_email text NULL,
 	comment text NOT NULL,
@@ -78,13 +78,13 @@ CREATE TABLE <!-- $DB_PREFIX$ -->files (
   PRIMARY KEY  (id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->logs (
-  log_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->logs_id_seq'),
-  date timestamp NULL default CURRENT_TIMESTAMP,
-  user_id integer NOT NULL,
-  action text NOT NULL,
-  ip_addr integer NOT NULL,
-  PRIMARY KEY  (log_id)
+CREATE TABLE "<!-- $DB_PREFIX$ -->logs" (
+  "log_id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->logs_id_seq'),
+  "date" timestamp NULL default CURRENT_TIMESTAMP,
+  "user_id" integer NOT NULL,
+  "action" text NOT NULL,
+  "ip_addr" integer NOT NULL,
+  PRIMARY KEY  ("log_id")
 );;
 
 CREATE TABLE <!-- $DB_PREFIX$ -->news (
@@ -100,10 +100,11 @@ CREATE TABLE <!-- $DB_PREFIX$ -->news (
   PRIMARY KEY (id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->news_settings (
-    default_date_setting integer NOT NULL ,
-    show_author integer NOT NULL ,
-    show_edit_time integer NOT NULL
+CREATE TABLE "<!-- $DB_PREFIX$ -->news_settings" (
+	"num_articles" integer NOT NULL ,
+    "default_date_setting" integer NOT NULL ,
+    "show_author" integer NOT NULL ,
+    "show_edit_time" integer NOT NULL
 );;
 
 CREATE TABLE <!-- $DB_PREFIX$ -->newsletters (
@@ -117,20 +118,20 @@ CREATE TABLE <!-- $DB_PREFIX$ -->newsletters (
   PRIMARY KEY  (id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->pages (
-  id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->pages_id_seq'),
-  text_id text NOT NULL,
-  title text NOT NULL,
-  show_title integer NOT NULL default '1',
-  type integer NOT NULL,
-  menu integer NOT NULL,
-  list integer NOT NULL default '0',
-  blocks_left text NULL,
-  blocks_right text NULL,
-  PRIMARY KEY  (id)
+CREATE TABLE "<!-- $DB_PREFIX$ -->pages" (
+  "id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->pages_id_seq'),
+  "text_id" text NOT NULL,
+  "title" text NOT NULL,
+  "show_title" integer NOT NULL default '1',
+  "type" integer NOT NULL,
+  "menu" integer NOT NULL,
+  "list" integer NOT NULL default '0',
+  "blocks_left" text NULL,
+  "blocks_right" text NULL,
+  PRIMARY KEY  ("id")
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->page_messages (
+CREATE TABLE "<!-- $DB_PREFIX$ -->page_messages" (
 	message_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->page_messages_id_seq') PRIMARY KEY,
 	page_id integer NOT NULL,
 	start_date DATE NOT NULL,
@@ -140,22 +141,22 @@ CREATE TABLE <!-- $DB_PREFIX$ -->page_messages (
 	"order" integer NOT NULL
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->pagetypes (
-  id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->pagetypes_id_seq'),
-  name text NOT NULL,
+CREATE TABLE "<!-- $DB_PREFIX$ -->pagetypes" (
+	id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->pagetypes_id_seq'),
+	name text NOT NULL,
 	description text NOT NULL,
-  author text NOT NULL,
-  filename text NOT NULL,
-  PRIMARY KEY  (id)
+	author text NOT NULL,
+	filename text NOT NULL,
+	PRIMARY KEY  (id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->permissions (
+CREATE TABLE "<!-- $DB_PREFIX$ -->permissions" (
 	id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->permissions_id_seq') PRIMARY KEY ,
 	"user" integer NOT NULL ,
 	files integer NOT NULL DEFAULT '0'
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->poll_questions (
+CREATE TABLE "<!-- $DB_PREFIX$ -->poll_questions" (
   question_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->poll_questions_question_id_seq'),
   question text NOT NULL,
   short_name text NOT NULL,
@@ -164,7 +165,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->poll_questions (
   PRIMARY KEY  (question_id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->poll_answers (
+CREATE TABLE "<!-- $DB_PREFIX$ -->poll_answers" (
   answer_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->poll_answers_answer_id_seq'),
   question_id integer NOT NULL,
   answer text NOT NULL,
@@ -172,7 +173,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->poll_answers (
   PRIMARY KEY  (answer_id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->poll_responses (
+CREATE TABLE "<!-- $DB_PREFIX$ -->poll_responses" (
   response_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->poll_responses_response_id_seq'),
   question_id integer NOT NULL,
   answer_id integer NOT NULL,
@@ -181,7 +182,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->poll_responses (
   PRIMARY KEY  (response_id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->templates (
+CREATE TABLE "<!-- $DB_PREFIX$ -->templates" (
   id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->templates_id_seq'),
   path text NOT NULL,
   name text NOT NULL,
@@ -190,7 +191,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->templates (
   PRIMARY KEY  (id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->messages (
+CREATE TABLE "<!-- $DB_PREFIX$ -->messages" (
 	id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->messages_id_seq'),
 	recipient integer NOT NULL DEFAULT '1',
 	message text NOT NULL,
@@ -258,8 +259,8 @@ INSERT INTO "<!-- $DB_PREFIX$ -->news" ("page", "name", "description", "author",
 (1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
 
 INSERT INTO "<!-- $DB_PREFIX$ -->news_settings"
-    (default_date_setting ,show_author ,show_edit_time) VALUES
-('1', '1', '1');;
+    (num_articles ,default_date_setting ,show_author ,show_edit_time) VALUES
+('10', '1', '1', '1');;
 
 INSERT INTO "<!-- $DB_PREFIX$ -->pages" (text_id, title, type, menu, list) VALUES
 ('home', 'Home', 1, 1, 0),
@@ -279,6 +280,7 @@ INSERT INTO "<!-- $DB_PREFIX$ -->user_groups"
 ("name","label_format") VALUES
 ('Administrator','font-weight: bold;; color: #009900;;');;
 
-INSERT INTO "<!-- $DB_PREFIX$ -->users" (id, type, username, password, groups, realname, phone, email, address, phone_hide, email_hide, address_hide, message) VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->users"
+(id, type, username, password, groups, realname, phone, email, address, phone_hide, email_hide, address_hide, message) VALUES
 (1, 1, '<!-- $ADMIN_USER$ -->', '<!-- $ADMIN_PWD$ -->', '1', 'Administrator', '555-555-5555', 'admin@example.com','Unknown',1,1,1,1),
 (2, 0, 'user', '5f4dcc3b5aa765d61d8327deb882cf99', NULL, 'Default User', '555-555-5555', 'user@example.com','Unknown',1,1,1,0)

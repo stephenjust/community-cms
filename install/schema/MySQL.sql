@@ -13,32 +13,32 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 	`id` INT NOT NULL auto_increment PRIMARY KEY ,
 	`type` TEXT NOT NULL,
 	`attributes` TEXT NOT NULL
-) ENGINE=MYISAM DEFAULT CHARSET=latin1 ;;
+) ENGINE=MYISAM CHARACTER SET=utf8 ;;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
-  `id` int(11) NOT NULL auto_increment,
-  `category` int(11) NOT NULL,
-  `starttime` time NOT NULL,
-  `endtime` time NOT NULL,
-  `year` int(4) NOT NULL,
-  `month` int(2) NOT NULL,
-  `day` int(2) NOT NULL,
-  `header` text NOT NULL,
-  `description` text,
-  `location` text,
-  `author` text,
-  `image` text default NULL,
-  `hidden` tinyint(1) NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `category` (`category`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
+	`id` int(11) NOT NULL auto_increment,
+	`category` int(11) NOT NULL,
+	`starttime` time NOT NULL,
+	`endtime` time NOT NULL,
+	`year` int(4) NOT NULL,
+	`month` int(2) NOT NULL,
+	`day` int(2) NOT NULL,
+	`header` text NOT NULL,
+	`description` text,
+	`location` text,
+	`author` text,
+	`image` text default NULL,
+	`hidden` tinyint(1) NOT NULL,
+	PRIMARY KEY  (`id`),
+	KEY `category` (`category`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
-  `cat_id` int(11) NOT NULL auto_increment,
-  `label` text NOT NULL,
-   `colour` text NOT NULL,
-  `description` text NOT NULL,
-  PRIMARY KEY  (`cat_id`)
+	`cat_id` int(11) NOT NULL auto_increment,
+	`label` text NOT NULL,
+	`colour` text NOT NULL,
+	`description` text NOT NULL,
+	PRIMARY KEY  (`cat_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;;
 
 INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
@@ -95,14 +95,15 @@ INSERT INTO `<!-- $DB_PREFIX$ -->news` (`id`, `page`, `name`, `description`, `au
 (0, 1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news_settings` (
+	`num_articles` INT(3) NOT NULL ,
     `default_date_setting` INT(3) NOT NULL ,
     `show_author` INT(3) NOT NULL ,
     `show_edit_time` INT(3) NOT NULL
 ) ENGINE = MYISAM ;;
 
 INSERT INTO `<!-- $DB_PREFIX$ -->news_settings`
-    (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
-('1', '1', '1');;
+    (`num_articles`,`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
+('10','1', '1', '1');;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
   `id` int(11) NOT NULL auto_increment,
@@ -145,19 +146,19 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_messages` (
 ) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
-  `id` int(4) NOT NULL auto_increment,
-  `name` tinytext NOT NULL,
+	`id` int(4) NOT NULL auto_increment,
+	`name` tinytext NOT NULL,
 	`description` text NOT NULL,
-  `author` tinytext NOT NULL,
-  `filename` tinytext NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;;
+	`author` tinytext NOT NULL,
+	`filename` tinytext NOT NULL,
+	PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;;
 
-INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (`id`, `name`, `description`, `author`, `filename`) VALUES
-(1, 'News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', 'news.php'),
-(2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by date. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
-(3, 'Calendar', 'A complex date management system supporting a full month view, week view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
-(4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php');;
+INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (`name`, `description`, `author`, `filename`) VALUES
+('News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', 'news.php'),
+('Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by date. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
+('Calendar', 'A complex date management system supporting a full month view, week view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
+('Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php');;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->permissions` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -184,21 +185,21 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_answers` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
-  `response_id` int(11) NOT NULL auto_increment,
-  `question_id` int(5) NOT NULL,
-  `answer_id` int(6) NOT NULL,
-  `value` text,
-  `ip_addr` int(10) NOT NULL,
-  PRIMARY KEY  (`response_id`)
+	`response_id` int(11) NOT NULL auto_increment,
+	`question_id` int(5) NOT NULL,
+	`answer_id` int(6) NOT NULL,
+	`value` text,
+	`ip_addr` int(10) NOT NULL,
+	PRIMARY KEY  (`response_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
-  `id` int(3) NOT NULL auto_increment,
-  `path` text NOT NULL,
-  `name` text NOT NULL,
-  `description` text NOT NULL,
-  `author` text NOT NULL,
-  PRIMARY KEY  (`id`)
+	`id` int(3) NOT NULL auto_increment,
+	`path` text NOT NULL,
+	`name` text NOT NULL,
+	`description` text NOT NULL,
+	`author` text NOT NULL,
+	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
 INSERT INTO `<!-- $DB_PREFIX$ -->templates` (`id`, `path`, `name`, `description`, `author`) VALUES
