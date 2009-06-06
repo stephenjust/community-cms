@@ -8,6 +8,12 @@
  * @package CommunityCMS.main
  */
 
+/**
+ * @ignore
+ */
+if (!defined('SECURITY')) {
+	exit;
+}
 
 class xml {
 	/**
