@@ -193,6 +193,16 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
 	PRIMARY KEY  (`response_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
 
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->sessions` (
+	`uid` int(5) NOT NULL,
+	`sid` varchar(64) NOT NULL default '',
+	`timestamp` int NOT NULL default '0',
+	`ip_addr` int(10) NOT NULL,
+	PRIMARY KEY (`sid`),
+	KEY (`uid`),
+	KEY (`timestamp`)
+) ENGINE=MyISAM CHARACTER SET=utf8 ;;
+
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
 	`id` int(3) NOT NULL auto_increment,
 	`path` text NOT NULL,

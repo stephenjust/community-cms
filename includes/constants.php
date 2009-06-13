@@ -44,6 +44,7 @@ define('PAGE_TYPE_TABLE', $CONFIG['db_prefix'] . 'pagetypes');
 define('POLL_ANSWER_TABLE', $CONFIG['db_prefix'] . 'poll_answers');
 define('POLL_QUESTION_TABLE', $CONFIG['db_prefix'] . 'poll_questions');
 define('POLL_RESPONSE_TABLE', $CONFIG['db_prefix'] . 'poll_responses');
+define('SESSION_TABLE', $CONFIG['db_prefix'] . 'sessions');
 define('TEMPLATE_TABLE', $CONFIG['db_prefix'] . 'templates');
 define('USER_TABLE', $CONFIG['db_prefix'] . 'users');
 define('USER_GROUPS_TABLE', $CONFIG['db_prefix'] . 'user_groups');

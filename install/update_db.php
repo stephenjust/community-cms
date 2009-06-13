@@ -41,6 +41,15 @@ $query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'acl` (
 ) ENGINE=MYISAM CHARACTER SET=utf8';
 $query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'acl` (`acl_key`, `user`, `is_group`, `allow`) VALUES
 (\'all\', 1, 0, 1)';
+$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'sessions` (
+	`uid` int(5) NOT NULL,
+	`sid` varchar(64) NOT NULL default \'\',
+	`timestamp` int NOT NULL default \'0\',
+	`ip_addr` int(10) NOT NULL,
+	PRIMARY KEY (`sid`),
+	KEY (`uid`),
+	KEY (`timestamp`)
+) ENGINE=MyISAM CHARACTER SET=utf8';
 $query[] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `db_version` = 0.02';
 
 // ----------------------------------------------------------------------------

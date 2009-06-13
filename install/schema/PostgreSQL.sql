@@ -1,22 +1,22 @@
-create sequence <!-- $DB_PREFIX$ -->acl_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->blocks_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->calendar_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->files_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->logs_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->news_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->newsletters_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->pages_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->pagetypes_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->page_messages_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->permissions_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->poll_questions_question_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->poll_answers_answer_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->poll_responses_response_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->templates_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->messages_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->user_groups_id_seq;;
-create sequence <!-- $DB_PREFIX$ -->users_id_seq;;
+create sequence "<!-- $DB_PREFIX$ -->acl_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->blocks_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->calendar_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->files_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->logs_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->news_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->newsletters_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->pages_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->pagetypes_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->page_messages_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->permissions_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->poll_questions_question_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->poll_answers_answer_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->poll_responses_response_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->templates_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->messages_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->user_groups_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->users_id_seq";;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->acl" (
 	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->acl_id_seq') PRIMARY KEY,
@@ -33,32 +33,32 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->blocks" (
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->calendar" (
-  id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->calendar_id_seq'),
-  category integer NOT NULL,
-  starttime timestamp NOT NULL,
-  endtime timestamp NOT NULL,
-  "year" integer NOT NULL,
-  "month" integer NOT NULL,
-  "day" integer NOT NULL,
-  header text NOT NULL,
-  description text,
-  location text,
-  author text,
-  image text default NULL,
-  hidden integer NOT NULL,
-  PRIMARY KEY  (id)
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->calendar_id_seq'),
+	"category" integer NOT NULL,
+	"starttime" timestamp NOT NULL,
+	"endtime" timestamp NOT NULL,
+	"year" integer NOT NULL,
+	"month" integer NOT NULL,
+	"day" integer NOT NULL,
+	header text NOT NULL,
+	description text,
+	location text,
+	author text,
+	image text default NULL,
+	hidden integer NOT NULL,
+	PRIMARY KEY ("id")
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->calendar_categories (
-  cat_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq'),
-  label text NOT NULL,
-  colour text NOT NULL,
-  description text NOT NULL,
-  PRIMARY KEY  (cat_id)
+CREATE TABLE "<!-- $DB_PREFIX$ -->calendar_categories" (
+	cat_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq'),
+	label text NOT NULL,
+	colour text NOT NULL,
+	description text NOT NULL,
+	PRIMARY KEY ("cat_id")
 );;
 
 
-CREATE TABLE <!-- $DB_PREFIX$ -->config (
+CREATE TABLE "<!-- $DB_PREFIX$ -->config" (
 	db_version decimal(6,2) NOT NULL,
 	"name" text NOT NULL,
 	url text NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE <!-- $DB_PREFIX$ -->config (
 	home integer NOT NULL default '1'
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->files (
+CREATE TABLE "<!-- $DB_PREFIX$ -->files" (
   id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->files_id_seq'),
   type integer NOT NULL,
   label text NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->logs" (
   PRIMARY KEY  ("log_id")
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->news (
+CREATE TABLE "<!-- $DB_PREFIX$ -->news" (
   id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->news_id_seq'),
   page integer default NULL,
   name text,
@@ -107,7 +107,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->news_settings" (
     "show_edit_time" integer NOT NULL
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->newsletters (
+CREATE TABLE "<!-- $DB_PREFIX$ -->newsletters" (
   id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->newsletters_id_seq'),
   page integer NOT NULL,
   year integer NOT NULL default '2008',
@@ -157,12 +157,12 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->permissions" (
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->poll_questions" (
-  question_id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->poll_questions_question_id_seq'),
-  question text NOT NULL,
-  short_name text NOT NULL,
-  type integer NOT NULL default '1',
-  active integer NOT NULL default '1',
-  PRIMARY KEY  (question_id)
+	"question_id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->poll_questions_question_id_seq'),
+	"question" text NOT NULL,
+	"short_name" text NOT NULL,
+	"type" integer NOT NULL default '1',
+	"active" integer NOT NULL default '1',
+	PRIMARY KEY  ("question_id")
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->poll_answers" (
@@ -182,13 +182,21 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->poll_responses" (
   PRIMARY KEY  (response_id)
 );;
 
+CREATE TABLE "<!-- $DB_PREFIX$ -->sessions" (
+	"uid" integer NOT NULL,
+	"sid" text NOT NULL,
+	"timestamp" integer NOT NULL default '0',
+	"id_addr" integer NOT NULL,
+	PRIMARY KEY ("sid")
+);;
+
 CREATE TABLE "<!-- $DB_PREFIX$ -->templates" (
-  id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->templates_id_seq'),
-  path text NOT NULL,
-  name text NOT NULL,
-  description text NOT NULL,
-  author text NOT NULL,
-  PRIMARY KEY  (id)
+	id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->templates_id_seq'),
+	path text NOT NULL,
+	name text NOT NULL,
+	description text NOT NULL,
+	author text NOT NULL,
+	PRIMARY KEY  (id)
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->messages" (
@@ -196,33 +204,33 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->messages" (
 	recipient integer NOT NULL DEFAULT '1',
 	message text NOT NULL,
 	PRIMARY KEY (id)
-	);;
-
-CREATE TABLE <!-- $DB_PREFIX$ -->user_groups (
-	id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->user_groups_id_seq'),
-	name text NOT NULL,
-	label_format text NOT NULL,
-	PRIMARY KEY (id)
 );;
 
-CREATE TABLE <!-- $DB_PREFIX$ -->users (
-	id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->users_id_seq'),
-	type integer NOT NULL default '1',
-	username text NOT NULL,
-	password text NOT NULL,
-	realname text NOT NULL,
-	title text NULL,
-  groups text NULL,
-	phone text NOT NULL,
-	email text NOT NULL,
-	address text NOT NULL,
-	phone_hide integer NOT NULL default '1',
-	email_hide integer NOT NULL default '1',
-	address_hide integer NOT NULL default '1',
-	hide integer NOT NULL default '0',
-	message integer NOT NULL default '0',
-	lastlogin integer NOT NULL default '0',
-	PRIMARY KEY  (id)
+CREATE TABLE "<!-- $DB_PREFIX$ -->user_groups" (
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->user_groups_id_seq'),
+	"name" text NOT NULL,
+	"label_format" text NOT NULL,
+	PRIMARY KEY ("id")
+);;
+
+CREATE TABLE "<!-- $DB_PREFIX$ -->users" (
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->users_id_seq'),
+	"type" integer NOT NULL default '1',
+	"username" text NOT NULL,
+	"password" text NOT NULL,
+	"realname" text NOT NULL,
+	"title" text NULL,
+	"groups" text NULL,
+	"phone" text NOT NULL,
+	"email" text NOT NULL,
+	"address" text NOT NULL,
+	"phone_hide" integer NOT NULL default '1',
+	"email_hide" integer NOT NULL default '1',
+	"address_hide" integer NOT NULL default '1',
+	"hide" integer NOT NULL default '0',
+	"message" integer NOT NULL default '0',
+	"lastlogin" integer NOT NULL default '0',
+	PRIMARY KEY ("id")
 );;
 
 select setval('<!-- $DB_PREFIX$ -->acl_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->acl));;
