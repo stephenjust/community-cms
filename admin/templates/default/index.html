@@ -11,27 +11,8 @@ body {
   margin: 0px;
   font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
 }
-div.iconbar {
-	text-align: right;
-	position: absolute;
-	top: 2px;
-	right: 2px;
-	z-index: 1000;
-}
-#header {
-	width: 100%;
-	background-color: #505060;
-	background: url('<!-- $IMAGE_PATH$ -->headbg.png') center left;
-	border: 0px;
-	border-bottom: 1px solid #000000;
-	padding: 0px;
-	margin: 0px;
-}
 table.main {
 	width: 100%;
-}
-td {
-	vertical-align: top;
 }
 td.left { 
 	width: 200px;
@@ -65,11 +46,14 @@ td.center {
 			<a href="admin.php?module=help">
 				<img src="<!-- $IMAGE_PATH$ -->help.png" alt="Help" border="0px" />
 			</a>
+			<a href="index.php?login=2">
+				<img src="<!-- $IMAGE_PATH$ -->log_out.png" alt="Log Out" border="0px" />
+			</a>
 		</div>
 	</div>
 	<table class="main">
 		<tr>
-			<td class="left"><!-- $NAV_BAR$ --><br /><!-- $NAV_LOGIN$ --></td>
+			<td class="left"><!-- $NAV_BAR$ --></td>
 			<td class="center"><!-- $CONTENT$ --></td>
 		</tr>		
 	</table>
