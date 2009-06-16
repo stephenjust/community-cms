@@ -11,24 +11,21 @@ body {
   margin: 0px;
   font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
 }
-#helpbutton {
+div.iconbar {
 	text-align: right;
 	position: absolute;
-	top: 0px;
-	right: 0px;
-	z-index: 1000;
-}
-#feedbackbutton {
-	text-align: right;
-	position: absolute;
-	top: 40px;
-	right: 0px;
+	top: 2px;
+	right: 2px;
 	z-index: 1000;
 }
 #header {
 	width: 100%;
-	background-color: #EEE;
+	background-color: #505060;
+	background: url('<!-- $IMAGE_PATH$ -->headbg.png') center left;
 	border: 0px;
+	border-bottom: 1px solid #000000;
+	padding: 0px;
+	margin: 0px;
 }
 table.main {
 	width: 100%;
@@ -61,24 +58,23 @@ td.center {
 <body>
 	<div id="header">
 		<a href="admin.php?"><img src="<!-- $IMAGE_PATH$ -->logo.png" border="0px"></a>
+		<div class="iconbar">
+			<a href="admin.php?module=feedback">
+				<img src="<!-- $IMAGE_PATH$ -->send_feedback.png" alt="Send Feedback" border="0px" />
+			</a>
+			<a href="admin.php?module=help">
+				<img src="<!-- $IMAGE_PATH$ -->help.png" alt="Help" border="0px" />
+			</a>
 		</div>
+	</div>
 	<table class="main">
 		<tr>
 			<td class="left"><!-- $NAV_BAR$ --><br /><!-- $NAV_LOGIN$ --></td>
 			<td class="center"><!-- $CONTENT$ --></td>
-			</tr>		
-		</table>
+		</tr>		
+	</table>
 	<div id="footer">
   	<!-- $FOOTER$ -->
-		</div>
-	<div id="feedbackbutton">
-		<form method="post" action="admin.php?module=feedback">
-			<input type="submit" value="Send Feedback" />
-		</form>
 	</div>
-	<div id="helpbutton">
-		<a href="admin.php?module=help" target="_blank">
-		<img src="<!-- $IMAGE_PATH$ -->help.png" alt="HELP" border="0px" /></a>
-		</div>
-	</body>
+</body>
 </html>
