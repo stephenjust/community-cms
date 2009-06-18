@@ -58,6 +58,9 @@ class template {
 			} else {
 				$template = $db->sql_fetch_assoc($template_handle);
 				$path .= $template['path'];
+				if (!file_exists($path.$file)) {
+					throw new Exception('Template file does not exist.');
+				}
 				$handle = fopen($path.$file, 'r');
 				$template_contents = fread($handle,filesize($path.$file));
 				if (!$template_contents) {
@@ -101,7 +104,11 @@ class template {
 		$content = $this->template;
 		$temp = explode('<!-- $'.mb_convert_case($split_marker, MB_CASE_UPPER, "UTF-8").'$ -->',$content);
 		$this->template = $temp[0];
-		$new_temp = $temp[1];
+		if (isset($temp[1])) {
+			$new_temp = $temp[1];
+		} else {
+			$new_temp = NULL;
+		}
 		unset($temp);
 		unset($content);
 		$new_template = new template;
