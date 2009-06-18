@@ -72,6 +72,9 @@ class template {
 			}
 		}
 		catch(Exception $e) {
+			if (DEBUG === 1) {
+				echo '<span style="font-size: x-small; color: #FF0000;">'.$e.'</span>';
+			}
 			return false;
 		}
 		$this->path = $path;
