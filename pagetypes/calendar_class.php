@@ -29,7 +29,6 @@ class calendar_event {
     function get_event($id) {
         global $db;
         global $page;
-        global $page_info;
         global $site_info;
         $this->event_query = 'SELECT cal.*, cat.label 
 			FROM ' . CALENDAR_TABLE . ' cal, ' . CALENDAR_CATEGORY_TABLE . ' cat

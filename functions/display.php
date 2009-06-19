@@ -15,7 +15,7 @@ if (@SECURITY != 1) {
 /**
  * display_page - FIXME: Needs proper documentation
  */
-function display_page($page_info,$site_info,$view="") {
+function display_page($site_info,$view="") {
 	global $db;
 	global $page;
 	// FIXME: Make sure this is unused.
@@ -39,8 +39,8 @@ function display_page($page_info,$site_info,$view="") {
 //		if ($_SESSION['type'] == 1) { // Check for admin status
 //			$admin_include = "<script src=\"./scripts/admin.js\" type=\"text/javascript\"></script>";
 //		}
-		if ($page_info['show_title'] == 1) { // Display the page header if required
-			$page_message .= '<h1>'.$page_info['title'].'</h1>';
+		if ($page->showtitle === true) { // Display the page header if required
+			$page_message .= '<h1>'.$page->title.'</h1>';
 		}
 		$page_message_query = 'SELECT * FROM ' . PAGE_MESSAGE_TABLE . '
 			WHERE page_id = '.$page->id.' ORDER BY start_date ASC';
@@ -56,11 +56,11 @@ function display_page($page_info,$site_info,$view="") {
 		// Prepare for and search for content blocks
 		$left_blocks_content = NULL;
 		$right_blocks_content = NULL;
-		$left_blocks = explode(',',$page_info['blocks_left']);
+		$left_blocks = explode(',',$page->blocksleft);
 		for ($bk = 1; $bk <= count($left_blocks); $bk++) {
 			$left_blocks_content .= get_block($left_blocks[$bk - 1]);
 		} // FOR
-		$right_blocks = explode(',',$page_info['blocks_right']);
+		$right_blocks = explode(',',$page->blocksright);
 		for ($bk = 1; $bk <= count($right_blocks); $bk++) {
 			$right_blocks_content .= get_block($right_blocks[$bk - 1]);
 		} // FOR
@@ -103,14 +103,14 @@ function display_page($page_info,$site_info,$view="") {
 
 /**
  * display_nav_bar - Display a list of links to other pages on the web site
- * @global array $page_info
- * @global resource $db
+ * @global object $page
+ * @global object $db
  * @param int $mode Type of page to display (1 means visible pages, 0 means
  * hidden pages)
  * @return string
  */
 function display_nav_bar($mode = 1) {
-	global $page_info;
+	global $page;
 	global $db;
 	$nav_menu_query = 'SELECT * FROM ' . PAGE_TABLE . '
 		WHERE menu = '.$mode.' ORDER BY list ASC';
@@ -118,7 +118,7 @@ function display_nav_bar($mode = 1) {
 	$return = NULL;
 	for ($i = 1; $db->sql_num_rows($nav_menu_handle) >= $i; $i++) {
 		$nav_menu = $db->sql_fetch_assoc($nav_menu_handle);
-		if ($nav_menu['id'] == $page_info['id']) {
+		if ($nav_menu['id'] == $page->id) {
 			$return .= $nav_menu['title']."<br />";
 		} else {
 			if ($nav_menu['type'] == 0) {

@@ -47,6 +47,11 @@ class page {
 	 */
 	public $title = NULL;
 	/**
+	 * True if title is to be displayed on page.
+	 * @var boolean
+	 */
+	public $showtitle = true;
+	/**
 	 * Page type
 	 * @var string Page type
 	 */
@@ -61,6 +66,8 @@ class page {
 	 * @var string
 	 */
 	public $content;
+	public $blocksleft = NULL;
+	public $blocksright = NULL;
 	/**
 	 * Stores the page header
 	 * @var string
@@ -109,6 +116,7 @@ class page {
 				$this->id = 0;
 				$this->exists = 1;
 				$this->title = 'Settings - Profile';
+				$this->showtitle = false;
 				break;
 		}
 	}
@@ -173,6 +181,9 @@ class page {
 			}
 			$page = $db->sql_fetch_assoc($page_handle);
 			$this->id = $page['id'];
+			$this->showtitle = (boolean)$page['show_title'];
+			$this->blocksleft = $page['blocks_left'];
+			$this->blocksright = $page['blocks_right'];
 			$this->exists = 1;
 		} else {
 			return;

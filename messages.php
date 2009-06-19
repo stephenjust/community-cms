@@ -85,7 +85,7 @@ $page_title = 'Messages';
 $css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 $image_path = $template_path.'images/';
 $nav_bar = display_nav_bar();
-$nav_login = display_login_box($page_info,$site_info);
+$nav_login = display_login_box();
 $template = str_replace('<!-- $PAGE_TITLE$ -->',stripslashes($page_title),$template);
 $template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
 $template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);

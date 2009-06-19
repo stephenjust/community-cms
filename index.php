@@ -27,9 +27,7 @@ if (@$CONFIG['disabled'] == 1 || @ $CONFIG['not_installed'] == 1) {
 }
 
 // Once the database connections are made, include all other necessary files.
-if(!include_once('./include.php')) {
-	err_page(2001); // File not found error.
-}
+require('./include.php');
 
 // Page load timer
 if (DEBUG === 1) {
@@ -95,21 +93,11 @@ $page->set_text_id($page_text_id);
 if (file_exists('./install')) {
 	$page->notification .= 'Please delete your ./install directory.<br />';
 }
-if (strlen($page_text_id) > 1) {
-	$page_info_query = 'SELECT * FROM ' . PAGE_TABLE . '
-		WHERE text_id = \''.$page_text_id.'\'';
-} else {
-	$page_info_query = 'SELECT * FROM ' . PAGE_TABLE . '
-		WHERE id = \''.$page_id.'\'';
-}
-// TODO: Finish page as a class implementation.
-$page_info_handle = $db->sql_query($page_info_query);
-$page_info = $db->sql_fetch_assoc($page_info_handle);
 
 // Display the page.
 $page->display_header();
 $page->display_content();
-display_page($page_info,$site_info,$_GET['view']);
+display_page($site_info,$_GET['view']);
 $page->display_footer();
 
 clean_up();
