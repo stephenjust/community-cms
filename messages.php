@@ -50,6 +50,9 @@ if ($_GET['del'] != "") {
 	}
 }
 
+$page = new page;
+$page->id = 0;
+
 // Get message list
 $message_list_query = 'SELECT * FROM ' . MESSAGE_TABLE . '
 	WHERE recipient = '.(int)$_SESSION['userid'].' ORDER BY id DESC';
