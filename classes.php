@@ -61,6 +61,9 @@ class template {
 				if (!file_exists($path.$file)) {
 					throw new Exception('Template file does not exist.');
 				}
+				if (filesize($path.$file) === 0) {
+					throw new Exception('Template file is empty.');
+				}
 				$handle = fopen($path.$file, 'r');
 				$template_contents = fread($handle,filesize($path.$file));
 				if (!$template_contents) {
