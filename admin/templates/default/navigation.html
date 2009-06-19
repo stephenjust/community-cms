@@ -1,0 +1,47 @@
+	<script type='text/javascript'>
+	$(document).ready(function(){
+		$('#nav-menu').dropDownMenu({parentMO: 'parent-hover', childMO: 'child-hover1'});
+	});
+	</script>
+	<div id="navigation">
+		<ul id="nav-menu">
+			<li><a href="admin.php?">Main</a></li>
+			<li>
+				<a href="#">Content</a>
+				<ul>
+					<li><a href="admin.php?module=page">Manage Pages</a></li>
+					<li><a href="admin.php?module=block_manager">Manage Blocks</a></li>
+					<li><a>Manage Content</a></li>
+					<li><a>Manage Files</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#">Users</a>
+				<ul>
+					<li><a>Manage Users</a></li>
+					<li><a>Manage User Groups</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#">Settings</a>
+				<ul>
+					<li><a href="admin.php?module=site_config">Site Settings</a></li>
+					<li><a>Plug-In Settings</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#">Extensions</a>
+				<ul>
+					<li><a>Manage Plug-Ins</a></li>
+					<li><a>Manage Themes</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#">Utilities</a>
+				<ul>
+					<li><a>View Logs</a></li>
+					<li><a>Check for Updates</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
