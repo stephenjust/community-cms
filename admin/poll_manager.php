@@ -65,5 +65,6 @@ for ($i = 1; $i <= $db->sql_num_rows($question_list_handle); $i++) {
 		$rowstyle = 'row1';
 	}
 } // FOR
-$content .= '</table>';
+$content .= '</table><br />
+<a href="admin.php?module=poll_new">New Poll</a>';
 ?>

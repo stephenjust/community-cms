@@ -63,10 +63,6 @@ function display_admin() {
 	$template_page->load_admin_file();
 	$page_title = 'Community CMS Administration';
 	$image_path = $template_page->path.'images/';
-		$template_page->nav_bar = '<div id="menu"><div><h3><a href="#">Main</a></h3><div>
-<a href="admin.php?'.SID.'">Admin Home</a><br />
-<a href="index.php?'.SID.'" target="_blank">View Site</a><br />
-'.admin_nav();
 		$template_page->nav_login = display_login_box();
 		$template_page->page_title = $page_title;
 		$template_page_bottom = $template_page->split('content');

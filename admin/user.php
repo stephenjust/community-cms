@@ -55,5 +55,6 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		$rowstyle = 'row1';
 	}
 }
-$content .= '</table>';
+$content .= '</table><br />
+<a href="admin.php?module=user_create">Add User</a>';
 ?>

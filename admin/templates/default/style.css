@@ -101,22 +101,8 @@ div.iconbar {
 	min-height: 100%;
 	width: 100%;
 }
-#left {
-	background-color: #336699;
-	border: 1px solid #113366;
-	border-left: 0px;
-	border-top: 0px;
-	display: block;
-	float: left;
-	padding: 3px;
-	width: 200px;
-	-moz-border-radius-bottomright: 5px;
-	-webkit-border-radius-bottomright: 5px;
-}
 #center {
 	display: block;
-	margin-left: 205px;
-
 }
 #footer {
 	background: url('./images/headbg.png') center left;
