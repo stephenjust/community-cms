@@ -107,6 +107,7 @@ class page {
 				$this->id = 0;
 				$this->exists = 1;
 				$this->title = 'Settings - Main';
+				$this->showtitle = false;
 				break;
 			case 'settings_profile':
 				$this->type = 'settings_profile.php';
