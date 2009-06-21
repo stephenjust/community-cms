@@ -48,11 +48,6 @@ if ($_GET['action'] == 'new') {
 
 // ----------------------------------------------------------------------------
 
-$permlist_file = ROOT.'admin/acl_prop_list.info';
-$permlist_handle = fopen($permlist_file,'r');
-$permlist = fread($permlist_handle,filesize($permlist_file));
-fclose($permlist_handle);
-$permlist = explode("\n",$permlist);
 if ($_GET['action'] == 'permsave') {
 	$set_perm_error = 0;
 	if (!isset($_POST['id'])) {
@@ -60,15 +55,9 @@ if ($_GET['action'] == 'permsave') {
 	} else {
 		$id = (int)$_POST['id'];
 		unset($_POST['id']);
-		foreach ($permlist as $perm) {
-			if (!isset($_POST[$perm])) {
-				$_POST[$perm] = NULL;
-			}
-		}
-		unset($perm);
 		foreach ($_POST as $form_var => $form_var_value) {
 			if (in_array($form_var,$permlist)) {
-				$set_perm = $acl->set_permission($form_var,checkbox($form_var_value),0,$id);
+				$set_perm = $acl->set_permission($form_var,checkbox($form_var_value),$id,true);
 				if (!$set_perm) {
 					$set_perm_error = 1;
 				}
@@ -98,9 +87,9 @@ if ($_GET['action'] == 'perm') {
 	$form->set_target('admin.php?module=user_groups&action=permsave');
 	$form->set_method('post');
 	$form->add_hidden('id',(int)$_GET['id']);
-	foreach ($permlist as $permission) {
-		$acl_current[$permission] = $acl->check_permission($permission,0,array((int)$_GET['id']));
-		$form->add_checkbox($permission,$permission,$acl_current[$permission]);
+	foreach ($acl->permission_list as $permission) {
+		$acl_current[$permission['id']] = $acl->check_permission($permission['id'],(int)$_GET['id'],true);
+		$form->add_checkbox($permission['id'],$permission['longname'],$acl_current[$permission['id']]);
 	}
 	$form->add_submit('submit','Save');
 	$tab_content['permission'] .= $form;
