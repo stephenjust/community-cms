@@ -1,4 +1,5 @@
-create sequence "<!-- $DB_PREFIX$ -->acl_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->acl_record_id_seq";;
+create sequence "<!-- $DB_PREFIX$ -->acl_keys_id_seq";;
 create sequence "<!-- $DB_PREFIX$ -->blocks_id_seq";;
 create sequence "<!-- $DB_PREFIX$ -->calendar_id_seq";;
 create sequence "<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq";;
@@ -19,11 +20,19 @@ create sequence "<!-- $DB_PREFIX$ -->user_groups_id_seq";;
 create sequence "<!-- $DB_PREFIX$ -->users_id_seq";;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->acl" (
-	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->acl_id_seq') PRIMARY KEY,
-	"acl_key" text NOT NULL,
+	"acl_record_id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->acl_record_id_seq') PRIMARY KEY,
+	"acl_id" integer NOT NULL,
 	"user" integer NOT NULL,
 	"is_group" integer NOT NULL default 0,
-	"allow" integer NOT NULL
+	"value" integer NOT NULL default 0
+);;
+
+CREATE TABLE "<!-- $DB_PREFIX$ -->acl_keys" (
+	"acl_id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->acl_keys_id_seq') PRIMARY KEY,
+	"acl_name" text NOT NULL,
+	"acl_longname" text NOT NULL,
+	"acl_description" text NOT NULL,
+	"acl_value_default" integer NOT NULL default 0
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->blocks" (
@@ -233,28 +242,32 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->users" (
 	PRIMARY KEY ("id")
 );;
 
-select setval('<!-- $DB_PREFIX$ -->acl_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->acl));;
-select setval('<!-- $DB_PREFIX$ -->blocks_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->blocks));;
-select setval('<!-- $DB_PREFIX$ -->calendar_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->calendar));;
-select setval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq', (select max(cat_id) from <!-- $DB_PREFIX$ -->calendar_categories));;
-select setval('<!-- $DB_PREFIX$ -->files_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->files));;
-select setval('<!-- $DB_PREFIX$ -->logs_id_seq', (select max(log_id) from <!-- $DB_PREFIX$ -->logs));;
-select setval('<!-- $DB_PREFIX$ -->news_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->news));;
-select setval('<!-- $DB_PREFIX$ -->newsletters_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->newsletters));;
-select setval('<!-- $DB_PREFIX$ -->pages_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->pages));;
-select setval('<!-- $DB_PREFIX$ -->pagetypes_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->pagetypes));;
-select setval('<!-- $DB_PREFIX$ -->page_messages_id_seq', (select max(message_id) from <!-- $DB_PREFIX$ -->page_messages));;
-select setval('<!-- $DB_PREFIX$ -->permissions_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->permissions));;
-select setval('<!-- $DB_PREFIX$ -->poll_questions_question_id_seq', (select max(question_id) from <!-- $DB_PREFIX$ -->poll_questions));;
-select setval('<!-- $DB_PREFIX$ -->poll_answers_answer_id_seq', (select max(answer_id) from <!-- $DB_PREFIX$ -->poll_answers));;
-select setval('<!-- $DB_PREFIX$ -->poll_responses_response_id_seq', (select max(response_id) from <!-- $DB_PREFIX$ -->poll_responses));;
-select setval('<!-- $DB_PREFIX$ -->templates_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->templates));;
-select setval('<!-- $DB_PREFIX$ -->messages_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->messages));;
-select setval('<!-- $DB_PREFIX$ -->user_groups_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->user_groups));;
-select setval('<!-- $DB_PREFIX$ -->users_id_seq', (select max(id) from <!-- $DB_PREFIX$ -->users));;
+select setval('<!-- $DB_PREFIX$ -->acl_record_id_seq', (select max(acl_record_id) from "<!-- $DB_PREFIX$ -->acl"));;
+select setval('<!-- $DB_PREFIX$ -->acl_keys_id_seq', (select max(acl_id) from "<!-- $DB_PREFIX$ -->acl_keys"));;
+select setval('<!-- $DB_PREFIX$ -->blocks_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->blocks"));;
+select setval('<!-- $DB_PREFIX$ -->calendar_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->calendar"));;
+select setval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq', (select max(cat_id) from "<!-- $DB_PREFIX$ -->calendar_categories"));;
+select setval('<!-- $DB_PREFIX$ -->files_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->files"));;
+select setval('<!-- $DB_PREFIX$ -->logs_id_seq', (select max(log_id) from "<!-- $DB_PREFIX$ -->logs"));;
+select setval('<!-- $DB_PREFIX$ -->news_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->news"));;
+select setval('<!-- $DB_PREFIX$ -->newsletters_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->newsletters"));;
+select setval('<!-- $DB_PREFIX$ -->pages_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->pages"));;
+select setval('<!-- $DB_PREFIX$ -->pagetypes_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->pagetypes"));;
+select setval('<!-- $DB_PREFIX$ -->page_messages_id_seq', (select max(message_id) from "<!-- $DB_PREFIX$ -->page_messages"));;
+select setval('<!-- $DB_PREFIX$ -->permissions_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->permissions"));;
+select setval('<!-- $DB_PREFIX$ -->poll_questions_question_id_seq', (select max(question_id) from "<!-- $DB_PREFIX$ -->poll_questions"));;
+select setval('<!-- $DB_PREFIX$ -->poll_answers_answer_id_seq', (select max(answer_id) from "<!-- $DB_PREFIX$ -->poll_answers"));;
+select setval('<!-- $DB_PREFIX$ -->poll_responses_response_id_seq', (select max(response_id) from "<!-- $DB_PREFIX$ -->poll_responses"));;
+select setval('<!-- $DB_PREFIX$ -->templates_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->templates"));;
+select setval('<!-- $DB_PREFIX$ -->messages_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->messages"));;
+select setval('<!-- $DB_PREFIX$ -->user_groups_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->user_groups"));;
+select setval('<!-- $DB_PREFIX$ -->users_id_seq', (select max(id) from "<!-- $DB_PREFIX$ -->users"));;
 
-INSERT INTO "<!-- $DB_PREFIX$ -->acl" ("acl_key", "user", "is_group", "allow") VALUES
-('all', 1, 0, 1);;
+INSERT INTO "<!-- $DB_PREFIX$ -->acl" ("acl_id", "user", "is_group", "value") VALUES
+(1, 1, 0, 1);;
+
+INSERT INTO "<!-- $DB_PREFIX$ -->acl_keys" ("acl_name","acl_longname","acl_description","acl_value_default") VALUES
+('all','All Permissions','Grant this permission to allow all actions within the CMS',0);;
 
 INSERT INTO "<!-- $DB_PREFIX$ -->calendar_categories" ("cat_id", "label", "colour", "description") VALUES
 (0, 'Default Category', 'red', ''),
@@ -263,7 +276,7 @@ INSERT INTO "<!-- $DB_PREFIX$ -->calendar_categories" ("cat_id", "label", "colou
 INSERT INTO "<!-- $DB_PREFIX$ -->config" (db_version,name, url, comment, template, footer, active) VALUES
 ('0.02','<!-- $SITE_NAME$ -->', 'http://localhost/', 'Sourceforge.net', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);;
 
-INSERT INTO "<!-- $DB_PREFIX$ -->news" ("page", "name", "description", "author", "timestamp", "image") VALUES
+INSERT INTO "<!-- $DB_PREFIX$ -->news" ("page", "name", "description", "author", "date", "image") VALUES
 (1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
 
 INSERT INTO "<!-- $DB_PREFIX$ -->news_settings"

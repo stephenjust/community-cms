@@ -1,13 +1,24 @@
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl` (
-	`id` INT NOT NULL auto_increment PRIMARY KEY,
-	`acl_key` TEXT NOT NULL,
+	`acl_record_id` INT NOT NULL auto_increment PRIMARY KEY,
+	`acl_id` TEXT NOT NULL,
 	`user` INT NOT NULL,
 	`is_group` INT(1) NOT NULL DEFAULT 0,
-	`allow` INT(1) NOT NULL
+	`value` INT(1) NOT NULL DEFAULT 0
 ) ENGINE=MYISAM CHARACTER SET=utf8 ;;
 
-INSERT INTO `<!-- $DB_PREFIX$ -->acl` (`acl_key`, `user`, `is_group`, `allow`) VALUES
-('all', 1, 0, 1);;
+INSERT INTO `<!-- $DB_PREFIX$ -->acl` (`acl_id`, `user`, `is_group`, `allow`) VALUES
+(1, 1, 0, 1);;
+
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl_keys` (
+	`acl_id` INT NOT NULL auto_increment PRIMARY KEY,
+	`acl_name` TEXT NOT NULL,
+	`acl_longname` TEXT NOT NULL,
+	`acl_description` TEXT NOT NULL,
+	`acl_value_default` INT(1) NOT NULL DEFAULT 0
+) ENGINE=MYISAM CHARACTER SET=utf8;;
+
+INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`) VALUES
+('all','All Permissions','Grant this permission to allow all actions within the CMS',0);;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 	`id` INT NOT NULL auto_increment PRIMARY KEY ,

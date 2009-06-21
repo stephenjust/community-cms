@@ -32,15 +32,16 @@ $query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'news_settings`
     (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
 (\'1\', \'1\', \'1\')';
 $query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'config ADD `admin_email` TEXT NULL AFTER `url`';
-$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'acl` (
-	`id` INT NOT NULL auto_increment PRIMARY KEY,
-	`acl_key` TEXT NOT NULL,
-	`user` INT NOT NULL,
-	`is_group` INT(1) NOT NULL DEFAULT 0,
-	`allow` INT(1) NOT NULL
-) ENGINE=MYISAM CHARACTER SET=utf8';
-$query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'acl` (`acl_key`, `user`, `is_group`, `allow`) VALUES
-(\'all\', 1, 0, 1)';
+// TODO: Update with new schema
+//$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'acl` (
+//	`id` INT NOT NULL auto_increment PRIMARY KEY,
+//	`acl_key` TEXT NOT NULL,
+//	`user` INT NOT NULL,
+//	`is_group` INT(1) NOT NULL DEFAULT 0,
+//	`allow` INT(1) NOT NULL
+//) ENGINE=MYISAM CHARACTER SET=utf8';
+//$query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'acl` (`acl_key`, `user`, `is_group`, `allow`) VALUES
+//(\'all\', 1, 0, 1)';
 $query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'sessions` (
 	`uid` int(5) NOT NULL,
 	`sid` varchar(64) NOT NULL default \'\',
