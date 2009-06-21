@@ -131,6 +131,7 @@ class acl {
 			$return[$key_info['acl_name']]['longname'] = $key_info['acl_longname'];
 			$return[$key_info['acl_name']]['description'] = $key_info['acl_description'];
 			$return[$key_info['acl_name']]['default'] = $key_info['acl_value_default'];
+			$return[$key_info['acl_name']]['shortname'] = $key_info['acl_name'];
 		}
 		return $return;
 	}

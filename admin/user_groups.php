@@ -56,7 +56,7 @@ if ($_GET['action'] == 'permsave') {
 		$id = (int)$_POST['id'];
 		unset($_POST['id']);
 		foreach ($_POST as $form_var => $form_var_value) {
-			if (in_array($form_var,$permlist)) {
+			if (array_key_exists($form_var,$acl->permission_list)) {
 				$set_perm = $acl->set_permission($form_var,checkbox($form_var_value),$id,true);
 				if (!$set_perm) {
 					$set_perm_error = 1;
@@ -88,8 +88,8 @@ if ($_GET['action'] == 'perm') {
 	$form->set_method('post');
 	$form->add_hidden('id',(int)$_GET['id']);
 	foreach ($acl->permission_list as $permission) {
-		$acl_current[$permission['id']] = $acl->check_permission($permission['id'],(int)$_GET['id'],true);
-		$form->add_checkbox($permission['id'],$permission['longname'],$acl_current[$permission['id']]);
+		$acl_current[$permission['shortname']] = $acl->check_permission($permission['shortname'],(int)$_GET['id'],true);
+		$form->add_checkbox($permission['shortname'],$permission['longname'],$acl_current[$permission['shortname']]);
 	}
 	$form->add_submit('submit','Save');
 	$tab_content['permission'] .= $form;
