@@ -32,14 +32,15 @@ if ($db->error[$news_config_handle] === 1) {
 $news_config = $db->sql_fetch_assoc($news_config_handle);
 
 include(ROOT.'pagetypes/news_class.php');
-if(!isset($_GET['start']) || $_GET['start'] == "" || $_GET['start'] < 0) {
-	$_GET['start'] = 0;
+if(!isset($_GET['start']) || $_GET['start'] == "" || (int)$_GET['start'] < 1) {
+	$_GET['start'] = 1;
 }
 $start = (int)$_GET['start'];
+$start_offset = $start - 1;
 $first_date = NULL;
 $news_query = 'SELECT `id` FROM `' . NEWS_TABLE . '`
 	WHERE `page` = '.$page->id.' ORDER BY `date`,`id` DESC
-	LIMIT '.$news_config['num_articles'].' OFFSET '.$start.'';
+	LIMIT '.$news_config['num_articles'].' OFFSET '.$start_offset.'';
 $news_handle = $db->sql_query($news_query);
 // Initialize session variable if not initialized to prevent warnings.
 if (!isset($_SESSION['user'])) {
@@ -60,32 +61,25 @@ for ($i = 1; $i <= $db->sql_num_rows($news_handle); $i++) {
 	unset($article);
 }
 
+// Get array of content IDs for pagination
+$news_id_query = 'SELECT `id` FROM `' . NEWS_TABLE .'`
+	WHERE `page` = '.$page->id.'
+	ORDER BY `date`,`id` DESC';
+$news_id_handle = $db->sql_query($news_id_query);
+if ($db->error[$news_id_handle] === 1) {
+	$debug->add_trace('Failed to read array of content IDs from database',true,'news.php');
+	$return .= 'Failed to retreive information necessary for pagination.<br />';
+}
+$content_id_array = array();
+for ($i = 0; $i < $db->sql_num_rows($news_id_handle); $i++) {
+	$news_id = $db->sql_fetch_assoc($news_id_handle);
+	$content_id_array[] = $news_id['id'];
+}
+unset($news_id_query);
+unset($news_id_handle);
+// Paginate
+include(ROOT . 'includes/pagination.php');
+$return .= pagination($start,(int)$news_config['num_articles'],$content_id_array);
 
-// FIXME: Pagination does not work.
-$last_article_date = 0;
-$news_first_query = 'SELECT `id`,`date` FROM `' . NEWS_TABLE . '`
-	WHERE `page` = '.$page->id.' ORDER BY `date`,`id` DESC LIMIT 1';
-$news_first_handle = $db->sql_query($news_first_query);
-$news_first = $db->sql_fetch_assoc($news_first_handle);
-$news_last_query = 'SELECT `id`,`date` FROM `' . NEWS_TABLE . '`
-	WHERE `page` = '.$page->id.' ORDER BY `date`,`id` ASC LIMIT 1';
-$news_last_handle = $db->sql_query($news_last_query);
-$news_last = $db->sql_fetch_assoc($news_last_handle);
-$template_pagination = new template;
-$template_pagination->load_file('pagination');
-if($news_first['date'] != $first_date && isset($first_date)) {
-	$prev_start = $start - $news_config['num_articles'];
-	$template_pagination->prev_page = '<a href="index.php?id='.$id.'&start='.$prev_start.'" class="prev_page" id="prev_page">Previous Page</a>';
-} else {
-	$template_pagination->prev_page = '';
-}
-if($news_last['date'] != $last_article_date && $last_article_date != NULL) {
-	$next_start = $start + $news_config['num_articles'];
-	$template_pagination->next_page = '<a href="index.php?id='.$id.'&start='.$next_start.'" class="prev_page" id="prev_page">Next Page</a>';
-} else {
-	$template_pagination->next_page = '';
-}
-$return .= $template_pagination;
-unset($template_pagination);
 return $return;
 ?>
