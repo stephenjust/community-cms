@@ -19,35 +19,36 @@ $content = NULL;
 // Load error handling code
 require_once('./functions/error.php');
 // Load database configuration
-if(!include_once('./config.php')) {
+if (!include_once('./config.php')) {
 	err_page(0001);
-	}
+}
 // Check if site is disabled.
-if($CONFIG['disabled'] == 1) {
+if ($CONFIG['disabled'] == 1) {
 	err_page(1);
-	}
+}
 // Once the database connections are made, include all other necessary files.
-if(!include_once('./include.php')) {
+if (!include_once('./include.php')) {
 	err_page(2001);
-	}
+}
+$debug = new debug;
 initialize();
 
 // Initialize some variables to keep PHP from complaining.
-if(!isset($_GET['view'])) {
+if (!isset($_GET['view'])) {
 	$_GET['view'] = NULL;
-	}
-if(!isset($_GET['login'])) {
+}
+if (!isset($_GET['login'])) {
 	$_GET['login'] = NULL;
-	}
-if(!isset($_GET['module'])) {
+}
+if (!isset($_GET['module'])) {
 	$_GET['module'] = NULL;
-	}
-	if(!isset($_GET['action'])) {
+}
+if (!isset($_GET['action'])) {
 	$_GET['action'] = NULL;
-	}
-if(!isset($_GET['id'])) {
+}
+if (!isset($_GET['id'])) {
 	$_GET['id'] = NULL;
-	}
+}
 // Run login checks.
 checkuser_admin();
 include('./functions/admin.php');
