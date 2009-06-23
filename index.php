@@ -29,6 +29,8 @@ if (@$CONFIG['disabled'] == 1 || @ $CONFIG['not_installed'] == 1) {
 // Once the database connections are made, include all other necessary files.
 require('./include.php');
 
+$debug = new debug;
+
 // Page load timer
 if (DEBUG === 1) {
 	$time = microtime();
@@ -91,13 +93,16 @@ if (isset($_POST['vote']) && isset($_POST['vote_poll'])) {
 $page->set_id($page_id);
 $page->set_text_id($page_text_id);
 if (file_exists('./install')) {
-	$page->notification .= 'Please delete your ./install directory.<br />';
+	$debug->add_trace('The ./install directory still exists',true,'index.php');
 }
 
 // Display the page.
 $page->display_header();
 $page->display_content();
 display_page($site_info,$_GET['view']);
+if (DEBUG === 1) {
+	$debug->display_traces();
+}
 $page->display_footer();
 
 clean_up();

@@ -291,3 +291,17 @@ div.footer {
   width: 100%;
   height: 35px;
 }
+
+/* DEBUG */
+#debug_info {
+	border: 1px solid #CCCCCC;
+	margin-left: 20px;
+	margin-right: 20px;
+	padding: 5px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+}
+#debug_info > h1 {
+	line-height: 0px;
+	font-size: large;
+}
