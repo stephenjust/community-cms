@@ -7,11 +7,13 @@ if (@SECURITY != 1) {
 /**
  * login - Check given login information and log in a user
  * @global object $db Database connection object
+ * @global object $debug Debug object
  * @param string $user Username provided by input
  * @param string $passwd Unencrypted password provided by input
  */
 function login($user,$passwd) {
 	global $db;
+	global $debug;
 	$user = addslashes($db->sql_escape_string($user));
 	$passwd = addslashes($db->sql_escape_string($passwd));
 	if($user == "" || $passwd == "") {
@@ -41,6 +43,10 @@ function login($user,$passwd) {
 				SET lastlogin='.$_SESSION['last_login'].'
 				WHERE id = '.$_SESSION['userid'];
 			$set_logintime_handle = $db->sql_query($set_logintime_query);
+			if ($db->error[$set_logintime_handle]) {
+				$debug->add_trace('Failed to set log-in time',true,'login');
+			}
+			$debug->add_trace('Logged in user',false,'login');
 			if(!$set_logintime_handle) {
 				logout();
 			}
@@ -49,8 +55,10 @@ function login($user,$passwd) {
 }
 /**
  * logout - Destroy all session information
+ * @global object $debug Debug object
  */
 function logout() {
+	global $debug;
 	unset($_SESSION['userid']);
 	unset($_SESSION['user']);
 	unset($_SESSION['pass']);
@@ -59,17 +67,20 @@ function logout() {
 	unset($_SESSION['groups']);
 	unset($_SESSION['lastlogin']);
 	session_destroy();
+	$debug->add_trace('Logged out user',false,'logout');
 }
 /**
  * checkuser - Return true if the user is logged in. If you must be logged in,
  * and are not, an error page will be displayed in the place of the expected
  * content.
  * @global object $db Database connection object
+ * @global object $debug Debug object
  * @param boolean $mustbeloggedin If 1, require logged in status to continue
  * @return boolean
  */
 function checkuser($mustbeloggedin = 0) {
 	global $db;
+	global $debug;
 	if(isset($_SESSION['user'])) {
 		if(!isset($_SESSION['pass']) || !isset($_SESSION['name'])) {
 			logout();
@@ -83,6 +94,7 @@ function checkuser($mustbeloggedin = 0) {
 		$access = $db->sql_query($query);
 		$num_rows = $db->sql_num_rows($access);
 		if($num_rows != 1) {
+			$debug->add_trace('No user exists with those login credentials',true,'checkuser');
 			logout();
 			err_page(3002);
 			return false;
@@ -91,6 +103,7 @@ function checkuser($mustbeloggedin = 0) {
 		if(!defined('USERINFO')) {
 			define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);
 		}
+		$debug->add_trace('Checking for login status succeeded',false,'checkuser');
 		return true;
 	}
 	if($mustbeloggedin == 1) {
