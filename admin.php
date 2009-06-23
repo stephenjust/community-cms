@@ -30,7 +30,6 @@ if ($CONFIG['disabled'] == 1) {
 if (!include_once('./include.php')) {
 	err_page(2001);
 }
-$debug = new debug;
 initialize();
 
 // Initialize some variables to keep PHP from complaining.

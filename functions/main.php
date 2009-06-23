@@ -18,6 +18,7 @@ if (@SECURITY != 1) {
  *
  * @global object $acl
  * @global object $db
+ * @global object $debug
  * @global array $site_info
  */
 function initialize() {
@@ -28,8 +29,10 @@ function initialize() {
 	session_start();
 
 	global $db;
+	global $debug;
 	global $site_info;
 	global $acl;
+	$debug = new debug;
 	$acl = new acl;
 	$db->sql_connect();
 	// Load global site information.

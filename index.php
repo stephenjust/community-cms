@@ -29,8 +29,6 @@ if (@$CONFIG['disabled'] == 1 || @ $CONFIG['not_installed'] == 1) {
 // Once the database connections are made, include all other necessary files.
 require('./include.php');
 
-$debug = new debug;
-
 // Page load timer
 if (DEBUG === 1) {
 	$time = microtime();
