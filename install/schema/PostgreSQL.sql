@@ -137,7 +137,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->pages" (
 	"list" integer NOT NULL default '0',
 	"blocks_left" text NULL,
 	"blocks_right" text NULL,
-	"hidden" integer NOT NULL,
+	"hidden" integer NOT NULL default '0',
 	PRIMARY KEY  ("id")
 );;
 
