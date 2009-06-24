@@ -72,17 +72,23 @@ function truncate($text,$numb) {
 
 /**
  * array2csv - Convert an array to a list of comma separated values
+ * @global object $debug Debug object
  * @param array $array Array of values that will appear in the result string
  * @return string Comma separated list of values
  */
 function array2csv($array) {
+	global $debug;
 	if (count($array) == 0) {
+		$debug->add_trace('Array provided is empty',true,'array2csv');
 		return '';
 	}
+	$debug->add_trace('Array provided has '.count($array).' entries',false,'array2csv');
 	$string = NULL;
 	for ($i = 0; $i < count($array); $i++) {
-		if (strlen($array[$i] > 0)) {
+		if (strlen($array[$i]) > 0) {
 			$string .= $array[$i];
+		} else {
+			$debug->add_trace('Empty array element found',false,'array2csv');
 		}
 		if ($i != count($array) - 1) {
 			$string .= ',';
