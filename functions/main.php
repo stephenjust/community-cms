@@ -84,13 +84,20 @@ function array2csv($array) {
 	}
 	$debug->add_trace('Array provided has '.count($array).' entries',false,'array2csv');
 	$string = NULL;
-	for ($i = 0; $i < count($array); $i++) {
+	$array_count = count($array);
+	for ($i = 0; $i < $array_count; $i++) {
+		// The array may have empty indices. Increase the index number, and
+		// increase the limit of the for loop
+		while (!isset($array[$i])) {
+			$i++;
+			$array_count++;
+		}
 		if (strlen($array[$i]) > 0) {
 			$string .= $array[$i];
 		} else {
 			$debug->add_trace('Empty array element found',false,'array2csv');
 		}
-		if ($i != count($array) - 1) {
+		if ($i != $array_count - 1) {
 			$string .= ',';
 		}
 	}
