@@ -89,17 +89,17 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
-  `id` int(11) NOT NULL auto_increment,
-  `page` int(11) default NULL,
-  `name` text,
-  `description` text,
-  `author` text,
-  `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `date_edited` timestamp NULL default NULL,
-  `image` text,
-  `showdate` int(2) NOT NULL default '1',
-  PRIMARY KEY  (`id`),
-  KEY `page` (`page`)
+	`id` int(11) NOT NULL auto_increment,
+	`page` int(11) default NULL,
+	`name` text,
+	`description` text,
+	`author` text,
+	`date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+	`date_edited` timestamp NULL default NULL,
+	`image` text,
+	`showdate` int(2) NOT NULL default 1,
+	PRIMARY KEY  (`id`),
+	KEY `page` (`page`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;;
 
 INSERT INTO `<!-- $DB_PREFIX$ -->news` (`id`, `page`, `name`, `description`, `author`, `date`, `image`) VALUES
@@ -128,16 +128,17 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
-  `id` int(11) NOT NULL auto_increment,
-  `text_id` text NOT NULL,
-  `title` text NOT NULL,
-  `show_title` tinyint(1) NOT NULL default '1',
-  `type` int(11) NOT NULL,
-  `menu` tinyint(1) NOT NULL,
-  `list` int(6) NOT NULL default '0',
-  `blocks_left` text NULL,
-  `blocks_right` text NULL,
-  PRIMARY KEY  (`id`)
+	`id` int(11) NOT NULL auto_increment,
+	`text_id` text NOT NULL,
+	`title` text NOT NULL,
+	`show_title` tinyint(1) NOT NULL default '1',
+	`type` int(11) NOT NULL,
+	`menu` tinyint(1) NOT NULL,
+	`list` int(6) NOT NULL default '0',
+	`blocks_left` text NULL,
+	`blocks_right` text NULL,
+	`hidden` int(1) NOT NULL,
+	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;;
 
 INSERT INTO `<!-- $DB_PREFIX$ -->pages` (`text_id`, `title`, `type`, `menu`, `list`) VALUES

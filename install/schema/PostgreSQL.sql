@@ -97,16 +97,16 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->logs" (
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->news" (
-  id integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->news_id_seq'),
-  page integer default NULL,
-  name text,
-  description text,
-  author text,
-  date timestamp NOT NULL default CURRENT_TIMESTAMP,
-  date_edited timestamp NULL default NULL,
-  image text,
-  showdate integer NOT NULL default '1',
-  PRIMARY KEY (id)
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->news_id_seq'),
+	"page" integer default NULL,
+	"name" text,
+	"description" text,
+	"author" text,
+	"date" timestamp NOT NULL default CURRENT_TIMESTAMP,
+	"date_edited" timestamp NULL default NULL,
+	"image" text,
+	"showdate" integer NOT NULL default '1',
+	PRIMARY KEY ("id")
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->news_settings" (
@@ -128,16 +128,17 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->newsletters" (
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->pages" (
-  "id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->pages_id_seq'),
-  "text_id" text NOT NULL,
-  "title" text NOT NULL,
-  "show_title" integer NOT NULL default '1',
-  "type" integer NOT NULL,
-  "menu" integer NOT NULL,
-  "list" integer NOT NULL default '0',
-  "blocks_left" text NULL,
-  "blocks_right" text NULL,
-  PRIMARY KEY  ("id")
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->pages_id_seq'),
+	"text_id" text NOT NULL,
+	"title" text NOT NULL,
+	"show_title" integer NOT NULL default '1',
+	"type" integer NOT NULL,
+	"menu" integer NOT NULL,
+	"list" integer NOT NULL default '0',
+	"blocks_left" text NULL,
+	"blocks_right" text NULL,
+	"hidden" integer NOT NULL,
+	PRIMARY KEY  ("id")
 );;
 
 CREATE TABLE "<!-- $DB_PREFIX$ -->page_messages" (

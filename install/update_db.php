@@ -28,6 +28,8 @@ $query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'news_settings` (
     `show_author` INT(3) NOT NULL ,
     `show_edit_time` INT(3) NOT NULL
 ) ENGINE = MYISAM';
+$query[] = 'ALTER TABLE `'.$CONFIG['db_prefix'].'pages`
+	ADD `hidden` INT(1) NOT NULL AFTER `blocks_right`';
 $query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'news_settings`
     (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
 (\'1\', \'1\', \'1\')';
