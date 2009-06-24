@@ -85,7 +85,7 @@ function page_delete($id) {
 
 	// FIXME: Check for content on page before deleting
 
-	$page_info = page_get_info($id,array('title',' ','hidden'));
+	$page_info = page_get_info($id,array('title'));
 	if (!$page_info) {
 		$debug->add_trace('Failed to retrieve page info',true,'page_delete');
 		return false;
