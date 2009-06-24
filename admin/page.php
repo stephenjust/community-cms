@@ -104,45 +104,31 @@ if ($_GET['action'] == 'home') {
 
 // ----------------------------------------------------------------------------
 
-if ($_GET['action'] == 'del') {
-	if (!$acl->check_permission('page_delete')) {
-		$content .= 'You are not authorized to delete pages.<br />';
-	} else {
-		// Delete page from database if no files exist on that page.
-		$page_type_query = 'SELECT page.id, page.title, pagetype.filename
-			FROM ' . PAGE_TABLE . ' page, ' . PAGE_TYPE_TABLE ." pagetype
-			WHERE page.id = $page_id AND page.type = pagetype.id";
-		$page_type = $db->sql_query($page_type_query);
-		$page_type_info = $db->sql_fetch_assoc($page_type);
-		if ($page_type_info['filename'] == 'news.php') {
-			$check_page_query = 'SELECT * FROM ' . NEWS_TABLE . "
-				WHERE page = $page_id";
-		} elseif ($page_type_info['filename'] == 'newsletter.php') {
-			$check_page_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . "
-				WHERE page = $page_id";
-		}
-		$notempty = 0;
-		if (isset($check_page_query)) {
-			$check_page = $db->sql_query($check_page_query);
-			if ($db->sql_num_rows($check_page) != 0) {
-				$notempty = 1;
-			}
-		}
-		if ($notempty != 0) {
-			$content .= 'Failed to delete page as it is not empty.<br />';
+switch ($_GET['action']) {
+	default:
+		break;
+
+	case 'del':
+		if ((int)$_GET['id'] == $_GET['id']) {
+			$page_id = (int)$_GET['id'];
 		} else {
-			$del_page_query = 'DELETE FROM ' . PAGE_TABLE . "
-				WHERE id = $page_id";
-			$del_page = $db->sql_query($del_page_query);
-			if ($db->error[$del_page] === 1) {
-				$content .= 'Failed to delete page.<br />';
-			} else {
-				$content .= 'Successfully deleted page.<br />'
-					.log_action('Deleted page with id \''.stripslashes($page_type_info['title']).'\'');
-			}
+			break;
 		}
-	}
-} // IF 'del'
+		if (!page_delete($page_id)) {
+			$content .= 'An error occured when attempting to delete the page.<br />'."\n";
+		} else {
+			$content .= 'Successfully deleted the page.<br />'."\n";
+		}
+		break; // case 'del'
+
+	case 'hide':
+		// FIXME: Implement page hiding
+		break;
+
+	case 'unhide':
+		// FIXME: Implement page hiding
+		break;
+}
 
 // ----------------------------------------------------------------------------
 

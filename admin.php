@@ -87,6 +87,8 @@ function display_admin() {
 		unset($template_page_bottom);
 		}
 	display_admin($content);
-
+	if (DEBUG === 1) {
+		$debug->display_traces();
+	}
 	clean_up();
 ?>
