@@ -8,6 +8,14 @@
  * @package CommunityCMS.main
  */
 
+/**
+ * page_get_info - Get requested fields for a page entry in the database
+ * @global object $db Database connection object
+ * @global object $debug Debug object
+ * @param int $id Page ID
+ * @param array $fields Database fields to get, default is all
+ * @return mixed Returns false on failure, associative array of row on success
+ */
 function page_get_info($id,$fields = array('*')) {
 	global $db;
 	global $debug;
@@ -33,7 +41,6 @@ function page_get_info($id,$fields = array('*')) {
 		}
 	}
 	$fields = array2csv($fields);
-	print $fields;
 	$page_info_query = 'SELECT '.$fields.' FROM `' . PAGE_TABLE .'`
 		WHERE `id` = '.$id.' LIMIT 1';
 	$page_info_handle = $db->sql_query($page_info_query);
