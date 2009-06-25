@@ -35,6 +35,9 @@ function initialize() {
 	$debug = new debug;
 	$acl = new acl;
 	$db->sql_connect();
+	if (!$db->connect) {
+		err_page(1001); // Database connection error
+	}
 	// Load global site information.
 	$site_info_query = 'SELECT * FROM ' . CONFIG_TABLE;
 	$site_info_handle = $db->sql_query($site_info_query);
