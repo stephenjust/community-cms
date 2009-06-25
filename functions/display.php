@@ -18,9 +18,6 @@ if (@SECURITY != 1) {
 function display_page($site_info,$view="") {
 	global $db;
 	global $page;
-	// FIXME: Make sure this is unused.
-	global $NOTIFICATION;
-	$page->notification .= $NOTIFICATION;
 	$template_page = new template;
 	$template_page->load_file();
 	$page_message = NULL;
@@ -42,8 +39,9 @@ function display_page($site_info,$view="") {
 		if ($page->showtitle === true) { // Display the page header if required
 			$page_message .= '<h1>'.$page->title.'</h1>';
 		}
-		$page_message_query = 'SELECT * FROM ' . PAGE_MESSAGE_TABLE . '
-			WHERE page_id = '.$page->id.' ORDER BY start_date ASC';
+		$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
+			WHERE `page_id` = '.$page->id.'
+			ORDER BY `start_date` ASC';
 		$page_message_handle = $db->sql_query($page_message_query);
 		$i = 1;
 		if ($db->error[$page_message_handle] === 0) { // Don't run the loop if the query failed
@@ -112,8 +110,8 @@ function display_page($site_info,$view="") {
 function display_nav_bar($mode = 1) {
 	global $page;
 	global $db;
-	$nav_menu_query = 'SELECT * FROM ' . PAGE_TABLE . '
-		WHERE menu = '.$mode.' ORDER BY list ASC';
+	$nav_menu_query = 'SELECT * FROM `' . PAGE_TABLE . '`
+		WHERE `menu` = '.$mode.' ORDER BY `list` ASC';
 	$nav_menu_handle = $db->sql_query($nav_menu_query);
 	$return = NULL;
 	for ($i = 1; $db->sql_num_rows($nav_menu_handle) >= $i; $i++) {
