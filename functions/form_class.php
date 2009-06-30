@@ -22,12 +22,13 @@ class form {
 		$this->form = "";
 		$this->target = "#";
 		$this->method = "get";
+		$this->enctype = NULL;
 	}
 	function __destruct() {
 
 	}
 	function __toString() {
-		$this->form = '<form method="'.$this->method.'" action="'.$this->target.'">
+		$this->form = '<form method="'.$this->method.'" action="'.$this->target.'" '.$this->enctype.'>
 			<table class="admintable">
 			<tr><td>'.$this->form.'</tr></td></table></form>';
 		return $this->form;
@@ -358,13 +359,24 @@ class form {
 	}
 	/**
 	 * add_file_upload - Add a button to upload a file
-	 * @param <type> $name
+	 * @param string $name
 	 */
 	function add_file_upload($name) {
 		$this->form .= '<div class="admin_form_element">
 			<label for="_'.$name.'">&nbsp;</label><input type="button" value="Upload File"
 			onClick="window.open(\'./admin/upload_mini.php\',\'mywindow\',
 			\'width=400,height=200\')" id="_'.$name.'" />';
+	}
+	/**
+	 * add_file - Add a file upload box
+	 * @param string $name
+	 * @param string $label
+	 */
+	function add_file($name,$label) {
+		// Need to set the proper form encoding format
+		$form->enctype = 'enctype="multipart/form-data"';
+		$this->form .= '<label for="_'.$name.'">'.$label.'</label>
+			<input id="_'.$name.'" name="'.$name.'" type="file" />';
 	}
 	/**
 	 * add_text - Add a block of text to a form
