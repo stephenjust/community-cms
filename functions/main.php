@@ -21,10 +21,19 @@ if (@SECURITY != 1) {
  * @global object $debug
  * @global array $site_info
  */
-function initialize() {
+function initialize($mode = NULL) {
 	// Report all PHP errors
 	error_reporting(E_ALL);
 	header('Content-type: text/html; charset=UTF-8');
+
+	// Send headers specific to AJAX scripts
+	if ($mode == 'ajax') {
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
+		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0"); // HTTP/1.1
+		header("Cache-Control: post-check=0, pre-check=0", false);
+		header("Pragma: no-cache"); // HTTP/1.0
+	}
 
 	session_start();
 
@@ -32,8 +41,14 @@ function initialize() {
 	global $debug;
 	global $site_info;
 	global $acl;
+
 	$debug = new debug;
 	$acl = new acl;
+
+	if ($mode == 'ajax') {
+		$debug->add_trace('Running in AJAX mode',false,'initialize');
+	}
+
 	$db->sql_connect();
 	if (!$db->connect) {
 		err_page(1001); // Database connection error
