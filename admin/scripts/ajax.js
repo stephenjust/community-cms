@@ -54,4 +54,13 @@ function loadHTML(url, storage)
 	xhr.send(null);
 
 }
+
+function changeContent(file, mode, action)
+{
+	var contentdiv = document.getElementById('content_container');
+	loadHTML("./admin/" + encodeURI(file) + ".php?mode=" + encodeURI(mode) + "&action=" + encodeURI(action), contentdiv);
+	$('div.tab_selected').removeClass('tab_selected');
+	$('#tab-' + mode).addClass('tab_selected');
+}
+
 -->
