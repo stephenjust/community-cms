@@ -48,6 +48,9 @@ if (!isset($_GET['action'])) {
 if (!isset($_GET['id'])) {
 	$_GET['id'] = NULL;
 }
+if (!isset($_GET['ui'])) {
+	$_GET['ui'] = 0;
+}
 // Run login checks.
 checkuser_admin();
 include('./functions/admin.php');
@@ -63,32 +66,35 @@ function display_admin() {
 	$template_page->load_admin_file();
 	$page_title = 'Community CMS Administration';
 	$image_path = $template_page->path.'images/';
-		$template_page->nav_login = display_login_box();
-		$template_page->page_title = $page_title;
-		$template_page_bottom = $template_page->split('content');
-		echo $template_page;
-		unset($template_page);
-		if(isset($_GET['module'])) {
-			if(!include('./admin/'.addslashes($_GET['module']).'.php')) {
-				include('./admin/index.php');
-				}
-			} else {
+	$template_page->nav_login = display_login_box();
+	$template_page->page_title = $page_title;
+	$template_page_bottom = $template_page->split('content');
+	echo $template_page;
+	unset($template_page);
+	if (isset($_GET['module']) && $_GET['ui'] == 0) {
+		if (!include('./admin/'.addslashes($_GET['module']).'.php')) {
 			include('./admin/index.php');
-			}
-		$template_page_bottom->content = $content;
-		$template_page_bottom->image_path = $image_path;
-		if(DEBUG === 1) {
-			$query_debug = $db->print_error_query();
-		} else {
-			$query_debug = NULL;
 		}
-		$template_page_bottom->footer = 'Powered by Community CMS'.$query_debug;
-		echo $template_page_bottom;
-		unset($template_page_bottom);
-		}
-	display_admin($content);
-	if (DEBUG === 1) {
-		$debug->display_traces();
+	} elseif ($_GET['ui'] == 1) {
+		require(ROOT.'admin/ui.php');
+	} else {
+		include('./admin/index.php');
 	}
-	clean_up();
+	$template_page_bottom->content = $content;
+	$template_page_bottom->image_path = $image_path;
+	if (DEBUG === 1) {
+		$query_debug = $db->print_error_query();
+	} else {
+		$query_debug = NULL;
+	}
+	$template_page_bottom->footer = 'Powered by Community CMS'.$query_debug;
+	echo $template_page_bottom;
+	unset($template_page_bottom);
+}
+
+display_admin($content);
+if (DEBUG === 1) {
+	$debug->display_traces();
+}
+clean_up();
 ?>
