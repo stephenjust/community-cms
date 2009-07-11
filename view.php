@@ -13,7 +13,6 @@ header('Content-type: text/html; charset=utf-8');
 // The not-so-secure security check.
 define('SECURITY',1);
 define('ROOT','./');
-session_start();
 $content = NULL;
 // Load error handling code
 require_once('./functions/error.php');
@@ -25,16 +24,11 @@ if(!include_once('./config.php')) {
 if($CONFIG['disabled'] == 1) {
     err_page(1);
 }
-// Try to establish a connection to the MySQL server using the MySQLi classes.		
-@ $db = new mysqli($CONFIG['db_host'],$CONFIG['db_user'],$CONFIG['db_pass'],$CONFIG['db_name']);
-if(mysqli_connect_errno()) {
-    err_page(1001); // Database connect error.
-}
 
-// Once the database connections are made, include all other necessary files.
-if(!include_once('./include.php')) {
-    err_page(2001); // File not found error.
-}
+require('./include.php');
+
+initialize();
+
 include(ROOT.'pagetypes/news_class.php');
 // Initialize some variables to keep PHP from complaining.
 if(!isset($_GET['view'])) {
@@ -43,8 +37,8 @@ if(!isset($_GET['view'])) {
 
 // Load global site information.
 $site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
-$site_info_handle = $db->query($site_info_query);
-$site_info = $site_info_handle->fetch_assoc();
+$site_info_handle = $db->sql_query($site_info_query);
+$site_info = $db->sql_fetch_assoc($site_info_handle);
 
 if(!isset($_GET['article_id'])) {
     $_GET['article_id'] = "";
@@ -62,5 +56,5 @@ echo $article;
 unset($article);
 
 // Close database connections and clean up loose ends.
-$db->close();
+clean_up();
 ?>
