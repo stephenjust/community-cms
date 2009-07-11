@@ -141,6 +141,28 @@ function csv2array($string) {
 	return $array;
 }
 
+/**
+ * str_replace_count - Replace substrings a specified number of times
+ * FIXME: Complete documentation
+ */
+function str_replace_count($search,$replace,$subject,$times) {
+    $subject_original=$subject;
+    $len=strlen($search);
+    $pos=0;
+    for ($i=1;$i<=$times;$i++) {
+        $pos=strpos($subject,$search,$pos);
+        if($pos!==false) {
+            $subject=substr($subject_original,0,$pos);
+            $subject.=$replace;
+            $subject.=substr($subject_original,$pos+$len);
+            $subject_original=$subject;
+        } else {
+            break;
+        }
+    }
+    return($subject);
+}
+
 function validate_int($value) {
     // FIXME: Stub
     return $value;
