@@ -135,6 +135,62 @@ class acl {
 		}
 		return $return;
 	}
+
+	/**
+	 * create_key - Create an ACL key if it does not exist already
+	 * @global object $db Database connection object
+	 * @global object $debug Debug object
+	 * @param string $name Name of key (lowercase)
+	 * @param string $longname More descriptive name
+	 * @param string $description Description of what the key allows
+	 * @param int $default_value Allow by default? 1 = yes, 0 = no; default 0
+	 * @return boolean
+	 */
+	public function create_key($name,$longname,$description,$default_value = 0) {
+		global $db;
+		global $debug;
+		// Validate parameters
+		if (!is_string($name)) {
+			$debug->add_trace('$name is not a string',true,'create_key');
+			return false;
+		}
+		if (!is_string($longname)) {
+			$debug->add_trace('$longname is not a string',true,'create_key');
+			return false;
+		}
+		if (!is_string($description)) {
+			$debug->add_trace('$description is not a string',true,'create_key');
+			return false;
+		}
+		if (!is_int($default_value)) {
+			$debug->add_trace('$default_value is not an integer',true,'create_key');
+			return false;
+		}
+		// Check if key already exists
+		if ($this->permission_list == array()) {
+			$this->permission_list = $this->get_acl_key_names();
+		}
+		if (isset($this->permission_list[$name])) {
+			$debug->add_trace('The ACL key '.$name.' already exists',true,'create_key');
+			return false;
+		}
+		// Make sure that you read permission list on next permission check
+		$this->permission_list = array();
+		
+		// Add key
+		$prep = $db->sql_prepare('acl_new_key','INSERT INTO '.ACL_KEYS_TABLE.'
+			(acl_name,acl_longname,acl_description,acl_value_default)
+			VALUES ( ?, ?, ?, ? )');
+		if (!$prep) {
+			return false;
+		}
+		$prep_exec = $db->sql_prepare_exec('acl_new_key',
+			array($name,$longname,$description,$default_value),
+			array('text','text','text','int'));
+		if (!$prep_exec) {
+			return false;
+		}
+	}
 }
 
 ?>
