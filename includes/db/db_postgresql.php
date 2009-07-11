@@ -72,10 +72,10 @@ class db_postgresql extends db {
 		}
 		// Replace ? with $[num]
 		$param_count = substr_count($query,' ?');
-		for ($i = 1; $i < $param_count; $i++) {
-			str_replace('?','$'.$i,$query,1);
+		for ($i = 1; $i <= $param_count; $i++) {
+			$query = str_replace_count('?','$'.$i,$query,1);
 		}
-		$prepare_query = 'PREPARE \''.$name.'\' AS "'.$query.'"';
+		$prepare_query = 'PREPARE `'.$name.'` AS '.$query;
 		$prepare_handle = $this->sql_query($prepare_query);
 		if (!$this->error[$prepare_handle] === 1) {
 			$debug->add_trace('Failed to create prepared statement',true,'sql_prepare (pgsql)');
@@ -102,9 +102,9 @@ class db_postgresql extends db {
 			$debug->add_trace('Length of $variables and $datatypes are not equal',true,'sql_prepare_exec (pgsql)');
 			return false;
 		}
-		foreach ($variables as $var) {
-			if (!is_numeric($var)) {
-				$var = '"'.$var.'"';
+		for ($i = 0; $i < count($variables); $i++) {
+			if (!is_numeric($variables[$i])) {
+				$variables[$i] = '\''.$variables[$i].'\'';
 			}
 		}
 		unset($var);
