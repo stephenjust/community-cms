@@ -39,7 +39,7 @@ $start = (int)$_GET['start'];
 $start_offset = $start - 1;
 $first_date = NULL;
 $news_query = 'SELECT `id` FROM `' . NEWS_TABLE . '`
-	WHERE `page` = '.$page->id.' ORDER BY `date`,`id` DESC
+	WHERE `page` = '.$page->id.' ORDER BY `date` DESC,`id` DESC
 	LIMIT '.$news_config['num_articles'].' OFFSET '.$start_offset.'';
 $news_handle = $db->sql_query($news_query);
 // Initialize session variable if not initialized to prevent warnings.
