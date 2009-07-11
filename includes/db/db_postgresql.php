@@ -58,6 +58,80 @@ class db_postgresql extends db {
 	function sql_escape_string($string) {
 		return pg_escape_string($this->connect, $string);
 	}
+
+	function sql_prepare($name,$query) {
+		global $debug;
+		// Validate parameters
+		if (!is_string($name)) {
+			$debug->add_trace('$name is not a string',true,'sql_prepare (pgsql)');
+			return false;
+		}
+		if (!is_string($query)) {
+			$debug->add_trace('$query is not a string',true,'sql_prepare (pgsql)');
+			return false;
+		}
+		// Replace ? with $[num]
+		$param_count = substr_count($query,' ?');
+		for ($i = 1; $i < $param_count; $i++) {
+			str_replace('?','$'.$i,$query,1);
+		}
+		$prepare_query = 'PREPARE \''.$name.'\' AS "'.$query.'"';
+		$prepare_handle = $this->sql_query($prepare_query);
+		if (!$this->error[$prepare_handle] === 1) {
+			$debug->add_trace('Failed to create prepared statement',true,'sql_prepare (pgsql)');
+			return false;
+		}
+		return true;
+	}
+	function sql_prepare_exec($name,$variables,$datatypes) {
+		global $debug;
+		// Validate parameters
+		if (!is_string($name)) {
+			$debug->add_trace('$name is not a string',true,'sql_prepare_exec (pgsql)');
+			return false;
+		}
+		if (!is_array($variables)) {
+			$debug->add_trace('$variables is not an array',true,'sql_prepare_exec (pgsql)');
+			return false;
+		}
+		if (!is_array($datatypes)) {
+			$debug->add_trace('$datatypes is not an array',true,'sql_prepare_exec (pgsql)');
+			return false;
+		}
+		if (count($variables) !== count($datatypes)) {
+			$debug->add_trace('Length of $variables and $datatypes are not equal',true,'sql_prepare_exec (pgsql)');
+			return false;
+		}
+		foreach ($variables as $var) {
+			if (!is_numeric($var)) {
+				$var = '"'.$var.'"';
+			}
+		}
+		unset($var);
+		$variables_string = implode(', ',$variables);
+		$exec_query = 'EXECUTE '.$name.'('.$variables_string.')';
+		$exec_handle = $this->sql_query($exec_query);
+		if ($this->error[$exec_handle] === 1) {
+			$debug->add_trace('Failed to execute prepared statement',true,'sql_prepare_exec (pgsql)');
+			return false;
+		}
+		return true;
+	}
+	function sql_prepare_close($name) {
+		global $debug;
+		if (!is_string($name)) {
+			$debug->add_trace('$name is not a string',true,'sql_prepare_close (pgsql)');
+			return false;
+		}
+		$prepare_close_query = 'DEALLOCATE PREPARE \''.$name.'\'';
+		$prepare_close_handle = $this->sql_query($prepare_close_query);
+		if ($this->error[$prepare_close_handle] === 1) {
+			$debug->add_trace('Failed to deallocate prepared statement',true,'sql_prepare_close (pgsql)');
+			return false;
+		}
+		return true;
+	}
+
 	function sql_close() {
 		pg_close($this->connect);
 	}
