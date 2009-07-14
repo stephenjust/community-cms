@@ -374,7 +374,7 @@ class form {
 	 */
 	function add_file($name,$label) {
 		// Need to set the proper form encoding format
-		$form->enctype = 'enctype="multipart/form-data"';
+		$this->enctype = 'enctype="multipart/form-data"';
 		$this->form .= '<label for="_'.$name.'">'.$label.'</label>
 			<input id="_'.$name.'" name="'.$name.'" type="file" />';
 	}

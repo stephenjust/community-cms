@@ -5,6 +5,9 @@ if (@SECURITY != 1) {
 }
 include(ROOT.'functions/files_class.php');
 
+// Include PEAR class required for tar file extraction
+require(ROOT.'includes/Tar.php');
+
 // ----------------------------------------------------------------------------
 
 // Load template file
@@ -60,11 +63,15 @@ function file_upload_box($show_dirs = 0) {
 
 // ----------------------------------------------------------------------------
 
-function file_upload($path = "") {
+function file_upload($path = "", $contentfile = true) {
 	if ($path != "") {
 		$path .= '/';
 	}
-	$target = ROOT.'files/'.$path;
+	if ($contentfile == true) {
+		$target = ROOT.'files/'.$path;
+	} else {
+		$target = ROOT.$path;
+	}
 	$target .= basename( $_FILES['upload']['name']) ;
 	$ok=1;
 	if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {

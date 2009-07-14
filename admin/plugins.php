@@ -52,17 +52,69 @@ switch ($mode) {
 	case 'install':
 		echo '<h1>Install Plugin</h1>'."\n";
 		$content = NULL;
+		// Check if temp and plugin directories are writable
+		if (!is_writable(ROOT . 'tmp/') || !is_writable(ROOT . 'plugins/')) {
+			echo '<span class="error">A required directory is not writable.'."\n";
+			echo 'Check the permissions of <em>/tmp</em> and <em>/plugins</em></span>.<br />'."\n";
+			break;
+		}
 		$install = (isset($_GET['action'])) ? $_GET['action'] : NULL;
 		if ($install != 'install') {
 			$form = new form;
-			$form->set_target('admin.php?ui=1&amp;module=plugins&amp;mode=install&amp;action=install');
+			$form->set_target('admin.php?ui=1&amp;module=plugins&amp;mode=install&amp;action=install&amp;upload=plugin_file');
 			$form->set_method('post');
 			$form->add_file('plugin_file','Upload Plugin File');
 			$form->add_checkbox('upload_only','Upload Only',1,'disabled');
 			$form->add_submit('install','Install Plugin');
 			$content .= $form;
 		} else {
+			if (!isset($_GET['file']) || $_GET['file'] == NULL) {
+				echo 'Failed to upload your plugin file.<br />'."\n";
+				break;
+			}
+			if (eregi('/',$_GET['file'])) {
+				echo 'The file name submitted contains an invalid character.<br />'."\n";
+				break;
+			}
+			if (file_exists(ROOT . 'tmp/' . $_GET['file'])) {
+				$filename = $_GET['file'];
+				$file_path = ROOT . 'tmp/' . $filename;
+				echo 'Uploaded plugin file.<br />'."\n";
+				echo 'Verifying file type... ';
+				if (!eregi('\.tar\.gz$',$filename)) {
+					echo 'FAILED<br />'."\n";
+					unlink($file_path);
+					echo 'Deleted temporary file.<br />'."\n";
+					break; 
+				} else {
+					echo 'Success.<br />'."\n";
+				}
+				echo 'Attempting to extract plugin file... ';
 
+				// Extract TAR
+				$tar_archive = new Archive_Tar($file_path);
+				$extract = $tar_archive->extract(ROOT . 'tmp');
+				if (!$extract) {
+					echo 'FAILED<br />'."\n";
+					unlink($file_path);
+					echo 'Deleted temporary file.<br />'."\n";
+					break; 
+				} else {
+					echo 'Success.<br />'."\n";
+				}
+				$plugin_folder_name = str_replace('.tar.gz',NULL,$filename);
+				if (!file_exists(ROOT . 'tmp/' . $plugin_folder_name)) {
+					echo 'This archive does not contain a plugin directory.<br />'."\n";
+					break;
+				}
+				if (!is_dir(ROOT . 'tmp/' . $plugin_folder_name)) {
+					echo 'The extracted file is not a directory.<br />'."\n";
+					unlink($file_path);
+					unlink(ROOT . 'tmp/' . $plugin_folder_name);
+					echo 'Deleted temporary files.<br />'."\n";
+				}
+				// TODO: Attempt to install plugin - first, look for plugin info file
+			}
 		}
 		unset($install);
 		unset($form);
@@ -73,6 +125,7 @@ switch ($mode) {
 
 	case 'remove':
 		echo '<h1>Remove Plugin</h1>'."\n";
+		// TODO: Remove Plugins
 		echo '';
 		break;
 
@@ -89,7 +142,6 @@ switch ($mode) {
 		echo "\t\t".'<th>Author</th>'."\n";
 		echo "\t".'</tr>'."\n";
 
-		// FIXME: Read plugin info from database
 		$plugin_info_query = 'SELECT `plugin_id`,`plugin_db_table`,
 			`plugin_name`,`plugin_author`,`plugin_type`,`plugin_description`,
 			`plugin_directory`,`plugin_version` FROM `' . PLUGIN_TABLE . '`';
@@ -117,8 +169,8 @@ switch ($mode) {
 				unset($plugin_info);
 			}
 		}
-
 		echo '</table>'."\n";
+		// TODO: Do something with plugin list
 		break;
 }
 

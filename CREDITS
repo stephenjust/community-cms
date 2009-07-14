@@ -15,6 +15,9 @@ http://tinymce.moxiecode.com/
 GNU Lesser General Public License 2.1
 [ http://tinymce.moxiecode.com/license.php ]
 
+PEAR Tar_Archive Plugin (./includes/Tar.php)
+Information available within file.
+
 jQuery
 (C) The jQuery Team
 http://www.jquery.com/
