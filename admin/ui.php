@@ -42,12 +42,29 @@ if (file_exists(ROOT . 'admin/'.$_GET['module'].'.php')) {
 	$debug->add_trace('Module file does not exist',true,'ui.php');
 }
 
+if (isset($_GET['upload'])) {
+	if (!is_numeric($_GET['upload'])) {
+		$upload_field = $_GET['upload'];
+		// Check if file data was actually sent
+		if (!isset($_FILES[$upload_field])) {
+			$debug->add_trace('No file data was sent',true,'ui.php');
+		} else {
+			$_FILES['upload'] = $_FILES[$upload_field];
+			$debug->add_trace('Attempting to upload file',false,'ui.php');
+			file_upload('tmp',false);
+			$filename = basename($_FILES[$upload_field]['name']);
+		}
+	}
+}
 $content .= $template;
 if ($first == 0) {
 	if (!isset($current_mode)) {
 		$current_mode = $first_mode;
 	}
 	$action = (isset($_GET['action'])) ? $_GET['action'] : NULL;
+	if (isset($filename)) {
+		$action .= '&file='.$filename;
+	}
 	$content .= '<script language="javascript" type="text/javascript">changeContent("'.$_GET['module'].'","'.$current_mode.'","'.$action.'");</script>';
 }
 ?>
