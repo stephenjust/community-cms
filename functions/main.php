@@ -42,13 +42,19 @@ function initialize($mode = NULL) {
 	global $site_info;
 	global $acl;
 
+	require_once(ROOT . 'includes/debug.php');
 	$debug = new debug;
+
+	require_once(ROOT . 'includes/acl.php');
 	$acl = new acl;
 
 	if ($mode == 'ajax') {
 		$debug->add_trace('Running in AJAX mode',false,'initialize');
 	}
 
+	if ($mode == 'install') {
+		return;
+	}
 	$db->sql_connect();
 	if (!$db->connect) {
 		err_page(1001); // Database connection error
@@ -60,10 +66,11 @@ function initialize($mode = NULL) {
 		die('Failed to get site information.');
 	}
 	$site_info = $db->sql_fetch_assoc($site_info_handle);
+	return;
 }
 function clean_up() {
 	global $db;
-	$db->sql_close();
+	@ $db->sql_close();
 }
 
 /**

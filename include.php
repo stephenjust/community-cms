@@ -20,10 +20,8 @@ if(!include_once(ROOT.'functions/main.php')) {
 if(!include_once(ROOT.'functions/mysql.php')) {
     err_page(2001);
 }
-require(ROOT . 'includes/debug.php');
 require(ROOT . 'includes/constants.php');
 require(ROOT . 'includes/db/db.php');
-require(ROOT . 'includes/acl.php');
 require(ROOT . 'includes/xml.php');
 require(ROOT . 'functions/login.php');
 require(ROOT . 'includes/page.php');
