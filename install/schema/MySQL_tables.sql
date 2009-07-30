@@ -4,10 +4,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl` (
 	`user` INT NOT NULL,
 	`is_group` INT(1) NOT NULL DEFAULT 0,
 	`value` INT(1) NOT NULL DEFAULT 0
-) ENGINE=MYISAM CHARACTER SET=utf8 ;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->acl` (`acl_id`, `user`, `is_group`, `allow`) VALUES
-(1, 1, 0, 1);;
+) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl_keys` (
 	`acl_id` INT NOT NULL auto_increment PRIMARY KEY,
@@ -15,16 +12,13 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl_keys` (
 	`acl_longname` TEXT NOT NULL,
 	`acl_description` TEXT NOT NULL,
 	`acl_value_default` INT(1) NOT NULL DEFAULT 0
-) ENGINE=MYISAM CHARACTER SET=utf8;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`) VALUES
-('all','All Permissions','Grant this permission to allow all actions within the CMS',0);;
+) ENGINE=MYISAM CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 	`id` INT NOT NULL auto_increment PRIMARY KEY ,
 	`type` TEXT NOT NULL,
 	`attributes` TEXT NOT NULL
-) ENGINE=MYISAM CHARACTER SET=utf8 ;;
+) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`id` int(11) NOT NULL auto_increment,
@@ -42,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`hidden` tinyint(1) NOT NULL,
 	PRIMARY KEY  (`id`),
 	KEY `category` (`category`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
 	`cat_id` int(11) NOT NULL auto_increment,
@@ -50,11 +44,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
 	`colour` text NOT NULL,
 	`description` text NOT NULL,
 	PRIMARY KEY  (`cat_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
-(0, 'Default Category', 'red', ''),
-(1, 'Other', 'yellow', '');;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`db_version` decimal(6,2) NOT NULL,
@@ -66,10 +56,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`footer` text NOT NULL,
 	`active` tinyint(1) NOT NULL,
 	`home` int(4) NOT NULL default '1'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->config` (`db_version`,`name`, `url`, `comment`, `template`, `footer`, `active`) VALUES
-('0.02','<!-- $SITE_NAME$ -->', 'http://localhost/', 'Sourceforge.net', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   `id` int(11) NOT NULL auto_increment,
@@ -77,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   `label` text NOT NULL,
   `path` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   `log_id` int(11) NOT NULL auto_increment,
@@ -86,7 +73,14 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   `action` text NOT NULL,
   `ip_addr` INT(10) unsigned NOT NULL,
   PRIMARY KEY  (`log_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`recipient` INT(5) NOT NULL DEFAULT '1',
+	`message` TEXT NOT NULL,
+	PRIMARY KEY (`id`)
+	) ENGINE = MYISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	`id` int(11) NOT NULL auto_increment,
@@ -100,21 +94,14 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	`showdate` int(2) NOT NULL default 1,
 	PRIMARY KEY  (`id`),
 	KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->news` (`id`, `page`, `name`, `description`, `author`, `date`, `image`) VALUES
-(0, 1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, and an administration system to make editing your content easy. Now you can edit content too! It works really well.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news_settings` (
 	`num_articles` INT(3) NOT NULL ,
     `default_date_setting` INT(3) NOT NULL ,
     `show_author` INT(3) NOT NULL ,
     `show_edit_time` INT(3) NOT NULL
-) ENGINE = MYISAM ;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->news_settings`
-    (`num_articles`,`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
-('10','1', '1', '1');;
+) ENGINE = MYISAM ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
   `id` int(11) NOT NULL auto_increment,
@@ -125,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
   `path` text character set utf8 collate utf8_unicode_ci,
   `hidden` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
 	`id` int(11) NOT NULL auto_increment,
@@ -139,12 +126,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
 	`blocks_right` text NULL,
 	`hidden` int(1) NOT NULL,
 	PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->pages` (`text_id`, `title`, `type`, `menu`, `list`) VALUES
-('home', 'Home', 1, 1, 0),
-('calendar', 'Calendar', 3, 1, 1),
-('newsletters', 'Newsletters', 2, 1, 2);;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_messages` (
 	`message_id` INT NOT NULL auto_increment PRIMARY KEY,
@@ -155,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_messages` (
 	`text` TEXT NOT NULL,
 	`order` INT NOT NULL,
 	INDEX ( `page_id`,`order` )
-) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
+) ENGINE = MYISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
 	`id` int(4) NOT NULL auto_increment,
@@ -164,20 +146,14 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
 	`author` tinytext NOT NULL,
 	`filename` tinytext NOT NULL,
 	PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (`name`, `description`, `author`, `filename`) VALUES
-('News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', 'news.php'),
-('Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by date. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
-('Calendar', 'A complex date management system supporting a full month view, week view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
-('Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php');;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->permissions` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	`user` INT NOT NULL ,
 	`files` INT(4) NOT NULL DEFAULT '0',
 	INDEX (`user`)
-) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
+) ENGINE = MYISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_questions` (
   `question_id` int(5) NOT NULL auto_increment,
@@ -186,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_questions` (
   `type` int(2) NOT NULL default '1',
   `active` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`question_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_answers` (
   `answer_id` int(6) NOT NULL auto_increment,
@@ -194,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_answers` (
   `answer` text NOT NULL,
   `answer_order` int(2) NOT NULL,
   PRIMARY KEY  (`answer_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
 	`response_id` int(11) NOT NULL auto_increment,
@@ -203,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
 	`value` text,
 	`ip_addr` int(10) NOT NULL,
 	PRIMARY KEY  (`response_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->sessions` (
 	`uid` int(5) NOT NULL,
@@ -213,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->sessions` (
 	PRIMARY KEY (`sid`),
 	KEY (`uid`),
 	KEY (`timestamp`)
-) ENGINE=MyISAM CHARACTER SET=utf8 ;;
+) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
 	`id` int(3) NOT NULL auto_increment,
@@ -222,28 +198,14 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
 	`description` text NOT NULL,
 	`author` text NOT NULL,
 	PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->templates` (`id`, `path`, `name`, `description`, `author`) VALUES
-(1, 'templates/default/', 'Community CMS Default Template', 'Default template.', 'Stephen J');;
-
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`recipient` INT(5) NOT NULL DEFAULT '1',
-	`message` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
-	) ENGINE = MYISAM DEFAULT CHARSET=latin1;;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->user_groups` (
 	`id` int(5) NOT NULL auto_increment,
 	`name` text NOT NULL,
 	`label_format` text NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->user_groups`
-(`name`,`label_format`) VALUES
-('Administrator','font-weight: bold; color: #009900;');;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`id` int(5) NOT NULL auto_increment,
@@ -264,8 +226,4 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`lastlogin` INT NOT NULL default '0',
 	PRIMARY KEY  (`id`),
 	KEY `type` (`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;;
-
-INSERT INTO `<!-- $DB_PREFIX$ -->users` (`id`, `type`, `username`, `password`, `groups`, `realname`, `phone`, `email`, `address`, `phone_hide`, `email_hide`, `address_hide`, `message`) VALUES
-(1, 1, '<!-- $ADMIN_USER$ -->', '<!-- $ADMIN_PWD$ -->', '1', 'Administrator', '555-555-5555', 'admin@example.com','Unknown',1,1,1,1),
-(2, 0, 'user', '5f4dcc3b5aa765d61d8327deb882cf99', NULL, 'Default User', '555-555-5555', 'user@example.com','Unknown',1,1,1,0)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3

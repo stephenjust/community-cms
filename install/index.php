@@ -28,14 +28,20 @@ switch($_GET['page']) {
 	case 3:
 		include ('./install3.php');
 		break;
+	case 4:
+		include ('./install4.php');
+		break;
+	case 5:
+		include ('./install5.php');
+		break;
+	case 6:
+		include ('./install6.php');
+		break;
 }
 $template = str_replace('<!-- $PAGE_TITLE$ -->','Community CMS Installer',$template);
 $template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
-$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
-$template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
-$template = str_replace('<!-- $NAV_LOGIN$ -->',NULL,$template);
 $template = str_replace('<!-- $CONTENT$ -->',$content,$template);
-$template = str_replace('<!-- $UPDATE_CONTENT$ -->',include('./update.php'),$template);
+// $template = str_replace('<!-- $UPDATE_CONTENT$ -->',include('./update.php'),$template);
 $template = str_replace('<!-- $FOOTER$ -->','Community CMS Copyright&copy; 2007 - 2009 Stephen Just',$template);
 echo $template;
 ?>

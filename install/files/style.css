@@ -1,3 +1,19 @@
+#main {
+	background: #FFFFFF;
+	background-image: url('../../admin/templates/default/images/contentbg.png');
+	background-repeat: no-repeat;
+	border: 1px solid #333333;
+	padding: 5px;
+	vertical-align: top;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+}
+#main > h1 {
+	border-bottom: 1px solid #CCCCCC;
+	color: #333344;
+	font-family: Arial,Verdana,sans-serif;
+	margin: 5px;
+}
 #footer {
     display: block;
     width: 100%;
@@ -5,4 +21,13 @@
     color: #999999;
     font-size: small;
     font-family: sans-serif;
+}
+
+#file_permissions, table {
+	background: #FFFFFF;
+	border: 1px solid #000000;
+}
+#file_permissions td {
+	padding-left: 15px;
+	padding-right: 15px;
 }
