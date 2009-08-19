@@ -23,6 +23,7 @@ if(!include_once(ROOT.'functions/mysql.php')) {
 require(ROOT . 'includes/constants.php');
 require(ROOT . 'includes/db/db.php');
 require(ROOT . 'includes/xml.php');
+require(ROOT . 'includes/template.php');
 require(ROOT . 'functions/login.php');
 require(ROOT . 'includes/page.php');
 if(!include_once(ROOT.'functions/page_class.php')) {
