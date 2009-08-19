@@ -33,6 +33,7 @@ define('BLOCK_TABLE', $CONFIG['db_prefix'] . 'blocks');
 define('CALENDAR_TABLE', $CONFIG['db_prefix'] . 'calendar');
 define('CALENDAR_CATEGORY_TABLE', $CONFIG['db_prefix'] . 'calendar_categories');
 define('CONFIG_TABLE', $CONFIG['db_prefix'] . 'config');
+define('CONTENT_TABLE', $CONFIG['db_prefix'] . 'content');
 define('FILE_TABLE', $CONFIG['db_prefix'] . 'files');
 define('LOG_TABLE', $CONFIG['db_prefix'] . 'logs');
 define('MESSAGE_TABLE', $CONFIG['db_prefix'] . 'messages');
