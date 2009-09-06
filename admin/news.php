@@ -111,10 +111,23 @@ if ($_POST['page'] == '*') {
 $page_list .= '<option value="0" '.$no_page.'>No Page</option>
     <option value="*" '.$all_page.'>All Pages</option>
     </select>';
-$tab_content['manage'] = '<table class="admintable">
-    <tr><th colspan="4"><form method="POST" action="admin.php?module=news">'.
-    $page_list.'<input type="submit" value="Change Page" /></form></th></tr>
-    <tr><th width="30">ID</th><th>Title:</th><th colspan="2"></th></tr>';
+$tab_content['manage'] = '<table class="admintable">';
+
+// Change page form
+$tab_content['manage'] .= '<tr><th colspan="4">
+	<form method="POST" action="admin.php?module=news">'.$page_list
+	.'<input type="submit" value="Change Page" /></form></th></tr>';
+	
+$tab_content['manage'] .= '<tr>
+	<th width="1"></th>
+	<th width="30">ID</th>
+	<th>Title:</th>
+	<th colspan="2"></th></tr>';
+
+// Form for action on selected item(s)
+$tab_content['manage'] .= '<form method="post" action="admin.php?module=news">
+	<input type="hidden" name="page" value="'.$_POST['page'].'" />';
+
 // Get page list in the order defined in the database. First is 0.
 if ($_POST['page'] == '*') {
     $page_list_query = 'SELECT * FROM ' . NEWS_TABLE . ' ORDER BY id ASC';
@@ -124,12 +137,14 @@ if ($_POST['page'] == '*') {
 $page_list_handle = $db->sql_query($page_list_query);
 $page_list_rows = $db->sql_num_rows($page_list_handle);
 if ($page_list_rows == 0) {
-    $tab_content['manage'] .= '<tr><td></td><td>There are no articles on this
+    $tab_content['manage'] .= '<tr><td colspan="2"></td><td>There are no articles on this
         page.</td><td></td><td></td></tr>';
 }
 for ($i = 1; $i <= $page_list_rows; $i++) {
     $page_list = $db->sql_fetch_assoc($page_list_handle);
-    $tab_content['manage'] .= '<tr><td>'.$page_list['id'].'</td><td>'.
+    $tab_content['manage'] .= '<tr><td>
+		<input type="checkbox" name="item_'.$page_list['id'].'" /></td>
+		<td>'.$page_list['id'].'</td><td>'.
         stripslashes($page_list['name']).'</td><td>
         <a href="?module=news&action=delete&id='.$page_list['id'].'">
         <img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px"
@@ -138,7 +153,24 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
         <img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
         height="16px" border="0px" /></a></td></tr>';
 		} // FOR
-$tab_content['manage'] .= '</table>';
+$tab_content['manage'] .= '</table>'."\n";
+
+
+// FIXME: These don't work yet
+$tab_content['manage'] .= 'With selected:<br />'."\n".
+	'<input type="radio" id="a_del" name="news_action" value="del" />'."\n".
+	'<label for="a_del" class="ws">Delete</label><br />'."\n".
+	'<input type="radio" id="a_move" name="news_action" value="move" />'."\n".
+	'<label for="a_del" class="ws">Move</label><br />'."\n".
+	'<input type="radio" id="a_copy" name="news_action" value="copy" />'."\n".
+	'<label for="a_del" class="ws">Copy</label><br />'."\n";
+
+
+$tab_content['manage'] .= '<input type="submit" value="Submit" />';
+
+// End form for action on selected item(s)
+$tab_content['manage'] .= '</form>'."\n";
+
 $tab_layout->add_tab('Manage News',$tab_content['manage']);
 
 $form = new form;
