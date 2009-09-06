@@ -33,8 +33,6 @@ function adm_display_header($title = 'Community CMS Administration') {
 		<script language="javascript" type="text/javascript"
 		src="./scripts/jquery-ui.js"></script>
 		<script language="javascript" type="text/javascript"
-		src="./scripts/jquery-ddm.js"></script>
-		<script language="javascript" type="text/javascript"
 		src="./scripts/jquery-custom.js"></script>
 		<script language="javascript" type="text/javascript"
 		src="./admin/scripts/dynamic_file_list.js"></script>
@@ -71,14 +69,5 @@ function adm_display_header($title = 'Community CMS Administration') {
 		$template->page_title = $title;
 		$template = adm_display_replace_placeholders($template);
 		echo $template;
-}
-
-function adm_display_navigation() {
-	global $site_info;
-	$template = new template;
-	$template->load_admin_file('navigation');
-	$template->navigation_bar = NULL; // FIXME
-	$template = adm_display_replace_placeholders($template);
-	echo $template;
 }
 ?>
