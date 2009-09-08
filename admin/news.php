@@ -26,6 +26,29 @@ $news_config = $db->sql_fetch_assoc($news_config_handle);
 
 // ----------------------------------------------------------------------------
 
+/**
+ * get_selected_items - Return the IDs of the selected form items
+ * @param string $prefix Form name prefix
+ * @return array Array of all IDs
+ */
+// FIXME: Check if empty form vars are sent in other browsers (not firefox)
+function get_selected_items($prefix = 'item') {
+	$form_keys = array_keys($_POST);
+	$item_keys = array();
+	for ($i = 0; $i < count($form_keys); $i++) {
+		if (ereg('^'.$prefix.'_',$form_keys[$i])) {
+			$item_keys[] = $form_keys[$i];
+		}
+	}
+	$items = array();
+	for ($i = 0; $i < count($item_keys); $i++) {
+		$items[] = str_replace($prefix.'_',NULL,$item_keys[$i]);
+	}
+	return $items;
+}
+
+// ----------------------------------------------------------------------------
+
 if ($_GET['action'] == 'delete') {
     $read_article_query = 'SELECT news.id,news.name,page.title 
 		FROM ' . NEWS_TABLE . ' news, ' . PAGE_TABLE . ' page
