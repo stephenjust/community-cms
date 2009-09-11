@@ -49,6 +49,17 @@ function get_selected_items($prefix = 'item') {
 
 // ----------------------------------------------------------------------------
 
+switch ($_GET['action']) {
+	default:
+
+		break;
+	case 'multi':
+		$selected_items = get_selected_items();
+		break;
+}
+
+// ----------------------------------------------------------------------------
+
 if ($_GET['action'] == 'delete') {
     $read_article_query = 'SELECT news.id,news.name,page.title 
 		FROM ' . NEWS_TABLE . ' news, ' . PAGE_TABLE . ' page
@@ -148,7 +159,7 @@ $tab_content['manage'] .= '<tr>
 	<th colspan="2"></th></tr>';
 
 // Form for action on selected item(s)
-$tab_content['manage'] .= '<form method="post" action="admin.php?module=news">
+$tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp;action=multi">
 	<input type="hidden" name="page" value="'.$_POST['page'].'" />';
 
 // Get page list in the order defined in the database. First is 0.
