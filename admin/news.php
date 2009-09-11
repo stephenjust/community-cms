@@ -55,6 +55,18 @@ switch ($_GET['action']) {
 		break;
 	case 'multi':
 		$selected_items = get_selected_items();
+		if (!isset($_POST['news_action'])) {
+			$content .= 'No action was selected.<br />'."\n";
+			break;
+		}
+		if ($_POST['news_action'] != 'del' &
+			$_POST['news_action'] != 'move' &
+			$_POST['news_action'] != 'copy')
+		{
+			$content .= 'Invalid action.<br />'."\n";
+			break;
+		}
+		// FIXME: Actually perform the requested operation
 		break;
 }
 
@@ -195,9 +207,9 @@ $tab_content['manage'] .= 'With selected:<br />'."\n".
 	'<input type="radio" id="a_del" name="news_action" value="del" />'."\n".
 	'<label for="a_del" class="ws">Delete</label><br />'."\n".
 	'<input type="radio" id="a_move" name="news_action" value="move" />'."\n".
-	'<label for="a_del" class="ws">Move</label><br />'."\n".
+	'<label for="a_move" class="ws">Move</label><br />'."\n".
 	'<input type="radio" id="a_copy" name="news_action" value="copy" />'."\n".
-	'<label for="a_del" class="ws">Copy</label><br />'."\n";
+	'<label for="a_copy" class="ws">Copy</label><br />'."\n";
 
 
 $tab_content['manage'] .= '<input type="submit" value="Submit" />';
