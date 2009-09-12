@@ -49,16 +49,85 @@ function get_selected_items($prefix = 'item') {
 
 // ----------------------------------------------------------------------------
 
+function delete_article($article) {
+	global $db;
+	global $debug;
+
+	$id = array();
+	if (is_numeric($article)) {
+		$id[] = $article;
+	} elseif (is_array($article)) {
+		$id = $article;
+	}
+	unset($article);
+
+	for ($i = 0; $i < count($id); $i++) {
+		$current = $id[$i];
+
+		// Check data type
+		if (!is_numeric($current)) {
+			$debug->add_trace('Given non-numeric input',false,'delete_article');
+			unset($current);
+			continue;
+		}
+
+		// Read article information for log
+		$info_query = 'SELECT `news`.`id`,`news`.`name` FROM
+			`' . NEWS_TABLE . '` `news` WHERE
+			`news`.`id` = '.$current.' LIMIT 1';
+		$info_handle = $db->sql_query($info_query);
+		if ($db->error[$info_handle] === 1) {
+			$debug->add_trace('Query failed',true,'delete_article');
+			return false;
+		}
+		if ($db->sql_num_rows($info_handle) === 0) {
+			$debug->add_trace('Article not found',true,'delete_article');
+			return false;
+		}
+		$info = $db->sql_fetch_assoc($info_handle);
+
+		// Delete article
+        $delete_query = 'DELETE FROM `' . NEWS_TABLE . '`
+			WHERE `id` = '.$current;
+        $delete = $db->sql_query($delete_query);
+        if ($db->error[$delete] === 1) {
+            return false;
+        } else {
+            log_action('Deleted news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
+        }
+
+		unset($delete_query);
+		unset($delete);
+		unset($info_query);
+		unset($info_handle);
+		unset($info);
+		unset($current);
+	}
+	return true;
+}
+
+// ----------------------------------------------------------------------------
+
 switch ($_GET['action']) {
 	default:
 
 		break;
 	case 'multi':
 		$selected_items = get_selected_items();
+
+		// Check if any items are selected
+		if (count($selected_items) == 0) {
+			$content .= 'No items are selected.<br />'."\n";
+			break;
+		}
+
+		// Check if an action is selected
 		if (!isset($_POST['news_action'])) {
 			$content .= 'No action was selected.<br />'."\n";
 			break;
 		}
+
+		// Check if a valid action was given
 		if ($_POST['news_action'] != 'del' &
 			$_POST['news_action'] != 'move' &
 			$_POST['news_action'] != 'copy')
@@ -66,33 +135,31 @@ switch ($_GET['action']) {
 			$content .= 'Invalid action.<br />'."\n";
 			break;
 		}
-		// FIXME: Actually perform the requested operation
+
+		if ($_POST['news_action'] == 'del') {
+			if (!delete_article($selected_items)) {
+				$content .= 'Failed to delete article(s)<br />'."\n";
+			} else {
+				$content .= 'Successfully deleted article(s)<br />'."\n";
+			}
+		}
+		if ($_POST['news_action'] == 'move') {
+			// FIXME: Ask where to move items
+		}
+		if ($_POST['news_action'] == 'copy') {
+			// FIXME: Ask where to copy items
+		}
 		break;
 }
 
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'delete') {
-    $read_article_query = 'SELECT news.id,news.name,page.title 
-		FROM ' . NEWS_TABLE . ' news, ' . PAGE_TABLE . ' page
-		WHERE news.id = '.$_GET['id'].' AND news.page = page.id LIMIT 1';
-    $read_article_handle = $db->sql_query($read_article_query);
-    if ($db->error[$read_article_handle] === 1) {
-        $content .= 'Failed to read article information.<br />';
-    }
-    if ($db->sql_num_rows($read_article_handle) == 1) {
-        $delete_article_query = 'DELETE FROM ' . NEWS_TABLE . '
-			WHERE id = '.$_GET['id'];
-        $delete_article = $db->sql_query($delete_article_query);
-        if ($db->error[$delete_article] === 1) {
-            $content .= 'Failed to delete article.<br />';
-        } else {
-            $read_article = $db->sql_fetch_assoc($read_article_handle);
-            $content .= 'Successfully deleted article. <br />'.log_action('Deleted news article \''.stripslashes($read_article['name']).'\' from \''.stripslashes($read_article['title']).'\'');
-        }
-    } else {
-        $content .= 'Could not find the article you asked to delete.<br />';
-    }
+    if (!delete_article($_GET['id'])) {
+		$content .= 'Failed to delete article<br />'."\n";
+	} else {
+		$content .= 'Successfully deleted article<br />'."\n";
+	}
 } // IF 'delete'
 
 // ----------------------------------------------------------------------------
