@@ -47,6 +47,13 @@ label.ws {
 	margin-right: auto;
 	display: inline;
 }
+label.wsl {
+	width: auto;
+	float: left;
+	text-align: left;
+	margin-right: auto;
+	display: inline;
+}
 fieldset {
 	display: block;
 	float: left;

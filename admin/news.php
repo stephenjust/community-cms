@@ -49,6 +49,13 @@ function get_selected_items($prefix = 'item') {
 
 // ----------------------------------------------------------------------------
 
+/**
+ * delete_article - Deletes one or more news articles
+ * @global object $db
+ * @global object $debug
+ * @param mixed $article
+ * @return boolean
+ */
 function delete_article($article) {
 	global $db;
 	global $debug;
@@ -108,6 +115,18 @@ function delete_article($article) {
 
 // ----------------------------------------------------------------------------
 
+function move_article($article,$new_location) {
+	// FIXME: Stub
+}
+
+// ----------------------------------------------------------------------------
+
+function copy_article($article,$new_location) {
+	// FIXME: Stub
+}
+
+// ----------------------------------------------------------------------------
+
 switch ($_GET['action']) {
 	default:
 
@@ -142,12 +161,22 @@ switch ($_GET['action']) {
 			} else {
 				$content .= 'Successfully deleted article(s)<br />'."\n";
 			}
+			break;
+		}
+
+		if (!isset($_POST['where'])) {
+			$content .= 'No location provided.<br />'."\n";
+			break;
+		}
+		if (!is_numeric($_POST['where'])) {
+			$content .= 'Invalid location.<br />'."\n";
+			break;
 		}
 		if ($_POST['news_action'] == 'move') {
-			// FIXME: Ask where to move items
+			move_article($selected_items,$_POST['where']);
 		}
 		if ($_POST['news_action'] == 'copy') {
-			// FIXME: Ask where to copy items
+			copy_article($selected_items,$_POST['where']);
 		}
 		break;
 }
@@ -268,15 +297,28 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		} // FOR
 $tab_content['manage'] .= '</table>'."\n";
 
+$a_page_list = '<select name="where" id="a_where">';
+$a_page_query = 'SELECT * FROM ' . PAGE_TABLE . '
+    WHERE type = 1 ORDER BY list ASC';
+$a_page_query_handle = $db->sql_query($a_page_query);
+for ($i = 1; $i <= $db->sql_num_rows($a_page_query_handle); $i++) {
+    $a_page = $db->sql_fetch_assoc($a_page_query_handle);
+	$a_page_list .= '<option value="'.$a_page['id'].'" />'.
+		$a_page['title'].'</option>';
+    $a_pages[$i] = $a_page['id'];
+} // FOR $i
+$a_page_list .= '<option value="0">No Page</option>
+    </select>';
 
-// FIXME: These don't work yet
 $tab_content['manage'] .= 'With selected:<br />'."\n".
 	'<input type="radio" id="a_del" name="news_action" value="del" />'."\n".
 	'<label for="a_del" class="ws">Delete</label><br />'."\n".
 	'<input type="radio" id="a_move" name="news_action" value="move" />'."\n".
 	'<label for="a_move" class="ws">Move</label><br />'."\n".
 	'<input type="radio" id="a_copy" name="news_action" value="copy" />'."\n".
-	'<label for="a_copy" class="ws">Copy</label><br />'."\n";
+	'<label for="a_copy" class="ws">Copy</label><br />'."\n".
+	"$a_page_list\n".
+	'<label for="a_where" class="wsl">Move/copy to:</label><br />'."\n";
 
 
 $tab_content['manage'] .= '<input type="submit" value="Submit" />';
