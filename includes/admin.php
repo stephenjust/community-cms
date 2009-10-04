@@ -25,15 +25,7 @@ function adm_display_header($title = 'Community CMS Administration') {
 	$template->scripts = '<link type="text/css"
 		href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
 		<script language="javascript" type="text/javascript"
-		src="./scripts/tiny_mce/tiny_mce_gzip.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./admin/scripts/ajax.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./scripts/jquery.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./scripts/jquery-ui.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./scripts/jquery-custom.js"></script>
+		src="./includes/jscompress.php"></script>
 		<script language="javascript" type="text/javascript"
 		src="./admin/scripts/dynamic_file_list.js"></script>
 		<script language="javascript" type="text/javascript"
