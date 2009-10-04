@@ -164,7 +164,7 @@ function move_article($article,$new_location) {
         if ($db->error[$move] === 1) {
             return false;
         } else {
-            log_action('Moved news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
+            log_action('Moved news article \''.stripslashes($info['name']).'\'');
         }
 
 		unset($move_query);
@@ -180,7 +180,66 @@ function move_article($article,$new_location) {
 // ----------------------------------------------------------------------------
 
 function copy_article($article,$new_location) {
-	// FIXME: Stub
+	global $db;
+	global $debug;
+
+	$id = array();
+	if (is_numeric($article)) {
+		$id[] = $article;
+	} elseif (is_array($article)) {
+		$id = $article;
+	}
+	unset($article);
+
+	if (!is_numeric($new_location)) {
+		$debug->add_trace('Given non-numeric input for new location',true,'copy_article');
+	}
+
+	for ($i = 0; $i < count($id); $i++) {
+		$current = $id[$i];
+
+		// Check data type
+		if (!is_numeric($current)) {
+			$debug->add_trace('Given non-numeric input',true,'copy_article');
+			unset($current);
+			continue;
+		}
+
+		// Read article information for log
+		$info_query = 'SELECT * FROM
+			`' . NEWS_TABLE . '` WHERE
+			`id` = '.$current.' LIMIT 1';
+		$info_handle = $db->sql_query($info_query);
+		if ($db->error[$info_handle] === 1) {
+			$debug->add_trace('Query failed',true,'copy_article');
+			return false;
+		}
+		if ($db->sql_num_rows($info_handle) === 0) {
+			$debug->add_trace('Article not found',true,'copy_article');
+			return false;
+		}
+		$info = $db->sql_fetch_assoc($info_handle);
+
+		// Move article
+        $move_query = 'INSERT INTO `' . NEWS_TABLE . '`
+			(`page`,`name`,`description`,`author`,`date`,`date_edited`,`image`,`showdate`)
+			VALUES ('.$new_location.",'{$info['name']}','{$info['description']}','{$info['author']}',
+			'{$info['date']}','{$info['date_edited']}','{$info['image']}',{$info['showdate']})";
+        $move = $db->sql_query($move_query);
+        if ($db->error[$move] === 1) {
+            return false;
+        } else {
+            log_action('Copied news article \''.stripslashes($info['name']).'\'');
+        }
+
+		unset($move_query);
+		unset($move);
+		unset($info_query);
+		unset($info_handle);
+		unset($info);
+		unset($current);
+	}
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -266,8 +325,8 @@ if ($_GET['action'] == 'new') {
         $image = NULL;
     }
     $new_article_query = 'INSERT INTO ' . NEWS_TABLE . "
-		(page,name,description,author,image,date,showdate)
-		VALUES ($page,'$title','$article_content','$author','$image','".DATE_TIME."','$showdate')";
+		(page,name,description,author,image,date,date_edited,showdate)
+		VALUES ($page,'$title','$article_content','$author','$image','".DATE_TIME."','','$showdate')";
     $new_article = $db->sql_query($new_article_query);
     if($db->error[$new_article] === 1) {
         $content .= 'Failed to add article. <br />';
