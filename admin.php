@@ -68,9 +68,7 @@ function display_admin() {
 		<script language="javascript" type="text/javascript"
 		src="./includes/jscompress.php"></script>
 		<script language="javascript" type="text/javascript"
-		src="./admin/scripts/dynamic_file_list.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./admin/scripts/block_options.js"></script>
+		src="./scripts/tiny_mce/tiny_mce_gzip.js"></script>
 		<script type="text/javascript">
 		tinyMCE_GZ.init({
 			plugins : \'style,layer,table,save,advhr,advimage,advlink,iespell,insertdatetime,preview,searchreplace,print,contextmenu,paste,directionality,fullscreen,spellchecker,noneditable,visualchars,nonbreaking,xhtmlxtras\',

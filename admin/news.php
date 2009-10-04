@@ -116,7 +116,65 @@ function delete_article($article) {
 // ----------------------------------------------------------------------------
 
 function move_article($article,$new_location) {
-	// FIXME: Stub
+	global $db;
+	global $debug;
+
+	$id = array();
+	if (is_numeric($article)) {
+		$id[] = $article;
+	} elseif (is_array($article)) {
+		$id = $article;
+	}
+	unset($article);
+
+	if (!is_numeric($new_location)) {
+		$debug->add_trace('Given non-numeric input for new location',true,'move_article');
+	}
+
+	for ($i = 0; $i < count($id); $i++) {
+		$current = $id[$i];
+
+		// Check data type
+		if (!is_numeric($current)) {
+			$debug->add_trace('Given non-numeric input',true,'move_article');
+			unset($current);
+			continue;
+		}
+
+		// Read article information for log
+		$info_query = 'SELECT `news`.`id`,`news`.`name` FROM
+			`' . NEWS_TABLE . '` `news` WHERE
+			`news`.`id` = '.$current.' LIMIT 1';
+		$info_handle = $db->sql_query($info_query);
+		if ($db->error[$info_handle] === 1) {
+			$debug->add_trace('Query failed',true,'move_article');
+			return false;
+		}
+		if ($db->sql_num_rows($info_handle) === 0) {
+			$debug->add_trace('Article not found',true,'move_article');
+			return false;
+		}
+		$info = $db->sql_fetch_assoc($info_handle);
+
+		// Move article
+        $move_query = 'UPDATE `' . NEWS_TABLE . '`
+			SET `page` = '.$new_location.'
+			WHERE `id` = '.$current;
+        $move = $db->sql_query($move_query);
+        if ($db->error[$move] === 1) {
+            return false;
+        } else {
+            log_action('Moved news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
+        }
+
+		unset($move_query);
+		unset($move);
+		unset($info_query);
+		unset($info_handle);
+		unset($info);
+		unset($current);
+	}
+	return true;
 }
 
 // ----------------------------------------------------------------------------

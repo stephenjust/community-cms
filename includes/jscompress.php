@@ -34,14 +34,16 @@
 
 $cache 	  = true;
 $cachedir = dirname(__FILE__) . '/../tmp';
-$jsdir    = dirname(__FILE__) . '/../scripts';
+$jsdir    = dirname(__FILE__) . '/..';
 
 // List of JS files
 $js_elements = array(
-	'tiny_mce/tiny_mce_gzip.js',
-	'jquery.js',
-	'jquery-ui.js',
-	'jquery-custom.js');
+	'admin/scripts/ajax.js',
+	'admin/scripts/dynamic_file_list.js',
+	'admin/scripts/block_options.js',
+	'scripts/jquery.js',
+	'scripts/jquery-ui.js',
+	'scripts/jquery-custom.js');
 
 // Determine directory to use
 $base = realpath($jsdir);
