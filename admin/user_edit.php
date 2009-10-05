@@ -46,15 +46,15 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 		$telephone = addslashes($_POST['telephone']);
 		$email = addslashes($_POST['email']);
 		$title = addslashes($_POST['title']);
-		$telephone_hide = (int)$_POST['telephone_hide'];
-		$address_hide = (int)$_POST['address_hide'];
-		$email_hide = (int)$_POST['email_hide'];
+		$telephone_hide = (isset($_POST['telephone_hide'])) ? $_POST['telephone_hide'] : NULL;
+		$address_hide = (isset($_POST['address_hide'])) ? $_POST['address_hide'] : NULL;
+		$email_hide = (isset($_POST['email_hide'])) ? $_POST['email_hide'] : NULL;
 		$groups = (isset($_POST['groups']) && is_array($_POST['groups']))
 			? array2csv($_POST['groups']) : NULL;
 		if (!isset($_POST['hide'])) {
 			$hide = NULL;
 		} else {
-			$hide = (int)$_POST['hide'];
+			$hide = $_POST['hide'];
 		}
 		$error = 0;
 		$message = (isset($_POST['message'])) ? $_POST['message'] : NULL;
@@ -77,7 +77,7 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 			$realname = $_POST['surname'].', '.$_POST['first_name'];
 		}
 		if ($error == 0) {
-			$edit_query = 'UPDATE ' . USER_TABLE . '
+			$edit_query = 'UPDATE `' . USER_TABLE . '`
 				SET realname=\''.$realname.'\', title=\''.$title.'\',
 				groups=\''.$groups.'\', phone=\''.$telephone.'\',
 				email=\''.$email.'\', address=\''.addslashes($_POST['address']).'\',
