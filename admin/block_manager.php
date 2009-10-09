@@ -14,26 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 $root = "./";
 $message = NULL;
 if ($_GET['action'] == 'delete') {
-	$block_exists_query = 'SELECT * FROM ' . BLOCK_TABLE . '
-		WHERE id = '.$_GET['id'].' LIMIT 1';
-	$block_exists_handle = $db->sql_query($block_exists_query);
-	if($db->error[$block_exists_handle] === 1) {
-		$message .= 'Failed to read block information. '.mysqli_error($db);
-	} else {
-		if($db->sql_num_rows($block_exists_handle) == 1) {
-			$delete_block_query = 'DELETE FROM ' . BLOCK_TABLE . '
-				WHERE id = '.(int)$_GET['id'];
-			$delete_block = $db->sql_query($delete_block_query);
-			if(!$db->error[$delete_block] === 1) {
-				$message .= 'Failed to delete block. '.$db->_print_error_query($delete_block);
-			} else {
-				$block_exists = $db->sql_fetch_assoc($block_exists_handle);
-				$message .= 'Successfully deleted block. '.log_action('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
-			}
-		} else {
-			$message .= 'Could not find the block you are trying to delete.';
-		}
-	}
+	$message .= delete_block($_GET['id']);
 
 // ----------------------------------------------------------------------------
 
