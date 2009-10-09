@@ -182,7 +182,7 @@ class page {
 			}
 			$page = $db->sql_fetch_assoc($page_handle);
 			$this->id = $page['id'];
-			$this->showtitle = (boolean)$page['show_title'];
+			$this->showtitle = ($page['show_title'] == 1) ? true : false;
 			$this->blocksleft = $page['blocks_left'];
 			$this->blocksright = $page['blocks_right'];
 			$this->exists = 1;
