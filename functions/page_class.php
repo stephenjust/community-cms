@@ -169,6 +169,9 @@ class page {
 			}
 			$page = $db->sql_fetch_assoc($page_handle);
 			$this->text_id = $page['text_id'];
+			$this->showtitle = ($page['show_title'] == 1) ? true : false;
+			$this->blocksleft = $page['blocks_left'];
+			$this->blocksright = $page['blocks_right'];
 			$this->exists = 1;
 		} elseif (strlen($this->text_id) > 0) {
 			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
