@@ -83,8 +83,8 @@ switch ($_GET['action']) {
 				$content .= 'Invalid telephone number.<br />'."\n";
 				break;
 			}
-			$phone = (int)$phone;
 		}
+		$phone = (int)$phone;
 
 		// Verify email address
 		if ($email != "") {
@@ -214,8 +214,8 @@ switch ($_GET['action']) {
 				$content .= 'Invalid telephone number.<br />'."\n";
 				break;
 			}
-			$phone = (int)$phone;
 		}
+		$phone = (int)$phone;
 
 		// Verify email address
 		if ($email != "") {
