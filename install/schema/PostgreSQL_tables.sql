@@ -86,6 +86,24 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->config" (
 );
 
 -- ----------------------------------------------------------------------------
+-- comcms_contacts
+-- ----------------------------------------------------------------------------
+CREATE TABLE "<!-- $DB_PREFIX$ -->contacts" (
+	"id" INT NOT NULL default nextval('<!-- $DB_PREFIX$ -->contacts_id_seq') ,
+	"page" CHAR( 3 ) NOT NULL ,
+	"name" TEXT NOT NULL ,
+	"phone" CHAR( 11 ) NOT NULL ,
+	"address" TEXT NOT NULL ,
+	"email" TEXT NOT NULL ,
+	"phone_hide" BOOL NOT NULL ,
+	"address_hide" BOOL NOT NULL ,
+	"email_hide" BOOL NOT NULL ,
+	"title" TEXT NOT NULL,
+	PRIMARY KEY ("id")
+);
+SELECT setval('<!-- $DB_PREFIX$ -->contacts_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->contacts"));
+
+-- ----------------------------------------------------------------------------
 -- comcms_files
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->files_id_seq";

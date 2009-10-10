@@ -10,6 +10,7 @@ $error = 0;
 // QUERY ARRAY (VERSION 0.01 -> 0.02)
 // ----------------------------------------------------------------------------
 
+// TODO: add contacts table
 $query[] = 'DROP TABLE IF EXISTS '.$CONFIG['db_prefix'].'admin_pages';
 $query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'pages ADD `text_id` TEXT NULL AFTER `id`';
 $query[] = 'CREATE TABLE IF NOT EXISTS '.$CONFIG['db_prefix'].'user_groups (

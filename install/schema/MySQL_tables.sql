@@ -58,6 +58,19 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`home` int(4) NOT NULL default '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+CREATE TABLE `<!-- $DB_PREFIX$ -->contacts` (
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`page` CHAR( 3 ) NOT NULL ,
+	`name` TEXT NOT NULL ,
+	`phone` CHAR( 11 ) NOT NULL ,
+	`address` TEXT NOT NULL ,
+	`email` TEXT NOT NULL ,
+	`phone_hide` BOOL NOT NULL ,
+	`address_hide` BOOL NOT NULL ,
+	`email_hide` BOOL NOT NULL ,
+	`title` TEXT NOT NULL
+) ENGINE = MYISAM ;
+
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   `id` int(11) NOT NULL auto_increment,
   `type` int(11) NOT NULL,
