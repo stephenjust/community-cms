@@ -50,65 +50,73 @@ Message to user:<br />
 		}
 	if($contact_list_num_rows == 0) {
 		$content .= 'There are no contacts.';
-		} else {
+	} else {
 		while ($contact_list_num_rows >= $j) {
 			$template_contact = new template;
 			$template_contact->load_file('contactlist');
 			$contact_info = $db->sql_fetch_assoc($contact_list_handle);
 			$contact_email = NULL;
-			if($contact_info['user_id'] != 0) {
+			if ($contact_info['user_id'] != 0) {
 				$realname = '<a href="index.php?'.$page->url_reference.'&message='.$contact_info['user_id'].'">'.stripslashes($contact_info['name']).'</a>';
-				} else {
+			} else {
 				$realname = stripslashes($contact_info['name']);
-				}
-			if($contact_info['email_hide'] == 1) {
+			}
+			if ($contact_info['email_hide'] == 1) {
 				$contact_email = 'Hidden';
-				} else {
+			} else {
 				$contact_email = $contact_info['email'];
-				}
-			if($contact_info['phone_hide'] == 1) {
+			}
+			if ($contact_info['phone_hide'] == 1) {
 				$contact_telephone = 'Hidden';
-				} else {
+			} else {
 				$contact_telephone = $contact_info['phone'];
+				// Format phone number
+				if (strlen($contact_telephone) == 11) {
+					$contact_telephone = preg_replace("/(1{1})([0-9]{3})([0-9]{3})([0-9]{4})/", "$1-$2-$3-$4", $contact_telephone);
+				} elseif (strlen($contact_telephone) == 10) {
+					$contact_telephone = preg_replace("/([0-9]{3})([0-9]{3})([0-9]{4})/", "$1-$2-$3", $contact_telephone);
+				} elseif (strlen($contact_telephone) == 7) {
+					$contact_telephone = preg_replace("/([0-9]{3})([0-9]{4})/", "$1-$2", $contact_telephone);
 				}
-			if($contact_info['address_hide'] == 1) {
+			}
+			if ($contact_info['address_hide'] == 1) {
 				$contact_address = 'Hidden';
-				} else {
+			} else {
 				$contact_address = $contact_info['address'];
-				}
+			}
 			$template_contact->contact_name = $realname;
 			$template_contact->contact_title = stripslashes($contact_info['title']);
 			$template_contact->contact_email = stripslashes($contact_email);
 			$template_contact->contact_telephone = stripslashes($contact_telephone);
 			$template_contact->contact_address = stripslashes($contact_address);
-			if($contact_email == 'Hidden') {
+			if ($contact_email == 'Hidden') {
 				$template_contact->replace_range('contact_email','');
-				} else {
+			} else {
 				$template_contact->contact_email_start = '';
 				$template_contact->contact_email_end = '';
-				}
-			if($contact_telephone == 'Hidden') {
+			}
+			if ($contact_telephone == 'Hidden') {
 				$template_contact->replace_range('contact_telephone','');
-				} else {
+			} else {
 				$template_contact->contact_telephone_start = '';
 				$template_contact->contact_telephone_end = '';
-				}
-			if($contact_address == 'Hidden') {
+			}
+			if ($contact_address == 'Hidden') {
 				$template_contact->replace_range('contact_address','');
-				} else {
+			} else {
 				$template_contact->contact_address_start = '';
 				$template_contact->contact_address_end = '';
-				}
-			if($contact_info['title'] == '' || $contact_info['title'] == NULL) {
+			}
+			if ($contact_info['title'] == '' || $contact_info['title'] == NULL) {
 				$template_contact->replace_range('contact_title','');
-				} else {
+			} else {
 				$template_contact->contact_title_start = '';
 				$template_contact->contact_title_end = '';
-				}
+			}
 			$content .= $template_contact;
 			unset($template_contact);
 			$j++;
-			}
 		}
+	}
 	return $content;
 ?>
