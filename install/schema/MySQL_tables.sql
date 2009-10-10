@@ -231,11 +231,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`phone` text NOT NULL,
 	`email` text NOT NULL,
 	`address` text NOT NULL,
-	`phone_hide` BOOL NOT NULL default '1',
-	`email_hide` BOOL NOT NULL default '1',
-	`address_hide` BOOL NOT NULL default '1',
-	`hide` BOOL NOT NULL default '0',
-	`message` BOOL NOT NULL default '0',
 	`lastlogin` INT NOT NULL default '0',
 	PRIMARY KEY  (`id`),
 	KEY `type` (`type`)

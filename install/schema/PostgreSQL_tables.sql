@@ -338,11 +338,6 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->users" (
 	"phone" text NOT NULL,
 	"email" text NOT NULL,
 	"address" text NOT NULL,
-	"phone_hide" integer NOT NULL default '1',
-	"email_hide" integer NOT NULL default '1',
-	"address_hide" integer NOT NULL default '1',
-	"hide" integer NOT NULL default '0',
-	"message" integer NOT NULL default '0',
 	"lastlogin" integer NOT NULL default '0',
 	PRIMARY KEY ("id")
 );

@@ -41,11 +41,6 @@ if ($_GET['create'] == 1) {
 		$telephone = addslashes($_POST['telephone']);
 		$address = addslashes($_POST['address']);
 		$email = addslashes($_POST['email']);
-		$telephone_hide = (isset($_POST['telephone_hide'])) ? checkbox($_POST['telephone_hide']) : 0;
-		$address_hide = (isset($_POST['address_hide'])) ? checkbox($_POST['address_hide']) : 0;
-		$email_hide = (isset($_POST['email_hide'])) ? checkbox($_POST['email_hide']) : 0;
-		$hide = (isset($_POST['hide'])) ? checkbox($_POST['hide']) : 0;
-		$message = (isset($_POST['message'])) ? checkbox($_POST['message']) : 0;
 		if (strlen($username) <= 5) {
 			$content .= 'Your user name should be at least six characters.<br />';
 			$error = 1;
@@ -80,10 +75,9 @@ if ($_GET['create'] == 1) {
 		if ($error != 1) {
 			$create_user_query = 'INSERT INTO ' . USER_TABLE . "
 				(type,username,password,realname,title,groups,phone,email,
-				address,phone_hide,email_hide,address_hide,hide,message)
+				address)
 				VALUES (2,'$username','".md5($pass)."','$real_name',
-				'$title','$groups','$telephone','$email','$address',
-				$telephone_hide,$email_hide,$address_hide,$hide,$message)";
+				'$title','$groups','$telephone','$email','$address')";
 			$create_user = $db->sql_query($create_user_query);
 			if ($db->error[$create_user] === 1) {
 				$content .= 'Your account could not be created.<br />';
@@ -106,21 +100,8 @@ if ($_GET['create'] == 1) {
 	$form->add_textbox('surname','Surname');
 	$form->add_textbox('title','Title/Position');
 	$form->add_textbox('telephone','Phone Number');
-	$form->add_checkbox('telephone_hide','Hide Phone Number',1);
 	$form->add_textbox('address','Address');
-	$form->add_checkbox('address_hide','Hide Address',1);
 	$form->add_textbox('email','Email Address');
-	$form->add_checkbox('email_hide','Hide Email Address',1);
-	$form->add_text('If you would not like your phone number, email, or
-		address to be displayed publicly, please check the boxes above.
-		However, if you would like to allow people to see all or some of
-		this information, uncheck the boxes corresponding to the values
-		that you would like to be visible. You must enter this information
-		so that the website administrators may contact you if the need
-		arises. To hide your contact entry completely, check the box
-		below.');
-	$form->add_checkbox('hide','Hide on Contacts Page');
-	$form->add_checkbox('message','Allow Recieving Messages');
 	$group_list_query = 'SELECT * FROM ' . USER_GROUPS_TABLE . ' ORDER BY name ASC';
 	$group_list_handle = $db->sql_query($group_list_query);
 	$group_list_rows = $db->sql_num_rows($group_list_handle);
