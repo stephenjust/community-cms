@@ -90,7 +90,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->config" (
 -- ----------------------------------------------------------------------------
 CREATE TABLE "<!-- $DB_PREFIX$ -->contacts" (
 	"id" INT NOT NULL default nextval('<!-- $DB_PREFIX$ -->contacts_id_seq') ,
-	"page" CHAR( 3 ) NOT NULL ,
+	"user_id" INT NOT NULL ,
 	"name" TEXT NOT NULL ,
 	"phone" CHAR( 11 ) NOT NULL ,
 	"address" TEXT NOT NULL ,

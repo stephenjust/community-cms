@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 
 CREATE TABLE `<!-- $DB_PREFIX$ -->contacts` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-	`page` CHAR( 3 ) NOT NULL ,
+	`user_id` INT NOT NULL ,
 	`name` TEXT NOT NULL ,
 	`phone` CHAR( 11 ) NOT NULL ,
 	`address` TEXT NOT NULL ,

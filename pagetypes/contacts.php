@@ -9,8 +9,8 @@
 	$content = NULL;
 	$current_contact = NULL;
 	$j = 1;
-	$contact_list_query = 'SELECT * FROM ' . USER_TABLE . '
-		WHERE hide = 0 ORDER BY realname ASC';
+	$contact_list_query = 'SELECT * FROM `' . CONTACTS_TABLE . '`
+		ORDER BY `name` ASC';
 	$contact_list_handle = $db->sql_query($contact_list_query);
 	$contact_list_num_rows = $db->sql_num_rows($contact_list_handle);
 	if(!isset($_GET['message'])) {
@@ -49,23 +49,17 @@ Message to user:<br />
 			}
 		}
 	if($contact_list_num_rows == 0) {
-		$content .= 'There are no users with visible contact information.';
+		$content .= 'There are no contacts.';
 		} else {
 		while ($contact_list_num_rows >= $j) {
 			$template_contact = new template;
 			$template_contact->load_file('contactlist');
 			$contact_info = $db->sql_fetch_assoc($contact_list_handle);
 			$contact_email = NULL;
-			if(eregi(',',$contact_info['realname'])) {
-				$firstlast = explode(', ',$contact_info['realname']);
-				$realname_firstlast = $firstlast[1].' '.$firstlast[0];
+			if($contact_info['user_id'] != 0) {
+				$realname = '<a href="index.php?'.$page->url_reference.'&message='.$contact_info['user_id'].'">'.stripslashes($contact_info['name']).'</a>';
 				} else {
-				$realname_firstlast = $contact_info['realname'];
-				}
-			if($contact_info['message'] == 1) {
-				$realname = '<a href="index.php?'.$page->url_reference.'&message='.$contact_info['id'].'">'.$realname_firstlast.'</a>';
-				} else {
-				$realname = $realname_firstlast;
+				$realname = stripslashes($contact_info['name']);
 				}
 			if($contact_info['email_hide'] == 1) {
 				$contact_email = 'Hidden';
@@ -82,7 +76,7 @@ Message to user:<br />
 				} else {
 				$contact_address = $contact_info['address'];
 				}
-			$template_contact->contact_name = stripslashes($realname);
+			$template_contact->contact_name = $realname;
 			$template_contact->contact_title = stripslashes($contact_info['title']);
 			$template_contact->contact_email = stripslashes($contact_email);
 			$template_contact->contact_telephone = stripslashes($contact_telephone);
