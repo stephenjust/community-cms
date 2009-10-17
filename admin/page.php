@@ -34,6 +34,9 @@ if (isset($_POST['text_id']) && strlen($_POST['text_id']) > 0) {
 }
 if ($_GET['action'] == 'new') {
 	$menu = checkbox($_POST['menu']);
+	if (!isset($_POST['show_title'])) {
+		$_POST['show_title'] = NULL;
+	}
 	$show_title = checkbox($_POST['show_title']);
 	// Add page to database.
 	$new_page_query = 'INSERT INTO ' . PAGE_TABLE . '
