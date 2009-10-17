@@ -33,12 +33,20 @@ function display_page($site_info,$view="") {
 		if (!isset($_SESSION['type'])) {
 			$_SESSION['type'] = 0;
 		}
-//		if ($_SESSION['type'] == 1) { // Check for admin status
-//			$admin_include = "<script src=\"./scripts/admin.js\" type=\"text/javascript\"></script>";
-//		}
 		if ($page->showtitle === true) { // Display the page header if required
 			$page_message .= '<h1>'.$page->title.'</h1>';
 		}
+
+		// Get meta info if available
+		$meta_desc = $page->meta_description;
+		$meta_wrapper[1] = '<meta name="description" content="';
+		$meta_wrapper[2] = '" />';
+		if (strlen($meta_desc) > 1) {
+			$template_page->meta_desc = $meta_wrapper[1].$meta_desc.$meta_wrapper[2];
+		} else {
+			$template_page->meta_desc = NULL;
+		}
+
 		$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
 			WHERE `page_id` = '.$page->id.'
 			ORDER BY `start_date` ASC';

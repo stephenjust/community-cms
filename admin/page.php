@@ -37,8 +37,8 @@ if ($_GET['action'] == 'new') {
 	$show_title = checkbox($_POST['show_title']);
 	// Add page to database.
 	$new_page_query = 'INSERT INTO ' . PAGE_TABLE . '
-		(text_id,title,show_title,type,menu)
-		VALUES (\''.$text_id.'\',\''.$_POST['title'].'\','.$show_title.',
+		(text_id,title,meta_desc,show_title,type,menu)
+		VALUES (\''.$text_id.'\',\''.addslashes($_POST['title']).'\',\''.addslashes($_POST['meta_desc']).'\','.$show_title.',
 		\''.(int)$_POST['type'].'\','.$menu.')';
 	$new_page = $db->sql_query($new_page_query);
 	if ($db->error[$new_page] === 1) {
@@ -233,12 +233,13 @@ if ($_GET['action'] == 'editsave') {
 		$set_text_id = "text_id='$text_id',";
 	}
 	$title = addslashes($_POST['title']);
+	$meta_desc = addslashes($_POST['meta_desc']);
 	$menu = checkbox($_POST['hidden']);
 	$show_title = checkbox($_POST['show_title']);
 	$blocks_left = addslashes($_POST['blocks_left']);
 	$blocks_right = addslashes($_POST['blocks_right']);
 	$save_query = 'UPDATE ' . PAGE_TABLE . "
-		SET {$set_text_id}title='$title',menu=$menu,show_title=$show_title,
+		SET {$set_text_id}title='$title',meta_desc='$meta_desc',menu=$menu,show_title=$show_title,
 		blocks_left='$blocks_left',blocks_right='$blocks_right'
 		WHERE id = $page_id";
 	$save_handle = $db->sql_query($save_query);
@@ -273,7 +274,8 @@ if ($_GET['action'] == 'edit') {
 		if (strlen($edit_page['text_id']) < 1) {
 			$tab_content['edit'] .= '<tr class="row2"><td width="150">Text ID:</td><td><input type="text" name="text_id" value="" /></td></tr>';
 		}
-		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
+		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.stripslashes($edit_page['title']).'" /></td></tr>
+			<tr><td width="150">Page Description:</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.stripslashes($edit_page['meta_desc']).'</textarea></td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 			<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
 			<tr class="row2"><td valign="top">Blocks:<br>(Comma separated block IDs)</td><td>Left:<br />
@@ -362,6 +364,7 @@ $tab_content['add'] = NULL;
 $tab_content['add'] .= '<form method="POST" action="admin.php?module=page&action=new">
 	<table class="admintable">
 	<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
+	<tr><td width="150">Page Description:</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor"></textarea></td></tr>
 	<tr class="row2"><td width="150">Text ID</td><td><input type="text" name="text_id" value="" /></td></tr>
 	<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
 	<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>

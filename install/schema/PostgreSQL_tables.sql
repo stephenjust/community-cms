@@ -194,6 +194,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->pages" (
 	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->pages_id_seq'),
 	"text_id" text NOT NULL,
 	"title" text NOT NULL,
+	"meta_desc" text NOT NULL,
 	"show_title" integer NOT NULL default '1',
 	"type" integer NOT NULL,
 	"menu" integer NOT NULL,

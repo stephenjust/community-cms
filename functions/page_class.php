@@ -83,6 +83,11 @@ class page {
 	 * @var string
 	 */
 	private $footer;
+	/**
+	 * Page meta-description for search engines
+	 * @var string
+	 */
+	public $meta_description;
 	function __construct() {
 
 	}
@@ -192,6 +197,7 @@ class page {
 		} else {
 			return;
 		}
+		$this->meta_description = $page['meta_desc'];
 		if (strlen($this->text_id) == 0) {
 			$this->url_reference = 'id='.$this->id;
 		} else {

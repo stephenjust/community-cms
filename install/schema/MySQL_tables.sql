@@ -131,6 +131,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
 	`id` int(11) NOT NULL auto_increment,
 	`text_id` text NOT NULL,
 	`title` text NOT NULL,
+	`meta_desc` text NOT NULL,
 	`show_title` tinyint(1) NOT NULL default '1',
 	`type` int(11) NOT NULL,
 	`menu` tinyint(1) NOT NULL,
