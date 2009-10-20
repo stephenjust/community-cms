@@ -12,10 +12,10 @@ INSERT INTO `<!-- $DB_PREFIX$ -->news` (`page`, `name`, `description`, `author`,
 INSERT INTO `<!-- $DB_PREFIX$ -->news_settings`
     (num_articles ,default_date_setting ,show_author ,show_edit_time) VALUES
 ('10', '1', '1', '1');;
-INSERT INTO `<!-- $DB_PREFIX$ -->pages` (text_id, title, type, menu, list) VALUES
-('home', 'Home', 1, 1, 0),
-('calendar', 'Calendar', 3, 1, 1),
-('newsletters', 'Newsletters', 2, 1, 2);;
+INSERT INTO `<!-- $DB_PREFIX$ -->pages` (text_id, title, meta_desc, type, menu, list, hidden) VALUES
+('home', 'Home', '', 1, 1, 0, 0),
+('calendar', 'Calendar', '', 3, 1, 1, 0),
+('newsletters', 'Newsletters', '', 2, 1, 2, 0);;
 INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (id, name, description, author, filename) VALUES
 (1, 'News', 'A simple news posting system that acts as the main message centre for Community CMS', 'stephenjust', 'news.php'),
 (2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by timestamp. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
@@ -27,6 +27,6 @@ INSERT INTO `<!-- $DB_PREFIX$ -->user_groups`
 (`name`,`label_format`) VALUES
 ('Administrator','font-weight: bold; color: #009900;');;
 INSERT INTO `<!-- $DB_PREFIX$ -->users`
-(id, type, username, password, groups, realname, phone, email, address, phone_hide, email_hide, address_hide, message) VALUES
-(1, 1, '<!-- $ADMIN_USER$ -->', '<!-- $ADMIN_PWD$ -->', '1', 'Administrator', '555-555-5555', 'admin@example.com','Unknown',1,1,1,1),
-(2, 0, 'user', '5f4dcc3b5aa765d61d8327deb882cf99', NULL, 'Default User', '555-555-5555', 'user@example.com','Unknown',1,1,1,0)
+(id, type, username, password, groups, realname, phone, email, address) VALUES
+(1, 1, '<!-- $ADMIN_USER$ -->', '<!-- $ADMIN_PWD$ -->', '1', 'Administrator', '555-555-5555', 'admin@example.com','Unknown'),
+(2, 0, 'user', '5f4dcc3b5aa765d61d8327deb882cf99', NULL, 'Default User', '555-555-5555', 'user@example.com','Unknown')
