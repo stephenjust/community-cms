@@ -45,20 +45,6 @@ if (!file_exists('../files')) {
 }
 $content .= '</td></tr>'."\n";
 
-// plugins/
-$content .= '<tr>'."\n".'<td>';
-$content .= 'plugins/';
-$content .= '</td><td>';
-if (!file_exists('../plugins')) {
-	$content .= 'Does Not Exist';
-	$error = 1;
-} elseif (!is_writable('../plugins')) {
-	$content .= 'Not Writable';
-	$error = 1;
-} else {
-	$content .= 'Writable';
-}
-$content .= '</td></tr>'."\n";
 
 // templates/
 $content .= '<tr>'."\n".'<td>';
