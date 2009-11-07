@@ -61,9 +61,10 @@ if($db->sql_num_rows($block_list_handle) == 0) {
 	$i = 1;
 	while ($i <= $db->sql_num_rows($block_list_handle)) {
 		$block_list = $db->sql_fetch_assoc($block_list_handle);
+		$attribute_list = ($block_list['attributes'] == '') ? NULL : ' ('.$block_list['attributes'].')';
 		$tab_content['manage'] .= '<tr>
 <td>'.$block_list['id'].'</td>
-<td class="adm_page_list_item">'.$block_list['type'].' ('.$block_list['attributes'].')</td>
+<td class="adm_page_list_item">'.$block_list['type'].$attribute_list.'</td>
 <td><a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 </tr>';
