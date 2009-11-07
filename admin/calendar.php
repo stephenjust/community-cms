@@ -14,6 +14,93 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 $content = NULL;
 
+/**
+ * delete_date - Delete a calendar entry
+ * @global object $db
+ * @global object $debug
+ * @param integer $id
+ * @return boolean
+ */
+function delete_date($id) {
+	global $db;
+	global $debug;
+	// Validate parameters
+	if (!is_numeric($id)) {
+		$debug->add_trace('Invalid ID given',true,'delete_date()');
+		return false;
+	}
+
+	$read_date_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
+		WHERE `id` = '.$id;
+	$read_date_info_handle = $db->sql_query($read_date_info_query);
+	if ($db->error[$read_date_info_handle] === 1) {
+		$debug->add_trace('Failed to read date information. Does it exist?',false,'delete_date()');
+		return false;
+	} else {
+		$del_query = 'DELETE FROM ' . CALENDAR_TABLE . '
+			WHERE `id` = '.$id;
+		$del_handle = $db->sql_query($del_query);
+		$read_date_info = $db->sql_fetch_assoc($read_date_info_handle);
+		if ($db->error[$del_handle] === 1) {
+			return false;
+		} else {
+			log_action('Deleted calendar date \''.$read_date_info['header'].'\'');
+			return true;
+		}
+	}
+}
+
+/**
+ * delete_category - Delete a calendar category entry
+ * @global object $db
+ * @global object $debug
+ * @param integer $id
+ * @return boolean
+ */
+function delete_category($id) {
+	global $db;
+	global $debug;
+	// Validate parameters
+	if (!is_numeric($id)) {
+		$debug->add_trace('Invalid ID given',true,'delete_category()');
+		return false;
+	}
+
+	$check_if_last_query = 'SELECT * FROM `'.CALENDAR_CATEGORY_TABLE.'` LIMIT 2';
+	$check_if_last_handle = $db->sql_query($check_if_last_query);
+	if ($db->error[$check_if_last_handle] === 1) {
+		$debug->add_trace('Failed to check if you are trying to delete the last category',false,'delete_category()');
+		return false;
+	}
+	if ($db->sql_num_rows($check_if_last_handle) == 1) {
+		$debug->add_trace('Cannot delete last entry',true,'delete_category()');
+		return false;
+	}
+
+	$check_category_query = 'SELECT * FROM `'. CALENDAR_CATEGORY_TABLE .'`
+		WHERE `cat_id` = '.$id.' LIMIT 1';
+	$check_category_handle = $db->sql_query($check_category_query);
+	if ($db->error[$check_category_handle] === 1) {
+		$debug->add_trace('Failed to read category information. Does it exist?',false,'delete_category()');
+		return false;
+	}
+	if ($db->sql_num_rows($check_category_handle) == 1) {
+		$delete_category_query = 'DELETE FROM `'.CALENDAR_CATEGORY_TABLE.'`
+			WHERE `cat_id` = '.$id;
+		$delete_category = $db->sql_query($delete_category_query);
+		if ($db->error[$delete_category] === 1) {
+			$debug->add_trace('Failed to perform delete operation',true,'delete_category()');
+			return false;
+		} else {
+			$check_category = $db->sql_fetch_assoc($check_category_handle);
+			log_action('Deleted category \''.stripslashes($check_category['label']).'\'');
+			return true;
+		}
+	} else {
+		return false;
+	}
+}
+
 // ----------------------------------------------------------------------------
 
 $_POST['title'] = (isset($_POST['title'])) ? $_POST['title'] : NULL;
@@ -63,24 +150,51 @@ if ($_GET['action'] == 'new') {
 
 // ----------------------------------------------------------------------------
 
-if ($_GET['action'] == 'delete') {
-	$read_date_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-		WHERE id = '.$_POST['date_del'];
-	$read_date_info_handle = $db->sql_query($read_date_info_query);
-	if ($db->error[$read_date_info_handle] === 1) {
-		$content .= 'Failed to read date information. Does it exist?<br />';
-	} else {
-		$del_query = 'DELETE FROM ' . CALENDAR_TABLE . '
-			WHERE id = '.(int)$_POST['date_del'];
-		$del_handle = $db->sql_query($del_query);
-		$read_date_info = $db->sql_fetch_assoc($read_date_info_handle);
-		if ($db->error[$del_handle] === 1) {
-			$content .= 'Failed to delete item.<br />';
+switch ($_GET['action']) {
+	default:
+
+		break;
+	case 'delete':
+		if (delete_date($_POST['date_del'])) {
+			$content .= 'Successfully deleted date entry.<br />'."\n";
 		} else {
-			$content .= 'Successfully deleted item.<br />'.log_action('Deleted calendar date \''.$read_date_info['header'].'\'');
+			$content .= 'Failed to delete date entry.<br />'."\n";
 		}
-	}
+		break;
+	case 'create_category':
+		$category_name = addslashes($_POST['category_name']);
+		if ($category_name != "") {
+			if (!isset($_POST['colour'])) {
+				$content .= 'No colour was selected for your new category. Category not created.<br />'."\n";
+				break;
+			}
+			$create_category_query = 'INSERT INTO ' . CALENDAR_CATEGORY_TABLE . '
+				(label,colour) VALUES (\''.$category_name.'\',\''.$_POST['colour'].'\')';
+			$create_category = $db->sql_query($create_category_query);
+			if($db->error[$create_category] === 1) {
+				$content .= 'Failed to create category \''.$category_name.'\' ';
+			} else {
+				$content .= 'Successfully created category. '.log_action('New category \''.$category_name.'\'');
+			}
+		} else {
+			$content .= 'You did not provide a name for your new category.';
+		}
+		break;
+	case 'delete_category':
+		if (!isset($_POST['delete_category_id'])) {
+			$content .= 'No category selected to delete.<br />'."\n";
+			break;
+		}
+		if (delete_category($_POST['delete_category_id'])) {
+			$content .= 'Successfully deleted category entry.<br />'."\n";
+		} else {
+			$content .= 'Failed to delete category entry.<br />'."\n";
+		}
+		break;
 }
+
+// ----------------------------------------------------------------------------
+
 if (isset($_POST['month'])) {
 	if ($_POST['month'] > 12 || $_POST['month'] < 1) {
 		$_POST['month'] = date('m');
@@ -184,5 +298,44 @@ $form_create->add_checkbox('hide','Hidden',$hide);
 $form_create->add_submit('submit','Create Event');
 $tab_content['create'] = $form_create;
 $tab_layout->add_tab('Create Event',$tab_content['create']);
+
+// ----------------------------------------------------------------------------
+
+$tab_content['settings'] = '<form method="POST" action="?module=calendar&action=create_category">
+<h1>Create New Category</h1>
+<table class="admintable">
+<tr><td width="150" class="row1">Name:</td><td class="row1"><input type=\'text\' name=\'category_name\' /></td></tr>
+<tr><td width="150" class="row2">Colour:</td><td class="row2">
+<input type="radio" name="colour" value="red" /><img src="./admin/templates/default/images/icon_red.png" width="16px" height="16px" alt="Red" />
+<input type="radio" name="colour" value="green" /><img src="./admin/templates/default/images/icon_green.png" width="16px" height="16px" alt="Green" />
+<input type="radio" name="colour" value="blue" /><img src="./admin/templates/default/images/icon_blue.png" width="16px" height="16px" alt="Blue" /><br />
+<input type="radio" name="colour" value="purple" /><img src="./admin/templates/default/images/icon_purple.png" width="16px" height="16px" alt="Purple" />
+<input type="radio" name="colour" value="cyan" /><img src="./admin/templates/default/images/icon_cyan.png" width="16px" height="16px" alt="Cyan" />
+<input type="radio" name="colour" value="yellow" /><img src="./admin/templates/default/images/icon_yellow.png" width="16px" height="16px" alt="Yellow" />
+</td></tr>
+<tr><td width="150" class="row1">&nbsp;</td><td class="row1"><input type="submit" value="Create" /></td></tr>
+</table>
+</form>
+
+<form method="POST" action="?module=calendar&action=delete_category">
+<h1>Delete Category</h1>
+<table class="admintable">
+<tr><td width="150" class="row1">Category:</td><td class="row1">&nbsp;</td></tr>
+<tr><td colspan="2" class="row2">';
+$category_query = 'SELECT * FROM ' . CALENDAR_CATEGORY_TABLE;
+$category_handle = $db->sql_query($category_query);
+for ($i = 1; $i <= $db->sql_num_rows($category_handle); $i++) {
+	$cat = $db->sql_fetch_assoc($category_handle);
+	$tab_content['settings'] .= '<input type="radio" name="delete_category_id" value="'.$cat['cat_id'].'" />
+		<img src="./admin/templates/default/images/icon_'.$cat['colour'].'.png"
+		width="16px" height="16px" alt="'.$cat['colour'].'" />'.$cat['label'].'<br />';
+}
+
+$tab_content['settings'] .= '</td></tr>
+<tr><td width="150" class="row1">&nbsp;</td><td class="row1">
+<input type="submit" value="Delete" /></td></tr>
+</table>
+</form>';
+$tab_layout->add_tab('Settings',$tab_content['settings']);
 $content .= $tab_layout;
 ?>

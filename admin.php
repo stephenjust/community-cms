@@ -110,6 +110,7 @@ function display_admin() {
 	$template_page_bottom = $template_page->split('content');
 	echo $template_page;
 	unset($template_page);
+	$content = NULL;
 	if (isset($_GET['module'])) {
 		if (!include('./admin/'.addslashes($_GET['module']).'.php')) {
 			include('./admin/index.php');
