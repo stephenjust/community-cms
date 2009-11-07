@@ -8,6 +8,13 @@
 class calendar {
 	public $year = 2000;
 	public $month = 1;
+	public $prev_year;
+	public $next_year;
+	public $prev_month;
+	public $next_month;
+	public $first_day_ts;
+	public $first_day_dow;
+	public $month_days;
 
 	function __construct($month,$year) {
 		// Make sure dates are in range.
@@ -26,10 +33,10 @@ class calendar {
 			$this->month = (int)$month;
 		}
 
-		$this->prev_year = $this->year--;
-		$this->next_year = $this->year++;
-		$this->prev_month = $this->month--;
-		$this->next_month = $this->month++;
+		$this->prev_year = $this->year-1;
+		$this->next_year = $this->year+1;
+		$this->prev_month = $this->month-1;
+		$this->next_month = $this->month+1;
 		$this->first_day_ts = mktime(0,0,0,$this->month,1,$this->year);
 		$this->first_day_dow = date('w',$this->first_day_ts);
 		$this->month_days = cal_days_in_month(CAL_GREGORIAN, $this->month, $this->year);
