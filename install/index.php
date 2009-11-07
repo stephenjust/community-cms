@@ -16,10 +16,13 @@ fclose($handle);
 $css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 $image_path = $template_path.'images/';
 if(!isset($_GET['page'])) {
-	$_GET['page'] = 1;
+	$_GET['page'] = 0;
 }
 switch($_GET['page']) {
 	default:
+		include ('./whatsnew.php');
+		break;
+	case 1:
 		include ('./install.php');
 		break;
 	case 2:

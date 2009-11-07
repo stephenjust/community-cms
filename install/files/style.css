@@ -14,6 +14,11 @@
 	font-family: Arial,Verdana,sans-serif;
 	margin: 5px;
 }
+#main > h2 {
+	color: #333344;
+	font-family: Arial,Verdana,sans-serif;
+	margin: 5px;
+}
 #footer {
     display: block;
     width: 100%;
@@ -30,4 +35,14 @@
 #file_permissions td {
 	padding-left: 15px;
 	padding-right: 15px;
+}
+
+a {
+	color: #000000;
+	font-family: Arial,Verdana,sans-serif;
+	text-decoration: none;
+}
+a:hover {
+	color: #999999;
+	text-decoration: underline;
 }

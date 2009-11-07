@@ -5,7 +5,7 @@ Last updated June 6, 2009
 0.5 -> 0.6
 ----------
 ADMIN
--Use jQery and jQuery-UI to improve interface
+-Use jQuery and jQuery-UI to improve interface
 -Users can now be assigned groups, groups can be created, etc.
 -Files can now be assigned attributes (label)
 -Permissions can now be assigned to user groups
