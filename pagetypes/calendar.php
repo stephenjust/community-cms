@@ -13,28 +13,21 @@ include(ROOT . 'pagetypes/calendar_class.php');
 switch ($_GET['view']) {
 // MONTH VIEW
 	default:
-		if ($year < 2000 || $year > 9999) { $year = 2000; } // Validate month and year values
-		if ($month < 1) { $month = 12; $year--; }
-		if ($month > 12) { $month = 1; $year++; }
-		$day1['timestamp'] = mktime(0,0,0,$month,1,$year); // First day of month
-		$day1['day_of_week'] = date('w',$day1['timestamp']);
-		$calendar_days = cal_days_in_month(CAL_GREGORIAN,$month,$year);
-		$prev_year = $year - 1;
-		$prev_month = $month - 1;
-		$next_year = $year + 1;
-		$next_month = $month + 1;
+		$month_cal = new calendar($month,$year);
+		unset($month);
+		unset($year);
 		$page_content = NULL;
 		$template_month = new template;
 		$template_month->load_file('calendar_month');
 		global $special_title;
-		$special_title = date('F Y',$day1['timestamp']).' - ';
-		$template_month->current_month_name = date('F Y',$day1['timestamp']);
-		$template_month->current_month = $month;
-		$template_month->current_year = $year;
-		$template_month->prev_month = $prev_month;
-		$template_month->prev_year = $prev_year;
-		$template_month->next_month = $next_month;
-		$template_month->next_year = $next_year;
+		$special_title = date('F Y',$month_cal->first_day_ts).' - ';
+		$template_month->current_month_name = date('F Y',$month_cal->first_day_ts);
+		$template_month->current_month = $month_cal->month;
+		$template_month->current_year = $month_cal->year;
+		$template_month->prev_month = $month_cal->prev_month;
+		$template_month->prev_year = $month_cal->prev_year;
+		$template_month->next_month = $month_cal->next_month;
+		$template_month->next_year = $month_cal->next_year;
 		// Week template
 		$template_week = new template;
 		$template_week->path = $template_month->path;
@@ -49,11 +42,11 @@ switch ($_GET['view']) {
 		$counter_day = 1;
 		$counter_dow = 0;
 		$all_weeks = NULL;
-		while ($counter_day <= $calendar_days) {
+		while ($counter_day <= $month_cal->month_days) {
 			if ($counter_dow == 0) { // If it's the first day of the week
 				$current_week_days = NULL; // Clear the week.
 			}
-			while ($counter_dow < $day1['day_of_week'] && $counter_day == 1) {
+			while ($counter_dow < $month_cal->first_day_dow && $counter_day == 1) {
 				$current_week_days .= $template_empty_day;
 				// If it's the first day of the month,
 				// insert some empty cells into the calendar.
@@ -62,14 +55,14 @@ switch ($_GET['view']) {
 			unset($current_day);
 			$current_day = new template;
 			$current_day->path = $template_week->path;
-			if ($counter_day == date('j') && $month == date('n') && $year == date('Y')) {
+			if ($counter_day == date('j') && $month_cal->month == date('n') && $month_cal->year == date('Y')) {
 				$current_day->template = $template_today;
 			} else {
 				$current_day->template = $template_day;
 			}
 			$day_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . ' date,
 				' . CALENDAR_CATEGORY_TABLE . ' cat
-				WHERE date.month = \''.$month.'\' AND date.year = \''.$year.'\'
+				WHERE date.month = \''.$month_cal->month.'\' AND date.year = \''.$month_cal->year.'\'
 				AND date.day = \''.$counter_day.'\' AND date.category =
 				cat.cat_id LIMIT 2 OFFSET 0';
 			$day_info_handle = $db->sql_query($day_info_query);
@@ -78,7 +71,7 @@ switch ($_GET['view']) {
 			}
 			if ($db->sql_num_rows($day_info_handle) > 0) {
 				$current_day->day_number = '<a href="?'.$page->url_reference
-					.'&amp;view=day&amp;m='.$month.'&amp;y='.$year.'&amp;d='
+					.'&amp;view=day&amp;m='.$month_cal->month.'&amp;y='.$month_cal->year.'&amp;d='
 					.$counter_day.'" class="day_number">'.$counter_day.'</a>';
 			} else {
 				$current_day->day_number = $counter_day;
@@ -99,7 +92,7 @@ switch ($_GET['view']) {
 			$current_day->day_events = $dates;
 			$current_week_days .= $current_day->template;
 			$counter_dow++;
-			while ($counter_dow < 7 && $counter_day == $calendar_days) { // At the end of the month,
+			while ($counter_dow < 7 && $counter_day == $month_cal->month_days) { // At the end of the month,
 				$current_week_days .= $template_empty_day;                 // fill any empty calendar cells with empty cells
 				$counter_dow++;
 			}

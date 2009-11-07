@@ -4,6 +4,39 @@
  *
  * @author stephen
  */
+
+class calendar {
+	public $year = 2000;
+	public $month = 1;
+
+	function __construct($month,$year) {
+		// Make sure dates are in range.
+		if ((int)$year < 2000 || (int)$year > 9999) {
+			$this->year = 2000;
+		} else {
+			$this->year = (int)$year;
+		}
+		if ((int)$month < 1) {
+			$this->month = 12;
+			$this->year--;
+		} else if ((int)$month > 12) {
+			$this->month = 1;
+			$this->year++;
+		} else {
+			$this->month = (int)$month;
+		}
+
+		$this->prev_year = $this->year--;
+		$this->next_year = $this->year++;
+		$this->prev_month = $this->month--;
+		$this->next_month = $this->month++;
+		$this->first_day_ts = mktime(0,0,0,$this->month,1,$this->year);
+		$this->first_day_dow = date('w',$this->first_day_ts);
+		$this->month_days = cal_days_in_month(CAL_GREGORIAN, $this->month, $this->year);
+	}
+}
+
+
 class calendar_event {
     public $event_id;
     public $event_text;
