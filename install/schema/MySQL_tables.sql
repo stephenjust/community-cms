@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl` (
 	`acl_record_id` INT NOT NULL auto_increment PRIMARY KEY,
 	`acl_id` TEXT NOT NULL,
-	`user` INT NOT NULL,
-	`is_group` INT(1) NOT NULL DEFAULT 0,
+	`group` INT NOT NULL,
 	`value` INT(1) NOT NULL DEFAULT 0
 ) ENGINE=MYISAM CHARACTER SET=utf8 ;
 

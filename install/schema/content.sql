@@ -1,5 +1,5 @@
-INSERT INTO `<!-- $DB_PREFIX$ -->acl` (`acl_id`, `user`, `is_group`, `value`) VALUES
-(1, 1, 0, 1);;
+INSERT INTO `<!-- $DB_PREFIX$ -->acl` (`acl_id`, `group`, `value`) VALUES
+(1, 1, 1);;
 INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`) VALUES
 ('all','All Permissions','Grant this permission to allow all actions within the CMS',0);;
 INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES

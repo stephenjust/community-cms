@@ -5,8 +5,7 @@ CREATE SEQUENCE "<!-- $DB_PREFIX$ -->acl_record_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->acl" (
 	"acl_record_id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->acl_record_id_seq') PRIMARY KEY,
 	"acl_id" integer NOT NULL,
-	"user" integer NOT NULL,
-	"is_group" integer NOT NULL default 0,
+	"group" integer NOT NULL,
 	"value" integer NOT NULL default 0
 );
 SELECT setval('<!-- $DB_PREFIX$ -->acl_record_id_seq', (SELECT max("acl_record_id") FROM "<!-- $DB_PREFIX$ -->acl"));

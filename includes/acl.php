@@ -21,63 +21,64 @@ class acl {
 	/**
 	 * check_permission - Read from the ACL and check if user is allowed to complete action
 	 * @param string $acl_key Name of property in Access Control List
-	 * @param int $usr User to check (current user if not set)
-	 * @param boolean $is_group True if $usr refers to a group id
+	 * @param int $group Group to check (current user's group if not set)
 	 * @global object $db Database connection object
 	 * @return boolean True if allowed to complete action, false if not.
 	 */
-	public function check_permission($acl_key, $usr = 0, $is_group = false) {
+	public function check_permission($acl_key, $group = 0) {
 		global $db;
+		if (!is_numeric($group)) {
+			return false;
+		}
+		if ($group == 0) {
+			$group_array = $_SESSION['groups'];
+		} else {
+			$group_array = array($group);
+		}
 		if ($this->permission_list == array()) {
 			$this->permission_list = $this->get_acl_key_names();
 		}
-		if ($is_group == false && isset($_SESSION['userid'])) {
-			$user = (int)$_SESSION['userid'];
-			$is_group = 0;
-		} elseif ($usr != 0) {
-			$user = (int)$usr;
-			$is_group = (int)$is_group;
-		} else {
-			return false;
-		}
-		// Check if user or group has the dangerous 'all' property
-		$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
-			WHERE `acl_id` = \''.$this->permission_list['all']['id'].'\'
-			AND `user` = '.$user.'
-			AND `is_group` = '.$is_group;
-		$acl_all_handle = $db->sql_query($acl_all_query);
-		if ($db->error[$acl_all_handle] === 1) {
-			return false;
-		} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
-			return true;
-		} else {
-			unset($acl_all_query);
-			unset($acl_all_handle);
-		}
-		// Check if user or group has the requested property
-		$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
-			WHERE `acl_key` = \''.$this->permission_list[$acl_key]['id'].'\'
-			AND `user` = '.$user.'
-			AND `is_group` = '.$is_group;
-		$acl_all_handle = $db->sql_query($acl_all_query);
-		if ($db->error[$acl_all_handle] === 1) {
-			return false;
-		} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
-			$result = $db->sql_fetch_assoc($acl_all_handle);
-			if ($result['value'] == 1) {
+		foreach ($group_array AS $cur_group) {
+			// Check if group has the dangerous 'all' property
+			$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
+				WHERE `acl_id` = \''.$this->permission_list['all']['id'].'\'
+				AND `group` = '.$cur_group;
+			$acl_all_handle = $db->sql_query($acl_all_query);
+			if ($db->error[$acl_all_handle] === 1) {
+				return false;
+			} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
 				return true;
+			} else {
+				unset($acl_all_query);
+				unset($acl_all_handle);
+				unset($cur_group);
 			}
-		} else {
-			unset($acl_all_query);
-			unset($acl_all_handle);
+		}
+		foreach ($group_array AS $cur_group) {
+			// Check if user or group has the requested property
+			$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
+				WHERE `acl_key` = \''.$this->permission_list[$acl_key]['id'].'\'
+				AND `group` = '.$cur_group;
+			$acl_all_handle = $db->sql_query($acl_all_query);
+			if ($db->error[$acl_all_handle] === 1) {
+				return false;
+			} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
+				$result = $db->sql_fetch_assoc($acl_all_handle);
+				if ($result['value'] == 1) {
+					return true;
+				}
+			} else {
+				unset($acl_all_query);
+				unset($acl_all_handle);
+				unset($cur_group);
+			}
 		}
 		return false;
 	}
 	
-	public function set_permission($acl_key, $value, $user, $is_group = false) {
+	public function set_permission($acl_key, $value, $group) {
 		global $db;
 		$value = (int)$value;
-		$is_group = (int)$is_group;
 		if (!array_key_exists($acl_key,$this->permission_list)) {
 			echo 'The key \''.$acl_key.'\' does not exist.<br />';
 			return false;
@@ -88,8 +89,7 @@ class acl {
 		}
 		$check_if_exists_query = 'SELECT acl_record_id,value FROM `' . ACL_TABLE . '`
 			WHERE `acl_id` = \''.$this->permission_list[$acl_key]['id'].'\'
-			AND `user` = '.$user.'
-			AND `is_group` = '.$is_group;
+			AND `group` = '.$group;
 		$check_if_exists_handle = $db->sql_query($check_if_exists_query);
 		if ($db->error[$check_if_exists_handle] === 1) {
 			return false;
@@ -101,8 +101,8 @@ class acl {
 				WHERE `acl_record_id` = '.$check_if_exists['acl_record_id'];
 		} else {
 			$set_permission_query = 'INSERT INTO `' . ACL_TABLE . '`
-				(`acl_id`,`user`,`is_group`,`value`)
-				VALUES (\''.$this->permission_list[$acl_key]['id'].'\','.$user.','.$is_group.','.$value.')';
+				(`acl_id`,`group`,`value`)
+				VALUES (\''.$this->permission_list[$acl_key]['id'].'\','.$group.','.$value.')';
 		}
 		$set_permission_handle = $db->sql_query($set_permission_query);
 		if ($db->error[$set_permission_handle] === 1) {
