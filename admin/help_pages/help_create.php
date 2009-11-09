@@ -24,7 +24,7 @@ of any administration page.
 	$return .= '<div class="admin_help_explanation">The Community CMS help system
 is a great place to start looking for help if you don\'t know what to do. Of
 course, not everything can be covered, but if you know something that may be of
-use to a less techmically-literate person, why not write a help article?</div>';
+use to a less technically-literate person, why not write a help article?</div>';
 
 	// Quick instructions
 	$return .= '<div class="admin_help_quick_instructions">
