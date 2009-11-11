@@ -2,7 +2,8 @@
 // Security Check
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
-	}
+}
+global $acl;
 global $site_info;
 $text_block = new block;
 $text_block->block_id = $block_info['id'];
@@ -12,10 +13,18 @@ $text_query = 'SELECT * FROM ' . NEWS_TABLE . '
 	WHERE id = '.$text_block->attribute['article_id'].' ORDER BY id DESC';
 $text_handle = $db->sql_query($text_query);
 if($db->error[$text_handle] === 1) {
-	$return .= 'Failed to retrieve block contents.<br />';
+	if ($acl->check_permission('show_fe_errors')) {
+		$return .= 'Failed to retrieve block contents.<br />';
+	} else {
+		return NULL;
+	}
 }
 if($db->sql_num_rows($text_handle) == 0) {
-	$return .= '<strong>ERROR:</strong> There is no content associated with this block.<br />';
+	if ($acl->check_permission('show_fe_errors')) {
+		$return .= '<strong>ERROR:</strong> There is no content associated with this block.<br />';
+	} else {
+		return NULL;
+	}
 } else {
 	$text = $db->sql_fetch_assoc($text_handle);
 	$date = substr($text['date'],0,10);

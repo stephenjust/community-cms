@@ -20,7 +20,7 @@ if ($_GET['action'] == 'new') {
 	$answer_array = explode("\n",$answers);
 	$num_answers = count($answer_array);
 	if ($num_answers < 2) {
-		$message .= 'Not enough answer choices';
+		$content .= 'Not enough answer choices';
 	} else {
 		$i = 1;
 		$new_question_query = 'INSERT INTO ' . POLL_QUESTION_TABLE . "

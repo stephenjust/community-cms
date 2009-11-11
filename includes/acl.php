@@ -31,7 +31,11 @@ class acl {
 			return false;
 		}
 		if ($group == 0) {
-			$group_array = $_SESSION['groups'];
+			if (!isset($_SESSION['groups'])) {
+				$group_array = array();
+			} else {
+				$group_array = $_SESSION['groups'];
+			}
 		} else {
 			$group_array = array($group);
 		}

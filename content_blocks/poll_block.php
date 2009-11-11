@@ -5,6 +5,7 @@ if (@SECURITY != 1) {
 }
 
 global $site_info;
+global $acl;
 $poll_block = new block;
 $poll_block->block_id = $block_info['id'];
 $poll_block->get_block_information();
@@ -14,10 +15,18 @@ $poll_questions_query = 'SELECT * FROM ' . POLL_QUESTION_TABLE . '
 	ORDER BY question_id DESC';
 $poll_questions_handle = $db->sql_query($poll_questions_query);
 if ($db->error[$poll_questions_handle] === 1) {
-	$return .= 'Failed to retrieve list of poll questions.<br />';
+	if ($acl->check_permission('show_fe_errors')) {
+		$return .= 'Failed to retrieve list of poll questions.<br />';
+	} else {
+		return NULL;
+	}
 }
 if ($db->sql_num_rows($poll_questions_handle) == 0) {
-	$return .= '<strong>ERROR:</strong> There is no poll associated with this block.<br />';
+	if ($acl->check_permission('show_fe_errors')) {
+		$return .= '<strong>ERROR:</strong> There is no poll associated with this block.<br />';
+	} else {
+		return NULL;
+	}
 } else {
 	$poll_question = $db->sql_fetch_assoc($poll_questions_handle);
 	$template_poll_block = new template;
@@ -35,7 +44,11 @@ if ($db->sql_num_rows($poll_questions_handle) == 0) {
 		ORDER BY answer_id ASC';
 	$poll_answers_handle = $db->sql_query($poll_answers_query);
 	if($db->sql_num_rows($poll_answers_handle) == 0) {
-		$poll_template_answers = 'There are no possible answers to the above question.<br />';
+		if ($acl->check_permisson('show_fe_errors')) {
+			$poll_template_answers = 'There are no possible answers to the above question.<br />';
+		} else {
+			return NULL;
+		}
 	} else {
 		$current_answer = 1;
 		while($current_answer <= $db->sql_num_rows($poll_answers_handle)) {
