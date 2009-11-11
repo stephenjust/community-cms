@@ -12,6 +12,40 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+function delete_newsletter($id) {
+	global $db;
+	global $debug;
+	// Validate parameters
+	if (!is_numeric($id)) {
+		$debug->add_trace('Invalid newsletter ID',true,'delete_newsletter()');
+		return false;
+	}
+
+	// Get newsletter info
+	$newsletter_info_query = 'SELECT * FROM `'.NEWSLETTER_TABLE.'` WHERE
+		`id` = '.$id.' LIMIT 1';
+	$newsletter_info_handle = $db->sql_query($newsletter_info_query);
+	if ($db->error[$newsletter_info_handle] === 1) {
+		$debug->add_trace('Failed to read newsletter information',true,'delete_newsletter()');
+		return false;
+	}
+	if ($db->sql_num_rows($newsletter_info_handle) != 1) {
+		$debug->add_trace('Newsletter entry not found',false,'delete_newsletter()');
+		return false;
+	}
+	$newsletter_info = $db->sql_fetch_assoc($newsletter_info_handle);
+
+	$delete_article_query = 'DELETE FROM ' . NEWSLETTER_TABLE . '
+		WHERE id = '.$_GET['id'];
+	$delete_article = $db->sql_query($delete_article_query);
+	if($db->error[$delete_article]) {
+		return false;
+	} else {
+		log_action('Deleted newsletter \''.stripslashes($newsletter_info['label']).'\'');
+		return true;
+	}
+}
+
 $content = NULL;
 $months = array('January','February','March','April','May','June','July',
 	'August','September','October','November','December');
@@ -32,18 +66,15 @@ if ($_GET['action'] == 'new') {
 				WHERE id = '.$_POST['page'].' LIMIT 1';
 			$page_handle = $db->sql_query($page_query);
 			$page = $db->sql_fetch_assoc($page_handle);
-			$content .= 'Successfully added article. '.log_action('New newsletter \''.$_POST['label'].'\' added to '.$page['title']);
+			$content .= 'Successfully added newsletter entry. '.log_action('New newsletter \''.$_POST['label'].'\' added to '.$page['title']);
 		}
 	}
 }
 if($_GET['action'] == 'delete') {
-	$delete_article_query = 'DELETE FROM ' . NEWSLETTER_TABLE . '
-		WHERE id = '.$_GET['id'];
-	$delete_article = $db->sql_query($delete_article_query);
-	if($db->error[$delete_article]) {
-		$content .= 'Failed to delete newsletter entry.<br />';
+	if(!delete_newsletter($_GET['id'])) {
+		$content .= 'Failed to delete newsletter entry.<br />'."\n";
 	} else {
-		$content .= 'Successfully deleted newsletter entry. '.log_action('Deleted newsletter with id \''.$_GET['id'].'\'');
+		$content .= 'Successfully deleted newsletter entry.<br />'."\n";
 	}
 }
 $tab_layout = new tabs;

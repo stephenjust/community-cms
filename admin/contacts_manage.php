@@ -53,13 +53,29 @@ switch ($_GET['action']) {
 			$content .= 'Invalid contact ID.<br />'."\n";
 			break;
 		}
+		$get_contact_info_query = 'SELECT * FROM `'.CONTACTS_TABLE.'` WHERE
+			`id` = '.$_GET['id'].' LIMIT 1';
+		$get_contact_info_handle = $db->sql_query($get_contact_info_query);
+		if ($db->error[$get_contact_info_handle] === 1) {
+			$content .= 'Failed to check if contact exists.<br />'."\n";
+			break;
+		}
+		if ($db->sql_num_rows($get_contact_info_handle) != 1) {
+			$content .= 'The contact you are trying to delete does not exist.<br />'."\n";
+			break;
+		} else {
+			$contact_info = $db->sql_fetch_assoc($get_contact_info_handle);
+			unset($get_contact_info_query);
+			unset($get_contact_info_handle);
+		}
 		$delete_contact_query = 'DELETE FROM `' . CONTACTS_TABLE . '`
 			WHERE `id` = '.(int)$_GET['id'];
 		$delete_contact = $db->sql_query($delete_contact_query);
 		if ($db->error[$delete_contact] === 1) {
 			$content .= 'Failed to delete contact.<br />'."\n";
 		} else {
-			$content .= 'Successfully deleted contact.<br />'.log_action('Deleted contact #'.$_GET['id']);
+			$content .= 'Successfully deleted contact.<br />'.log_action('Deleted contact \''.stripslashes($contact_info['name']).'\'');
+			unset($contact_info);
 		}
 		break;
 
