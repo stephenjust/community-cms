@@ -329,7 +329,22 @@ switch ($_GET['action']) {
 		if($db->error[$new_article] === 1) {
 			$content .= 'Failed to add article. <br />';
 		} else {
-			$content .= 'Successfully added article. <br />'.log_action('New news article \''.$title.'\'');
+			$page_title_query = 'SELECT * FROM `'.PAGE_TABLE.'` WHERE `id` = '.$_POST['page'].' LIMIT 1';
+			$page_title_handle = $db->sql_query($page_title_query);
+			if ($db->error[$page_title_handle] === 1) {
+				$content .= 'Failed to process log message.<br />'."\n";
+				break;
+			}
+			if ($db->sql_num_rows($page_title_handle) == 1) {
+				$page_title_ = $db->sql_fetch_assoc($page_title_handle);
+				$page_title = $page_title_['title'];
+			} else {
+				$page_title = 'No Page';
+			}
+			unset($page_title_query);
+			unset($page_title_handle);
+			unset($page_title_);
+			$content .= 'Successfully added article. <br />'.log_action('Article \''.$title.'\' added to \''.$page_title.'\'');
 		}
 		break;
 }
