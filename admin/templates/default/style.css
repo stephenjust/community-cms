@@ -60,6 +60,11 @@ fieldset {
 	border: 0px;
 }
 
+select {
+	font-size: medium;
+	height: 1.8em;
+}
+
 /* 
  * Administration Specific Styles
  */
