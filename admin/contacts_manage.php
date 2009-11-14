@@ -100,8 +100,7 @@ switch ($_GET['action']) {
 				break;
 			}
 		}
-		$phone = (int)$phone;
-
+		
 		// Verify email address
 		if ($email != "") {
 			if (!eregi('^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$',$email)) {
@@ -231,7 +230,6 @@ switch ($_GET['action']) {
 				break;
 			}
 		}
-		$phone = (int)$phone;
 
 		// Verify email address
 		if ($email != "") {
