@@ -243,7 +243,7 @@ for ($i = 1; $i <= $db->sql_num_rows($category_handle); $i++) {
 	$cat = $db->sql_fetch_assoc($category_handle);
 	$tab_content['settings'] .= '<input type="radio" name="delete_category_id" value="'.$cat['cat_id'].'" />
 		<img src="./admin/templates/default/images/icon_'.$cat['colour'].'.png"
-		width="16px" height="16px" alt="'.$cat['colour'].'" />'.stripslashes($cat['label']).'<br />';
+		width="16px" height="16px" alt="'.$cat['colour'].'" /> '.stripslashes($cat['label']).'<br />';
 }
 
 $tab_content['settings'] .= '</td></tr>
