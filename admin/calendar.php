@@ -76,6 +76,19 @@ switch ($_GET['action']) {
 			$content .= 'Failed to delete date entry.<br />'."\n";
 		}
 		break;
+	case 'delete_old_entries':
+		$current_year = date('Y');
+		$old_year = $current_year - 3;
+		$delete_old_query = 'DELETE FROM `'.CALENDAR_TABLE.'`
+			WHERE `year` <= '.$old_year;
+		$delete_old_handle = $db->sql_query($delete_old_query);
+		if ($db->error[$delete_old_handle] === 1) {
+			$content .= 'Failed to delete old calendar entries.<br />'."\n";
+		} else {
+			log_action('Deleted old calendar entries ('.$old_year.' and previous)');
+			$content .= 'Successfully deleted old calendar entries.<br />'."\n";
+		}
+		break;
 	case 'create_category':
 		$category_name = addslashes($_POST['category_name']);
 		if ($category_name != "") {
@@ -216,7 +229,7 @@ $tab_layout->add_tab('Create Event',$tab_content['create']);
 
 // ----------------------------------------------------------------------------
 
-$tab_content['settings'] = '<form method="POST" action="?module=calendar&action=create_category">
+$tab_content['settings'] = '<form method="POST" action="?module=calendar&amp;action=create_category">
 <h1>Create New Category</h1>
 <table class="admintable">
 <tr><td width="150" class="row1">Name:</td><td class="row1"><input type=\'text\' name=\'category_name\' /></td></tr>
@@ -232,7 +245,7 @@ $tab_content['settings'] = '<form method="POST" action="?module=calendar&action=
 </table>
 </form>
 
-<form method="POST" action="?module=calendar&action=delete_category">
+<form method="POST" action="?module=calendar&amp;action=delete_category">
 <h1>Delete Category</h1>
 <table class="admintable">
 <tr><td width="150" class="row1">Category:</td><td class="row1">&nbsp;</td></tr>
@@ -250,6 +263,30 @@ $tab_content['settings'] .= '</td></tr>
 <tr><td width="150" class="row1">&nbsp;</td><td class="row1">
 <input type="submit" value="Delete" /></td></tr>
 </table>
+</form>';
+
+// ----------------------------------------------------------------------------
+
+$tab_content['settings'] .= '<h1>Delete Old Entries</h1>'."\n";
+$current_year = date('Y');
+$old_year = $current_year - 3;
+$num_old_query = 'SELECT `id` FROM `'.CALENDAR_TABLE.'` WHERE `year` <= '.$old_year;
+$num_old_handle = $db->sql_query($num_old_query);
+if ($db->error[$num_old_handle] === 1) {
+	$button_label = 'Error';
+	$button_disabled = 1;
+} else {
+	$button_disabled = 0;
+	if ($db->sql_num_rows($num_old_handle) == 0) {
+		$button_disabled = 1;
+		$button_label = 'No old entries ('.$old_year.' and previous)';
+	} else {
+		$button_label = 'Delete '.$db->sql_num_rows($num_old_handle).' old entries ('.$old_year.' and previous)';
+	}
+}
+$button_disabled = ($button_disabled == 1) ? 'disabled' : NULL;
+$tab_content['settings'] .= '<form method="POST" action="?module=calendar&amp;action=delete_old_entries">
+<input type="submit" value="'.$button_label.'" '.$button_disabled.' />
 </form>';
 $tab_layout->add_tab('Settings',$tab_content['settings']);
 $content .= $tab_layout;
