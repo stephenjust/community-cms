@@ -79,11 +79,12 @@ if($_GET['action'] == 'delete') {
 }
 $tab_layout = new tabs;
 $tab_content['manage'] = '<table class="admintable">
-<tr><th><form method="post" action="admin.php?module=newsletter"><select name="page">';
+<tr><th colspan="4"><form method="post" action="admin.php?module=newsletter"><select name="page">';
 $page_query = 'SELECT * FROM ' . PAGE_TABLE . '
 	WHERE type = 2 ORDER BY list ASC';
 $page_query_handle = $db->sql_query($page_query);
 $i = 1;
+$first = 0;
 while ($i <= $db->sql_num_rows($page_query_handle)) {
 	$page = $db->sql_fetch_assoc($page_query_handle);
 	if (!isset($_POST['page'])) {
@@ -101,7 +102,7 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
 	}
 	$i++;
 }
-$tab_content['manage'] .= '</select></th><th colspan="3"><input type="submit" value="Change Page" /></form></th></tr>
+$tab_content['manage'] .= '</select><input type="submit" value="Change Page" /></form></th></tr>
 	<tr><th width="350">Label:</th><th>Month</th><th>Year</th><th>Del</th></tr>';
 // Get page message list in the order defined in the database. First is 0.
 $nl_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . '
