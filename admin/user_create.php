@@ -113,7 +113,7 @@ if ($_GET['create'] == 1) {
 			$group_list_id[$i] = $group_list['id'];
 			$group_list_name[$i] = $group_list['name'];
 		}
-		$form->add_multiselect('groups','Groups',$group_list_id,$group_list_name);
+		$form->add_multiselect('groups','Groups',$group_list_id,$group_list_name,NULL,5,'style="height: 4em;"');
 	}
 	$form->add_submit('submit','Create User');
 	$tab_content['create'] = $form;

@@ -83,11 +83,6 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 		if(!isset($current_name[1])) {
 			$current_name[1] = NULL;
 		}
-		$telephone_hide = checkbox($current_data['phone_hide'],1);
-		$address_hide = checkbox($current_data['address_hide'],1);
-		$email_hide = checkbox($current_data['email_hide'],1);
-		$hide = checkbox($current_data['hide'],1);
-		$message = checkbox($current_data['message'],1);
 		$tab_layout = new tabs;
 		$form = new form;
 		$form->set_target('admin.php?module=user_edit&amp;edit='.$_GET['id']);
@@ -115,7 +110,7 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 				$group_list_id[$i] = $group_list['id'];
 				$group_list_name[$i] = $group_list['name'];
 			}
-			$form->add_multiselect('groups','Groups',$group_list_id,$group_list_name,$current_data['groups']);
+			$form->add_multiselect('groups','Groups',$group_list_id,$group_list_name,$current_data['groups'],5,'style="height: 4em;"');
 		}
 		$form->add_submit('submit','Edit User');
 		$tab_content['edit'] = $form;
