@@ -32,7 +32,7 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 				$change_password_query = 'UPDATE ' . USER_TABLE . '
 					SET password = \''.md5($_POST['edit_pass']).'\' WHERE id = '.(int)$_GET['edit'];
 				$change_password_handle = $db->sql_query($change_password_query);
-				if ($db->error[$change_password_query] === 1) {
+				if ($db->error[$change_password_handle] === 1) {
 					$content .= 'Failed to change password.<br />';
 				} else {
 					$content .= 'Password changed.<br />';
@@ -87,7 +87,7 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 		$form = new form;
 		$form->set_target('admin.php?module=user_edit&amp;edit='.$_GET['id']);
 		$form->set_method('post');
-		$form->add_password('edit_pass','Password');
+		$form->add_password('edit_pass','New Password');
 		$form->add_password('edit_pass_conf','Confirm Password');
 		$form->add_password('edit_old_pass','Old Password');
 		$form->add_text('If the above password fields are filled correctly,

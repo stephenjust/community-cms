@@ -38,6 +38,7 @@ of any administration page.
 	$return .= '<h4>Users</h4>
 <ol>
 <li><a href="admin.php?module=help&page=user_create">Creating a New User</a></li>
+<li><a href="admin.php?module=help&page=user_change_password">Changing Your Password</a></li>
 </ol>';
 	$return .= '<h4>Help</h4>
 <ol>
