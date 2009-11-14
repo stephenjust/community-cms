@@ -24,7 +24,7 @@ of any administration page.
 	$return .= '<div class="admin_help_explanation">The Community CMS help system
 is a great place to start looking for help if you don\'t know what to do. Of
 course, not everything can be covered, but if you know something that may be of
-use to a less technically-literate person, why not write a help article?</div>';
+use to a person less familiar with this CMS, why not write a help article?</div>';
 
 	// Quick instructions
 	$return .= '<div class="admin_help_quick_instructions">
@@ -43,7 +43,13 @@ Use some of the existing entries as an example.</li>
 </div>';
 
 	// In-depth instructions
-	
+	$return .= '<div class="admin_help_quick_instructions">
+<h3>Notes</h3>
+<ul>
+<li>To create a help article and to add it to the system, you must have basic
+knowledge of HTML and PHP, and you must have FTP access to your server.</li>
+</ul>
+</div>';
 
 	$return .= '</div>';
 

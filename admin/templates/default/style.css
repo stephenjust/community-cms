@@ -26,8 +26,18 @@ div.iconbar {
 }
 
 h1 {
-    font-family: Cambria,Arial,Sans-Serif;
-    }
+	font-family: Cambria,Arial,Sans-Serif;
+}
+h4 {
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+	padding-top: 0px;
+}
+
+ol {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
 
 td {
 	vertical-align: top;

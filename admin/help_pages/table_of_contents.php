@@ -42,6 +42,7 @@ of any administration page.
 </ol>';
 	$return .= '<h4>Help</h4>
 <ol>
+<li><a href="admin.php?module=help&page=help_ask_developer">Ask a Developer for Help</a></li>
 <li><a href="admin.php?module=help&page=help_create">Creating a help page</a></li>
 </ol>';
 	$return .= '</div>';
