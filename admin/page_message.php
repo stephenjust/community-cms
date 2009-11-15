@@ -42,7 +42,7 @@ if ($_GET['action'] == 'delete') {
 $tab_layout = new tabs;
 $tab_content['manage'] = NULL;
 $tab_content['manage'] .= '<table class="admintable">
-<tr><th><form method="post" action="admin.php?module=page_message"><select name="page">';
+<tr><th colspan="3"><form method="post" action="admin.php?module=page_message"><select name="page">';
 $page_query = 'SELECT * FROM ' . PAGE_TABLE . ' ORDER BY list ASC';
 $page_query_handle = $db->sql_query($page_query);
 $i = 1;
@@ -60,7 +60,7 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
 	}
 	$i++;
 }
-$tab_content['manage'] .= '</select></th><th colspan="2"><input type="submit" value="Change Page" /></form></th></tr>
+$tab_content['manage'] .= '</select><input type="submit" value="Change Page" /></form></th></tr>
 <tr><th width="350">Content:</th><th colspan="2"></th></tr>';
 // Get page message list in the order defined in the database. First is 0.
 $page_message_query = 'SELECT * FROM '.PAGE_MESSAGE_TABLE.'

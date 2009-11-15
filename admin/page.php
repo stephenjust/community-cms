@@ -237,8 +237,8 @@ if ($_GET['action'] == 'editsave') {
 	}
 	$title = addslashes($_POST['title']);
 	$meta_desc = addslashes($_POST['meta_desc']);
-	$menu = checkbox($_POST['hidden']);
-	$show_title = checkbox($_POST['show_title']);
+	$menu = (isset($_POST['hidden'])) ? checkbox($_POST['hidden']) : 0;
+	$show_title = (isset($_POST['show_title'])) ? checkbox($_POST['show_title']) : 0;
 	$blocks_left = addslashes($_POST['blocks_left']);
 	$blocks_right = addslashes($_POST['blocks_right']);
 	$save_query = 'UPDATE ' . PAGE_TABLE . "
