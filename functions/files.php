@@ -183,14 +183,14 @@ function file_list($directory = "", $type = 0, $selected = "") {
 
 // ----------------------------------------------------------------------------
 
-function dynamic_file_list($directory = '') {
+function dynamic_file_list($directory = '',$root = ROOT) {
 	//
 	// Folder list portion:
 	//
 
 	$current = $directory;
 	$dropdown_box_options = '<option value="">Default</option>';
-	$folder_root = ROOT.'files/';
+	$folder_root = $root.'files/';
 	if (!eregi('./',$directory)) {
 		$folder_open = $folder_root;
 		$files = scandir($folder_open);
@@ -212,7 +212,7 @@ function dynamic_file_list($directory = '') {
 	} else {
 		$return .= 'Error retrieving folder list.';
 	}
-	$return .= '<select name="folder_dropdown_box" id="dynamic_folder_dropdown_box" onChange="update_dynamic_file_list()">
+	$return .= '<select name="folder_dropdown_box" id="dynamic_folder_dropdown_box" onChange="update_dynamic_file_list(\''.$root.'\')">
 	<option value="">Default</option>'.$dropdown_box_options.'
 	</select><br />';
 
