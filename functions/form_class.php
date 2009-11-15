@@ -289,8 +289,12 @@ class form {
 		$options = NULL;
 		for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
 			$page = $db->sql_fetch_assoc($page_query_handle);
-			$options .= '<option value="'.$page['id'].'" >'.$page['title'].'</option>'."\n";
+			if ($value == $page['id']) {
+				$options .= '<option value="'.$page['id'].'" selected>'.$page['title'].'</option>'."\n";
+			} else {
+				$options .= '<option value="'.$page['id'].'" >'.$page['title'].'</option>'."\n";
 			}
+		}
 		if($nopageallowed == 1) {
 			$options .= '<option value="0">No Page</option>'."\n";
 		}
