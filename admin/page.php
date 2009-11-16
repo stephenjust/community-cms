@@ -275,13 +275,13 @@ if ($_GET['action'] == 'edit') {
 			<table class="admintable">
 			<input type="hidden" name="id" value="'.$page_id.'" />';
 		if (strlen($edit_page['text_id']) < 1) {
-			$tab_content['edit'] .= '<tr class="row2"><td width="150">Text ID:</td><td><input type="text" name="text_id" value="" /></td></tr>';
+			$tab_content['edit'] .= '<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>';
 		}
-		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="'.stripslashes($edit_page['title']).'" /></td></tr>
-			<tr><td width="150">Page Description:</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.stripslashes($edit_page['meta_desc']).'</textarea></td></tr>
+		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="'.stripslashes($edit_page['title']).'" /></td></tr>
+			<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.stripslashes($edit_page['meta_desc']).'</textarea></td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 			<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
-			<tr class="row2"><td valign="top">Blocks:<br>(Comma separated block IDs)</td><td>Left:<br />
+			<tr class="row2"><td valign="top">Blocks (optional):<br>(Comma separated block IDs)</td><td>Left:<br />
 			<input type="text" name="blocks_left" value="'.$edit_page['blocks_left'].'" /><br />
 			Right:<br />
 			<input type="text" name="blocks_right" value="'.$edit_page['blocks_right'].'" />
@@ -366,9 +366,9 @@ $tab_layout->add_tab('Manage Pages',$tab_content['manage']);
 $tab_content['add'] = NULL;
 $tab_content['add'] .= '<form method="POST" action="admin.php?module=page&action=new">
 	<table class="admintable">
-	<tr class="row1"><td width="150">Title:</td><td><input type="text" name="title" value="" /></td></tr>
-	<tr><td width="150">Page Description:</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor"></textarea></td></tr>
-	<tr class="row2"><td width="150">Text ID</td><td><input type="text" name="text_id" value="" /></td></tr>
+	<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="" /></td></tr>
+	<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor"></textarea></td></tr>
+	<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>
 	<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
 	<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
 	<tr class="row1"><td valign="top">Type:</td><td>
@@ -391,8 +391,8 @@ $tab_layout->add_tab('Add Page',$tab_content['add']);
 
 $tab_content['addlink'] = '<div id="tabs-3"><form method="POST" action="admin.php?module=page&action=new_link">
 	<table class="admintable" id="adm_pg_table_create_link">
-	<tr class="row1"><td width="150">Link Text:</td><td><input type="text" name="title" value="" /></td></tr>
-	<tr class="row2"><td valign="top">URL:</td><td>
+	<tr class="row1"><td width="150">Link Text (required):</td><td><input type="text" name="title" value="" /></td></tr>
+	<tr class="row2"><td valign="top">URL (required):</td><td>
 	<input type="text" name="url" value="http://" /><br />
 	</td></td></tr>
 	<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
