@@ -232,7 +232,7 @@ class form {
 					}
 					$form_var .= '<input type="text" name="'.$name.$suffix.'"
 						id="_'.$name.$suffix.'" size="2" maxlength="2"
-						value="'.$value[$i - 1].'" />';
+						value="'.$value[$i - 1].'" '.$props.' />';
 					break;
 				case 'M':
 					$suffix = '_month';
@@ -242,7 +242,7 @@ class form {
 					$months = array('January','February','March','April','May',
 						'June','July','August','September','October','November',
 						'December');
-					$form_var .= '<select name="'.$name.$suffix.'" id="_'.$name.$suffix.'">';
+					$form_var .= '<select name="'.$name.$suffix.'" id="_'.$name.$suffix.'" '.$props.'>';
 					for ($monthcount = 1; $monthcount <= 12; $monthcount++) {
 						if(date('m') == $monthcount) {
 							$form_var .= "<option value='".$monthcount."' selected >".$months[$monthcount-1]."</option>";
@@ -259,7 +259,7 @@ class form {
 					}
 					$form_var .= '<input type="text" name="'.$name.$suffix.'"
 						id="_'.$name.$suffix.'" size="4" maxlength="4"
-						value="'.$value[$i - 1].'" />';
+						value="'.$value[$i - 1].'" '.$props.' />';
 					break;
 			}
 			if ($i == 1) {

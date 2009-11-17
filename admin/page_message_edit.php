@@ -22,6 +22,12 @@ if ($_GET['action'] == 'edit') {
 	}
 	if ($db->sql_num_rows($page_name_handle) == 1) {
 		$edit_id = (int)$_POST['id'];
+		$_POST['start_year'] = (isset($_POST['start_year'])) ? $_POST['start_year'] : 0;
+		$_POST['start_month'] = (isset($_POST['start_month'])) ? $_POST['start_month'] : 0;
+		$_POST['start_day'] = (isset($_POST['start_day'])) ? $_POST['start_day'] : 0;
+		$_POST['end_year'] = (isset($_POST['end_year'])) ? $_POST['end_year'] : 0;
+		$_POST['end_month'] = (isset($_POST['end_month'])) ? $_POST['end_month'] : 0;
+		$_POST['end_day'] = (isset($_POST['end_day'])) ? $_POST['end_day'] : 0;
 		$start_date = $_POST['start_year'].'-'.$_POST['start_month'].'-'.$_POST['start_day'];
 		$end_date = $_POST['end_year'].'-'.$_POST['end_month'].'-'.$_POST['end_day'];
 		$expire = (isset($_POST['expire'])) ? checkbox($_POST['expire']) : 0;
@@ -64,7 +70,7 @@ if ($_GET['action'] == 'edit') {
 		$end_date = explode('-',$page_message['end_date']);
 		$content .= 'Start:<br />';
 		$smonth = $start_date[1] - 1;
-		$content .= '<select name="start_month" value="'.$smonth.'" >';
+		$content .= '<select name="start_month" value="'.$smonth.'" disabled>';
 		$mcount = 1;
 		for ($monthcount = 0; $monthcount < 12; $monthcount++) {
 			if ($start_date[1] == $monthcount) {
@@ -77,11 +83,11 @@ if ($_GET['action'] == 'edit') {
 			$mcount++;
 		}
 		$content .= '</select>
-			<input type="text" name="start_day" maxlength="2" size="2" value="'.$start_date[2].'" />
-			<input type="text" name="start_year" maxlength="4" size="4" value="'.$end_date[0].'" /><br />
+			<input type="text" name="start_day" maxlength="2" size="2" value="'.$start_date[2].'" disabled />
+			<input type="text" name="start_year" maxlength="4" size="4" value="'.$end_date[0].'" disabled /><br />
 			End:<br />';
 		$emonth = $end_date[1] - 1;
-		$content .= '<select name="end_month" value="'.$emonth.'" >';
+		$content .= '<select name="end_month" value="'.$emonth.'" disabled>';
 		$mcount = 1;
 		for ($monthcount = 0; $monthcount < 12; $monthcount++) {
 			if ($start_date[1] == $monthcount) {
@@ -95,10 +101,10 @@ if ($_GET['action'] == 'edit') {
 		}
 		$expire_checked = checkbox($page_message['end'], 1);
 		$content .= '</select>
-			<input type="text" name="end_day" maxlength="2" size="2" value="'.$end_date[2].'" />
-			<input type="text" name="end_year" maxlength="4" size="4" value="'.$end_date[0].'" /></td></tr>
+			<input type="text" name="end_day" maxlength="2" size="2" value="'.$end_date[2].'" disabled />
+			<input type="text" name="end_year" maxlength="4" size="4" value="'.$end_date[0].'" disabled /></td></tr>
 			<tr><td width="150" class="row1">Expire:</td><td class="row1">
-			<input type="checkbox" name="expire" '.$expire_checked.' /></td></tr>
+			<input type="checkbox" name="expire" '.$expire_checked.' disabled /></td></tr>
 			<tr><td width="150" class="row2">&nbsp;</td><td class="row2">
 			<input type="submit" value="Submit" /></td></tr>
 			</table>';

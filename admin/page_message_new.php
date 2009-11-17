@@ -22,6 +22,13 @@ if ($_GET['action'] == 'save') {
 	}
 	if ($db->sql_num_rows($page_name_handle) == 1) {
 		$page_id = $_POST['page_id'];
+		$_POST['start_year'] = (isset($_POST['start_year'])) ? $_POST['start_year'] : 0;
+		$_POST['start_month'] = (isset($_POST['start_month'])) ? $_POST['start_month'] : 0;
+		$_POST['start_day'] = (isset($_POST['start_day'])) ? $_POST['start_day'] : 0;
+		$_POST['end_year'] = (isset($_POST['end_year'])) ? $_POST['end_year'] : 0;
+		$_POST['end_month'] = (isset($_POST['end_month'])) ? $_POST['end_month'] : 0;
+		$_POST['end_day'] = (isset($_POST['end_day'])) ? $_POST['end_day'] : 0;
+
 		$start_date = $_POST['start_year'].'-'.$_POST['start_month'].'-'.$_POST['start_day'];
 		$end_date = $_POST['end_year'].'-'.$_POST['end_month'].'-'.$_POST['end_day'];
 		$expire = (isset($_POST['expire'])) ? checkbox($_POST['expire']) : 0;
@@ -49,9 +56,9 @@ if ($_GET['action'] == 'save') {
 	$form->set_method('post');
 	$form->add_hidden('page_id',(int)$_GET['page']);
 	$form->add_textarea('text','Content',NULL,'rows="30"');
-	$form->add_date('start','Start Date','MDY');
-	$form->add_date('end','End Date','MDY');
-	$form->add_checkbox('expire','Expire');
+	$form->add_date('start','Start Date','MDY',NULL,"disabled");
+	$form->add_date('end','End Date','MDY',NULL,"disabled");
+	$form->add_checkbox('expire','Expire',NULL,"disabled");
 	$form->add_submit('submit','Save');
 	$content .= '<h1>Create New Page Message</h1>'.$form;
 }
