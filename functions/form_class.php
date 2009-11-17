@@ -270,6 +270,15 @@ class form {
 			<label for="_'.$first_field_name.'">'.$label.'</label>'.$form_var.'</div><br />';
 		$this->form .= $form_var;
 	}
+
+	function add_date_cal($name,$label,$value = NULL,$props = NULL) {
+		$form_var = '<div class="admin_form_element">
+			<label for="_'.$name.'">'.$label.'</label>
+			<input type="text" name="'.$name.'" id="_'.$name.'"
+			value="'.$value.'" class="datepicker" '.$props.' /></div><br />';
+		$this->form .= $form_var;
+	}
+
 	/**
 	 * add_page_list - Add a page list to a form
 	 * @global resource $db Databasee connection resource

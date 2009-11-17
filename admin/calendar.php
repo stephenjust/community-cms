@@ -22,24 +22,41 @@ $_POST['title'] = (isset($_POST['title'])) ? $_POST['title'] : NULL;
 $category = (isset($_POST['category'])) ? $_POST['category'] : NULL;
 $_POST['stime'] = (isset($_POST['stime'])) ? $_POST['stime'] : NULL;
 $_POST['etime'] = (isset($_POST['etime'])) ? $_POST['etime'] : NULL;
-$day = (isset($_POST['day'])) ? (int)$_POST['day'] : NULL;
-$month = (isset($_POST['month'])) ? (int)$_POST['month'] : NULL;
-$year = (isset($_POST['year'])) ? (int)$_POST['year'] : NULL;
+$_POST['date'] = (isset($_POST['date'])) ? $_POST['date'] : NULL;
 $_POST['content'] = (isset($_POST['content'])) ? $_POST['content'] : NULL;
 $_POST['location'] = (isset($_POST['location'])) ? $_POST['location'] : NULL;
 $hide = (isset($_POST['hide'])) ? checkbox($_POST['hide']) : 0;
 $image = (isset($_POST['image'])) ? $_POST['image'] : NULL;
-if ($_GET['action'] == 'new') {
-	$title = addslashes($_POST['title']);
-	$item_content = addslashes($_POST['content']);
-	$author = addslashes($_POST['author']);
-	$start_time = $_POST['stime'];
-	$end_time = $_POST['etime'];
-	$category = $_POST['category'];
-	$location = addslashes($_POST['location']);
-	if ($start_time == "" || $end_time == "" || $year == "" || $title == "") {
-		$content .= 'One or more fields was not filled out. Please complete the fields marked with a star and resubmit.';
-	} else {
+
+switch ($_GET['action']) {
+	default:
+
+		break;
+
+	case 'new':
+		$title = addslashes($_POST['title']);
+		$item_content = addslashes($_POST['content']);
+		$author = addslashes($_POST['author']);
+		$start_time = $_POST['stime'];
+		$end_time = $_POST['etime'];
+		$category = $_POST['category'];
+		$location = addslashes($_POST['location']);
+
+		// Format date for insertion...
+		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
+		if (!eregi('^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$',$event_date)) {
+			$content .= 'Invalidly formatted date. Use MM/DD/YYYY format.<br />'."\n";
+			break;
+		}
+		$event_date_parts = explode('/',$event_date);
+		$year = $event_date_parts[2];
+		$month = $event_date_parts[0];
+		$day = $event_date_parts[1];
+
+		if ($start_time == "" || $end_time == "" || $year == "" || $title == "") {
+			$content .= 'One or more fields was not filled out. Please complete the fields marked with a star and resubmit.<br />'."\n";
+			break;
+		}
 		$stime = explode('-',$start_time);
 		$etime = explode('-',$end_time);
 		if (!eregi('^[0-2][0-9]\:[0-5][0-9]$',$start_time) || !eregi('^[0-2][0-9]\:[0-5][0-9]$',$end_time) || strlen($start_time) != 5 || strlen($end_time) != 5 || $start_time > $end_time ) {
@@ -60,15 +77,10 @@ if ($_GET['action'] == 'new') {
 					.$year.' \''.$title.'\'');
 			}
 		}
-	}
-}
+		break;
 
 // ----------------------------------------------------------------------------
 
-switch ($_GET['action']) {
-	default:
-
-		break;
 	case 'delete':
 		if (delete_date($_POST['date_del'])) {
 			$content .= 'Successfully deleted date entry.<br />'."\n";
@@ -212,13 +224,7 @@ $form_create->add_textbox('etime','End Time*',$_POST['etime'],'maxlength="5"');
 $form_create->add_text('Times are in 24 hour format. Insert the same time in both
     fields for an all day event. Times should be in hour:minute format. Please
     include leading zeroes (1 = 01)');
-$form_create->add_select('day','Day*',array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
-    16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,21),array(1,2,3,4,5,6,7,8,9,10,
-    11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31),$day);
-$form_create->add_select('month','Month*',array(1,2,3,4,5,6,7,8,9,10,11,12),
-    array('January','February','March','April','May','June','July','August',
-    'September','October','November','December'),$_POST['month']);
-$form_create->add_textbox('year','Year*',$_POST['year'],'maxlength="4"');
+$form_create->add_date_cal('date','Date',stripslashes($_POST['date']));
 $form_create->add_textarea('content','Description',stripslashes($_POST['content']));
 $form_create->add_textbox('location','Location',stripslashes($_POST['location']));
 $form_create->add_icon_list('image','Image','newsicons',$image);

@@ -29,7 +29,8 @@ $(function(){
 	});
 
 	// Datepicker
-	$('#datepicker').datepicker({
+	$('.datepicker').datepicker({
+		dateFormat: 'mm/dd/yy',
 		inline: true
 	});
 
