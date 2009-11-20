@@ -74,7 +74,14 @@ function log_action($message) {
 	$message_error = NULL;
 	$date = date('Y-m-d H:i:s');
 	$user = $_SESSION['userid'];
-	$ip_octet = $_SERVER['REMOTE_ADDR'];
+	$ip_octet = '0';
+	if ( isset($_SERVER["REMOTE_ADDR"]) )    {
+		$ip_octet = $_SERVER["REMOTE_ADDR"];
+	} else if ( isset($_SERVER["HTTP_X_FORWARDED_FOR"]) )    {
+		$ip_octet = $_SERVER["HTTP_X_FORWARDED_FOR"];
+	} else if ( isset($_SERVER["HTTP_CLIENT_IP"]) )    {
+		$ip_octet = $_SERVER["HTTP_CLIENT_IP"];
+	}
 	$ip_int = ip2long($ip_octet);
 	$log_query = 'INSERT INTO ' . LOG_TABLE . '
 		(user_id,action,date,ip_addr)
