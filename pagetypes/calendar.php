@@ -85,7 +85,7 @@ switch ($_GET['view']) {
 				$dates .= "<a href='?".$page->url_reference.'&amp;view=event&amp;'
 					.'a='.$day_info['id'].'\' class="calendar_event">
 					<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'
-					.' width="16px" height="16px" alt="'
+					.' width="10px" height="10px" alt="'
 					.stripslashes($day_info['label']).'" border="0px" />'
 					.stripslashes($day_info['header'])."</a><br />";
 			}
