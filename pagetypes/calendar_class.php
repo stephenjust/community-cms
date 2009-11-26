@@ -92,11 +92,12 @@ class calendar_event {
             $event_time = 'All day, '.date('l, F j Y',$event_start);
             unset($event_start);
         } else {
+			global $site_info;
             $event_stime = explode(':',$event_info['starttime']);
             $event_etime = explode(':',$event_info['endtime']);
             $event_start = mktime($event_stime[0],$event_stime[1],0,$event_info['month'],$event_info['day'],$event_info['year']);
             $event_end = mktime($event_etime[0],$event_etime[1],0,$event_info['month'],$event_info['day'],$event_info['year']);
-            $event_time = date('g:ia -',$event_start).date(' g:ia',$event_end)."<br />".date(' l, F j Y',$event_start);
+            $event_time = date($site_info['time_format'].' -',$event_start).date(' '.$site_info['time_format'],$event_end)."<br />".date(' l, F j Y',$event_start);
             unset($event_stime);
             unset($event_etime);
             unset($event_start);
