@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`url` text NOT NULL,
 	`admin_email` text NULL,
 	`comment` text NOT NULL,
+	`time_format` text NOT NULL,
 	`template` int(11) NOT NULL,
 	`footer` text NOT NULL,
 	`active` tinyint(1) NOT NULL,

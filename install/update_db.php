@@ -35,6 +35,8 @@ $query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'news_settings`
     (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
 (\'1\', \'1\', \'1\')';
 $query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'config ADD `admin_email` TEXT NULL AFTER `url`';
+$query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'config ADD `time_format` TEXT NULL AFTER `comment`';
+$query[] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `time_format` = \'H:i A\'';
 // TODO: Update with new schema
 //$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'acl` (
 //	`id` INT NOT NULL auto_increment PRIMARY KEY,

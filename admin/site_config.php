@@ -23,10 +23,12 @@ if ($_GET['action'] == 'save') {
 	$site_desc = addslashes(strip_tags($_POST['site_desc']));
 	$site_url = addslashes(strip_tags($_POST['site_url']));
 	$admin_email = addslashes(strip_tags($_POST['admin_email']));
+	$time_format = addslashes($_POST['time_format']);
 	$footer = addslashes($_POST['footer']);
 	$site_info_update_query = 'UPDATE ' . CONFIG_TABLE . "
-		SET name='$site_name',url='$site_url',admin_email='$admin_email',
-		comment='$site_desc',active=".checkbox($_POST['active']).",footer='$footer'";
+		SET `name`='$site_name',`url`='$site_url',`admin_email`='$admin_email',
+		`comment`='$site_desc',`active`=".checkbox($_POST['active']).",
+		`time_format`='$time_format',`footer`='$footer'";
 	$site_info_update_handle = $db->sql_query($site_info_update_query);
 	if ($db->error[$site_info_update_handle] === 1) {
 		$content .= 'Failed to update site information.<br />';
@@ -53,6 +55,7 @@ $form->add_textbox('site_name','Site Name',stripslashes($current_config['name'])
 $form->add_textbox('site_desc','Site Description',stripslashes($current_config['comment']));
 $form->add_textbox('site_url','Site URL',stripslashes($current_config['url']));
 $form->add_textbox('admin_email','Admin E-Mail Address',stripslashes($current_config['admin_email']));
+$form->add_select('time_format','Time Format',array('h:i a','h:i A','H:i a','H:i A','g:i','G:i'),array('4:05 am','4:05 AM','04:05 am','04:05 AM','4:05','04:05'),stripslashes($current_config['time_format']));
 // TODO: $form->add_select('template','Default Template',$values,$strings);
 $form->add_textarea('footer','Footer Text',stripslashes($current_config['footer']));
 $form->add_checkbox('active','Site Active',$current_config['active']);
