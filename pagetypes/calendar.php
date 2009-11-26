@@ -171,7 +171,8 @@ switch ($_GET['view']) {
 			if ($event_start == $event_end) {
 				$event_time = 'All day';
 			} else {
-				$event_time = date('g:ia',$event_start).' - '.date('g:ia',$event_end);
+				global $site_info;
+				$event_time = date($site_info['time_format'],$event_start).' - '.date($site_info['time_format'],$event_end);
 			}
 			$current_event = $event_template;
 			$current_event = str_replace('<!-- $EVENT_ID$ -->',$day_events['id'],$current_event);
