@@ -122,7 +122,7 @@ class form {
 		$options = NULL;
 		for ($i = 1; $i <= count((array)$values); $i++) {
 			$select_this = NULL;
-			if($selected == $i) {
+			if($selected == $values[$i - 1]) {
 				$select_this = 'selected';
 			}
 			$options .= '<option value="'.$values[$i - 1].'" '.$select_this.'>'.$strings[$i - 1].'</option>'."\n";
