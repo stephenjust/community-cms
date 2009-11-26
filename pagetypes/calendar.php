@@ -64,7 +64,7 @@ switch ($_GET['view']) {
 				' . CALENDAR_CATEGORY_TABLE . ' cat
 				WHERE date.month = \''.$month_cal->month.'\' AND date.year = \''.$month_cal->year.'\'
 				AND date.day = \''.$counter_day.'\' AND date.category =
-				cat.cat_id LIMIT 2 OFFSET 0';
+				cat.cat_id ORDER BY `starttime` ASC';
 			$day_info_handle = $db->sql_query($day_info_query);
 			if ($db->error[$day_info_handle] === 1) {
 				$content .= 'Failed to read dates from database.<br />';

@@ -96,12 +96,12 @@ div.news_content {
     font-size: small;
 }
 img.news_image {
-  width: 100px;
-  height: 100px;
-  border: 0px;
-  float: left;
-  padding: 5px;
-  padding-right: 10px;
+	width: 100px;
+	height: 100px;
+	border: 0px;
+	float: left;
+	padding: 5px;
+	padding-right: 10px;
 }
 span.contact_name {
 	font-size: large;
@@ -203,11 +203,12 @@ table.calendar td.today {
     border: 1px #000000 solid;
 }
 table.calendar a.day_number {
-	text-decoration: none;
+	text-decoration: underline;
 	font-weight: bold;
 	color: #000000;
 }
 table.calendar a.calendar_event {
+	font-size: x-small;
 	text-decoration: none;
 	color: #000000;
 }
@@ -220,63 +221,63 @@ table.calendar_day td {
 }
 table.calendar_day td.time {
 	height: 20px;
-  width: 140px;
+	width: 140px;
 }
 table.calendar_day td.head {
-  height: 20px;
-  width: 200px;
-  overflow: hidden;
-  table-layout: fixed;
+	height: 20px;
+	width: 200px;
+	overflow: hidden;
+	table-layout: fixed;
 }
 table.calendar_day td.description {
-  height: 20px;
-  overflow: hidden;
-  table-layout: fixed;
+	height: 20px;
+	overflow: hidden;
+	table-layout: fixed;
 }
 input.button_cal_back_month {
 	float: right;
-  width: 33px;
+	width: 33px;
 }
 input.button_cal_back_year {
 	float: right;
-  width: 44px;
+	width: 44px;
 }
 input.button_cal_today {
 	float: right;
-  width: 58px;
+	width: 58px;
 }
 input.button_cal_next_month {
 	float: right;
-  width: 33px;
+	width: 33px;
 }
 input.button_cal_next_year {
 	float: right;
-  width: 44px;
+	width: 44px;
 }
 
 span.newsletter_year {
-  font-family: Arial;
-  font-size: larger;
-  font-style: italic;
+	font-family: Arial;
+	font-size: larger;
+	font-style: italic;
 }
 
 div.errormessage {
-  color: #FF0000;
+	color: #FF0000;
 	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
-  font-size: small;
-  background: #FFFFCC;
-  border: 1px dashed #FFFF66;
-  padding: 5px;
-  position: fixed;
-  bottom: 0px;
-  z-index: 1;
+	font-size: small;
+	background: #FFFFCC;
+	border: 1px dashed #FFFF66;
+	padding: 5px;
+	position: fixed;
+	bottom: 0px;
+	z-index: 1;
 }
 div.footer {
-  position: fixed;
-  bottom: 0px;
-  text-align: center;
-  width: 100%;
-  height: 35px;
+	position: fixed;
+	bottom: 0px;
+	text-align: center;
+	width: 100%;
+	height: 35px;
 }
 
 /* DEBUG */
