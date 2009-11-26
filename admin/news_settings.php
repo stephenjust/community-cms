@@ -49,7 +49,7 @@ $form->set_target('admin.php?module=news_settings&amp;action=save');
 $form->set_method('post');
 $form->add_textbox('num_articles','# Articles per Page',$news_config['num_articles'],'size="3" maxlength="3"');
 $form->add_select('date','Default Date View',array(0,1,2),array('Hide Date',
-	'Show Date','Show Mini'),$news_config['default_date_setting'] + 1);
+	'Show Date','Show Mini'),$news_config['default_date_setting']);
 $form->add_checkbox('author','Show Author',$news_config['show_author']);
 $form->add_checkbox('etime','Show Edit Time',$news_config['show_edit_time']);
 $form->add_submit('submit','Save Configuration');
