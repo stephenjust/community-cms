@@ -40,7 +40,7 @@ function edit_information($id, $path, $label) {
 }
 if ($_GET['action'] == 'saveinfo') {
 	$id = (int)$_POST['id'];
-	$path = addslashes(sql_escape_string($db,$_POST['path']));
+	$path = addslashes($db->sql_escape_string($_POST['path']));
 	$label = addslashes($_POST['label']);
 	$check_if_info_exists_query = 'SELECT * FROM ' . FILE_TABLE . '
 		WHERE `id` = \''.$id.'\' OR `path` = \''.$path.'\' LIMIT 1';
