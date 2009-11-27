@@ -53,6 +53,25 @@ function parse_time($time) {
 		if (strlen($new_time) === 4) {
 			$new_time = '0'.$new_time;
 		}
+	} elseif (eregi('^[0-1]?[0-9] ?[ap]m?$',$time)) {
+		$time = str_replace(array(' ','m','M'),NULL,$time);
+		$minute = '00';
+		$hour = $time;
+		if (eregi('a$',$time)) {
+			$hour = str_replace(array('a','A'),NULL,$time);
+			if ($hour == '12') {
+				$hour = 0;
+			}
+		} else {
+			$hour = str_replace(array('p','P'),NULL,$time);
+			if ($hour != 12) {
+				$hour = $hour + 12;
+			}
+		}
+		$new_time = $hour.':'.$minute;
+		if (strlen($new_time) === 4) {
+			$new_time = '0'.$new_time;
+		}
 	}
 	return $new_time;
 }
