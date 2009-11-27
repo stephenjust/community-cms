@@ -59,7 +59,9 @@ switch ($_GET['action']) {
 		}
 		$stime = explode('-',$start_time);
 		$etime = explode('-',$end_time);
-		if (!eregi('^[0-2][0-9]\:[0-5][0-9]$',$start_time) || !eregi('^[0-2][0-9]\:[0-5][0-9]$',$end_time) || strlen($start_time) != 5 || strlen($end_time) != 5 || $start_time > $end_time ) {
+		$start_time = parse_time($start_time);
+		$end_time = parse_time($end_time);
+		if (!$start_time || !$end_time || $start_time > $end_time) {
 			$content .= "You did not fill out one or more of the times properly. Please fix the problem and resubmit.";
 		} else {
 			$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
@@ -219,11 +221,8 @@ for ($b = 1; $b <= $db->sql_num_rows($category_list_handle); $b++) {
     $category_names[$b - 1] = $category_list['label'];
 }
 $form_create->add_select('category','Category',$category_ids,$category_names,$category);
-$form_create->add_textbox('stime','Start Time*',$_POST['stime'],'maxlength="5"');
-$form_create->add_textbox('etime','End Time*',$_POST['etime'],'maxlength="5"');
-$form_create->add_text('Times are in 24 hour format. Insert the same time in both
-    fields for an all day event. Times should be in hour:minute format. Please
-    include leading zeroes (1 = 01)');
+$form_create->add_textbox('stime','Start Time*',$_POST['stime']);
+$form_create->add_textbox('etime','End Time*',$_POST['etime']);
 $form_create->add_date_cal('date','Date',stripslashes($_POST['date']));
 $form_create->add_textarea('content','Description',stripslashes($_POST['content']));
 $form_create->add_textbox('location','Location',stripslashes($_POST['location']));

@@ -44,8 +44,10 @@ switch ($_GET['action']) {
 		}
 		$stime = explode('-',$start_time);
 		$etime = explode('-',$end_time);
-		if (!eregi('^[0-2][0-9]\:[0-5][0-9]$',$start_time) || !eregi('^[0-2][0-9]\:[0-5][0-9]$',$end_time) || strlen($start_time) != 5 || strlen($end_time) != 5 || $start_time > $end_time ) {
-			$content = "You did not fill out one or more of the times properly. Please fix the problem and resubmit.<br />"."\n";
+		$start_time = parse_time($start_time);
+		$end_time = parse_time($end_time);
+		if (!$start_time || !$end_time || $start_time > $end_time) {
+			$content .= "You did not fill out one or more of the times properly. Please fix the problem and resubmit.";
 			break;
 		}
 		$edit_date_query = 'UPDATE ' . CALENDAR_TABLE . "
@@ -98,21 +100,22 @@ switch ($_GET['action']) {
 			}
 		}
 		$temp = explode(':',$date['starttime']);
-		$starttime = $temp[0].':'.$temp[1];
+		$start_time_temp = mktime((int)$temp[0],(int)$temp[1]);
+		$starttime = date($site_info['time_format'],$start_time_temp);
+		unset($start_time_temp);
 		$temp = explode(':',$date['endtime']);
-		$endtime = $temp[0].':'.$temp[1];
+		$end_time_temp = mktime((int)$temp[0],(int)$temp[1]);
+		$endtime = date($site_info['time_format'],$end_time_temp);
+		unset($end_time_temp);
 		$hidden = checkbox($date['hidden'],1);
 		unset($temp);
 		$content .= '</select></td></tr>
 			<tr><td width="150" class="row1">*Start Time:</td>
 			<td class="row1"><input type="text" name="stime"
-			value="'.$starttime.'" maxlength="5" />
-			<div class="notice">Times are in 24 hour format. Insert the same
-			time in both fields for an all day event. Times should be in
-			hour:minute format. Please include leading zeroes (1 = 01)</div>
-			</td></tr><tr><td width="150" class="row2">*End Time:</td>
+			value="'.$starttime.'" /></td></tr>
+			<tr><td width="150" class="row2">*End Time:</td>
 			<td class="row2"><input type="text" name="etime"
-			value="'.$endtime.'" maxlength="5" /></td></tr>
+			value="'.$endtime.'" /></td></tr>
 			<tr><td width="150" class="row1">*Date:</td>
 			<td class="row1"><input type="text" name="date" class="datepicker" value="'.$date['month'].'/'.$date['day'].'/'.$date['year'].'" maxlength="10" /></td></tr>
 			<tr><td class="row2" valign="top">Description:</td>
