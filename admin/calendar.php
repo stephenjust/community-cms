@@ -273,12 +273,14 @@ $tab_content['settings'] .= '<form method="post" action="?module=calendar&amp;ac
 <table class="admintable">
 <tr><td width="150" class="row1">Name:</td><td class="row1"><input type=\'text\' name=\'category_name\' /></td></tr>
 <tr><td width="150" class="row2">Colour:</td><td class="row2">
-<input type="radio" name="colour" value="red" /><img src="./admin/templates/default/images/icon_red.png" width="16px" height="16px" alt="Red" />
-<input type="radio" name="colour" value="green" /><img src="./admin/templates/default/images/icon_green.png" width="16px" height="16px" alt="Green" />
-<input type="radio" name="colour" value="blue" /><img src="./admin/templates/default/images/icon_blue.png" width="16px" height="16px" alt="Blue" /><br />
-<input type="radio" name="colour" value="purple" /><img src="./admin/templates/default/images/icon_purple.png" width="16px" height="16px" alt="Purple" />
-<input type="radio" name="colour" value="cyan" /><img src="./admin/templates/default/images/icon_cyan.png" width="16px" height="16px" alt="Cyan" />
-<input type="radio" name="colour" value="yellow" /><img src="./admin/templates/default/images/icon_yellow.png" width="16px" height="16px" alt="Yellow" />
+<input type="radio" name="colour" value="red" /><img src="./admin/templates/default/images/icon_red.png" width="10px" height="10px" alt="Red" />
+<input type="radio" name="colour" value="orange" /><img src="./admin/templates/default/images/icon_orange.png" width="10px" height="10px" alt="Orange" />
+<input type="radio" name="colour" value="yellow" /><img src="./admin/templates/default/images/icon_yellow.png" width="10px" height="10px" alt="Yellow" />
+<input type="radio" name="colour" value="green" /><img src="./admin/templates/default/images/icon_green.png" width="10px" height="10px" alt="Green" />
+<input type="radio" name="colour" value="cyan" /><img src="./admin/templates/default/images/icon_cyan.png" width="10px" height="10px" alt="Cyan" />
+<input type="radio" name="colour" value="blue" /><img src="./admin/templates/default/images/icon_blue.png" width="10px" height="10px" alt="Blue" /><br />
+<input type="radio" name="colour" value="purple" /><img src="./admin/templates/default/images/icon_purple.png" width="10px" height="10px" alt="Purple" />
+<input type="radio" name="colour" value="black" /><img src="./admin/templates/default/images/icon_black.png" width="10px" height="10px" alt="Black" />
 </td></tr>
 <tr><td width="150" class="row1">&nbsp;</td><td class="row1"><input type="submit" value="Create" /></td></tr>
 </table>
