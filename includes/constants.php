@@ -32,6 +32,7 @@ define('ACL_KEYS_TABLE', $CONFIG['db_prefix'] . 'acl_keys');
 define('BLOCK_TABLE', $CONFIG['db_prefix'] . 'blocks');
 define('CALENDAR_TABLE', $CONFIG['db_prefix'] . 'calendar');
 define('CALENDAR_CATEGORY_TABLE', $CONFIG['db_prefix'] . 'calendar_categories');
+define('CALENDAR_SETTINGS_TABLE', $CONFIG['db_prefix'] . 'calendar_settings');
 define('CONFIG_TABLE', $CONFIG['db_prefix'] . 'config');
 define('CONTACTS_TABLE', $CONFIG['db_prefix'] . 'contacts');
 define('CONTENT_TABLE', $CONFIG['db_prefix'] . 'content');

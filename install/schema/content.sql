@@ -6,6 +6,8 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
 (0, 'Default Category', 'red', ''),
 (1, 'Other', 'yellow', '');;
+INSERT INTO `<!-- $DB_PREFIX$ -->calendar_settings` (`default_view`, `month_show_stime`, `month_show_cat_icons`, `month_day_format`) VALUES
+('month',1,1,1);;
 INSERT INTO `<!-- $DB_PREFIX$ -->config` (db_version,name, url, comment, time_format, template, footer, active) VALUES
 ('0.02','<!-- $SITE_NAME$ -->', 'http://localhost/', 'Sourceforge.net', 'h:i A', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);;
 INSERT INTO `<!-- $DB_PREFIX$ -->news` (`page`, `name`, `description`, `author`, `date`, `image`) VALUES

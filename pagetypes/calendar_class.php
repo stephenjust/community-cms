@@ -111,11 +111,11 @@ class calendar_event {
         $template_event->event_category = stripslashes($event_info['label']);
         $template_event->event_description = stripslashes($event_info['description']);
         $template_event->event_location = stripslashes($event_info['location']);
-        $this->event_text .= "<a href='?".$page->url_reference."&m=".
-            $event_info['month']."&y=".$event_info['year']."'>Back to month
+        $this->event_text .= "<a href='?".$page->url_reference."&amp;view=month&amp;m=".
+            $event_info['month']."&amp;y=".$event_info['year']."'>Back to month
             view</a><br />";
-        $this->event_text .= "<a href='?".$page->url_reference."&view=day&d=".
-            $event_info['day']."&m=".$event_info['month']."&y=".$event_info['year'].
+        $this->event_text .= "<a href='?".$page->url_reference."&amp;view=day&amp;d=".
+            $event_info['day']."&amp;m=".$event_info['month']."&amp;y=".$event_info['year'].
             "'>Back to day view</a><br />";
         $this->event_text .= $template_event;
         unset($template_event);

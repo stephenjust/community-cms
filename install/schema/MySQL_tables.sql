@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`hidden` tinyint(1) NOT NULL,
 	PRIMARY KEY  (`id`),
 	KEY `category` (`category`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
 	`cat_id` int(11) NOT NULL auto_increment,
@@ -43,7 +43,14 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
 	`colour` text NOT NULL,
 	`description` text NOT NULL,
 	PRIMARY KEY  (`cat_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM CHARACTER SET=utf8 AUTO_INCREMENT=2 ;
+
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_settings` (
+	`default_view` TEXT NOT NULL ,
+	`month_show_stime` BOOL NOT NULL DEFAULT '1',
+	`month_show_cat_icons` BOOL NOT NULL DEFAULT '1',
+	`month_day_format` INT NOT NULL DEFAULT '1'
+) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`db_version` decimal(6,2) NOT NULL,
@@ -56,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`footer` text NOT NULL,
 	`active` tinyint(1) NOT NULL,
 	`home` int(4) NOT NULL default '1'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE `<!-- $DB_PREFIX$ -->contacts` (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -69,7 +76,7 @@ CREATE TABLE `<!-- $DB_PREFIX$ -->contacts` (
 	`address_hide` BOOL NOT NULL ,
 	`email_hide` BOOL NOT NULL ,
 	`title` TEXT NOT NULL
-) ENGINE = MYISAM ;
+) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   `id` int(11) NOT NULL auto_increment,
@@ -93,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
 	`recipient` INT(5) NOT NULL DEFAULT '1',
 	`message` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-	) ENGINE = MYISAM DEFAULT CHARSET=latin1;
+	) ENGINE = MYISAM CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	`id` int(11) NOT NULL auto_increment,

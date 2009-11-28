@@ -10,9 +10,17 @@ $day = (isset($_GET['d']) && $_GET['d'] >= 1 && $_GET['d'] <= 31) ? (int)$_GET['
 $month = (isset($_GET['m']) && $_GET['m'] >= 0 && $_GET['m'] <= 13) ? (int)$_GET['m'] : date('n');
 $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$_GET['y'] : date('Y');
 include(ROOT . 'pagetypes/calendar_class.php');
+include(ROOT . 'functions/calendar.php');
+$calendar_settings = calendar_settings();
+if (!isset($_GET['view'])) {
+	$_GET['view'] = $calendar_settings['default_view'];
+}
+if ($_GET['view'] != 'month' && $_GET['view'] != 'day' && $_GET['view'] != 'event') {
+	$_GET['view'] = $calendar_settings['default_view'];
+}
 switch ($_GET['view']) {
-// MONTH VIEW
-	default:
+	// MONTH VIEW
+	case "month":
 		$month_cal = new calendar($month,$year);
 		unset($month);
 		unset($year);
@@ -28,6 +36,23 @@ switch ($_GET['view']) {
 		$template_month->prev_year = $month_cal->prev_year;
 		$template_month->next_month = $month_cal->next_month;
 		$template_month->next_year = $month_cal->next_year;
+		if ($calendar_settings['month_day_format'] == 1) {
+			$template_month->cal_sunday = 'Sunday';
+			$template_month->cal_monday = 'Monday';
+			$template_month->cal_tuesday = 'Tuesday';
+			$template_month->cal_wednesday = 'Wednesday';
+			$template_month->cal_thursday = 'Thursday';
+			$template_month->cal_friday = 'Friday';
+			$template_month->cal_saturday = 'Saturday';
+		} else {
+			$template_month->cal_sunday = 'Sun';
+			$template_month->cal_monday = 'Mon';
+			$template_month->cal_tuesday = 'Tues';
+			$template_month->cal_wednesday = 'Wed';
+			$template_month->cal_thursday = 'Thurs';
+			$template_month->cal_friday = 'Fri';
+			$template_month->cal_saturday = 'Sat';
+		}
 		// Week template
 		$template_week = new template;
 		$template_week->path = $template_month->path;
@@ -82,12 +107,18 @@ switch ($_GET['view']) {
 				if($day_info['colour'] == '') {
 					$day_info['colour'] = 'red';
 				}
-				$dates .= "<a href='?".$page->url_reference.'&amp;view=event&amp;'
-					.'a='.$day_info['id'].'\' class="calendar_event">
-					<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'
-					.' width="10px" height="10px" alt="'
-					.stripslashes($day_info['label']).'" border="0px" />'
-					.stripslashes($day_info['header'])."</a><br />";
+				$dates .= '<a href="?'.$page->url_reference.'&amp;view=event&amp;'
+					.'a='.$day_info['id'].'" class="calendar_event">';
+				if ($calendar_settings['month_show_cat_icons'] == 1) {
+					$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'
+					.' width="10px" height="10px" alt="'.stripslashes($day_info['label']).'" border="0px" />';
+				}
+				if ($calendar_settings['month_show_stime'] == 1) {
+					$stime_tmp = explode(':',$day_info['starttime']);
+					$stime_tmp = mktime($stime_tmp[0],$stime_tmp[1]);
+					$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$stime_tmp).'</span> ';
+				}
+				$dates .= stripslashes($day_info['header']).'</a><br />'."\n";
 			}
 			$current_day->day_events = $dates;
 			$current_week_days .= $current_day->template;
@@ -141,8 +172,8 @@ switch ($_GET['view']) {
 			WHERE year = '.$year.' AND month = '.$month.' AND day = '.$day.'
 			ORDER BY starttime ASC';
 		$day_events_handle = $db->sql_query($day_events_query);
-		$page_content .= '<a href="?'.$page->url_reference.'&m='.$month.
-			'&y='.$year.'">Back to month view</a><br />'."\n";
+		$page_content .= '<a href="?'.$page->url_reference.'&amp;view=month&amp;m='.$month.
+			'&amp;y='.$year.'">Back to month view</a><br />'."\n";
 		if ($db->error[$day_events_handle] === 1) {
 			$page_content .= 'Failed to read list of events from the database.';
 			break;

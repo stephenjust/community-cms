@@ -70,6 +70,16 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->calendar_categories" (
 SELECT setval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq', (SELECT max("cat_id") FROM "<!-- $DB_PREFIX$ -->calendar_categories"));
 
 -- ----------------------------------------------------------------------------
+-- comcms_calendar_settings
+-- ----------------------------------------------------------------------------
+CREATE TABLE "<!-- $DB_PREFIX$ -->calendar_settings" (
+	"default_view" TEXT NOT NULL ,
+	"month_show_stime" integer NOT NULL DEFAULT '1',
+	"month_show_cat_icons" integer NOT NULL DEFAULT '1',
+	"month_day_format" integer NOT NULL DEFAULT '1'
+);
+
+-- ----------------------------------------------------------------------------
 -- comcms_config
 -- ----------------------------------------------------------------------------
 CREATE TABLE "<!-- $DB_PREFIX$ -->config" (

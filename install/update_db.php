@@ -31,9 +31,17 @@ $query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'news_settings` (
 ) ENGINE = MYISAM';
 $query[] = 'ALTER TABLE `'.$CONFIG['db_prefix'].'pages`
 	ADD `hidden` INT(1) NOT NULL AFTER `blocks_right`';
+$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'calendar_settings` (
+	`default_view` TEXT NOT NULL ,
+	`month_show_stime` BOOL NOT NULL DEFAULT \'1\',
+	`month_show_cat_icons` BOOL NOT NULL DEFAULT \'1\',
+	`month_day_format` INT NOT NULL DEFAULT \'1\'
+) ENGINE=MYISAM CHARACTER SET=utf8';
+$query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'calendar_settings` (`default_view`, `month_show_stime`, `month_show_cat_icons`, `month_day_format`) VALUES
+	(\'month\',1,1,1)';
 $query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'news_settings`
     (`default_date_setting` ,`show_author` ,`show_edit_time`) VALUES
-(\'1\', \'1\', \'1\')';
+	(\'1\', \'1\', \'1\')';
 $query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'config ADD `admin_email` TEXT NULL AFTER `url`';
 $query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'config ADD `time_format` TEXT NULL AFTER `comment`';
 $query[] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `time_format` = \'h:i A\'';

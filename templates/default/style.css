@@ -212,6 +212,9 @@ table.calendar a.calendar_event {
 	text-decoration: none;
 	color: #000000;
 }
+table.calendar span.calendar_event_starttime {
+	font-weight: bold;
+}
 table.calendar_day {
 	border: 0px;
 	width: 100%;

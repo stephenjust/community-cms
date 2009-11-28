@@ -133,6 +133,27 @@ switch ($_GET['action']) {
 			$content .= 'Failed to delete category entry.<br />'."\n";
 		}
 		break;
+	case 'save_settings':
+		$new_fields['default_view'] = addslashes($_POST['default_view']);
+		$new_fields['month_show_stime'] = (isset($_POST['month_show_stime'])) ? checkbox($_POST['month_show_stime']) : 0;
+		$new_fields['month_show_cat_icons'] = (isset($_POST['month_show_cat_icons'])) ? checkbox($_POST['month_show_cat_icons']) : 0;
+		$new_fields['month_day_format'] = (int)$_POST['month_day_format'];
+		$save_settings_query = 'UPDATE `' . CALENDAR_SETTINGS_TABLE . "` SET
+			`default_view` = '{$new_fields['default_view']}',
+			`month_show_stime` = {$new_fields['month_show_stime']},
+			`month_show_cat_icons` = {$new_fields['month_show_cat_icons']},
+			`month_day_format` = {$new_fields['month_day_format']}";
+		unset($new_fields);
+		$save_settings_handle = $db->sql_query($save_settings_query);
+		unset($save_settings_query);
+		if ($db->error[$save_settings_handle] === 1) {
+			$content .= 'Failed to save settings.<br />'."\n";
+			break;
+		}
+		$content .= 'Updated calendar settings.<br />'."\n";
+		log_action('Updated calendar settings');
+		unset($save_settings_handle);
+		break;
 }
 
 // ----------------------------------------------------------------------------
@@ -234,7 +255,20 @@ $tab_layout->add_tab('Create Event',$tab_content['create']);
 
 // ----------------------------------------------------------------------------
 
-$tab_content['settings'] = '<form method="POST" action="?module=calendar&amp;action=create_category">
+$tab_content['settings'] = '<h1>Calendar Settings</h1>';
+$current_settings = calendar_settings();
+$settings_form = new form;
+$settings_form->set_method('post');
+$settings_form->set_target('?module=calendar&amp;action=save_settings');
+$settings_form->add_select('default_view','Default View',array('month','day'),array('Current Month','Current Day'),$current_settings['default_view']);
+$settings_form->add_checkbox('month_show_stime','Show Start Time on Month Calendar',$current_settings['month_show_stime']);
+$settings_form->add_checkbox('month_show_cat_icons','Show Category Icons on Month Calendar',$current_settings['month_show_cat_icons']);
+$settings_form->add_select('month_day_format','Label Days on Month Calendar as',array(1,2),array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'),$current_settings['month_day_format']);
+$settings_form->add_submit('submit','Save Changes');
+$tab_content['settings'] .= $settings_form;
+unset($settings_form);
+
+$tab_content['settings'] .= '<form method="post" action="?module=calendar&amp;action=create_category">
 <h1>Create New Category</h1>
 <table class="admintable">
 <tr><td width="150" class="row1">Name:</td><td class="row1"><input type=\'text\' name=\'category_name\' /></td></tr>
