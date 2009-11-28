@@ -177,6 +177,8 @@ div.admin_image_list_item {
 	border: 1px solid #e78f08;
     background: #f6a828;
     margin: 1px;
+	height: 128px;
+	width: 110px;
     padding: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -185,8 +187,8 @@ div.admin_image_list_item:hover {
     background: #fdaf2f;
     }
 div.admin_image_list_item img {
-    width: 100px;
-    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
     padding: 2px;
     }
 

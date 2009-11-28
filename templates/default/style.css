@@ -96,8 +96,8 @@ div.news_content {
     font-size: small;
 }
 img.news_image {
-	width: 100px;
-	height: 100px;
+	max-width: 100px;
+	max-height: 100px;
 	border: 0px;
 	float: left;
 	padding: 5px;
