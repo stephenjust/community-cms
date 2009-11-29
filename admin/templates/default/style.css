@@ -169,6 +169,8 @@ div.admin_file_list {
 div.admin_image_list {
     display: block;
     float: left;
+	max-height: 300px;
+	overflow: auto;
 }
 div.admin_image_list_item {
 	display: block;
