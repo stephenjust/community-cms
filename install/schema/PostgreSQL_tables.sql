@@ -246,17 +246,6 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->pagetypes" (
 SELECT setval('<!-- $DB_PREFIX$ -->pagetypes_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->pagetypes"));
 
 -- ----------------------------------------------------------------------------
--- comcms_permissions
--- ----------------------------------------------------------------------------
-CREATE SEQUENCE "<!-- $DB_PREFIX$ -->permissions_id_seq";
-CREATE TABLE "<!-- $DB_PREFIX$ -->permissions" (
-	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->permissions_id_seq') PRIMARY KEY ,
-	"user" integer NOT NULL ,
-	"files" integer NOT NULL DEFAULT '0'
-);
-SELECT setval('<!-- $DB_PREFIX$ -->permissions_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->permissions"));
-
--- ----------------------------------------------------------------------------
 -- comcms_poll_answers
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->poll_answers_answer_id_seq";
@@ -296,17 +285,6 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->poll_responses" (
 	PRIMARY KEY ("response_id")
 );
 SELECT setval('<!-- $DB_PREFIX$ -->poll_responses_response_id_seq', (SELECT max("response_id") FROM "<!-- $DB_PREFIX$ -->poll_responses"));
-
--- ----------------------------------------------------------------------------
--- comcms_sessions
--- ----------------------------------------------------------------------------
-CREATE TABLE "<!-- $DB_PREFIX$ -->sessions" (
-	"uid" integer NOT NULL,
-	"sid" text NOT NULL,
-	"timestamp" integer NOT NULL default '0',
-	"id_addr" integer NOT NULL,
-	PRIMARY KEY ("sid")
-);
 
 -- ----------------------------------------------------------------------------
 -- comcms_templates

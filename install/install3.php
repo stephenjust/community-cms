@@ -87,7 +87,45 @@ if ($db->error[$db_version_handle] === 1) {
 } else {
 // ----------------------------------------------------------------------------
 	// Update
-	$content .= 'Starting the updater.<br />';
-	$content .= include('./update.php');
+	$config_file = '../config.php';
+	$content .= 'Loading configuration file for updating... ';
+	$handle = fopen($config_file, "w");
+	if(!$handle) {
+		$content .= 'Failed.<br />';
+		return true;
+	} else {
+		$content .= 'Success.<br />'."\n";
+	}
+	// ----------------------------------------------------------------------------
+	$config = '<?php
+// Security Check
+if (@SECURITY != 1) {
+	die (\'You cannot access this page directly.\');
+}
+// Turn of \'register_globals\'
+ini_set(\'register_globals\',0);
+$CONFIG[\'SYS_PATH\'] = \'Unused\'; // Path to Community CMS on server
+$CONFIG[\'db_engine\'] = \''.$CONFIG['db_engine'].'\'; // Database Engine
+$CONFIG[\'db_host\'] = \''.$CONFIG['db_host'].'\'; // Database server host (usually localhost)
+$CONFIG[\'db_host_port\'] = '.$CONFIG['db_host_port'].'; // Database server port (default 3306 for mysqli)
+$CONFIG[\'db_user\'] = \''.$CONFIG['db_user'].'\'; // Database user
+$CONFIG[\'db_pass\'] = \''.$CONFIG['db_pass'].'\'; // Database password
+$CONFIG[\'db_name\'] = \''.$CONFIG['db_name'].'\'; // Database
+$CONFIG[\'db_prefix\'] = \''.$CONFIG['db_prefix'].'\'; // Database table prefix
+
+// Set the value below to \'1\' to disable Community CMS
+$CONFIG[\'disabled\'] = 0;
+?>';
+	// ----------------------------------------------------------------------------
+	$content .= 'Writing to configuration file... ';
+	$config_write = fwrite($handle,$config);
+	if (!$config_write) {
+		$content .= 'Failed to write to config.php. Is it writeable?';
+	} else {
+		$content .= 'Success.<br />';
+		$content .= 'Starting the updater.<br />';
+		$content .= include('./update.php');
+	}
+	fclose($handle);
 }
 ?>

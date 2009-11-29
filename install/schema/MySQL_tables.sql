@@ -169,13 +169,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
 	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->permissions` (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-	`user` INT NOT NULL ,
-	`files` INT(4) NOT NULL DEFAULT '0',
-	INDEX (`user`)
-) ENGINE = MYISAM DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_questions` (
   `question_id` int(5) NOT NULL auto_increment,
   `question` text NOT NULL,
@@ -201,16 +194,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
 	`ip_addr` int(10) NOT NULL,
 	PRIMARY KEY  (`response_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
-
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->sessions` (
-	`uid` int(5) NOT NULL,
-	`sid` varchar(64) NOT NULL default '',
-	`timestamp` int NOT NULL default '0',
-	`ip_addr` int(10) NOT NULL,
-	PRIMARY KEY (`sid`),
-	KEY (`uid`),
-	KEY (`timestamp`)
-) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
 	`id` int(3) NOT NULL auto_increment,

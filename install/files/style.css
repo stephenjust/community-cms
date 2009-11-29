@@ -20,12 +20,12 @@
 	margin: 5px;
 }
 #footer {
-    display: block;
-    width: 100%;
-    text-align: center;
-    color: #999999;
-    font-size: small;
-    font-family: sans-serif;
+	display: block;
+	width: 100%;
+	text-align: center;
+	color: #999999;
+	font-size: small;
+	font-family: sans-serif;
 }
 
 #file_permissions, table {
@@ -45,4 +45,11 @@ a {
 a:hover {
 	color: #999999;
 	text-decoration: underline;
+}
+div.query {
+	border: 1px solid #000000;
+	font-size: x-small;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	margin: 5px;
 }
