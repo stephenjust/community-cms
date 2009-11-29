@@ -186,11 +186,19 @@ CALENDAR
 */
 
 table.calendar {
+	background-color: #4499CC;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 0px;
 	width: 100%;
 	overflow: hidden;
 	table-layout: fixed;
 }
+table.calendar th {
+	color: #FFFFFF;
+}
 table.calendar td {
+	background: #FFFFFF;
 	border: 1px solid #CCCCCC;
 	vertical-align: top;
 	height: 80px;
@@ -199,8 +207,8 @@ table.calendar td {
 	table-layout: fixed;
 }
 table.calendar td.today {
-    background: #FFFFCC;
-    border: 1px #000000 solid;
+	background: #EEF0FF;
+	border: 1px #224599 solid;
 }
 table.calendar a.day_number {
 	text-decoration: underline;
@@ -213,7 +221,7 @@ table.calendar a.calendar_event {
 	color: #000000;
 }
 table.calendar span.calendar_event_starttime {
-	font-weight: bold;
+	font-weight: normal;
 }
 table.calendar_day {
 	border: 0px;
