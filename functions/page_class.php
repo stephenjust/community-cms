@@ -104,26 +104,6 @@ class page {
 			default:
 				return;
 				break;
-			case 'settings_main':
-				$this->type = 'settings_main.php';
-				if(!checkuser(1)) {
-					return;
-				}
-				$this->id = 0;
-				$this->exists = 1;
-				$this->title = 'Settings - Main';
-				$this->showtitle = false;
-				break;
-			case 'settings_profile':
-				$this->type = 'settings_profile.php';
-				if(!checkuser(1)) {
-					return;
-				}
-				$this->id = 0;
-				$this->exists = 1;
-				$this->title = 'Settings - Profile';
-				$this->showtitle = false;
-				break;
 		}
 	}
 	/**

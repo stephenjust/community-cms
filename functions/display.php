@@ -174,7 +174,6 @@ function display_login_box() {
 		}
 		unset($check_message_handle);
 		unset($check_message_query);
-		$return .= '<a href="settings.php">Settings</a><br />';
 		if ($acl->check_permission('admin_access')) {
 			$return .= '<a href="admin.php">Admin</a>';
 		}
