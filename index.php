@@ -16,11 +16,16 @@ $required_db_version = 0.02;
 // Load error handling code
 require_once('./functions/error.php');
 // Load database configuration
-if(@ !include_once('./config.php')) {
-	if(@ !include_once('./config.temp.php')) {
+if (@ !include_once('./config.php')) {
+	if (@ !include_once('./config.temp.php')) {
 		err_page(0001);
-		}
 	}
+}
+
+if (!isset($CONFIG['db_engine'])) {
+	err_page(15);
+}
+
 // Check if site is disabled.
 if (@$CONFIG['disabled'] == 1 || @ $CONFIG['not_installed'] == 1) {
 	err_page(11);
