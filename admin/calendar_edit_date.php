@@ -24,7 +24,7 @@ switch ($_GET['action']) {
 
 		// Format date for insertion...
 		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
-		if (!eregi('^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$',$event_date)) {
+		if (!eregi('^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$',$event_date)) {
 			$content .= 'Invalidly formatted date. Use MM/DD/YYYY format.<br />'."\n";
 			break;
 		}
@@ -32,6 +32,12 @@ switch ($_GET['action']) {
 		$year = $event_date_parts[2];
 		$month = $event_date_parts[0];
 		$day = $event_date_parts[1];
+		if (strlen($month) == 1) {
+			$month = '0'.(string)$month;
+		}
+		if (strlen($day) == 1) {
+			$day = '0'.(string)$day;
+		}
 
 		$ar_content = (isset($_POST['content'])) ? addslashes($_POST['content']) : NULL;
 		$location = (isset($_POST['location'])) ? $_POST['location'] : NULL;
