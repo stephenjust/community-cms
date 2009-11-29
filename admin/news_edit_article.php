@@ -21,10 +21,11 @@ if ($_GET['action'] == 'edit') {
 	// Clean up variables.
 	$edit_content = addslashes($_POST['update_content']);
 	$edit_id = addslashes($_POST['id']);
-	$name = stripslashes($_POST['title']);
+	$name = $_POST['title'];
 	$name = str_replace('"','&quot;',$name);
 	$name = str_replace('<','&lt;',$name);
 	$name = str_replace('>','&gt;',$name);
+	$name = addslashes($name);
 	$showdate = $_POST['date_params'];
 	$image = $_POST['image'];
 	$page = $_POST['page'];
