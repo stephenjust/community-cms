@@ -80,7 +80,7 @@ if ($_GET['action'] == 'edit') {
 		}
 		$content .= '<option value="0" '.$no_page.'>No Page</option>
 			</select></td></tr>
-			<tr><td width="150" class="row2" valign="top">Image:</td><td class="row2">'.file_list('newsicons',2,$edit['image']).'</td></tr>
+			<tr><td width="150" class="row2" valign="top">Image:</td><td class="row2"><div class="admin_image_list">'.file_list('newsicons',2,$edit['image']).'</div></td></tr>
 			<tr><td width="150" class="row1" valign="top">Date:</td><td class="row1">
 			<select name="date_params">
 			<option value="0" '.$date_params['hide'].'>Hide Date</option>
