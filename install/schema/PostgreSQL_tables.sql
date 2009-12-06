@@ -159,6 +159,7 @@ CREATE SEQUENCE "<!-- $DB_PREFIX$ -->news_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->news" (
 	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->news_id_seq'),
 	"page" integer default NULL,
+	"pin" integer NOT NULL default 0,
 	"name" text,
 	"description" text,
 	"author" text,

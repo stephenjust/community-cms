@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	`id` int(11) NOT NULL auto_increment,
 	`page` int(11) default NULL,
+	`pin` int(1) NOT NULL default 0,
 	`name` text,
 	`description` text,
 	`author` text,

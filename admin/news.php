@@ -298,6 +298,37 @@ switch ($_GET['action']) {
 
 // ----------------------------------------------------------------------------
 
+	case 'pin':
+		if (!is_numeric($_GET['id'])) {
+			$content .= 'Invalid entry.<br />'."\n";
+			break;
+		}
+		$pin_query = 'UPDATE `'.NEWS_TABLE.'` SET `pin` = 1 WHERE `id` = '.$_GET['id'];
+		$pin_handle = $db->sql_query($pin_query);
+		if ($db->error[$pin_handle] === 1) {
+			$content .= 'Failed to pin entry.<br />'."\n";
+			break;
+		} else {
+			$content .= 'Successfully pinned entry.<br />'."\n";
+		}
+		break;
+	case 'unpin':
+		if (!is_numeric($_GET['id'])) {
+			$content .= 'Invalid entry.<br />'."\n";
+			break;
+		}
+		$pin_query = 'UPDATE `'.NEWS_TABLE.'` SET `pin` = 0 WHERE `id` = '.$_GET['id'];
+		$pin_handle = $db->sql_query($pin_query);
+		if ($db->error[$pin_handle] === 1) {
+			$content .= 'Failed to unpin entry.<br />'."\n";
+			break;
+		} else {
+			$content .= 'Successfully unpinned entry.<br />'."\n";
+		}
+		break;
+
+// ----------------------------------------------------------------------------
+
 	case 'delete':
 		if (!delete_article($_GET['id'])) {
 			$content .= 'Failed to delete article<br />'."\n";
@@ -395,7 +426,7 @@ $tab_content['manage'] .= '<tr>
 	<th width="1"></th>
 	<th width="30">ID</th>
 	<th>Title:</th>
-	<th colspan="2"></th></tr>';
+	<th colspan="3"></th></tr>';
 
 // Form for action on selected item(s)
 $tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp;action=multi">
@@ -403,19 +434,24 @@ $tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp
 
 // Get page list in the order defined in the database. First is 0.
 if ($_POST['page'] == '*') {
-    $page_list_query = 'SELECT * FROM `' . NEWS_TABLE . '` ORDER BY `id` ASC';
+    $page_list_query = 'SELECT * FROM `' . NEWS_TABLE . '` ORDER BY `id` DESC';
 } else {
     $page_list_query = 'SELECT * FROM `' . NEWS_TABLE . '`
-		WHERE `page` = '.stripslashes($_POST['page']).' ORDER BY `id` ASC';
+		WHERE `page` = '.stripslashes($_POST['page']).' ORDER BY `pin` DESC, `id` DESC';
 }
 $page_list_handle = $db->sql_query($page_list_query);
 $page_list_rows = $db->sql_num_rows($page_list_handle);
 if ($page_list_rows == 0) {
     $tab_content['manage'] .= '<tr><td colspan="2"></td><td>There are no articles on this
-        page.</td><td></td><td></td></tr>';
+        page.</td><td colspan="3"></td></tr>';
 }
 for ($i = 1; $i <= $page_list_rows; $i++) {
     $page_list = $db->sql_fetch_assoc($page_list_handle);
+	if ($page_list['pin'] == 1) {
+		$pin_link = '<a href="?module=news&amp;action=unpin&amp;id='.$page_list['id'].'">Unpin</a>';
+	} else {
+		$pin_link = '<a href="?module=news&amp;action=pin&amp;id='.$page_list['id'].'">Pin</a>';
+	}
     $tab_content['manage'] .= '<tr><td>
 		<input type="checkbox" name="item_'.$page_list['id'].'" /></td>
 		<td>'.$page_list['id'].'</td><td>'.
@@ -425,7 +461,8 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
         height="16px" border="0px" /></a></td><td>
         <a href="?module=news_edit_article&id='.$page_list['id'].'">
         <img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
-        height="16px" border="0px" /></a></td></tr>';
+        height="16px" border="0px" /></a></td>
+		<td>'.$pin_link.'</td></tr>';
 		} // FOR
 $tab_content['manage'] .= '</table>'."\n";
 
@@ -468,7 +505,7 @@ $form->add_hidden('author',$_SESSION['name']);
 $form->add_textarea('content','Content',NULL,'rows="20"');
 $form->add_page_list('page','Page',1,1);
 $form->add_icon_list('image','Image','newsicons');
-$form->add_select('date_params','Date Settings',array(0,1,2),array('Hide','Show','Show Mini'),$news_config['default_date_setting'] + 1);
+$form->add_select('date_params','Date Settings',array(0,1,2),array('Hide','Show','Show Mini'),$news_config['default_date_setting']);
 $form->add_submit('submit','Create Article');
 $tab_content['create'] = $form;
 $tab_layout->add_tab('Create Article',$tab_content['create']);
