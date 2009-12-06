@@ -391,7 +391,11 @@ $page_query_handle = $db->sql_query($page_query);
 for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
     $page = $db->sql_fetch_assoc($page_query_handle);
     if (!isset($_POST['page'])) {
-        $_POST['page'] = $page['id'];
+		if (isset($_GET['page'])) {
+			$_POST['page'] = $_GET['page'];
+		} else {
+			$_POST['page'] = $page['id'];
+		}
     }
     if ($page['id'] == $_POST['page']) {
         $page_list .= '<option value="'.$page['id'].'" selected />'.
@@ -448,18 +452,18 @@ if ($page_list_rows == 0) {
 for ($i = 1; $i <= $page_list_rows; $i++) {
     $page_list = $db->sql_fetch_assoc($page_list_handle);
 	if ($page_list['pin'] == 1) {
-		$pin_link = '<a href="?module=news&amp;action=unpin&amp;id='.$page_list['id'].'">Unpin</a>';
+		$pin_link = '<a href="?module=news&amp;action=unpin&amp;id='.$page_list['id'].'&amp;page='.$_POST['page'].'">Unpin</a>';
 	} else {
-		$pin_link = '<a href="?module=news&amp;action=pin&amp;id='.$page_list['id'].'">Pin</a>';
+		$pin_link = '<a href="?module=news&amp;action=pin&amp;id='.$page_list['id'].'&amp;page='.$_POST['page'].'">Pin</a>';
 	}
     $tab_content['manage'] .= '<tr><td>
 		<input type="checkbox" name="item_'.$page_list['id'].'" /></td>
 		<td>'.$page_list['id'].'</td><td>'.
         stripslashes($page_list['name']).'</td><td>
-        <a href="?module=news&action=delete&id='.$page_list['id'].'">
+        <a href="?module=news&amp;action=delete&amp;id='.$page_list['id'].'&amp;page='.$_POST['page'].'">
         <img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px"
         height="16px" border="0px" /></a></td><td>
-        <a href="?module=news_edit_article&id='.$page_list['id'].'">
+        <a href="?module=news_edit_article&amp;id='.$page_list['id'].'">
         <img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
         height="16px" border="0px" /></a></td>
 		<td>'.$pin_link.'</td></tr>';
