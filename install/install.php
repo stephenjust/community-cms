@@ -61,10 +61,21 @@ if (!file_exists('../templates')) {
 }
 $content .= '</td></tr>'."\n";
 
+// Check for PEAR
+$pear_found = @ include('PEAR.php');
+$content .= '<tr><td>PEAR Library</td><td>';
+if ($pear_found) {
+	$content .= 'Found';
+} else {
+	$content .= 'Not Found';
+	$error = 1;
+}
+$content .= '</td></tr>'."\n";
+
 $content .= '</table>'."\n";
 if ($error == 0) {
 	$content .= '<form method="POST" action="index.php?page=2"><input type="submit" value="Next" /></form>';
 } else {
-	$content .= '<br /><br />An error has occured. Please make sure that the files and folders listed above are writable.';
+	$content .= '<br /><br />An error has occured. Please make sure that the files and folders listed above are writable, and that the required libraries are available.';
 }
 ?>

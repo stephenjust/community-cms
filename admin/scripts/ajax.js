@@ -74,10 +74,10 @@ function setDefaultPort() {
 	var dbportfield = document.getElementById('db_port');
 	var dbengine = dbenginefield.value;
 	var dbport = dbportfield.value;
-	if (dbengine == 'MySQL') {
+	if (dbengine == 'MySQL' && dbport == '5432') {
 		dbportfield.value = '3306';
 	}
-	if (dbengine == 'PostgreSQL') {
+	if (dbengine == 'PostgreSQL' && dbport == '3306') {
 		dbportfield.value = '5432';
 	}
 }
@@ -97,9 +97,6 @@ function testSettings() {
 	var db_pass = db_pass_field.value;
 	var db_pfix = db_pfix_field.value;
 	var errormessage = '';
-	if (db_engine.length == 0) {
-		errormessage = errormessage + 'No database engine given. ';
-	}
 	if (db_host.length == 0) {
 		errormessage = errormessage + 'No database host given. ';
 	}
@@ -111,9 +108,6 @@ function testSettings() {
 	}
 	if (db_user.length == 0) {
 		errormessage = errormessage + 'No database user given. ';
-	}
-	if (db_pass.length == 0) {
-		errormessage = errormessage + 'No database password given. ';
 	}
 	if (db_pfix.length == 0) {
 		errormessage = errormessage + 'No table prefix given.';

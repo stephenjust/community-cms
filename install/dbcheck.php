@@ -14,9 +14,6 @@ define('ROOT','../');
 $db_engine = $_GET['e'];
 switch ($db_engine) {
 	default:
-		die ('Invalid database engine.');
-		break;
-	case 'MySQL':
 		$CONFIG['db_engine'] = 'mysqli';
 		break;
 	case 'PostgreSQL':
