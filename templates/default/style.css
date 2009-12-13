@@ -66,16 +66,16 @@ div.notification {
 div.news_item_container {
     position: relative;
     background: url('./images/news_topleft.png') no-repeat;
-}
-div.news_item {
-    position: relative;
+	padding: 2px;
 }
 div.news_item_top {
 	color: #999090;
-    display: block;
+    display: inline;
 	font-size: small;
 	font-weight: bold;
-    height: 25px;
+	height: 0px;
+	min-height: 5px;
+    max-height: 25px;
 	padding-left: 3px;
     text-align: left;
 	width: 100%;

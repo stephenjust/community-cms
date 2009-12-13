@@ -131,7 +131,7 @@ function folder_list($directory = "",$current = "",$type = 0) {
 function file_list($directory = "", $type = 0, $selected = "") {
 	$return = NULL;
 	$folder_root = ROOT.'files/';
-	if (eregi('[.]',$directory) == 0) {
+	if (preg_match('/[.]/',$directory) == 0) {
 		$folder_open = $folder_root.$directory;
 		$folder_open_short = './files/'.$directory;
 		$files = scandir($folder_open);
@@ -151,7 +151,7 @@ function file_list($directory = "", $type = 0, $selected = "") {
 					$return .= '<option value="'.$folder_open_short.'/'.$files[$i].'" />'.$files[$i].'</option>';
 					$j++;
 				} elseif ($type == 2) {
-					if (ereg('\.png|\.jpg$',$files[$i]) == 1) {
+					if (preg_match('#\.png|\.jpg$#',$files[$i]) == 1) {
 						$return .= '<div class="admin_image_list_item">';
 						$file_info = get_file_info($folder_open_short.'/'.$files[$i]);
 						if ($folder_open.'/'.$files[$i] == $selected) {
