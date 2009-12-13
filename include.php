@@ -11,7 +11,7 @@
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
-if(!eregi('^[/\.]+$',ROOT)) {
+if(!preg_match('#^[\/\\\\\.]+$#',ROOT)) {
     die ('Invalid ROOT value.');
 }
 if(!include_once(ROOT.'functions/main.php')) {
