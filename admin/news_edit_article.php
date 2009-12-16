@@ -19,7 +19,7 @@ if ($_GET['action'] == 'edit') {
 		$_POST['image'] = NULL;
 	}
 	// Clean up variables.
-	$edit_content = addslashes($_POST['update_content']);
+	$edit_content = addslashes(remove_comments($_POST['update_content']));
 	$edit_id = addslashes($_POST['id']);
 	$name = $_POST['title'];
 	$name = str_replace('"','&quot;',$name);

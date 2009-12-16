@@ -345,7 +345,7 @@ switch ($_GET['action']) {
 		$title = str_replace('"','&quot;',$title);
 		$title = str_replace('<','&lt;',$title);
 		$title = str_replace('>','&gt;',$title);
-		$article_content = addslashes($_POST['content']);
+		$article_content = addslashes(remove_comments($_POST['content']));
 		$author = addslashes($_POST['author']);
 		$image = addslashes($_POST['image']);
 		$page = addslashes($_POST['page']);

@@ -39,7 +39,7 @@ switch ($_GET['action']) {
 			$day = '0'.(string)$day;
 		}
 
-		$ar_content = (isset($_POST['content'])) ? addslashes($_POST['content']) : NULL;
+		$ar_content = (isset($_POST['content'])) ? addslashes(remove_comments($_POST['content'])) : NULL;
 		$location = (isset($_POST['location'])) ? $_POST['location'] : NULL;
 		$hide = (isset($_POST['hide'])) ? checkbox($_POST['hide']) : 0;
 		$image = (isset($_POST['image'])) ? $_POST['image'] : NULL;

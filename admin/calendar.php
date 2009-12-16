@@ -18,6 +18,7 @@ include (ROOT.'functions/calendar.php');
 
 // ----------------------------------------------------------------------------
 
+// Save form information from previously created entry
 $_POST['title'] = (isset($_POST['title'])) ? $_POST['title'] : NULL;
 $category = (isset($_POST['category'])) ? $_POST['category'] : NULL;
 $_POST['stime'] = (isset($_POST['stime'])) ? $_POST['stime'] : NULL;
@@ -35,7 +36,7 @@ switch ($_GET['action']) {
 
 	case 'new':
 		$title = addslashes($_POST['title']);
-		$item_content = addslashes($_POST['content']);
+		$item_content = addslashes(remove_comments($_POST['content']));
 		$author = addslashes($_POST['author']);
 		$start_time = $_POST['stime'];
 		$end_time = $_POST['etime'];

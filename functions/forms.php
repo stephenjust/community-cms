@@ -76,6 +76,28 @@ function parse_time($time) {
 	return $new_time;
 }
 
+function remove_comments($text) {
+	if ($text == NULL) {
+		return NULL;
+	}
+
+	// Convert strings into an array for consistent processing
+	if (!is_array($text)) {
+		$text = array((string)$text);
+	}
+
+	$new_text = array();
+	foreach ($text as $cur_text) {
+		$cur_text = preg_replace('/<!--.+-->/',NULL,$cur_text);
+		$new_text[] = $cur_text;
+	}
+	// If the array has only one element, convert it back to a string
+	if (count($new_text) == 1) {
+		$new_text = $new_text[0];
+	}
+	return $new_text;
+}
+
 function replace_char_codes($input) {
 	$output = $input;
 	$output = str_replace('–','&ndash;',$output);
