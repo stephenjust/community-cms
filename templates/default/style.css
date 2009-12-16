@@ -223,6 +223,12 @@ table.calendar a.calendar_event {
 table.calendar span.calendar_event_starttime {
 	font-weight: normal;
 }
+img.calendar_event_image {
+	border: 0px;
+	float: left;
+	margin-top: 1em;
+	padding: 5px;
+}
 table.calendar_day {
 	border: 0px;
 	width: 100%;

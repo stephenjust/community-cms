@@ -72,6 +72,11 @@ function display_page($site_info,$view="") {
 		} // FOR
 		global $special_title;
 	}
+
+	// Add a space below page messages (if any exist)
+	if ($page_message != NULL) {
+		$page_message .= '<br /><br />'."\n";
+	}
 	$template_page->page_message = $page_message;
 	$template_page->left_content = $left_blocks_content;
 	$template_page->right_content = $right_blocks_content;

@@ -108,6 +108,12 @@ class calendar_event {
         $template_event->event_heading = stripslashes($event_info['header']);
         $template_event->event_author = stripslashes($event_info['author']);
         $template_event->event_time = $event_time;
+		if (strlen($event_info['image']) > 0) {
+			$im_info = get_file_info($event_info['image']);
+			$template_event->event_image = '<img src="'.stripslashes($event_info['image']).'" class="calendar_event_image" alt="'.$im_info['label'].'" />';
+		} else {
+			$template_event->event_image = NULL;
+		}
         $template_event->event_category = stripslashes($event_info['label']);
         $template_event->event_description = stripslashes($event_info['description']);
         $template_event->event_location = stripslashes($event_info['location']);
