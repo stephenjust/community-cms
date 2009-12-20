@@ -61,7 +61,7 @@ function display_page($site_info,$view="") {
 			$template_page->body_title = '<h1>'.$page->title.'</h1>';
 			// Remove marker comments
 			$template_page->body_title_start = NULL;
-			$template_pate->body_title_end = NULL;
+			$template_page->body_title_end = NULL;
 		} else {
 			// Remove comments referring to 'body_title'
 			$template_page->replace_range('body_title',NULL);
