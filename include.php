@@ -17,9 +17,6 @@ if(!preg_match('#^[\/\\\\\.]+$#',ROOT)) {
 if(!include_once(ROOT.'functions/main.php')) {
     err_page(2001);
 }
-if(!include_once(ROOT.'functions/mysql.php')) {
-    err_page(2001);
-}
 require(ROOT . 'includes/constants.php');
 require(ROOT . 'includes/db/db.php');
 require(ROOT . 'includes/xml.php');
