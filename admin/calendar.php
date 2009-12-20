@@ -77,7 +77,7 @@ switch ($_GET['action']) {
 			} else {
 				$content .= 'Successfully created date information. '
 					.log_action('New date entry on '.$day.'/'.$month.'/'
-					.$year.' \''.$title.'\'');
+					.$year.' \''.stripslashes($title).'\'');
 			}
 		}
 		break;
