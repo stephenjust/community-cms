@@ -7,29 +7,50 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
-// Security Check
+
+/**
+ * @ignore
+ */
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
 /**
- * display_page - FIXME: Needs proper documentation
+ * display_page - Generage page from template
+ * @global object $db
+ * @global object $page
+ * @global int $page_not_found
+ * @global string $special_title
+ * @param array $site_info
+ * @param string $view
+ * @return void
  */
 function display_page($site_info,$view="") {
 	global $db;
 	global $page;
+
+	// Initialize template
 	$template_page = new template;
 	$template_page->load_file();
+
+	// Initialize variables
 	$page_message = NULL;
 	$admin_include = NULL;
+	$left_blocks_content = NULL;
+	$right_blocks_content = NULL;
+
+	// Replace <!-- $CSS_INCLUDE$ --> marker
 	$template_page->css_include =
 		'<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
 	$image_path = $template_page->path.'images/';
-	// Check if the page acutally exists before anything else is done
+
+	// Check to make sure the page actually exists
 	global $page_not_found;
 	if ($page_not_found == 1) {
 		$page->title = 'Page Not Found - '.$site_info['name'];
 	} else {
+		// Begin operations that only take place if the page really exists
+
 		// Initialize session variable if unset.
 		if (!isset($_SESSION['type'])) {
 			$_SESSION['type'] = 0;
@@ -69,32 +90,39 @@ function display_page($site_info,$view="") {
 				$i++;
 			}
 		}
+
 		// Prepare for and search for content blocks
-		$left_blocks_content = NULL;
-		$right_blocks_content = NULL;
+		// Left side
 		$left_blocks = explode(',',$page->blocksleft);
 		for ($bk = 1; $bk <= count($left_blocks); $bk++) {
 			$left_blocks_content .= get_block($left_blocks[$bk - 1]);
-		} // FOR
+		}
+		// Right side
 		$right_blocks = explode(',',$page->blocksright);
 		for ($bk = 1; $bk <= count($right_blocks); $bk++) {
 			$right_blocks_content .= get_block($right_blocks[$bk - 1]);
-		} // FOR
+		}
+
+		// Certain pages may set $special_title (such as calendar)
 		global $special_title;
+
+		// Add a space below page messages (if any exist)
+		if ($page_message != NULL) {
+			$page_message .= '<br /><br />'."\n";
+		}
 	}
 
-	// Add a space below page messages (if any exist)
-	if ($page_message != NULL) {
-		$page_message .= '<br /><br />'."\n";
-	}
-	$template_page->page_message = $page_message;
-	$template_page->left_content = $left_blocks_content;
-	$template_page->right_content = $right_blocks_content;
+	// Grab list of queries that caused an error for debugging
 	if(DEBUG === 1) {
 		$query_debug = $db->print_error_query();
 	} else {
 		$query_debug = NULL;
 	}
+
+	// Replace markers
+	$template_page->page_message = $page_message;
+	$template_page->left_content = $left_blocks_content;
+	$template_page->right_content = $right_blocks_content;
 	$template_page->footer = stripslashes($site_info['footer']).$query_debug;
 	$template_page->nav_bar = display_nav_bar();
 	$template_page->nav_login = display_login_box();
@@ -103,8 +131,12 @@ function display_page($site_info,$view="") {
 	$template_page->page_ref = $page->url_reference;
 	$content = $page->get_page_content();
 	$template_page->image_path = $image_path;
+
+	// Split template here so we can send some of the page now
+	// (probably shouldn't do this because we've already loaded the content,
+	// which would theoretically take the most time in the loading process)
 	$template_page_bottom = $template_page->split('content');
-//		$content = get_page_content($page_info['id'],$page_info['type'],$view);
+
 	if(strlen($page->notification) > 0) {
 		$page->notification = '<div class="notification">'.$page->notification.'</div>';
 	}
@@ -119,6 +151,7 @@ function display_page($site_info,$view="") {
 	$template_page_bottom->image_path = $image_path;
 	echo $template_page_bottom;
 	unset($template_page_bottom);
+	return;
 }
 
 /**
@@ -162,7 +195,10 @@ function display_nav_bar($mode = 1) {
 }
 
 /**
- * display_login_box - FIXME: Needs proper documentation
+ * display_login_box - Generate and return content of login box area
+ * @global object $db
+ * @global object $acl
+ * @return string
  */
 function display_login_box() {
 	global $db;
