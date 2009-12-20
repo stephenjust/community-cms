@@ -22,7 +22,8 @@ function display_page($site_info,$view="") {
 	$template_page->load_file();
 	$page_message = NULL;
 	$admin_include = NULL;
-	$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_page->path."style.css' />";
+	$template_page->css_include =
+		'<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
 	$image_path = $template_page->path.'images/';
 	// Check if the page acutally exists before anything else is done
 	global $page_not_found;
@@ -33,8 +34,16 @@ function display_page($site_info,$view="") {
 		if (!isset($_SESSION['type'])) {
 			$_SESSION['type'] = 0;
 		}
-		if ($page->showtitle === true) { // Display the page header if required
-			$page_message .= '<h1>'.$page->title.'</h1>';
+
+		// Display the page title if the configuration says to
+		if ($page->showtitle === true) {
+			$template_page->body_title = '<h1>'.$page->title.'</h1>';
+			// Remove marker comments
+			$template_page->body_title_start = NULL;
+			$template_pate->body_title_end = NULL;
+		} else {
+			// Remove comments referring to 'body_title'
+			$template_page->replace_range('body_title',NULL);
 		}
 
 		// Get meta info if available
@@ -47,6 +56,7 @@ function display_page($site_info,$view="") {
 			$template_page->meta_desc = NULL;
 		}
 
+		// Get page messages
 		$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
 			WHERE `page_id` = '.$page->id.'
 			ORDER BY `start_date` ASC';
@@ -88,7 +98,6 @@ function display_page($site_info,$view="") {
 	$template_page->footer = stripslashes($site_info['footer']).$query_debug;
 	$template_page->nav_bar = display_nav_bar();
 	$template_page->nav_login = display_login_box();
-	$template_page->css_include = $css_include;
 	$template_page->admin_include = $admin_include;
 	$template_page->page_id = $page->id;
 	$template_page->page_ref = $page->url_reference;
