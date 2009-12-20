@@ -43,7 +43,6 @@ function contact_list($page = '*') {
 
 // ----------------------------------------------------------------------------
 
-// FIXME: Implement different operations
 switch ($_GET['action']) {
 	default:
 

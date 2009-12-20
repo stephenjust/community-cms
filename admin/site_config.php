@@ -55,11 +55,13 @@ $form->add_textbox('site_name','Site Name',stripslashes($current_config['name'])
 $form->add_textbox('site_desc','Site Description',stripslashes($current_config['comment']));
 $form->add_textbox('site_url','Site URL',stripslashes($current_config['url']));
 $form->add_textbox('admin_email','Admin E-Mail Address',stripslashes($current_config['admin_email']));
-$form->add_select('time_format','Time Format',array('g:i a','g:i A','h:i a','h:i A','G:i','H:i'),array('4:05 am','4:05 AM','04:05 am','04:05 AM','4:05','04:05'),stripslashes($current_config['time_format']));
-// TODO: $form->add_select('template','Default Template',$values,$strings);
+$form->add_select('time_format','Time Format',
+		array('g:i a','g:i A','h:i a','h:i A','G:i','H:i'),
+		array('4:05 am','4:05 AM','04:05 am','04:05 AM','4:05','04:05'),
+		stripslashes($current_config['time_format']));
 $form->add_textarea('footer','Footer Text',stripslashes($current_config['footer']));
 $form->add_checkbox('active','Site Active',$current_config['active']);
-// TODO: Cookie domain, path, name, webmaster email, disable messaging
+// TODO: Cookie domain, path, name, template, disable messaging
 $form->add_submit('submit','Save Configuration');
 $tab_content['config'] .= $form;
 $tab['config'] = $tab_layout->add_tab('Configuration',$tab_content['config']);

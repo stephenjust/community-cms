@@ -39,6 +39,7 @@ class form {
 	function __set($name,$value) {
 		$this->$name = $value;
 	}
+
 	/**
 	 * set_target - Set the page that the form links to.
 	 * @param string $target File that the form links to
@@ -46,6 +47,7 @@ class form {
 	function set_target($target) {
 		$this->target = $target;
 	}
+
 	/**
 	 * set_method - Set whether the form POSTs or GETs
 	 * @param sting $method 'post' or 'get'
@@ -53,9 +55,10 @@ class form {
 	function set_method($method) {
 		$this->method = $method;
 	}
+
 	/**
 	 * add_textbox - Add a text box to a form
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $label Text displayed beside field
 	 * @param string $value Default value of field
 	 * @param string $props Extra HTML properties for field
@@ -67,9 +70,10 @@ class form {
 			value="'.$value.'" '.$props.' /></div><br />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_password - Add a password box to a form
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $label Text displayed beside field
 	 * @param string $value Default value of field
 	 * @param string $props Extra HTML properties for field
@@ -81,9 +85,10 @@ class form {
 			value="'.$value.'" '.$props.' /></div><br />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_hidden - Add a hidden field to a form
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $value Default value of field
 	 */
 	function add_hidden($name, $value) {
@@ -91,9 +96,10 @@ class form {
 			value="'.$value.'" />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_textarea - Add a text area to a form
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $label Text displayed beside field
 	 * @param string $value Default value of field
 	 * @param string $props Extra HTML properties for field
@@ -105,9 +111,10 @@ class form {
 			</div><br />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_select - Add a list box to a form
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $label Text displayed beside field
 	 * @param array $values Array of values for each entry
 	 * @param array $strings Array of labels for each entry
@@ -116,13 +123,13 @@ class form {
 	 * @return void
 	 */
 	function add_select($name, $label, $values, $strings, $selected = 0, $props = NULL) {
-		if(count((array)$values) != count((array)$strings)) {
+		if (count((array)$values) != count((array)$strings)) {
 			return;
 		}
 		$options = NULL;
 		for ($i = 1; $i <= count((array)$values); $i++) {
 			$select_this = NULL;
-			if($selected == $values[$i - 1]) {
+			if ($selected == $values[$i - 1]) {
 				$select_this = 'selected';
 			}
 			$options .= '<option value="'.$values[$i - 1].'" '.$select_this.'>'.$strings[$i - 1].'</option>'."\n";
@@ -133,9 +140,10 @@ class form {
 			</div><br />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_radio - Adds a group of radio buttons to a form
-	 * @param string $name Unique name for the group of buttons
+	 * @param string $name Name of form var
 	 * @param string $label Text displayed next to buttons
 	 * @param array $values Array of values of buttons
 	 * @param array $strings Array of text for each button
@@ -144,13 +152,13 @@ class form {
 	 * @return void
 	 */
 	function add_radio($name, $label, $values, $strings, $selected = 0, $props = NULL) {
-		if(count((array)$values) != count((array)$strings)) {
+		if (count((array)$values) != count((array)$strings)) {
 			return;
 		}
 		$options = NULL;
 		for ($i = 1; $i <= count((array)$values); $i++) {
 			$select_this = NULL;
-			if($selected == $i) {
+			if ($selected == $i) {
 				$select_this = 'checked';
 			}
 			$options .= '<input type="radio" name="'.$name.'"
@@ -161,7 +169,14 @@ class form {
 			<fieldset id="_'.$name.'">'.$options.'</fieldset></div><br />';
 		$this->form .= $form_var;
 	}
-	// TODO: Add documentation
+
+	/**
+	 * add_checkbox - Adds a checkbox to a form
+	 * @param string $name Name of form var
+	 * @param string $label Text displayed beside checkbox
+	 * @param int $value 1 for checked
+	 * @param string $params Extra HTML parameters for form object
+	 */
 	function add_checkbox($name, $label, $value = NULL, $params = NULL) {
 		if ($value == 1) {
 			$value = 'checked';
@@ -173,9 +188,20 @@ class form {
 			<input type="checkbox" name="'.$name.'" id="_'.$name.'" '.$params.' '.$value.' /></div>';
 		$this->form .= $form_var;
 	}
-	// TODO: Add documentation
+
+	/**
+	 * add_multiselect - Add a select box to a form (allow multiple selections)
+	 * @param string $name Name of form var
+	 * @param string $label Text to display beside form element
+	 * @param array $values Values of each entry
+	 * @param array $strings Text to be displayed for each entry
+	 * @param mixed $selected Value of selected entry
+	 * @param int $size Number of entries to display at one time
+	 * @param string $params Extra HTML parameters for form element
+	 * @return void
+	 */
 	function add_multiselect($name, $label, $values, $strings, $selected = NULL, $size = 5, $params = NULL) {
-		if(count((array)$values) != count((array)$strings)) {
+		if (count((array)$values) != count((array)$strings)) {
 			return;
 		}
 		$selected = explode(',',$selected);
@@ -183,8 +209,8 @@ class form {
 		for ($i = 1; $i <= count((array)$values); $i++) {
 			$select_this = NULL;
 			$num_selected = count($selected);
-			for($count = 0; $count < $num_selected; $count++) {
-				if($selected[$count] == $values[$i - 1]) {
+			for ($count = 0; $count < $num_selected; $count++) {
+				if ($selected[$count] == $values[$i - 1]) {
 					$select_this = 'selected';
 				}
 			}
@@ -197,9 +223,10 @@ class form {
 			</div><br />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_date - Add a date selector to a form
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $label Text to display beside field
 	 * @param string $format String of characters D, M, and Y, may be any order
 	 * @param array $value Array of values (in order of $format), current date if empty
@@ -244,7 +271,7 @@ class form {
 						'December');
 					$form_var .= '<select name="'.$name.$suffix.'" id="_'.$name.$suffix.'" '.$props.'>';
 					for ($monthcount = 1; $monthcount <= 12; $monthcount++) {
-						if(date('m') == $monthcount) {
+						if (date('m') == $monthcount) {
 							$form_var .= "<option value='".$monthcount."' selected >".$months[$monthcount-1]."</option>";
 						} else {
 							$form_var .= "<option value='".$monthcount."'>".$months[$monthcount-1]."</option>";
@@ -282,7 +309,7 @@ class form {
 	/**
 	 * add_page_list - Add a page list to a form
 	 * @global resource $db Databasee connection resource
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $label Text to display beside field
 	 * @param int $pagetype ID of type of page to list
 	 * @param bool $nopageallowed Add the 'No Page' list item
@@ -304,7 +331,7 @@ class form {
 				$options .= '<option value="'.$page['id'].'" >'.$page['title'].'</option>'."\n";
 			}
 		}
-		if($nopageallowed == 1) {
+		if ($nopageallowed == 1) {
 			$options .= '<option value="0">No Page</option>'."\n";
 		}
 		$form_var = '<div class="admin_form_element"><label for="_'.$name.'">'.$label.'</label>
@@ -312,16 +339,17 @@ class form {
 			'.$options.'</select></div><br />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_icon_list - Add a list of icons from a specified folder to a form
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $label Text displayed beside field
 	 * @param string $folder Directory to look for images (relative to ./files)
 	 * @param string $selected File name (with path) to default selected file
 	 * @return null
 	 */
 	function add_icon_list($name,$label,$folder,$selected = NULL) {
-		if(preg_match('/[.]/',$folder)) {
+		if (preg_match('/[.]/',$folder)) {
 			return;
 		}
 		$relative_path = ROOT.'files/'.$folder;
@@ -331,10 +359,10 @@ class form {
 		$options = '<input type="radio" name="'.$name.'" id="_'.$name.'_noImg"
 			value="" checked />No Image<br />';
 		for ($i = 1; $i <= $num_icons; $i++) {
-			if(preg_match('#\.png|\.jpg$#',$icon_list[$i - 1]) == 1) {
+			if (preg_match('#\.png|\.jpg$#',$icon_list[$i - 1]) == 1) {
 				$options .= '<div class="admin_image_list_item">';
 				$file_info = get_file_info($relative_path.'/'.$icon_list[$i - 1]);
-				if($relative_path.'/'.$icon_list[$i - 1] == $selected) {
+				if ($relative_path.'/'.$icon_list[$i - 1] == $selected) {
 					$options .= '<input type="radio" name="image"
 						value="'.$app_path.'/'.$icon_list[$i - 1].'" checked />
 						<br /><img src="'.$relative_path.'/'.$icon_list[$i - 1].'"
@@ -354,9 +382,10 @@ class form {
 			</div><br />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_file_list - Add a file list defaulting to the specified directory
-	 * @param string $name Unique name for the field
+	 * @param string $name Name of form var
 	 * @param string $label Text displayed beside field
 	 * @param string $directory Name of the directory to start in, NULL for ./files/
 	 */
@@ -370,9 +399,10 @@ class form {
 			</div></div>';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_file_upload - Add a button to upload a file
-	 * @param string $name
+	 * @param string $name ID for form var
 	 */
 	function add_file_upload($name) {
 		$this->form .= '<div class="admin_form_element">
@@ -380,10 +410,11 @@ class form {
 			onClick="window.open(\'./admin/upload_mini.php\',\'mywindow\',
 			\'width=400,height=200\')" id="_'.$name.'" />';
 	}
+
 	/**
 	 * add_file - Add a file upload box
-	 * @param string $name
-	 * @param string $label
+	 * @param string $name Name of form var
+	 * @param string $label Text to show beside form element
 	 */
 	function add_file($name,$label) {
 		// Need to set the proper form encoding format
@@ -391,6 +422,7 @@ class form {
 		$this->form .= '<label for="_'.$name.'">'.$label.'</label>
 			<input id="_'.$name.'" name="'.$name.'" type="file" />';
 	}
+
 	/**
 	 * add_text - Add a block of text to a form
 	 * @param string $text Text to be displayed
@@ -401,9 +433,10 @@ class form {
 			</div><br />';
 		$this->form .= $form_var;
 	}
+
 	/**
 	 * add_submit - Add a submit button to a form
-	 * @param string $name Unique name for the form element
+	 * @param string $name Name of form var
 	 * @param string $label Label to display on the button
 	 */
 	function add_submit($name,$label) {
