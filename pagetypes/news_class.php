@@ -94,6 +94,7 @@ class news_item {
 			$file_info = get_file_info($article['image']);
 			$picture = "<img src='".$article['image']."' alt='".$file_info['label']."' class='news_image' />";
 		}
+
 		$date = substr($article['date'],0,10);
 		$date_parts = explode('-',$date);
 		$date_year = $date_parts[0];
@@ -106,7 +107,7 @@ class news_item {
 			$template_article->full_date_start = '';
 			$template_article->full_date_end = '';
 		} elseif ($article['showdate'] == 0) {
-			$template_article->replace_range('full_date','');
+			$template_article->replace_range('full_date',NULL);
 		} else {
 
 		}
@@ -125,6 +126,15 @@ class news_item {
 		} else {
 			$template_article->article_author = stripslashes($article['author']);
 		}
+
+		// Remove info div entirely if author and date are hidden
+		if ($this->news_config['show_author'] == 0 && $article['showdate'] == 0) {
+			$template_article->replace_range('article_details',NULL);
+		} else {
+			$template_article->article_details_start = NULL;
+			$template_article->article_details_end = NULL;
+		}
+
 		$this->article = (string)$template_article;
 		unset($template_article);
         return;
