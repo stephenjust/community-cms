@@ -273,7 +273,7 @@ if ($_GET['action'] == 'edit') {
 		$tab_content['edit'] .= '<form method="POST" action="admin.php?module=page&action=editsave">
 			<div id="tabs-0">
 			<table class="admintable">
-			<input type="hidden" name="id" value="'.$page_id.'" />';
+			<input type="hidden" name="id" id="adm_page" value="'.$page_id.'" />';
 		if (strlen($edit_page['text_id']) < 1) {
 			$tab_content['edit'] .= '<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>';
 		}
@@ -281,11 +281,10 @@ if ($_GET['action'] == 'edit') {
 			<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.stripslashes($edit_page['meta_desc']).'</textarea></td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 			<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
-			<tr class="row2"><td valign="top">Blocks (optional):<br>(Comma separated block IDs)</td><td>Left:<br />
-			<input type="text" name="blocks_left" value="'.$edit_page['blocks_left'].'" /><br />
-			Right:<br />
-			<input type="text" name="blocks_right" value="'.$edit_page['blocks_right'].'" />
-			</td></td></tr>
+			<tr class="row2"><td valign="top">Blocks (optional):<br>(Comma separated block IDs)</td><td>
+			<div id="adm_block_list"></div>
+			<script type="text/javascript">block_list_update();</script>
+			</td></tr>
 			<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 			</table>
 			</div>

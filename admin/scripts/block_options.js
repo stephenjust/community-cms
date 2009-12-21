@@ -1,4 +1,4 @@
-
+<!--
 var urlBaseBO = "./admin/scripts/block_options.php";
 
 function block_options_list_update() {
@@ -6,5 +6,5 @@ function block_options_list_update() {
 	var blocktypelist = document.getElementById('adm_block_type_list');
 	var blocktype = blocktypelist.value;
 	loadHTML(urlBaseBO + "?blocktype=" + encodeURI(blocktype),blocktypeoptions);
-	}
-
+}
+-->
