@@ -45,7 +45,7 @@ switch ($_GET['action']) {
 
 		// Format date for insertion...
 		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
-		if (!eregi('^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$',$event_date)) {
+		if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#',$event_date)) {
 			$content .= 'Invalidly formatted date. Use MM/DD/YYYY format.<br />'."\n";
 			break;
 		}
