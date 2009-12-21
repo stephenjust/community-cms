@@ -281,7 +281,7 @@ if ($_GET['action'] == 'edit') {
 			<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.stripslashes($edit_page['meta_desc']).'</textarea></td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 			<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
-			<tr class="row2"><td valign="top">Blocks (optional):<br>(Comma separated block IDs)</td><td>
+			<tr class="row2"><td valign="top">Blocks:</td><td>
 			<div id="adm_block_list"></div>
 			<script type="text/javascript">block_list_update();</script>
 			</td></tr>
