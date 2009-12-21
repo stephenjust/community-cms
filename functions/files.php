@@ -88,7 +88,7 @@ function file_upload($path = "", $contentfile = true) {
 // Create a folder list
 function folder_list($directory = "",$current = "",$type = 0) {
 	$folder_root = './files/';
-	if (!eregi('.',$directory)) {
+	if (!preg_match('#.#',$directory)) {
 		$folder_open = $folder_root.$directory;
 		$files = scandir($folder_open);
 		$num_files = count($files);
@@ -191,7 +191,7 @@ function dynamic_file_list($directory = '',$root = ROOT) {
 	$current = $directory;
 	$dropdown_box_options = '<option value="">Default</option>';
 	$folder_root = $root.'files/';
-	if (!eregi('./',$directory)) {
+	if (!preg_match('#./#',$directory)) {
 		$folder_open = $folder_root;
 		$files = scandir($folder_open);
 		$num_files = count($files);

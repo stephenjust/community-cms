@@ -92,7 +92,7 @@ if($num_files < 4) { // ( ., .., blocks.info, and a block file)
 	while($i < $num_files) {
 		$block_type = explode('_',$files[$i]);
 		$block_type = $block_type[0];
-		if(!eregi('^\.',$files[$i]) && !eregi('~$',$files[$i]) && !eregi('\.info$',$files[$i])) {
+		if(!preg_match('#^\.#',$files[$i]) && !preg_match('#~$#',$files[$i]) && !preg_match('#\.info$#',$files[$i])) {
 			$block_types_list .= '<option value="'.$block_type.'">'.$block_type.'</option>';
 		}
 		$i++;

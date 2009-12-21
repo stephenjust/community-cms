@@ -29,7 +29,7 @@ class file_list {
         return;
     }
     public function set_directory($directory) {
-        if (eregi('[.|/|\\]',$directory)) {
+        if (preg_match('#[.|/|\\\\]#',$directory)) {
             $this->file_list = '<div class="notification">
                 Invalid directory.</div>';
             return;
@@ -49,7 +49,7 @@ class file_list {
         $display_count = 0;
         for ($i = 1; $i <= $num_files; $i++) {
             if (!is_dir($this->folder.'/'.$this->file_array[$i - 1]) &&
-                !eregi('^\.|\.$',$this->file_array[$i - 1])) {
+                !preg_match('#^\.|\.$#',$this->file_array[$i - 1])) {
                 $file_info = get_file_info($this->script_folder.'/'.$this->file_array[$i - 1]);
                 $return .= '<tr><td><a href="'.$this->script_folder.'/'
                     .$this->file_array[$i - 1].'">'.$this->file_array[$i - 1].'

@@ -22,7 +22,7 @@ define('ROOT','../../');
 include(ROOT.'config.php');
 include(ROOT.'include.php');
 $referer = $_SERVER['HTTP_REFERER'];
-if(ereg('/$',$referer)) {
+if(preg_match('#/$#',$referer)) {
 	$referer .= 'index';
 }
 $referer_directory = dirname($referer);
@@ -66,7 +66,7 @@ if($current_directory == $referer_directory.'/admin/scripts') {
 				$attribute_description = $temp;
 				unset($temp);
 				echo $attribute_description.'=';
-				if(eregi('\{.+\}',$atb[1])) {
+				if(preg_match('#\{.+\}#',$atb[1])) {
 					$temp = explode('{',$atb[1]);
 					$attribute_type = $temp[0];
 					$atb[1] = $temp[0];

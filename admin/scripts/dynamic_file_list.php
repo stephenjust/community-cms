@@ -18,7 +18,7 @@ $fileroot = (isset($_GET['root'])) ? $_GET['root'] : '../../';
 include(ROOT.'config.php');
 include(ROOT.'include.php');
 $referer = $_SERVER['HTTP_REFERER'];
-if(ereg('/$',$referer)) {
+if(preg_match('#/$#',$referer)) {
 	$referer .= 'index';
 }
 $referer_directory = dirname($referer);

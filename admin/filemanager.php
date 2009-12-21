@@ -88,7 +88,7 @@ if ($_GET['action'] == 'new_folder') {
 if ($_GET['action'] == 'delete') {
 if (!isset($_GET['filename'])) {
 	$content .= 'No file was specified to delete.<br />';
-} elseif (eregi('^\.\.|\.\.',$_GET['filename']) || !file_exists($_GET['filename'])) {
+} elseif (preg_match('#^\.\.|\.\.#',$_GET['filename']) || !file_exists($_GET['filename'])) {
 	$content .= 'Invalid file name.<br />';
 } else {
 	$del = unlink($_GET['filename']);
