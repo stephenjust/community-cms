@@ -36,12 +36,20 @@ function load_template_file($filename = 'index.html') {
 
 // Create file upload form
 function file_upload_box($show_dirs = 0) {
+	$query_string = $_SERVER['QUERY_STRING'];
+	$query_string = preg_replace('/action=.+\&/',NULL,$query_string);
 	$return = '<form enctype="multipart/form-data"
-		action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&'.
-		$_SERVER['QUERY_STRING'].'" method="POST">
+		action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&amp;'.
+		$query_string.'" method="POST">
 		Please choose a file: <input name="upload" type="file" /><br />'.
 		"\n";
 	if ($show_dirs == 1) {
+		// Remember path from previous upload
+		if (isset($_POST['path'])) {
+			$current_dir = $_POST['path'];
+		} else {
+			$current_dir = '';
+		}
 		$return = $return.'Where would you like to save the file?<br />';
 		$dir = ROOT.'files';
 		$files = scandir($dir);
@@ -50,7 +58,11 @@ function file_upload_box($show_dirs = 0) {
 			<option value="">Default</option>';
 		for ($i = 1; $i < $num_files; $i++) {
 			if($files[$i] != '..' && is_dir(ROOT.'files/'.$files[$i])) {
-				$return .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
+				if ($files[$i] == $current_dir) {
+					$return .= '<option value="'.$files[$i].'" selected>'.$files[$i].'</option>';
+				} else {
+					$return .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
+				}
 			}
 		} // FOR
 	}

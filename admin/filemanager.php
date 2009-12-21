@@ -58,8 +58,16 @@ if ($_GET['action'] == 'saveinfo') {
 
 // ----------------------------------------------------------------------------
 
+// Upload file
+if (isset($_GET['upload'])) {
+// TODO: Add automatic thumbnail generation for large images.
+	$content .= file_upload($_POST['path']);
+}
+// ----------------------------------------------------------------------------
+
 if ($_GET['action'] == 'new_folder') {
 	$new_folder_name = addslashes($_POST['new_folder_name']);
+	$error = 0;
 	// Validate folder name
 	if (strlen($new_folder_name) > 30) {
 		$content .= 'New folder name too long.<br />';
@@ -69,7 +77,7 @@ if ($_GET['action'] == 'new_folder') {
 		$content .= 'New folder name too short.<br />';
 		$error = 1;
 		}
-	if(!eregi('^[[:alnum:]\_]+$',$new_folder_name) && $error != 1) {
+	if(!preg_match('#^[A-Za-z0-9\_]+$#',$new_folder_name) && $error != 1) {
 		$content .= 'New folder name contains an invalid character.<br />';
 		$error = 1;
 		}
@@ -85,28 +93,28 @@ if ($_GET['action'] == 'new_folder') {
 
 // ----------------------------------------------------------------------------
 
-if ($_GET['action'] == 'delete') {
-if (!isset($_GET['filename'])) {
-	$content .= 'No file was specified to delete.<br />';
-} elseif (preg_match('#^\.\.|\.\.#',$_GET['filename']) || !file_exists($_GET['filename'])) {
-	$content .= 'Invalid file name.<br />';
-} else {
-	$del = unlink($_GET['filename']);
-	if(!$del) {
-		$content .= 'Failed to delete file.<br />';
+if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
+	if (!isset($_GET['filename'])) {
+		$content .= 'No file was specified to delete.<br />';
+	} elseif (preg_match('#^\.\.|\.\.#',$_GET['filename']) || !file_exists($_GET['filename'])) {
+		$content .= 'Invalid file name.<br />';
 	} else {
-		$content .= 'Successfully deleted '.$_GET['filename'].'.<br />'.
-			log_action('Deleted file \''.$_GET['filename'].'\'');
-		$delete_info_query = 'DELETE FROM ' . FILE_TABLE . '
-			WHERE `path` = \''.addslashes($_GET['filename']).'\'';
-		$delete_info_handle = $db->sql_query($delete_info_query);
-		if($db->error[$delete_info_handle] === 1) {
-			$content .= 'Failed to delete information for this file.<br />';
+		$del = unlink($_GET['filename']);
+		if(!$del) {
+			$content .= 'Failed to delete file.<br />';
 		} else {
-			$content .= 'Deleted information associated with the file.<br />';
+			$content .= 'Successfully deleted '.$_GET['filename'].'.<br />'.
+				log_action('Deleted file \''.$_GET['filename'].'\'');
+			$delete_info_query = 'DELETE FROM ' . FILE_TABLE . '
+				WHERE `path` = \''.addslashes($_GET['filename']).'\'';
+			$delete_info_handle = $db->sql_query($delete_info_query);
+			if($db->error[$delete_info_handle] === 1) {
+				$content .= 'Failed to delete information for this file.<br />';
+			} else {
+				$content .= 'Deleted information associated with the file.<br />';
+			}
 		}
 	}
-}
 }
 
 // ----------------------------------------------------------------------------
@@ -141,8 +149,10 @@ if ($_GET['action'] == 'edit') {
 	$tab_content['edit'] .= $form;
 	$tab_layout->add_tab('Edit File Properties',$tab_content['edit']);
 }
-if (!isset($_POST['folder_list'])) {
+if (!isset($_POST['folder_list']) && !isset($_POST['path'])) {
 	$_POST['folder_list'] = NULL;
+} elseif (!isset($_POST['folder_list']) && isset($_POST['path'])) {
+	$_POST['folder_list'] = $_POST['path'];
 }
 $tab_content['list'] = '<form method="POST" action="admin.php?module=filemanager">
 '.folder_list('',$_POST['folder_list'],1); // Create listbox with folder names and a form to navigate folders.
@@ -164,11 +174,7 @@ $tab_layout->add_tab('File List',$tab_content['list']);
 // ----------------------------------------------------------------------------
 
 $tab_content['upload'] = NULL;
-// Check if the form has been submitted.
-if (isset($_GET['upload'])) {
-// TODO: Add automatic thumbnail generation for large images.
-	$content .= file_upload($_POST['path']);
-}
+
 // Display upload form and upload location selector.
 $tab_content['upload'] .= file_upload_box(1);
 $tab_layout->add_tab('Upload File',$tab_content['upload']);
