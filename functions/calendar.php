@@ -131,4 +131,55 @@ function delete_date($id) {
 		}
 	}
 }
+
+// ----------------------------------------------------------------------------
+
+// FIXME: This doesn't work yet
+function monthcal_get_date($day,$month,$year,$template) {
+	global $calendar_settings;
+	global $db;
+	global $debug;
+	global $page;
+
+	$dates_query = 'SELECT * FROM `' . CALENDAR_TABLE . '` `date`,
+		`' . CALENDAR_CATEGORY_TABLE . '` `cat`
+		WHERE `date`.`month` = \''.$month.'\' AND `date`.`year` = \''.$year.'\'
+		AND `date`.`day` = \''.$day.'\' AND `date`.`category` =
+		`cat`.`cat_id` ORDER BY `starttime` ASC';
+	$dates_handle = $db->sql_query($dates_query);
+	unset($dates_query);
+
+	if ($db->error[$dates_handle] === 1) {
+		$debug->add_trace('Failed to read date information',true,'monthcal_get_date');
+		return 'Error';
+	}
+	if ($db->sql_num_rows($dates_handle) > 0) {
+		$template->day_number = '<a href="?'.$page->url_reference
+			.'&amp;view=day&amp;m='.$month.'&amp;y='.$year.'&amp;d='
+			.$day.'" class="day_number">'.$day.'</a>';
+	} else {
+		$template->day_number = $day;
+	}
+	$dates = NULL;
+	for ($i = 1; $i <= $db->sql_num_rows($dates_handle); $i++) {
+		$day_info = $db->sql_fetch_assoc($dates_handle);
+		if($day_info['colour'] == '') {
+			$day_info['colour'] = 'red';
+		}
+		$dates .= '<a href="?'.$page->url_reference.'&amp;view=event&amp;'
+			.'a='.$day_info['id'].'" class="calendar_event">';
+		if ($calendar_settings['month_show_cat_icons'] == 1) {
+			$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'
+			.' width="10px" height="10px" alt="'.stripslashes($day_info['label']).'" border="0px" />';
+		}
+		if ($calendar_settings['month_show_stime'] == 1) {
+			$stime_tmp = explode(':',$day_info['starttime']);
+			$stime_tmp = mktime($stime_tmp[0],$stime_tmp[1]);
+			$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$stime_tmp).'</span> ';
+		}
+		$dates .= stripslashes($day_info['header']).'</a><br />'."\n";
+	}
+	$template->day_events = $dates;
+	return (string)$template;
+}
 ?>

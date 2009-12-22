@@ -1,4 +1,11 @@
 <?php
+/**
+ * Community CMS
+ * $Id$
+ * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.main
+ */
 // Security Check
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
@@ -27,8 +34,13 @@ switch ($_GET['view']) {
 		$page_content = NULL;
 		$template_month = new template;
 		$template_month->load_file('calendar_month');
+
+		// Add month and year to page title
 		global $special_title;
 		$special_title = date('F Y',$month_cal->first_day_ts).' - ';
+
+		// Replace template placeholders that should not be altered
+		// beyond this point
 		$template_month->current_month_name = date('F Y',$month_cal->first_day_ts);
 		$template_month->current_month = $month_cal->month;
 		$template_month->current_year = $month_cal->year;
@@ -36,6 +48,8 @@ switch ($_GET['view']) {
 		$template_month->prev_year = $month_cal->prev_year;
 		$template_month->next_month = $month_cal->next_month;
 		$template_month->next_year = $month_cal->next_year;
+
+		// Insert day names according to chosen format
 		if ($calendar_settings['month_day_format'] == 1) {
 			$template_month->cal_sunday = 'Sunday';
 			$template_month->cal_monday = 'Monday';
@@ -53,28 +67,35 @@ switch ($_GET['view']) {
 			$template_month->cal_friday = 'Fri';
 			$template_month->cal_saturday = 'Sat';
 		}
+
 		// Week template
 		$template_week = new template;
 		$template_week->path = $template_month->path;
 		$template_week->template = $template_month->get_range('week');
+
+		// Extract templates for each type of day
 		$template_empty_day = $template_month->get_range('empty_day');
 		$template_day = $template_month->get_range('day');
 		$template_today = $template_month->get_range('today');
-		// Replace day entries with placeholders
+
+		// Remove day templates
 		$template_week->replace_range('empty_day','');
 		$template_week->replace_range('day','<!-- $DAY$ -->');
 		$template_week->replace_range('today','');
-		$counter_day = 1;
-		$counter_dow = 0;
+
+// ----------------------------------------------------------------------------
+
+		// Start drawing the calendar
+		$counter_dow = 0; // Day of week in loop, 0=Sunday, 1=Monday...6=Saturday
 		$all_weeks = NULL;
-		while ($counter_day <= $month_cal->month_days) {
+		for ($counter_day = 1; $counter_day <= $month_cal->month_days; $counter_day++) {
 			if ($counter_dow == 0) { // If it's the first day of the week
 				$current_week_days = NULL; // Clear the week.
 			}
 			while ($counter_dow < $month_cal->first_day_dow && $counter_day == 1) {
 				$current_week_days .= $template_empty_day;
-				// If it's the first day of the month,
-				// insert some empty cells into the calendar.
+				// On the first day of the month, insert blank cells to
+				// make sure that we start on the right day of the week
 				$counter_dow++;
 			}
 			unset($current_day);
@@ -85,6 +106,7 @@ switch ($_GET['view']) {
 			} else {
 				$current_day->template = $template_day;
 			}
+//			$current_week_days .= monthcal_get_date($counter_day,$month_cal->month,$month_cal->year,$current_day);
 			$day_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . ' date,
 				' . CALENDAR_CATEGORY_TABLE . ' cat
 				WHERE date.month = \''.$month_cal->month.'\' AND date.year = \''.$month_cal->year.'\'
@@ -127,7 +149,6 @@ switch ($_GET['view']) {
 				$current_week_days .= $template_empty_day;                 // fill any empty calendar cells with empty cells
 				$counter_dow++;
 			}
-			$counter_day++;
 			if ($counter_dow == 7) { // When you reach the end of the week...
 				$current_week = new template;
 				$current_week->template = $template_week->template;
