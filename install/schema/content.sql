@@ -8,8 +8,8 @@ INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colou
 (1, 'Other', 'yellow', '');;
 INSERT INTO `<!-- $DB_PREFIX$ -->calendar_settings` (`default_view`, `month_show_stime`, `month_show_cat_icons`, `month_day_format`) VALUES
 ('month',1,1,1);;
-INSERT INTO `<!-- $DB_PREFIX$ -->config` (db_version,name, url, comment, time_format, template, footer, active) VALUES
-('0.02','<!-- $SITE_NAME$ -->', 'http://localhost/', 'Sourceforge.net', 'h:i A', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1);;
+INSERT INTO `<!-- $DB_PREFIX$ -->config` (`db_version`,`name`,`url`,`comment`,`time_format`,`template`,`footer`,`active`,`cookie_path`) VALUES
+('0.02','<!-- $SITE_NAME$ -->', 'http://localhost/', 'Sourceforge.net', 'h:i A', 1, '<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS', 1, '/');;
 INSERT INTO `<!-- $DB_PREFIX$ -->news` (`page`, `name`, `description`, `author`, `date`, `image`) VALUES
 (1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, a contact information managing tool, and an administration system to make editing your content easy. To see what\'s new in this release, click <a href="http://communitycms.sourceforge.net/whatsnew-0.6.html">here</a>.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
 INSERT INTO `<!-- $DB_PREFIX$ -->news_settings`

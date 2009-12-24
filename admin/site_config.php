@@ -23,11 +23,13 @@ if ($_GET['action'] == 'save') {
 	$site_desc = addslashes(strip_tags($_POST['site_desc']));
 	$site_url = addslashes(strip_tags($_POST['site_url']));
 	$admin_email = addslashes(strip_tags($_POST['admin_email']));
+	$cookie_path = addslashes($_POST['cookie_path']);
 	$time_format = addslashes($_POST['time_format']);
 	$footer = addslashes($_POST['footer']);
 	$site_info_update_query = 'UPDATE ' . CONFIG_TABLE . "
 		SET `name`='$site_name',`url`='$site_url',`admin_email`='$admin_email',
 		`comment`='$site_desc',`active`=".checkbox($_POST['active']).",
+		`cookie_path`='$cookie_path',
 		`time_format`='$time_format',`footer`='$footer'";
 	$site_info_update_handle = $db->sql_query($site_info_update_query);
 	if ($db->error[$site_info_update_handle] === 1) {
@@ -60,8 +62,9 @@ $form->add_select('time_format','Time Format',
 		array('4:05 am','4:05 AM','04:05 am','04:05 AM','4:05','04:05'),
 		stripslashes($current_config['time_format']));
 $form->add_textarea('footer','Footer Text',stripslashes($current_config['footer']));
+$form->add_textbox('cookie_path','Cookie Path',stripslashes($current_config['cookie_path']));
 $form->add_checkbox('active','Site Active',$current_config['active']);
-// TODO: Cookie domain, path, name, template, disable messaging
+// TODO: template, disable messaging
 $form->add_submit('submit','Save Configuration');
 $tab_content['config'] .= $form;
 $tab['config'] = $tab_layout->add_tab('Configuration',$tab_content['config']);

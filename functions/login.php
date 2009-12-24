@@ -14,6 +14,7 @@ if (@SECURITY != 1) {
 function login($user,$passwd) {
 	global $db;
 	global $debug;
+	global $site_info;
 	$user = addslashes($db->sql_escape_string($user));
 	$passwd = addslashes($db->sql_escape_string($passwd));
 	if($user == "" || $passwd == "") {
@@ -29,7 +30,7 @@ function login($user,$passwd) {
 			logout();
 			err_page(3003);
 		} else {
-			session_set_cookie_params(84000000);
+			session_set_cookie_params(84000000,$site_info['cookie_path']);
 			$_SESSION['userid'] = $result['id'];
 			$_SESSION['user'] = $user;
 			$_SESSION['pass'] = md5($passwd);

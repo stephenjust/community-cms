@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`template` int(11) NOT NULL,
 	`footer` text NOT NULL,
 	`active` tinyint(1) NOT NULL,
+	`cookie_path` text NOT NULL,
 	`home` int(4) NOT NULL default '1'
 ) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
