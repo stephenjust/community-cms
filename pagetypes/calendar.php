@@ -133,9 +133,10 @@ switch ($_GET['view']) {
 					.'a='.$day_info['id'].'" class="calendar_event">';
 				if ($calendar_settings['month_show_cat_icons'] == 1) {
 					$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'
-					.' width="10px" height="10px" alt="'.stripslashes($day_info['label']).'" border="0px" />';
+					.' width="10px" height="10px" alt="'.stripslashes($day_info['label']).'" border="0px" /> ';
 				}
-				if ($calendar_settings['month_show_stime'] == 1) {
+				if ($calendar_settings['month_show_stime'] == 1
+						&& $day_info['starttime'] != $day_info['endtime']) {
 					$stime_tmp = explode(':',$day_info['starttime']);
 					$stime_tmp = mktime($stime_tmp[0],$stime_tmp[1]);
 					$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$stime_tmp).'</span> ';
