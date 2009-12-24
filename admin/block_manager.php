@@ -51,20 +51,19 @@ $content = $message;
 $tab_layout = new tabs;
 $tab_content['manage'] = NULL;
 $tab_content['manage'] .= '<table class="admintable">
-	<tr><th width="30">ID</th><th>Info:</th><th width="40" colspan="2"></th></tr>';
+	<tr><th>Info:</th><th width="40" colspan="2"></th></tr>';
 // Get block list by id
 $block_list_query = 'SELECT * FROM ' . BLOCK_TABLE . ' ORDER BY id DESC';
 $block_list_handle = $db->sql_query($block_list_query);
 if($db->sql_num_rows($block_list_handle) == 0) {
-	$tab_content['manage'] .= '<tr><td></td><td class="adm_page_list_item">No blocks exist.</td><td></td><td></td></tr>';
+	$tab_content['manage'] .= '<tr><td colspan="3">No blocks exist.</td></tr>';
 } else {
 	$i = 1;
 	while ($i <= $db->sql_num_rows($block_list_handle)) {
 		$block_list = $db->sql_fetch_assoc($block_list_handle);
 		$attribute_list = ($block_list['attributes'] == '') ? NULL : ' ('.$block_list['attributes'].')';
 		$tab_content['manage'] .= '<tr>
-<td>'.$block_list['id'].'</td>
-<td class="adm_page_list_item">'.$block_list['type'].$attribute_list.'</td>
+<td>'.$block_list['type'].$attribute_list.'</td>
 <td><a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 <td><a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 </tr>';
