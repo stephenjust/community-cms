@@ -30,7 +30,10 @@ function login($user,$passwd) {
 			logout();
 			err_page(3003);
 		} else {
-			session_set_cookie_params(84000000,$site_info['cookie_path']);
+			session_destroy();
+			session_set_cookie_params(84000000,stripslashes($site_info['cookie_path']));
+			session_name(stripslashes($site_info['cookie_name']));
+			session_start();
 			$_SESSION['userid'] = $result['id'];
 			$_SESSION['user'] = $user;
 			$_SESSION['pass'] = md5($passwd);

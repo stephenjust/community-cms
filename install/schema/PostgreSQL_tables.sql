@@ -92,6 +92,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->config" (
 	"template" integer NOT NULL,
 	"footer" text NOT NULL,
 	"active" integer NOT NULL,
+	"cookie_name" text NOT NULL,
 	"cookie_path" text NOT NULL,
 	"home" integer NOT NULL default '1'
 );
