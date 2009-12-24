@@ -178,22 +178,60 @@ div.admin_image_list_item {
 	float: left;
 	text-align: center;
 	border: 1px solid #e78f08;
-    background: #f6a828;
-    margin: 1px;
+	background: #f6a828;
+	margin: 1px;
 	height: 128px;
 	width: 110px;
-    padding: 3px;
+	padding: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 }
 div.admin_image_list_item:hover {
-    background: #fdaf2f;
-    }
+	background: #fdaf2f;
+}
 div.admin_image_list_item img {
-    max-width: 100px;
-    max-height: 100px;
-    padding: 2px;
-    }
+	max-width: 100px;
+	max-height: 100px;
+	padding: 2px;
+}
+
+/*
+ * Autocomplete box
+ */
+.autocomplete-w1 {
+	background:url(admin/templates/default/ac-shadow.png) no-repeat bottom right;
+	position:absolute;
+	top:0px;
+	left:0px;
+	margin:8px 0 0 6px;
+	/* IE6 fix: */
+	_background:none;
+	_margin:0;
+}
+.autocomplete {
+	border:1px solid #999;
+	background:#FFF;
+	cursor:default;
+	text-align:left;
+	max-height:350px;
+	overflow:auto;
+	margin:-6px 6px 6px -6px;
+	/* IE6 specific: */
+	_height:350px;
+	_margin:0;
+	_overflow-x:hidden;
+}
+.autocomplete .selected {
+	background:#F0F0F0;
+}
+.autocomplete div {
+	padding:2px 5px;
+	white-space:nowrap;
+}
+.autocomplete strong {
+	font-weight:normal;
+	color:#3399FF;
+}
 
 /*
  * Styles used only on help pages

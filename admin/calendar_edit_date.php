@@ -126,7 +126,7 @@ switch ($_GET['action']) {
 			<td class="row1"><input type="text" name="date" class="datepicker" value="'.$date['month'].'/'.$date['day'].'/'.$date['year'].'" maxlength="10" /></td></tr>
 			<tr><td class="row2" valign="top">Description:</td>
 			<td class="row2"><textarea name="content" rows="30">'.stripslashes($date['description']).'</textarea></td></tr>
-			<tr><td width="150" class="row1">Location:</td><td class="row1"><input type="text" name="location" value="'.stripslashes($date['location']).'" /></td></tr>
+			<tr><td width="150" class="row1">Location:</td><td class="row1"><input type="text" name="location" id="_location" value="'.stripslashes($date['location']).'" /></td></tr>
 			<tr><td width="150" valign="top" class="row2">Image:</td><td class="row2"><div class="admin_image_list">'.file_list('newsicons',2,$date['image']).'</div></td></tr>
 			<tr><td width="150" class="row1">Hidden:</td><td class="row1"><input type="checkbox" name="hide" '.$hidden.' /></td></tr>
 			<tr><td width="150" class="row2">&nbsp;</td><td class="row2"><input type="submit" value="Submit" /></td></tr>

@@ -1,5 +1,5 @@
 <!--
-$(function(){
+window.onload=$(function(){
 
 	// Accordion
 	$("#menu").accordion({ header: "h3" });
@@ -50,6 +50,12 @@ $(function(){
 		function() { $(this).addClass('ui-state-hover'); },
 		function() { $(this).removeClass('ui-state-hover'); }
 	);
+
+	// AutoComplete location box
+	$('#_location').autocomplete({
+		serviceUrl:'./admin/scripts/location_ac.php',
+		width:200
+	});
 
 });
 -->

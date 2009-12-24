@@ -24,7 +24,6 @@ if (@SECURITY != 1) {
 function initialize($mode = NULL) {
 	// Report all PHP errors
 	error_reporting(E_ALL);
-	header('Content-type: text/html; charset=UTF-8');
 
 	// Send headers specific to AJAX scripts
 	if ($mode == 'ajax') {
@@ -33,6 +32,8 @@ function initialize($mode = NULL) {
 		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0"); // HTTP/1.1
 		header("Cache-Control: post-check=0, pre-check=0", false);
 		header("Pragma: no-cache"); // HTTP/1.0
+	} else {
+		header('Content-type: text/html; charset=UTF-8');
 	}
 
 	global $db;

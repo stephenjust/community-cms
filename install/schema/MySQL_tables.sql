@@ -88,6 +88,13 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->locations` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`value` text COLLATE utf8_general_ci NOT NULL,
+	PRIMARY KEY (`id`),
+	FULLTEXT KEY `value` (`value`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   `log_id` int(11) NOT NULL auto_increment,
   `date` timestamp NULL default NULL on update CURRENT_TIMESTAMP,

@@ -37,6 +37,7 @@ define('CONFIG_TABLE', $CONFIG['db_prefix'] . 'config');
 define('CONTACTS_TABLE', $CONFIG['db_prefix'] . 'contacts');
 define('CONTENT_TABLE', $CONFIG['db_prefix'] . 'content');
 define('FILE_TABLE', $CONFIG['db_prefix'] . 'files');
+define('LOCATION_TABLE', $CONFIG['db_prefix'] . 'locations');
 define('LOG_TABLE', $CONFIG['db_prefix'] . 'logs');
 define('MESSAGE_TABLE', $CONFIG['db_prefix'] . 'messages');
 define('NEWS_TABLE', $CONFIG['db_prefix'] . 'news');

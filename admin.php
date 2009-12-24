@@ -78,6 +78,8 @@ function display_admin() {
 		<script language="javascript" type="text/javascript"
 		src="./scripts/jquery-ui.js"></script>
 		<script language="javascript" type="text/javascript"
+		src="./scripts/jquery-autocomplete.js"></script>
+		<script language="javascript" type="text/javascript"
 		src="./scripts/jquery-custom.js"></script>
 		<script language="javascript" type="text/javascript"
 		src="./scripts/tiny_mce/tiny_mce_gzip.js"></script>
