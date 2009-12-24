@@ -72,7 +72,7 @@ switch ($_GET['action']) {
 					WHERE id = '.$_POST['page'].' LIMIT 1';
 				$page_handle = $db->sql_query($page_query);
 				$page = $db->sql_fetch_assoc($page_handle);
-				$content .= 'Successfully added newsletter entry. '.log_action('New newsletter \''.$_POST['label'].'\' added to '.$page['title']);
+				$content .= 'Successfully added newsletter entry. '.log_action('Newsletter \''.$_POST['label'].'\' added to '.$page['title']);
 			}
 		}
 		break;
@@ -154,9 +154,9 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
 		$first = 1;
 	}
 	if ($page['id'] == $_POST['page']) {
-		$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
+		$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>'."\n";
 	} else {
-		$tab_content['manage'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
+		$tab_content['manage'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>'."\n";
 		if ($first == 1 && $page['id'] != $_POST['page']) {
 			$_POST['page'] = $page['id'];
 			$first = 0;
@@ -164,11 +164,25 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
 	}
 	$i++;
 }
+
+// All pages
+if ($_POST['page'] == '*') {
+	$tab_content['manage'] .= '<option value="*" selected>All Pages</option>'."\n";
+} else {
+	$tab_content['manage'] .= '<option value="*">All Pages</option>'."\n";
+}
+
 $tab_content['manage'] .= '</select><input type="submit" value="Change Page" /></form></th></tr>
 	<tr><th width="350">Label:</th><th>Month</th><th>Year</th><th colspan="2"></th></tr>';
+
 // Get page message list in the order defined in the database. First is 0.
 $nl_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . '
 	WHERE page = '.stripslashes($_POST['page']).' ORDER BY year DESC,month DESC';
+// Alter query if set to "All Pages"
+if (stripslashes($_POST['page']) == '*') {
+	$nl_query = str_replace('WHERE page = *',NULL,$nl_query);
+}
+
 $nl_handle = $db->sql_query($nl_query);
 $i = 1;
 if($db->sql_num_rows($nl_handle) == 0) {
