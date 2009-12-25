@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_settings` (
 	`default_view` TEXT NOT NULL ,
 	`month_show_stime` BOOL NOT NULL DEFAULT '1',
 	`month_show_cat_icons` BOOL NOT NULL DEFAULT '1',
-	`month_day_format` INT NOT NULL DEFAULT '1'
+	`month_day_format` INT NOT NULL DEFAULT '1',
+	`save_locations` INT NOT NULL DEFAULT '1'
 ) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (

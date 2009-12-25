@@ -138,12 +138,14 @@ switch ($_GET['action']) {
 		$new_fields['default_view'] = addslashes($_POST['default_view']);
 		$new_fields['month_show_stime'] = (isset($_POST['month_show_stime'])) ? checkbox($_POST['month_show_stime']) : 0;
 		$new_fields['month_show_cat_icons'] = (isset($_POST['month_show_cat_icons'])) ? checkbox($_POST['month_show_cat_icons']) : 0;
+		$new_fields['save_locations'] = (isset($_POST['save_locations'])) ? checkbox($_POST['save_locations']) : 0;
 		$new_fields['month_day_format'] = (int)$_POST['month_day_format'];
 		$save_settings_query = 'UPDATE `' . CALENDAR_SETTINGS_TABLE . "` SET
 			`default_view` = '{$new_fields['default_view']}',
 			`month_show_stime` = {$new_fields['month_show_stime']},
 			`month_show_cat_icons` = {$new_fields['month_show_cat_icons']},
-			`month_day_format` = {$new_fields['month_day_format']}";
+			`month_day_format` = {$new_fields['month_day_format']},
+			`save_locations` = {$new_fields['save_locations']}";
 		unset($new_fields);
 		$save_settings_handle = $db->sql_query($save_settings_query);
 		unset($save_settings_query);
@@ -265,6 +267,7 @@ $settings_form->add_select('default_view','Default View',array('month','day'),ar
 $settings_form->add_checkbox('month_show_stime','Show Start Time on Month Calendar',$current_settings['month_show_stime']);
 $settings_form->add_checkbox('month_show_cat_icons','Show Category Icons on Month Calendar',$current_settings['month_show_cat_icons']);
 $settings_form->add_select('month_day_format','Label Days on Month Calendar as',array(1,2),array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'),$current_settings['month_day_format']);
+$settings_form->add_checkbox('save_locations','Save Location Entries',$current_settings['save_locations']);
 $settings_form->add_submit('submit','Save Changes');
 $tab_content['settings'] .= $settings_form;
 unset($settings_form);

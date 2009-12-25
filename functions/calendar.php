@@ -28,7 +28,8 @@ function calendar_settings() {
 		return array('default_view' => 'month',
 					'month_show_stime' => 1,
 					'month_show_cat_icons' => 1,
-					'month_day_format' => 1);
+					'month_day_format' => 1,
+					'save_locations' => 1);
 	}
 	if ($db->sql_num_rows($handle) != 1) {
 		$debug->add_trace('No calendar settings. Please repair database.',true,'calendar_settings()');
@@ -36,7 +37,8 @@ function calendar_settings() {
 		return array('default_view' => 'month',
 					'month_show_stime' => 1,
 					'month_show_cat_icons' => 1,
-					'month_day_format' => 1);
+					'month_day_format' => 1,
+					'save_locations' => 1);
 	}
 	return $db->sql_fetch_assoc($handle);
 }
