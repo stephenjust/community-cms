@@ -12,6 +12,9 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+include('./functions/calendar.php');
+$calendar_settings = calendar_settings();
+
 $content = NULL;
 switch ($_GET['action']) {
 	case 'edit':
@@ -21,6 +24,31 @@ switch ($_GET['action']) {
 		$start_time = (isset($_POST['stime'])) ? $_POST['stime'] : NULL;
 		$end_time = (isset($_POST['etime'])) ? $_POST['etime'] : NULL;
 		$date = (isset($_POST['date'])) ? (int)$_POST['date'] : NULL;
+
+		// Save location
+		if ($calendar_settings['save_locations'] == 1) {
+			if (!isset($location) || strlen($location) < 2) {
+				$debug->add_trace('No location given',false,'calendar.php');
+			} else {
+				$check_dupe_query = 'SELECT `value` FROM `'.LOCATION_TABLE.'`
+					WHERE `value` = \''.$location.'\'';
+				$check_dupe_handle = $db->sql_query($check_dupe_query);
+				if ($db->error[$check_dupe_handle] === 1) {
+					$content .= 'Failed to check for duplicate location entries.<br />'."\n";
+				} elseif ($db->sql_num_rows($check_dupe_handle) == 0) {
+					$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
+						(`value`) VALUES (\''.$location.'\')';
+					$new_loc_handle = $db->sql_query($new_loc_query);
+					if ($db->error[$new_loc_handle] === 1) {
+						$content .= 'Failed to create new location.<br />'."\n";
+						break;
+					}
+					$content .= 'Successfully created location.<br />'."\n";
+					log_action('Created new location');
+				}
+			}
+		}
+
 
 		// Format date for insertion...
 		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
