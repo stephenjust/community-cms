@@ -214,7 +214,7 @@ div.admin_image_list_item img {
 	cursor:default;
 	text-align:left;
 	max-height:350px;
-	overflow:auto;
+	overflow:hidden;
 	margin:-6px 6px 6px -6px;
 	/* IE6 specific: */
 	_height:350px;
@@ -222,7 +222,7 @@ div.admin_image_list_item img {
 	_overflow-x:hidden;
 }
 .autocomplete .selected {
-	background:#F0F0F0;
+	background:#C0C0C0;
 }
 .autocomplete div {
 	padding:2px 5px;
