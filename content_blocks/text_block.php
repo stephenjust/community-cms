@@ -43,11 +43,11 @@ if($db->sql_num_rows($text_handle) == 0) {
 		$template_text_block->full_date_start = NULL;
 		$template_text_block->full_date_end = NULL;
 		}
-	$template_text_block->article_title = $text['name'];
-	$template_text_block->article_author = $text['author'];
+	$template_text_block->article_title = stripslashes($text['name']);
+	$template_text_block->article_author = stripslashes($text['author']);
 	$template_text_block->article_date_month_text = $date_month_text;
 	$template_text_block->article_date_day = $date_day;
-	$template_text_block->article_content = $text['description'];
+	$template_text_block->article_content = stripslashes($text['description']);
 	$return .= $template_text_block;
 	}
 return $return;
