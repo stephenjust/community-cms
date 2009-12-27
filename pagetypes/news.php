@@ -17,6 +17,7 @@ if (!defined('SECURITY')) {
 
 global $page;
 global $db;
+global $debug;
 $return = NULL;
 
 // Load configuration
@@ -30,6 +31,43 @@ if ($db->error[$news_config_handle] === 1) {
 	return $return;
 }
 $news_config = $db->sql_fetch_assoc($news_config_handle);
+
+// Check for display mode
+if (isset($_GET['article'])) {
+	// We want to display the given article on the page
+	// Make sure a valid article ID is passed
+	if (!is_numeric($_GET['article']) || strlen($_GET['article']) == 0) {
+		$debug->add_trace('Article ID not numeric',true,'news.php');
+		header("HTTP/1.0 404 Not Found");
+		$page->notification = 'The requested article does not exist.<br />'."\n";
+		$page->title = 'Article not found';
+		$page->showtitle = false;
+		return $return.' ';
+	}
+	$article_id = (int)$_GET['article'];
+	$article_page_query = 'SELECT `page` FROM `'.NEWS_TABLE.'`
+		WHERE `id` = '.$article_id.' LIMIT 1';
+	$article_page_handle = $db->sql_query($article_page_query);
+	if ($db->error[$article_page_handle] === 1) {
+		$debug->add_trace('Failed to look up article\'s page in the database',true,'news.php');
+		header("HTTP/1.0 404 Not Found");
+		$page->notification = 'An error occurred when trying to retrieve the requested article.<br />'."\n";
+		$page->title = 'Error';
+		$page->showtitle = false;
+		return $return.' ';
+	}
+	if ($db->sql_num_rows($article_page_handle) != 1) {
+		$debug->add_trace('Article does not exist',true,'news.php');
+		header("HTTP/1.0 404 Not Found");
+		$page->notification = 'The requested article does not exist.<br />'."\n";
+		$page->title = 'Article not found';
+		$page->showtitle = false;
+		return $return.' ';
+	} else {
+		// Article exists
+		// TODO: Make sure we're on the right page - redirect if not
+	}
+}
 
 include(ROOT.'pagetypes/news_class.php');
 if(!isset($_GET['start']) || $_GET['start'] == "" || (int)$_GET['start'] < 1) {
