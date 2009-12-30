@@ -4,7 +4,22 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 global $acl;
+global $db;
+global $page;
 global $site_info;
+
+// Load configuration
+$news_config_query = 'SELECT * FROM ' . NEWS_CONFIG_TABLE . ' LIMIT 1';
+$news_config_handle = $db->sql_query($news_config_query);
+if ($db->error[$news_config_handle] === 1) {
+	$page->notification .= 'Could not load news settings.<br />';
+	return $return;
+} elseif ($db->sql_num_rows($news_config_handle) == 0) {
+	$page->notification .= 'There are no news settings available.<br />';
+	return $return;
+}
+$news_config = $db->sql_fetch_assoc($news_config_handle);
+
 $text_block = new block;
 $text_block->block_id = $block_info['id'];
 $return = NULL;
@@ -35,16 +50,42 @@ if($db->sql_num_rows($text_handle) == 0) {
 	$date_unix = mktime(0,0,0,$date_month,$date_day,$date_year);
 	$date_month_text = date('M',$date_unix);
 	$template_text_block = new template;
-	$template_text_block->load_file('mini_text');
+
+	// Check if 'show_border' is set, because it may not be because older
+	// versions of the CMS did not set it
+	if (!isset($text_block->attribute['show_border'])) {
+		$text_block->attribute['show_border'] = 'yes';
+	}
+
+	// Load appropriate template for each setting
+	// FIXME: We should be able to do this with one file eventually
+	if ($text_block->attribute['show_border'] == 'no') {
+		$template_text_block->load_file('mini_text');
+	} else {
+		$template_text_block->load_file('mini_text_border');
+	}
+
 	$template_text_block->article_id = $text['id'];
-	if($text['showdate'] != 1) {
+
+	// Hide date if requested
+	if ($text['showdate'] != 1) {
 		$template_text_block->replace_range('full_date',NULL);
-		} else {
+	} else {
 		$template_text_block->full_date_start = NULL;
 		$template_text_block->full_date_end = NULL;
-		}
+	}
+
 	$template_text_block->article_title = stripslashes($text['name']);
-	$template_text_block->article_author = stripslashes($text['author']);
+
+	// Hide author if requested
+	if ($news_config['show_author'] == 0) {
+		$template_text_block->replace_range('article_author',NULL);
+	} else {
+		$template_text_block->article_author = stripslashes($text['author']);
+		$template_text_block->article_author_start = NULL;
+		$template_text_block->article_author_end = NULL;
+	}
+
 	$template_text_block->article_date_month_text = $date_month_text;
 	$template_text_block->article_date_day = $date_day;
 	$template_text_block->article_content = stripslashes($text['description']);

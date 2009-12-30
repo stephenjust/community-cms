@@ -143,8 +143,20 @@ span.news_block_author {
     font-size: small;
 }
 span.news_block_title {
-	font-weight: bold;
-	font-size: medium;
+	font-family: Cambria,
+				Georgia,
+				"Book Antiqua",
+				"Times New Roman",
+				"Century Schoolbook",
+				"Bitstream Vera Serif",
+				serif;
+	font-size: large;
+}
+div.news_block table.news_block_container {
+	background: #FFF;
+	border: 1px solid #000;
+	padding: 3px;
+	width: 100%;
 }
 
 /*
@@ -166,12 +178,12 @@ div.events_upcoming_block {
 }
 div.events_upcoming_block span.header {
 	font-family: Cambria,
-							Georgia,
-							"Book Antiqua",
-							"Times New Roman",
-							"Century Schoolbook",
-							"Bitstream Vera Serif",
-							serif;
+				Georgia,
+				"Book Antiqua",
+				"Times New Roman",
+				"Century Schoolbook",
+				"Bitstream Vera Serif",
+				serif;
 	font-size: large;	
 }
 div.events_upcoming_block table.events {
