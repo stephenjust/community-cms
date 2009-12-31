@@ -15,7 +15,13 @@ require(ROOT.'functions/form_class.php');
 class block {
 	public $block_id;
 	public $type;
-	public $attributes;
+
+	/**
+	 * $attribute - Array of block attributes
+	 * @var array
+	 * @access public
+	 */
+	public $attribute = array();
 
 	public function __set($name,$value) {
 		$this->$name = $value;
@@ -26,10 +32,14 @@ class block {
 			return false;
 		}
 		global $db;
+		global $debug;
+
 		$block_attribute_query = 'SELECT * FROM ' . BLOCK_TABLE . '
 			WHERE id = '.$this->block_id.' LIMIT 1';
 		$block_attribute_handle = $db->sql_query($block_attribute_query);
 		$block = $db->sql_fetch_assoc($block_attribute_handle);
+		$this->type = $block['type'];
+		$debug->add_trace('Block type is '.$this->type,false,'get_block_information()');
 		$block_attribute_temp = $block['attributes'];
 		if (strlen($block_attribute_temp) > 0) {
 			$block_attribute_temp = explode(",",$block_attribute_temp);
@@ -40,6 +50,7 @@ class block {
 		for ($i = 0; $i < $block_attribute_count; $i++) {
 			$attribute_temp = explode('=',$block_attribute_temp[$i]);
 			$this->attribute[$attribute_temp[0]] = $attribute_temp[1];
+			$debug->add_trace('Block '.$this->block_id.' has attribute '.$attribute_temp[0].' = '.$attribute_temp[1],false,'get_block_information()');
 		}
 		return;
 	}
