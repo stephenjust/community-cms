@@ -236,22 +236,36 @@ while ($monthcount <= 12) {
 $tab_content['manage'] .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$_POST['year'].'" /><input type="submit" value="Change" /></form>';
 $tab_content['manage'] .= '<form method="post" action="?module=calendar&action=delete">
 <table class="admintable">
-<tr><th>&nbsp;</th><th>Date:</th><th>Heading:</th><th></th></tr>';
+<tr><th width="20px"></th><th>Date:</th><th>Start Time:</th><th>End Time:</th><th>Heading:</th><th width="20px"></th></tr>';
 $rowcount = 1;
 $date_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
 	WHERE year = '.$_POST['year'].' AND month = '.$_POST['month'].'
 	ORDER BY day,starttime ASC';
 $date_handle = $db->sql_query($date_query);
 if ($db->sql_num_rows($date_handle) == 0) {
-	$tab_content['manage'] .= '<tr><td colspan="4" class="row1">There are no dates in this month.</td></tr>';
+	$tab_content['manage'] .= '<tr><td colspan="6" class="row1">There are no dates in this month.</td></tr>';
 	$rowcount = 2;
 }
 for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 	$cal = $db->sql_fetch_assoc($date_handle);
+
+	// Format start time and end time
+	$temp = explode(':',$cal['starttime']);
+	$start_time_temp = mktime((int)$temp[0],(int)$temp[1]);
+	$starttime = date($site_info['time_format'],$start_time_temp);
+	$temp = explode(':',$cal['endtime']);
+	$end_time_temp = mktime((int)$temp[0],(int)$temp[1]);
+	$endtime = date($site_info['time_format'],$end_time_temp);
+	unset($temp);
+	unset($start_time_temp);
+	unset($end_time_temp);
+
 	$cal_time = mktime(0,0,0,$cal['month'],$cal['day'],$cal['year']);
 	$tab_content['manage'] .= '<tr><td class="row'.$rowcount.'">
 		<input type="radio" name="date_del" value="'.$cal['id'].'" /></td>
 		<td class="row'.$rowcount.'">'.date('M d, Y',$cal_time).'</td>
+		<td class="row'.$rowcount.'">'.$starttime.'</td>
+		<td class="row'.$rowcount.'">'.$endtime.'</td>
 		<td class="row'.$rowcount.'">'.stripslashes($cal['header']).'</td>
 		<td class="row'.$rowcount.'"><a href="admin.php?module=calendar_edit_date&id='.$cal['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
@@ -262,8 +276,8 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 		$rowcount = 1;
 	}
 }
-$tab_content['manage'] .= '<tr><td class="row'.$rowcount.'">&nbsp;</td>
-	<td colspan="3" class="row'.$rowcount.'"><input type="submit" value="Delete" /></td></tr>
+$tab_content['manage'] .= '<tr>
+	<td colspan="6" class="row'.$rowcount.'"><input type="submit" value="Delete" /></td></tr>
 </table>
 </form>';
 $tab_layout->add_tab('Manage Events',$tab_content['manage']);
@@ -381,6 +395,10 @@ $tab_layout->add_tab('Settings',$tab_content['settings']);
 // ----------------------------------------------------------------------------
 
 $tab_content['import'] = NULL;
+
+// FIXME: Remove the warning below
+$tab_content['import'] .= 'This feature does not work yet. It is still in development.<br /><br />';
+
 $tab_content['import'] .= 'Using this tool, you can import calendar information from '.
 	'Google Calendar and other iCal compatible online calendars.';
 
