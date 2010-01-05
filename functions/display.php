@@ -172,21 +172,21 @@ function display_nav_bar($mode = 1) {
 	for ($i = 1; $db->sql_num_rows($nav_menu_handle) >= $i; $i++) {
 		$nav_menu = $db->sql_fetch_assoc($nav_menu_handle);
 		if ($nav_menu['id'] == $page->id) {
-			$return .= $nav_menu['title']."<br />";
+			$return .= stripslashes($nav_menu['title'])."<br />";
 		} else {
 			if ($nav_menu['type'] == 0) {
 				$link = explode('<LINK>',$nav_menu['title']); // Check if menu entry is a link
 				$link_path = $link[1];
-				$link_name = $link[0];
+				$link_name = stripslashes($link[0]);
 				unset($link);
 				$return .= "<a href='".$link_path."'>".$link_name."</a><br />";
 				unset($link_name);
 				unset($link_path);
 			} else {
 				if(strlen($nav_menu['text_id']) > 0) {
-					$return .= "<a href='index.php?page=".$nav_menu['text_id']."'>".$nav_menu['title']."</a><br />";
+					$return .= "<a href='index.php?page=".$nav_menu['text_id']."'>".stripslashes($nav_menu['title'])."</a><br />";
 				} else {
-					$return .= "<a href='index.php?id=".$nav_menu['id']."'>".$nav_menu['title']."</a><br />";
+					$return .= "<a href='index.php?id=".$nav_menu['id']."'>".stripslashes($nav_menu['title'])."</a><br />";
 				}
 			} // IF is link
 		} // IF is not current page

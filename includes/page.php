@@ -103,7 +103,7 @@ function page_delete($id) {
 		$debug->add_trace('Delete query did not delete any entries',true,'page_delete');
 		return false;
 	}
-	log_action('Deleted page \''.$page_info['title'].'\'');
+	log_action('Deleted page \''.stripslashes($page_info['title']).'\'');
 	return true;
 }
 

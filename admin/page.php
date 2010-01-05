@@ -47,7 +47,8 @@ if ($_GET['action'] == 'new') {
 	if ($db->error[$new_page] === 1) {
 		$content .= 'Failed to add page.<br />';
 	} else {
-		$content .= 'Successfully added page.<br />'.log_action('New page \''.$_POST['title'].'\'');
+		$content .= 'Successfully added page.<br />'."\n";
+		log_action('New page \''.$_POST['title'].'\'');
 	}
 } // IF 'new'
 
@@ -57,7 +58,7 @@ if ($_GET['action'] == 'new_link') {
 	$link = $_POST['url'];
 	if (strlen($link) > 10) {
 		$link = htmlentities($link);
-		$name = $_POST['title'];
+		$name = addslashes($_POST['title']);
 		if (strlen($name) > 2) {
 			$title = $name.'<LINK>'.$link;
 			// Add page to database.
@@ -67,7 +68,8 @@ if ($_GET['action'] == 'new_link') {
 			if ($db->error[$new_page] === 1) {
 				$content .= 'Failed to create link to external page.<br />';
 			} else {
-				$content .= 'Successfully created link to external page.<br />'.log_action('New menu link to external page \''.$_POST['title'].'\'');
+				$content .= 'Successfully created link to external page.<br />'."\n";
+				log_action('New menu link to external page \''.$_POST['title'].'\'');
 			}
 		} else {
 			$content .= 'Failed to create link to external page. Invalid link name.<br />';
@@ -96,7 +98,8 @@ if ($_GET['action'] == 'home') {
 				$content .= 'Failed to change home page.<br />';
 			} else {
 				$check_page = $db->sql_fetch_assoc($check_page_handle);
-				$content .= 'Successfully changed home page. '.log_action('Set home page to \''.$check_page['title'].'\'');
+				$content .= 'Successfully changed home page.<br />'."\n";
+				log_action('Set home page to \''.stripslashes($check_page['title']).'\'');
 				$site_info['home'] = $page_id; // Site info was gathered on admin.php, a while back, so we need to reset it to the current value.
 			}
 		} else {
@@ -249,7 +252,8 @@ if ($_GET['action'] == 'editsave') {
 	if ($db->error[$save_handle] === 1) {
 		$content .= 'Failed to edit page.<br />';
 	} else {
-		$content .= 'Updated page information.<br />'.log_action('Updated information for page \''.$title.'\'');
+		$content .= 'Updated page information.<br />'."\n";
+		log_action('Updated information for page \''.stripslashes($title).'\'');
 	}
 } // IF 'editsave'
 
@@ -322,7 +326,7 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 	if (strlen($page_list['text_id']) == 0 && $page_list['type'] != 0) {
 		$tab_content['manage'] .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
 	}
-	$tab_content['manage'] .= $page_list['title'].' ';
+	$tab_content['manage'] .= stripslashes($page_list['title']).' ';
 	if ($page_list['id'] == $site_info['home']) {
 		$tab_content['manage'] .= '(Default)';
 	}

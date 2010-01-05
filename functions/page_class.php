@@ -191,7 +191,7 @@ class page {
 			}
 			$this->url_reference = 'page='.$this->text_id;
 		}
-		$this->title = $page['title'];
+		$this->title = stripslashes($page['title']);
 		$page_type_query = 'SELECT * FROM ' . PAGE_TYPE_TABLE . '
 			WHERE id = '.$page['type'].' LIMIT 1';
 		$page_type_handle = $db->sql_query($page_type_query);
