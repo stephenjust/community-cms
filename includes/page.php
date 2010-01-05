@@ -31,7 +31,7 @@ function page_get_info($id,$fields = array('*')) {
 	// Add backticks to field names and ensure that there are no spaces in field names
 	$field_count = count($fields);
 	for ($i = 0; $i < $field_count; $i++) {
-		if (eregi(' ',$fields[$i])) {
+		if (preg_match('/ /',$fields[$i])) {
 			$debug->add_trace('Removed field "'.$fields[$i].'"',false,'page_get_info');
 			unset($fields[$i]);
 			continue;
