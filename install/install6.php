@@ -29,16 +29,13 @@ $db_prefix = $db->sql_escape_string($CONFIG['db_prefix']);
 $sitename = $db->sql_escape_string($_POST['sitename']);
 $user = $db->sql_escape_string($_POST['adm_user']);
 $pass = $_POST['adm_pass'];
-$pass_conf = $_POST['adm_pass_conf'];
-if ($pass !== $pass_conf || strlen($pass) < 4) {
-	$content .= 'Your passwords did not match, or they were too short.';
-	return true;
-}
 $pass_hash = md5($pass);
+$email = $db->sql_escape_string($_POST['adm_email']);
 $query = str_replace('<!-- $DB_PREFIX$ -->',$db_prefix,$query);
 $query = str_replace('<!-- $SITE_NAME$ -->',$sitename,$query);
 $query = str_replace('<!-- $ADMIN_USER$ -->',$user,$query);
 $query = str_replace('<!-- $ADMIN_PWD$ -->',$pass_hash,$query);
+$query = str_replace('<!-- $ADMIN_EMAIL$ -->',$email,$query);
 // Display schema for the curious user, or advanced user.
 $content .= '<br />'."\n".'<textarea cols="80" rows="20">'.$query.'</textarea><br />'."\n";
 $content .= 'DONE.<br />';

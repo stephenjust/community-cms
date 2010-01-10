@@ -15,7 +15,7 @@ $content .= '<table id="init_settings">'."\n";
 $content .= '<tr><td>Website Name</td><td><input type="text" name="sitename" id="sitename" value="Community CMS Powered Web Site" /></td></tr>';
 $content .= '<tr><td>Administrator Username</td><td><input type="text" name="adm_user" id="adm_user" /></td></tr>';
 $content .= '<tr><td>Administrator Password</td><td><input type="text" name="adm_pass" id="adm_pass" /></td></tr>'."\n";
-$content .= '<tr><td>Confirm Password</td><td><input type="text" name="adm_pass_conf" id="adm_pass_conf" /></td></tr>'."\n";
+$content .= '<tr><td>Administrator Email</td><td><input type="text" name="adm_email" id="adm_email" /></td></tr>'."\n";
 $content .= '<tr><td><input type="submit" value="Next" /></td><td></td></tr>'."\n";
 // ----------------------------------------------------------------------------
 $content .= '</table>'."\n";
