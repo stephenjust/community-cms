@@ -24,4 +24,5 @@ Users		#1		#New User			#user_create		#adm_user_create
 Users		#1		#User List			#user				#adm_user
 Users		#0		#Edit User			#user_edit			#adm_user_edit
 Users		#1		#Groups				#user_groups		#adm_user_groups
-Logs		#1		#View Logs			#log_view			#adm_log_view
+Utilities	#1		#View Logs			#log_view			#adm_log_view
+Utilities	#1		#View Configuration	#config_view		#adm_config_view
