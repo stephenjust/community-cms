@@ -100,6 +100,7 @@ function display_admin() {
 			skin : "o2k7",
 			plugins : "style,layer,table,save,advhr,advimage,advlink,comcmsfilelink,cleanupstyles,iespell,insertdatetime,preview,searchreplace,print,contextmenu,paste,directionality,spellchecker,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
 			invalid_styles : "margin,line-height",
+			content_css : "scripts/tiny_mce/editor_styles.css",
 			theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,help,code",
 			theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,filelink,image,cleanup,|,forecolor,backcolor,|,spellchecker",
 			theme_advanced_buttons3 : "tablecontrols,|,sub,sup,|,charmap,iespell,advhr,|,print,|,ltr,rtl,|,fullscreen",

@@ -62,6 +62,18 @@ div.notification {
 	width: 195px;
 }
 
+/* EDITOR STYLES */
+table.black-border {
+	background-color: #FFFFFF;
+	border: 1px solid #000000 !important;
+	padding: 0px;
+}
+table.black-border td {
+	border: 1px solid #000000 !important;
+	padding: 2px;
+	vertical-align: top;
+}
+
 /* NEWS */
 div.news_item_container {
     position: relative;

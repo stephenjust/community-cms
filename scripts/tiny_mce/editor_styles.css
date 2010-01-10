@@ -1,0 +1,19 @@
+/* 
+    Document   : editor_styles
+    Created on : 9-Jan-2010, 2:49:20 PM
+    Author     : Stephen
+    Description:
+        Custom classes for TinyMCE editor
+*/
+
+table.black-border {
+	background-color: #FFFFFF;
+	border: 1px solid #000000 !important;
+	padding: 0px;
+}
+table.black-border td {
+	border: 1px solid #000000 !important;
+	padding: 2px;
+	vertical-align: top;
+}
+
