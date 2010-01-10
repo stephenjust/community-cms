@@ -49,10 +49,10 @@ class template {
 	}
 
 	private function load_template($path,$file) {
-		global $db; // Used for query
-		global $site_info; //Used for query
+		global $db;
+
 		$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
-			WHERE id = '.$site_info['template'].' LIMIT 1';
+			WHERE id = '.get_config('site_template').' LIMIT 1';
 		$template_handle = $db->sql_query($template_query);
 		try {
 			if (!$template_handle || $db->sql_num_rows($template_handle) == 0) {

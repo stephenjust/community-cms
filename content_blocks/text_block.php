@@ -6,7 +6,6 @@ if (@SECURITY != 1) {
 global $acl;
 global $db;
 global $page;
-global $site_info;
 
 // Load configuration
 $news_config_query = 'SELECT * FROM ' . NEWS_CONFIG_TABLE . ' LIMIT 1';

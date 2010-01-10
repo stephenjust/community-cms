@@ -19,7 +19,6 @@ function adm_display_replace_placeholders($template) {
 }
 
 function adm_display_header($title = 'Community CMS Administration') {
-	global $site_info;
 	$template = new template;
 	$template->load_admin_file('header');
 	$template->scripts = '<link type="text/css"

@@ -59,7 +59,6 @@ function display_admin() {
 	global $CONFIG;
 	global $db;
 	global $acl;
-	global $site_info;
 	$template_page = new template;
 	$template_page->load_admin_file();
 	$page_title = 'Community CMS Administration';

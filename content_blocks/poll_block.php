@@ -4,7 +4,6 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
-global $site_info;
 global $acl;
 $poll_block = new block;
 $poll_block->block_id = $block_info['id'];

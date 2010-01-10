@@ -13,7 +13,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 }
 $content = NULL;
 
-if (!isset($site_info['admin_email']) || $site_info['admin_email'] == NULL) {
+if (get_config('admin_email') == NULL) {
 	$content .= 'You need to set an admin email in the website configuration
 		to use this feature.';
 } else {
@@ -35,7 +35,7 @@ if (!isset($site_info['admin_email']) || $site_info['admin_email'] == NULL) {
 		}
 		$subject .= ' from '.$_SERVER['SERVER_ADDR'].' ('.$_SERVER['SERVER_NAME'].')';
 		$message = addslashes(strip_tags($_POST['content']));
-		$headers = 'From: '.$site_info['admin_email'].''."\r\n".
+		$headers = 'From: '.get_config('admin_email').''."\r\n".
 			'X-Mailer: PHP/' . phpversion();
 		if(mail($to,$subject,$message,$headers)) {
 			$content .= 'Message sent.';

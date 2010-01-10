@@ -13,9 +13,9 @@ if(@ !include('../config.php')) {
 	include (ROOT . 'functions/main.php');
 	include (ROOT . 'includes/constants.php');
 	initialize();
-    $page .= 'Currently installed database version: '.$site_info['db_version']."<br />\n";
+    $page .= 'Currently installed database version: '.get_config('db_version')."<br />\n";
     $page .= 'Update to: '.$new_db_version."<br />\n";
-    if($site_info['db_version'] < $new_db_version) {
+    if(get_config('db_version') < $new_db_version) {
         $page .= '<a href="update_db.php">Update Database</a>';
     } else {
         $page .= 'You already have the latest version of the database.';

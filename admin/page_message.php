@@ -49,7 +49,7 @@ $i = 1;
 while ($i <= $db->sql_num_rows($page_query_handle)) {
 	$page = $db->sql_fetch_assoc($page_query_handle);
 	if (!isset($_POST['page'])) {
-		$_POST['page'] = $site_info['home'];
+		$_POST['page'] = get_config('home');
 	}
 	if (!eregi('<LINK>',$page['title'])) {
 		if ($page['id'] == $_POST['page']) {

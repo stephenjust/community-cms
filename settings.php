@@ -31,7 +31,7 @@ if (!include_once('./include.php')) {
 initialize();
 checkuser();
 
-if ($site_info['active'] == 0) {
+if (get_config('site_active') == 0) {
 	err_page(12);
 }
 
@@ -40,7 +40,7 @@ $page = new page;
 $page->set_type('settings_main');
 // Display the page.
 $page->display_header();
-display_page($site_info);
+display_page();
 if (DEBUG === 1) {
 	$debug->display_traces();
 }

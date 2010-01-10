@@ -11,7 +11,6 @@ if (@SECURITY != 1) {
 	die('You cannot access this page directly.');
 }
 global $db;
-global $site_info;
 global $page;
 $content = NULL;
 $current_contact = NULL;

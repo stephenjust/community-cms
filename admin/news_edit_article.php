@@ -54,7 +54,7 @@ if ($_GET['action'] == 'edit') {
 		while ($i <= $db->sql_num_rows($page_query_handle)) {
 			$page = $db->sql_fetch_assoc($page_query_handle);
 			if ($page['id'] == $edit['page']) {
-				$content .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
+				$content .= '<option value="'.$page['id'].'" selected />'.stripslashes($page['title']).'</option>';
 			} else {
 				$content .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
 			}

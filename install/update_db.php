@@ -89,7 +89,7 @@ $query[] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `db_version` = 0.02';
 $num_queries = count($query);
 
 // Skip update if you already have the latest version of the db...
-if ($site_info['db_version'] == 0.02) {
+if (get_config('db_version') == 0.02) {
 	echo 'You already have the latest version of the database.';
 	clean_up();
 	echo "</body>\n</html>\n";

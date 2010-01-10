@@ -368,7 +368,7 @@ switch ($_GET['action']) {
 			}
 			if ($db->sql_num_rows($page_title_handle) == 1) {
 				$page_title_ = $db->sql_fetch_assoc($page_title_handle);
-				$page_title = $page_title_['title'];
+				$page_title = stripslashes($page_title_['title']);
 			} else {
 				$page_title = 'No Page';
 			}
@@ -396,15 +396,15 @@ for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
 		} else {
 			$_POST['page'] = $page['id'];
 		}
-    }
-    if ($page['id'] == $_POST['page']) {
-        $page_list .= '<option value="'.$page['id'].'" selected />'.
-            $page['title'].'</option>';
-    } else {
-        $page_list .= '<option value="'.$page['id'].'" />'.
-            $page['title'].'</option>';
-    }
-    $pages[$i] = $page['id'];
+	}
+	if ($page['id'] == $_POST['page']) {
+		$page_list .= '<option value="'.$page['id'].'" selected />'.
+			stripslashes($page['title']).'</option>';
+	} else {
+		$page_list .= '<option value="'.$page['id'].'" />'.
+			stripslashes($page['title']).'</option>';
+	}
+	$pages[$i] = $page['id'];
 } // FOR $i
 if ($_POST['page'] == 0) {
     $no_page = 'selected';

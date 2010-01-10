@@ -252,10 +252,10 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 	// Format start time and end time
 	$temp = explode(':',$cal['starttime']);
 	$start_time_temp = mktime((int)$temp[0],(int)$temp[1]);
-	$starttime = date($site_info['time_format'],$start_time_temp);
+	$starttime = date(get_config('time_format'),$start_time_temp);
 	$temp = explode(':',$cal['endtime']);
 	$end_time_temp = mktime((int)$temp[0],(int)$temp[1]);
-	$endtime = date($site_info['time_format'],$end_time_temp);
+	$endtime = date(get_config('time_format'),$end_time_temp);
 	unset($temp);
 	unset($start_time_temp);
 	unset($end_time_temp);

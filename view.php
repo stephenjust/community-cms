@@ -35,11 +35,6 @@ if(!isset($_GET['view'])) {
     $_GET['view'] = NULL;
 }
 
-// Load global site information.
-$site_info_query = 'SELECT * FROM '.$CONFIG['db_prefix'].'config';
-$site_info_handle = $db->sql_query($site_info_query);
-$site_info = $db->sql_fetch_assoc($site_info_handle);
-
 if(!isset($_GET['article_id'])) {
     $_GET['article_id'] = "";
 }

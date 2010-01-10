@@ -54,18 +54,9 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_settings` (
 ) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
-	`db_version` decimal(6,2) NOT NULL,
-	`name` text NOT NULL,
-	`url` text NOT NULL,
-	`admin_email` text NULL,
-	`comment` text NOT NULL,
-	`time_format` text NOT NULL,
-	`template` int(11) NOT NULL,
-	`footer` text NOT NULL,
-	`active` tinyint(1) NOT NULL,
-	`cookie_name` text NOT NULL,
-	`cookie_path` text NOT NULL,
-	`home` int(4) NOT NULL default '1'
+	`config_name` varchar(255) NOT NULL,
+	`config_value` varchar(255) NOT NULL,
+	PRIMARY KEY (`config_name`)
 ) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE `<!-- $DB_PREFIX$ -->contacts` (
@@ -87,14 +78,14 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
   `label` text NOT NULL,
   `path` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM CHARACTER SET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->locations` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`value` text COLLATE utf8_general_ci NOT NULL,
 	PRIMARY KEY (`id`),
 	FULLTEXT KEY `value` (`value`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
   `log_id` int(11) NOT NULL auto_increment,
@@ -110,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
 	`recipient` INT(5) NOT NULL DEFAULT '1',
 	`message` TEXT NOT NULL,
 	PRIMARY KEY (`id`)
-	) ENGINE = MYISAM CHARACTER SET=utf8;
+) ENGINE = MYISAM CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	`id` int(11) NOT NULL auto_increment,

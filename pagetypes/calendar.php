@@ -12,7 +12,6 @@ if (@SECURITY != 1) {
 }
 global $page;
 global $page_content_info;
-global $site_info;
 $day = (isset($_GET['d']) && $_GET['d'] >= 1 && $_GET['d'] <= 31) ? (int)$_GET['d'] : date('d');
 $month = (isset($_GET['m']) && $_GET['m'] >= 0 && $_GET['m'] <= 13) ? (int)$_GET['m'] : date('n');
 $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$_GET['y'] : date('Y');
@@ -224,8 +223,8 @@ switch ($_GET['view']) {
 			if ($event_start == $event_end) {
 				$event_time = 'All day';
 			} else {
-				global $site_info;
-				$event_time = date($site_info['time_format'],$event_start).' - '.date($site_info['time_format'],$event_end);
+				$event_time = date(get_config('time_format'),$event_start).' - '.
+						date(get_config('time_format'),$event_end);
 			}
 			$current_event = $event_template;
 			$current_event = str_replace('<!-- $EVENT_ID$ -->',$day_events['id'],$current_event);

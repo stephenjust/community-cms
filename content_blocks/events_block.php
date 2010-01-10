@@ -4,7 +4,6 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
-global $site_info;
 $event_block = new block;
 $event_block->block_id = $block_info['id'];
 $bl_return = NULL;

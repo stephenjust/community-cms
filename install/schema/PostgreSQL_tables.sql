@@ -84,18 +84,9 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->calendar_settings" (
 -- comcms_config
 -- ----------------------------------------------------------------------------
 CREATE TABLE "<!-- $DB_PREFIX$ -->config" (
-	"db_version" decimal(6,2) NOT NULL,
-	"name" text NOT NULL,
-	"url" text NOT NULL,
-	"admin_email" text NULL,
-	"comment" text NOT NULL,
-	"time_format" text NOT NULL,
-	"template" integer NOT NULL,
-	"footer" text NOT NULL,
-	"active" integer NOT NULL,
-	"cookie_name" text NOT NULL,
-	"cookie_path" text NOT NULL,
-	"home" integer NOT NULL default '1'
+	"config_name" varchar(255) NOT NULL,
+	"config_value" varchar(255) NOT NULL,
+	PRIMARY KEY ("config_name")
 );
 
 -- ----------------------------------------------------------------------------

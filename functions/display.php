@@ -21,11 +21,10 @@ if (@SECURITY != 1) {
  * @global object $page
  * @global int $page_not_found
  * @global string $special_title
- * @param array $site_info
  * @param string $view
  * @return void
  */
-function display_page($site_info,$view="") {
+function display_page($view="") {
 	global $db;
 	global $page;
 
@@ -47,7 +46,7 @@ function display_page($site_info,$view="") {
 	// Check to make sure the page actually exists
 	global $page_not_found;
 	if ($page_not_found == 1) {
-		$page->title = 'Page Not Found - '.$site_info['name'];
+		$page->title = 'Page Not Found - '.get_config('site_name');
 	} else {
 		// Begin operations that only take place if the page really exists
 
@@ -123,7 +122,7 @@ function display_page($site_info,$view="") {
 	$template_page->page_message = $page_message;
 	$template_page->left_content = $left_blocks_content;
 	$template_page->right_content = $right_blocks_content;
-	$template_page->footer = stripslashes($site_info['footer']).$query_debug;
+	$template_page->footer = get_config('footer').$query_debug;
 	$template_page->nav_bar = display_nav_bar();
 	$template_page->nav_login = display_login_box();
 	$template_page->admin_include = $admin_include;
@@ -140,7 +139,7 @@ function display_page($site_info,$view="") {
 	if(strlen($page->notification) > 0) {
 		$page->notification = '<div class="notification">'.$page->notification.'</div>';
 	}
-	$page->title .= ' - '.$special_title.$site_info['name'];
+	$page->title .= ' - '.$special_title.get_config('site_name');
 	$template_page->page_title = $page->title;
 	$template_page->notification = $page->notification;
 	echo $template_page;

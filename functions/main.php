@@ -19,7 +19,6 @@ if (@SECURITY != 1) {
  * @global object $acl
  * @global object $db
  * @global object $debug
- * @global array $site_info
  */
 function initialize($mode = NULL) {
 	// Report all PHP errors
@@ -38,7 +37,6 @@ function initialize($mode = NULL) {
 
 	global $db;
 	global $debug;
-	global $site_info;
 	global $acl;
 
 	require_once(ROOT . 'includes/debug.php');
@@ -51,21 +49,92 @@ function initialize($mode = NULL) {
 	if (!$db->connect) {
 		err_page(1001); // Database connection error
 	}
-	// Load global site information.
-	$site_info_query = 'SELECT * FROM ' . CONFIG_TABLE;
-	$site_info_handle = $db->sql_query($site_info_query);
-	if ($db->error[$site_info_handle]) {
-		die('Failed to get site information.');
-	}
-	$site_info = $db->sql_fetch_assoc($site_info_handle);
 
-	session_name(stripslashes($site_info['cookie_name']));
+	session_name(get_config('cookie_name'));
 	session_start();
 	return;
 }
 function clean_up() {
 	global $db;
 	@ $db->sql_close();
+}
+
+/**
+ * Get configuration value from the database
+ * @global object $db Database connection object
+ * @param string $config_name Name of configuration value to look up
+ * @return mixed Configuration value, or NULL if failure 
+ */
+function get_config($config_name) {
+	// Validate parameters
+	if (!is_string($config_name)) {
+		return NULL;
+	}
+	if (strlen($config_name) < 1) {
+		return NULL;
+	}
+
+	$config_name = addslashes($config_name);
+
+	global $db;
+
+	$query = "SELECT * FROM `".CONFIG_TABLE."`
+		WHERE `config_name` = '$config_name' LIMIT 1";
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1) {
+		return NULL;
+	}
+	if ($db->sql_num_rows($handle) != 1) {
+		return NULL;
+	}
+	$result = $db->sql_fetch_assoc($handle);
+	return stripslashes($result['config_value']);
+}
+
+/**
+ * Set a configuration value
+ * @global object $db Database connection object
+ * @param string $config_name Name of configuration value to set
+ * @param string $config_value
+ * @return boolean True if success, false if error
+ */
+function set_config($config_name,$config_value) {
+	// Validate parameters
+	if (!is_string($config_name)) {
+		return false;
+	}
+	if (strlen($config_name) < 1) {
+		return false;
+	}
+	if (is_array($config_value)) {
+		return false;
+	}
+	if (strlen($config_value) < 1) {
+		return true; // Not changed because we can't accept null values
+	}
+
+	$config_name = addslashes($config_name);
+	$config_value = addslashes($config_value);
+
+	global $db;
+
+	// Check if value already exists in database
+	if (!is_null(get_config($config_name))) {
+		// Value exists
+		$set_query = "UPDATE `".CONFIG_TABLE."`
+			SET `config_value` = '$config_value'
+			WHERE `config_name` = '$config_name'";
+	} else {
+		// Value does not exist
+		$set_query = "INSERT INTO `".CONFIG_TABLE."`
+			(`config_name`,`config_value`)
+			VALUES ('$config_name','$config_value')";
+	}
+	$set_handle = $db->sql_query($set_query);
+	if ($db->error[$set_handle] === 1) {
+		return false;
+	}
+	return true;
 }
 
 /**

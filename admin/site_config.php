@@ -27,16 +27,20 @@ if ($_GET['action'] == 'save') {
 	$cookie_path = addslashes($_POST['cookie_path']);
 	$time_format = addslashes($_POST['time_format']);
 	$footer = addslashes($_POST['footer']);
-	$site_info_update_query = 'UPDATE ' . CONFIG_TABLE . "
-		SET `name`='$site_name',`url`='$site_url',`admin_email`='$admin_email',
-		`comment`='$site_desc',`active`=".checkbox($_POST['active']).",
-		`cookie_name`='$cookie_name',`cookie_path`='$cookie_path',
-		`time_format`='$time_format',`footer`='$footer'";
-	$site_info_update_handle = $db->sql_query($site_info_update_query);
-	if ($db->error[$site_info_update_handle] === 1) {
-		$content .= 'Failed to update site information.<br />';
+	if (set_config('site_name',$site_name) &&
+		set_config('site_url',$site_url) &&
+		set_config('admin_email',$admin_email) &&
+		set_config('comment',$site_desc) &&
+		set_config('site_active',checkbox($_POST['active'])) &&
+		set_config('cookie_name',$cookie_name) &&
+		set_config('cookie_path',$cookie_path) &&
+		set_config('time_format',$time_format) &&
+		set_config('footer',$footer))
+	{
+		$content .= 'Successfully edited site information.<br />'."\n";
+		log_action('Updated site information.');
 	} else {
-		$content .= 'Successfully edited site information.<br />'.log_action('Updated site information.');
+		$content .= 'Failed to update site information.<br />'."\n";
 	}
 } // IF 'save'
 
@@ -45,27 +49,21 @@ if ($_GET['action'] == 'save') {
 $tab_layout = new tabs;
 
 $tab_content['config'] = NULL;
-$config_query = 'SELECT * FROM ' . CONFIG_TABLE . ' LIMIT 1';
-$config_handle = $db->sql_query($config_query);
-if (!$config_handle) {
-	$tab_content['config'] .= 'Failed to load configuration information from the database.';
-}
-$current_config = $db->sql_fetch_assoc($config_handle);
 $form = new form;
 $form->set_target('admin.php?module=site_config&amp;action=save');
 $form->set_method('post');
-$form->add_textbox('site_name','Site Name',stripslashes($current_config['name']));
-$form->add_textbox('site_desc','Site Description',stripslashes($current_config['comment']));
-$form->add_textbox('site_url','Site URL',stripslashes($current_config['url']));
-$form->add_textbox('admin_email','Admin E-Mail Address',stripslashes($current_config['admin_email']));
+$form->add_textbox('site_name','Site Name',get_config('site_name'));
+$form->add_textbox('site_desc','Site Description',get_config('comment'));
+$form->add_textbox('site_url','Site URL',get_config('site_url'));
+$form->add_textbox('admin_email','Admin E-Mail Address',get_config('admin_email'));
 $form->add_select('time_format','Time Format',
 		array('g:i a','g:i A','h:i a','h:i A','G:i','H:i'),
 		array('4:05 am','4:05 AM','04:05 am','04:05 AM','4:05','04:05'),
-		stripslashes($current_config['time_format']));
-$form->add_textarea('footer','Footer Text',stripslashes($current_config['footer']));
-$form->add_textbox('cookie_name','Cookie Name',stripslashes($current_config['cookie_name']));
-$form->add_textbox('cookie_path','Cookie Path',stripslashes($current_config['cookie_path']));
-$form->add_checkbox('active','Site Active',$current_config['active']);
+		get_config('time_format'));
+$form->add_textarea('footer','Footer Text',get_config('footer'));
+$form->add_textbox('cookie_name','Cookie Name',get_config('cookie_name'));
+$form->add_textbox('cookie_path','Cookie Path',get_config('cookie_path'));
+$form->add_checkbox('active','Site Active',get_config('site_active'));
 // TODO: template, disable messaging
 $form->add_submit('submit','Save Configuration');
 $tab_content['config'] .= $form;

@@ -92,15 +92,12 @@ if ($_GET['action'] == 'home') {
 			$content .= 'Failed to check if page exists.<br />';
 		}
 		if ($db->sql_num_rows($check_page_handle) == 1) {
-			$home_query = 'UPDATE ' . CONFIG_TABLE . " SET home=$page_id";
-			$home = $db->sql_query($home_query);
-			if($db->error[$home] === 1) {
+			if(!set_config('home',$page_id)) {
 				$content .= 'Failed to change home page.<br />';
 			} else {
 				$check_page = $db->sql_fetch_assoc($check_page_handle);
 				$content .= 'Successfully changed home page.<br />'."\n";
 				log_action('Set home page to \''.stripslashes($check_page['title']).'\'');
-				$site_info['home'] = $page_id; // Site info was gathered on admin.php, a while back, so we need to reset it to the current value.
 			}
 		} else {
 			$content .= 'Could not find the page you are trying to delete.';
@@ -321,13 +318,12 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		$page_list['title'] = explode('<LINK>',$page_list['title']);
 		$page_list['title'] = $page_list['title'][0].' (Link)';
 	}
-	global $site_info;
 	$tab_content['manage'] .= '<tr class="'.$rowstyle.'"><td>';
 	if (strlen($page_list['text_id']) == 0 && $page_list['type'] != 0) {
 		$tab_content['manage'] .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
 	}
 	$tab_content['manage'] .= stripslashes($page_list['title']).' ';
-	if ($page_list['id'] == $site_info['home']) {
+	if ($page_list['id'] == get_config('home')) {
 		$tab_content['manage'] .= '(Default)';
 	}
 	if ($page_list['menu'] == 0) {

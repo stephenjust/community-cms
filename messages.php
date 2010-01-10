@@ -58,7 +58,7 @@ $message_list_query = 'SELECT * FROM ' . MESSAGE_TABLE . '
 	WHERE recipient = '.(int)$_SESSION['userid'].' ORDER BY id DESC';
 $message_list_handle = $db->sql_query($message_list_query);
 $message_num_rows = $db->sql_num_rows($message_list_handle);
-$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . ' WHERE id = '.$site_info['template'].' LIMIT 1';
+$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . ' WHERE id = '.get_config('template').' LIMIT 1';
 $template_handle = $db->sql_query($template_query);
 $template = $db->sql_fetch_assoc($template_handle);
 $template_path = $template['path'];
@@ -95,7 +95,7 @@ $template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
 $template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
 $template = str_replace('<!-- $CONTENT$ -->',$content,$template);
 $template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
-$template = str_replace('<!-- $FOOTER$ -->',stripslashes($site_info['footer']),$template);
+$template = str_replace('<!-- $FOOTER$ -->',get_config('footer'),$template);
 echo $template;
 
 // Close database connections and clean up loose ends.

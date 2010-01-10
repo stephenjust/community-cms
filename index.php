@@ -45,13 +45,13 @@ if (DEBUG === 1) {
 initialize();
 
 // Check for up-to-date database
-if($site_info['db_version'] != $required_db_version) {
+if(get_config('db_version') != $required_db_version) {
 	err_page(10); // Wrong DB Version
 }
 
 // Initialize some variables to keep PHP from complaining.
 if (!isset($_GET['id']) && !isset($_GET['page'])) {
-	$page_id = $site_info['home'];
+	$page_id = get_config('home');
 	$page_text_id = NULL;
 } else {
 	if (isset($_GET['page'])) {
@@ -81,7 +81,7 @@ if ($_GET['login'] == 1) {
 	logout();
 }
 checkuser();
-if ($site_info['active'] == 0) {
+if (get_config('site_active') == 0) {
 	err_page(12);
 }
 
@@ -102,7 +102,7 @@ if (file_exists('./install')) {
 // Display the page.
 $page->display_header();
 $page->display_content();
-display_page($site_info,$_GET['view']);
+display_page($_GET['view']);
 if (DEBUG === 1) {
 	$debug->display_traces();
 }
