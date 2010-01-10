@@ -30,6 +30,8 @@ $CONFIG['db_user'] = $_POST['db_user'];
 $CONFIG['db_pass'] = $_POST['db_pass'];
 $CONFIG['db_prefix'] = $_POST['db_pfix'];
 
+include_once ('../functions/main.php');
+include_once ('../includes/constants.php');
 include_once ('../includes/db/db.php');
 if (!$db->sql_connect()) {
 	die('Failed to connect to the database.');
@@ -40,9 +42,9 @@ $content = '<h1>Step 3: Create/Update Tables</h1>'."\n";
 $error = 0;
 
 // Check if the database is being installed or updated.
-$db_version_query = 'SELECT `db_version` FROM `'.$CONFIG['db_prefix'].'config`';
+$db_version_query = 'SELECT `db_version` FROM `'.CONFIG_TABLE.'`';
 @$db_version_handle = $db->sql_query($db_version_query);
-if ($db->error[$db_version_handle] === 1) {
+if ($db->error[$db_version_handle] === 1 && !get_config('db_version')) {
 	// Install
 	$content .= 'Loading table schema for '.$_POST['db_engine'].'... ';
 	$schema_file = './schema/'.$_POST['db_engine'].'_tables.sql';
