@@ -17,12 +17,11 @@ $month = (isset($_GET['m']) && $_GET['m'] >= 0 && $_GET['m'] <= 13) ? (int)$_GET
 $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$_GET['y'] : date('Y');
 include(ROOT . 'pagetypes/calendar_class.php');
 include(ROOT . 'functions/calendar.php');
-$calendar_settings = calendar_settings();
 if (!isset($_GET['view'])) {
-	$_GET['view'] = $calendar_settings['default_view'];
+	$_GET['view'] = get_config('calendar_defualt_view');
 }
 if ($_GET['view'] != 'month' && $_GET['view'] != 'day' && $_GET['view'] != 'event') {
-	$_GET['view'] = $calendar_settings['default_view'];
+	$_GET['view'] = get_config('calendar_default_view');
 }
 switch ($_GET['view']) {
 	// MONTH VIEW
@@ -49,7 +48,7 @@ switch ($_GET['view']) {
 		$template_month->next_year = $month_cal->next_year;
 
 		// Insert day names according to chosen format
-		if ($calendar_settings['month_day_format'] == 1) {
+		if (get_config('calendar_month_day_format') == 1) {
 			$template_month->cal_sunday = 'Sunday';
 			$template_month->cal_monday = 'Monday';
 			$template_month->cal_tuesday = 'Tuesday';
@@ -130,11 +129,11 @@ switch ($_GET['view']) {
 				}
 				$dates .= '<a href="?'.$page->url_reference.'&amp;view=event&amp;'
 					.'a='.$day_info['id'].'" class="calendar_event">';
-				if ($calendar_settings['month_show_cat_icons'] == 1) {
+				if (get_config('calendar_month_show_cat_icons') == 1) {
 					$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'
 					.' width="10px" height="10px" alt="'.stripslashes($day_info['label']).'" border="0px" /> ';
 				}
-				if ($calendar_settings['month_show_stime'] == 1
+				if (get_config('calendar_month_show_stime') == 1
 						&& $day_info['starttime'] != $day_info['endtime']) {
 					$stime_tmp = explode(':',$day_info['starttime']);
 					$stime_tmp = mktime($stime_tmp[0],$stime_tmp[1]);

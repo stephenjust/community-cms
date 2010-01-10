@@ -11,38 +11,6 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
-/**
- * calendar_settings - Load calendar settings from the database
- * @global object $db
- * @global object $debug
- * @return array
- */
-function calendar_settings() {
-	global $db;
-	global $debug;
-	$query = 'SELECT * FROM `' . CALENDAR_SETTINGS_TABLE . '` LIMIT 1';
-	$handle = $db->sql_query($query);
-	if ($db->error[$handle] === 1) {
-		$debug->add_trace('Failed to check calendar settings',true,'calendar_settings()');
-		// Return default settings
-		return array('default_view' => 'month',
-					'month_show_stime' => 1,
-					'month_show_cat_icons' => 1,
-					'month_day_format' => 1,
-					'save_locations' => 1);
-	}
-	if ($db->sql_num_rows($handle) != 1) {
-		$debug->add_trace('No calendar settings. Please repair database.',true,'calendar_settings()');
-		// Return default settings
-		return array('default_view' => 'month',
-					'month_show_stime' => 1,
-					'month_show_cat_icons' => 1,
-					'month_day_format' => 1,
-					'save_locations' => 1);
-	}
-	return $db->sql_fetch_assoc($handle);
-}
-
 // ----------------------------------------------------------------------------
 
 /**

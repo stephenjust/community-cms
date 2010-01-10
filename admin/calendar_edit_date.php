@@ -13,7 +13,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 }
 
 include('./functions/calendar.php');
-$calendar_settings = calendar_settings();
 
 $content = NULL;
 switch ($_GET['action']) {
@@ -26,7 +25,7 @@ switch ($_GET['action']) {
 		$date = (isset($_POST['date'])) ? (int)$_POST['date'] : NULL;
 
 		// Save location
-		if ($calendar_settings['save_locations'] == 1) {
+		if (get_config('calendar_save_locations') == 1) {
 			if (!isset($location) || strlen($location) < 2) {
 				$debug->add_trace('No location given',false,'calendar.php');
 			} else {

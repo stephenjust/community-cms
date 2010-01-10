@@ -6,10 +6,13 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
 (0, 'Default Category', 'red', ''),
 (1, 'Other', 'yellow', '');;
-INSERT INTO `<!-- $DB_PREFIX$ -->calendar_settings` (`default_view`, `month_show_stime`, `month_show_cat_icons`, `month_day_format`,`save_locations`) VALUES
-('month',1,1,1,1);;
 INSERT INTO `<!-- $DB_PREFIX$ -->config` (`config_name`, `config_value`) VALUES
 ('admin_email','<!-- $ADMIN_EMAIL$ -->'),
+('calendar_month_day_format','1'),
+('calendar_default_view','month'),
+('calendar_month_show_cat_icons','1'),
+('calendar_month_show_stime','1'),
+('calendar_save_locations','1'),
 ('comment','Downloaded from SourceForge.net'),
 ('cookie_name','cms_session'),
 ('cookie_path','/'),
