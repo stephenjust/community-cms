@@ -57,22 +57,24 @@ switch ($_GET['action']) {
 		break;
 	case 'new':
 		$_POST['file_list'] = (isset($_POST['file_list'])) ? $_POST['file_list'] : NULL;
+		$label = addslashes($_POST['label']);
 		if (strlen($_POST['file_list']) <= 3) {
 			$content .= 'No file selected.';
 		} else {
 			$new_article_query = 'INSERT INTO ' . NEWSLETTER_TABLE . "
 				(label,page,year,month,path) VALUES
-				('".$_POST['label']."',".$_POST['page'].",".$_POST['year'].",
+				('$label',".$_POST['page'].",".$_POST['year'].",
 				".$_POST['month'].",'".$_POST['file_list']."')";
 			$new_article = $db->sql_query($new_article_query);
 			if ($db->error[$new_article] === 1) {
-				$content .= 'Failed to add article.<br />';
+				$content .= 'Failed to add newsletter.<br />';
 			} else {
 				$page_query = 'SELECT title FROM ' . PAGE_TABLE . '
 					WHERE id = '.$_POST['page'].' LIMIT 1';
 				$page_handle = $db->sql_query($page_query);
 				$page = $db->sql_fetch_assoc($page_handle);
-				$content .= 'Successfully added newsletter entry. '.log_action('Newsletter \''.$_POST['label'].'\' added to '.$page['title']);
+				$content .= 'Successfully added newsletter entry. ';
+				log_action('Newsletter \''.$_POST['label'].'\' added to '.stripslashes($page['title']));
 			}
 		}
 		break;
@@ -154,9 +156,9 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
 		$first = 1;
 	}
 	if ($page['id'] == $_POST['page']) {
-		$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>'."\n";
+		$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.stripslashes($page['title']).'</option>'."\n";
 	} else {
-		$tab_content['manage'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>'."\n";
+		$tab_content['manage'] .= '<option value="'.$page['id'].'" />'.stripslashes($page['title']).'</option>'."\n";
 		if ($first == 1 && $page['id'] != $_POST['page']) {
 			$_POST['page'] = $page['id'];
 			$first = 0;

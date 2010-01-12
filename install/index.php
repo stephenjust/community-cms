@@ -45,6 +45,6 @@ $template = str_replace('<!-- $PAGE_TITLE$ -->','Community CMS Installer',$templ
 $template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
 $template = str_replace('<!-- $CONTENT$ -->',$content,$template);
 // $template = str_replace('<!-- $UPDATE_CONTENT$ -->',include('./update.php'),$template);
-$template = str_replace('<!-- $FOOTER$ -->','Community CMS Copyright&copy; 2007 - 2009 Stephen Just',$template);
+$template = str_replace('<!-- $FOOTER$ -->','Community CMS Copyright&copy; 2007 - 2010 Stephen Just',$template);
 echo $template;
 ?>

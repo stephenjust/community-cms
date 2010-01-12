@@ -83,11 +83,22 @@ function file_upload($path = "", $contentfile = true) {
 	} else {
 		$target = ROOT.$path;
 	}
-	$target .= basename( $_FILES['upload']['name']) ;
-	$ok=1;
+	$filename = basename($_FILES['upload']['name']);
+	$target .= $filename ;
+	$target = replace_file_special_chars($target);
+	$filename = replace_file_special_chars($filename);
+
+	// Check if a file by that name already exists
+	if (file_exists($target)) {
+		return 'A file by that name already exists. Plesae use a different '.
+			'file name or delete the old file before attempting to upload '.
+			'the file again.';
+	}
+
+	// Move the temporary file to its new location
 	if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
-		$return = "The file ". basename( $_FILES['upload']['name']). " has been uploaded. ";
-		$return .= log_action ('Uploaded file '.$_FILES['upload']['name']);
+		$return = "The file " . $filename . " has been uploaded. ";
+		log_action ('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
 	} else {
 		$return = "Sorry, there was a problem uploading your file.";
 	}
@@ -252,5 +263,20 @@ function get_file_info($file) {
 		}
 	}
 	return $file_info;
+}
+
+/**
+ * Replace special or problematic characters in file name with underscores
+ * @param string $filename Filename to escape
+ * @return string New filename
+ */
+function replace_file_special_chars($filename) {
+	// Validate parameters
+	if (!is_string($filename)) {
+		return false;
+	}
+
+	$filename = str_replace(array('\'','"','?','+','@','#','$','!'),'_',$filename);
+	return $filename;
 }
 ?>
