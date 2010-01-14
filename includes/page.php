@@ -139,4 +139,137 @@ function page_unhide() {
 	// FIXME: Stub
 	// Could this be done by page_hide()?
 }
+
+/**
+ * Clean the list values for the pages in the database
+ * @global object $db Database connection object
+ * @param integer $parent Parent of pages to reorder (0 for root)
+ * @return boolean
+ */
+function page_clean_order($parent = 0) {
+	global $db;
+
+	if (!is_numeric($parent) || is_array($parent)) {
+		return false;
+	}
+	$parent = (int)$parent;
+
+	$page_list_query = 'SELECT * FROM ' . PAGE_TABLE . '
+		WHERE `parent` = '.$parent.' ORDER BY `list` ASC';
+	$page_list_handle = $db->sql_query($page_list_query);
+	if($db->error[$page_list_handle] === 1) {
+		// Quit the whole loop
+		return false;
+	} elseif ($db->sql_num_rows($page_list_handle) == 0 && $parent != 0) {
+		// Continue to the next iteration
+		return true;
+	} elseif ($db->sql_num_rows($page_list_handle) == 0 && $parent == 0) {
+		// For some reason, there is no top level pages. Abort.
+		return false;
+	} else {
+		$page_list_rows = $db->sql_num_rows($page_list_handle);
+
+		$subpages = array();
+
+		// Reorder pages
+		for ($i = 0; $i < $page_list_rows; $i++) {
+			$page_list = $db->sql_fetch_assoc($page_list_handle);
+			$move_page_query = 'UPDATE ' . PAGE_TABLE . '
+				SET list = '.$i.' WHERE id = '.$page_list['id'];
+			$move_page = $db->sql_query($move_page_query);
+			if ($db->error[$move_page] === 1) {
+				$content = 'Failed to optimize page order.<br />';
+			}
+			$subpages[] = $page_list['id'];
+		}
+
+		for ($i = 0; $i < count($subpages); $i++) {
+			// Reorder sub-pages
+			page_clean_order($subpages[$i]);
+		}
+	}
+	return true;
+}
+
+/**
+ * Move a page up the list in the site structure
+ * @global object $db Database connection object
+ * @param integer $id Page ID to move up
+ * @return boolean
+ */
+function page_move_up($id) {
+	global $db;
+
+	if (!is_numeric($id) || is_array($id)) {
+		return false;
+	}
+	$id = (int)$id;
+
+	$page_info = page_get_info($id,array('id','list','parent'));
+	if (!$page_info)  {
+		return false;
+	}
+
+	$start_pos = $page_info['list'];
+	$end_pos = $page_info['list'] - 1;
+	$move_down_query1 = 'SELECT id,list FROM ' . PAGE_TABLE . "
+		WHERE `list` = $end_pos
+		AND `parent` = {$page_info['parent']} LIMIT 1";
+	$move_down1 = $db->sql_query($move_down_query1);
+	if ($db->sql_num_rows($move_down1) != 1) {
+		return false;
+	}
+	$move_down_handle1 = $db->sql_fetch_assoc($move_down1);
+	$move_up_query2 = 'UPDATE ' . PAGE_TABLE . '
+		SET list = '.$end_pos.' WHERE id = '.$page_info['id'];
+	$move_up_query3 = 'UPDATE ' . PAGE_TABLE . '
+		SET list = '.$start_pos.' WHERE id = '.$move_down_handle1['id'];
+	$move_up_handle2 = $db->sql_query($move_up_query2);
+	$move_up_handle3 = $db->sql_query($move_up_query3);
+	if ($db->error[$move_up_handle2] === 1 || $db->error[$move_up_handle3] === 1) {
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Move a page down the list in the site structure
+ * @global object $db Database connection object
+ * @param integer $id Page ID to move down
+ * @return boolean
+ */
+function page_move_down($id) {
+	global $db;
+
+	if (!is_numeric($id) || is_array($id)) {
+		return false;
+	}
+	$id = (int)$id;
+
+	$page_info = page_get_info($id,array('id','list','parent'));
+	if (!$page_info)  {
+		return false;
+	}
+
+	$start_pos = $page_info['list'];
+	$end_pos = $page_info['list'] + 1;
+	$move_up_query1 = "SELECT id,list FROM " . PAGE_TABLE . "
+		WHERE `list` = $end_pos
+		AND `parent` = {$page_info['parent']} LIMIT 1";
+	$move_up1 = $db->sql_query($move_up_query1);
+	if ($db->sql_num_rows($move_up1) != 1) {
+		return false;
+	}
+	$move_up_handle1 = $db->sql_fetch_assoc($move_up1);
+	$move_down_query2 = 'UPDATE ' . PAGE_TABLE . '
+		SET list = '.$end_pos.' WHERE id = '.$page_info['id'];
+	$move_down_query3 = 'UPDATE ' . PAGE_TABLE . '
+		SET list = '.$start_pos.' WHERE id = '.$move_up_handle1['id'];
+	$move_down_handle2 = $db->sql_query($move_down_query2);
+	$move_down_handle3 = $db->sql_query($move_down_query3);
+	if ($db->error[$move_down_handle2] === 1 || $db->error[$move_down_handle3] === 1) {
+		return false;
+	}
+	return true;
+}
 ?>

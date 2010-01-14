@@ -136,6 +136,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
 	`show_title` tinyint(1) NOT NULL default '1',
 	`type` int(11) NOT NULL,
 	`menu` tinyint(1) NOT NULL,
+	`parent` int(11) NOT NULL default '0',
 	`list` int(6) NOT NULL default '0',
 	`blocks_left` text NULL,
 	`blocks_right` text NULL,

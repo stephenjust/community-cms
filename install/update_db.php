@@ -124,6 +124,10 @@ switch ($db_version) {
 						`config_value` varchar(255) NOT NULL,
 						PRIMARY KEY (`config_name`)
 					) ENGINE=MyISAM CHARACTER SET=utf8';
+				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'`
+					ADD `parent` INT NOT NULL DEFAULT \'0\' AFTER `menu`';
+				$query[] = 'ALTER TABLE `'.NEWS_TABLE.'`
+					ADD `pin` INT(1) NOT NULL DEFAULT \'0\' AFTER `page`';
 				break;
 			case 'postgresql':
 				$query[] = 'DROP TABLE "'.CONFIG_TABLE.'"';
@@ -132,6 +136,10 @@ switch ($db_version) {
 						"config_name" varchar(255) NOT NULL,
 						"config_value" varchar(255) NOT NULL,
 						PRIMARY KEY ("config_name"))';
+				$query[] = 'ALTER TABLE "'.PAGE_TABLE.'"
+					ADD "parent" integer NOT NULL DEFAULT 0 AFTER "menu"';
+				$query[] = 'ALTER TABLE "'.NEWS_TABLE.'"
+					ADD "pin" integer NOT NULL default 0 AFTER "page"';
 				break;
 		}
 		$query[] = "INSERT INTO `".CONFIG_TABLE."` (`config_name`, `config_value`) VALUES

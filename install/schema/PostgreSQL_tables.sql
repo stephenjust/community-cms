@@ -192,6 +192,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->pages" (
 	"show_title" integer NOT NULL default '1',
 	"type" integer NOT NULL,
 	"menu" integer NOT NULL,
+	"parent" integer NOT NULL default '0',
 	"list" integer NOT NULL default '0',
 	"blocks_left" text NULL,
 	"blocks_right" text NULL,

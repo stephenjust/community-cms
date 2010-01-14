@@ -30,6 +30,11 @@ if (isset($CONFIG['db_prefix'])) {
 } else {
 	$pfix = 'comcms_'.rand(1000,9999).'_';
 }
+if (isset($CONFIG['db_host_port'])) {
+	$port = $CONFIG['db_host_port'];
+} else {
+	$port = NULL;
+}
 
 $content = '<h1>Step 2: Configure the Database</h1>'."\n";
 $content .= '<form method="post" action="index.php?page=3">'."\n";
@@ -38,7 +43,7 @@ $content .= '<table id="db_settings">'."\n";
 $content .= '<tr><td>Database Engine</td><td><select name="db_engine" id="db_engine" onChange="setDefaultPort();">
 	<option name="mysqli">MySQL</option><option name="pgsql">PostgreSQL</option></select></td></tr>';
 $content .= '<tr><td>Database Server</td><td><input type="text" name="db_host" id="db_host" value="localhost" /></td></tr>';
-$content .= '<tr><td>Database Server Port</td><td><input type="text" name="db_port" id="db_port" /></td></tr>';
+$content .= '<tr><td>Database Server Port</td><td><input type="text" name="db_port" id="db_port" value="'.$port.'" /></td></tr>';
 $content .= '<script type="text/javascript" language="JavaScript">setDefaultPort();</script>'."\n";
 $content .= '<tr><td>Database Name</td><td><input type="text" name="db_name" id="db_name" value="'.$name.'" /></td></tr>'."\n";
 $content .= '<tr><td>Database User</td><td><input type="text" name="db_user" id="db_user" value="'.$user.'" /></td></tr>'."\n";

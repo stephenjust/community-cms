@@ -37,12 +37,13 @@ if ($_GET['action'] == 'new') {
 	if (!isset($_POST['show_title'])) {
 		$_POST['show_title'] = NULL;
 	}
+	$parent = (int)$_POST['parent'];
 	$show_title = checkbox($_POST['show_title']);
 	// Add page to database.
 	$new_page_query = 'INSERT INTO ' . PAGE_TABLE . '
-		(text_id,title,meta_desc,show_title,type,menu)
+		(text_id,title,meta_desc,show_title,type,menu,parent)
 		VALUES (\''.$text_id.'\',\''.addslashes($_POST['title']).'\',\''.addslashes($_POST['meta_desc']).'\','.$show_title.',
-		\''.(int)$_POST['type'].'\','.$menu.')';
+		\''.(int)$_POST['type'].'\','.$menu.','.$parent.')';
 	$new_page = $db->sql_query($new_page_query);
 	if ($db->error[$new_page] === 1) {
 		$content .= 'Failed to add page.<br />';
@@ -59,11 +60,12 @@ if ($_GET['action'] == 'new_link') {
 	if (strlen($link) > 10) {
 		$link = htmlentities($link);
 		$name = addslashes($_POST['title']);
+		$parent = (int)$_POST['parent'];
 		if (strlen($name) > 2) {
 			$title = $name.'<LINK>'.$link;
 			// Add page to database.
 			$new_page_query = 'INSERT INTO ' . PAGE_TABLE . '
-				(title,type,menu) VALUES ("'.$title.'",0,1)';
+				(title,parent,type,menu) VALUES ("'.$title.'",'.$parent.',0,1)';
 			$new_page = $db->sql_query($new_page_query);
 			if ($db->error[$new_page] === 1) {
 				$content .= 'Failed to create link to external page.<br />';
@@ -136,94 +138,27 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 // Clean page list
-$page_list_query = 'SELECT * FROM ' . PAGE_TABLE . ' ORDER BY list ASC';
-$page_list_handle = $db->sql_query($page_list_query);
-if($db->error[$page_list_handle] === 1) {
-	$content .= 'Failed to read page information to optimize page order.<br />';
-} else {
-	$page_list_rows = $db->sql_num_rows($page_list_handle);
-	// Make sure no page has the same order number.
-	$page_list = $db->sql_fetch_assoc($page_list_handle);
-	$move_page_query = 'UPDATE ' . PAGE_TABLE . '
-		SET list = 0 WHERE id = '.$page_list['id'];
-	$move_page = $db->sql_query($move_page_query);
-	if ($db->error[$move_page] === 1) {
-		$content = 'Failed to optimize page order.<br />';
+page_clean_order();
+
+// Move page down if requested.
+if ($_GET['action'] == 'move_down') {
+	if (page_move_down($page_id)) {
+		$content .= 'Successfully moved page down.';
 	} else {
-		$last_page = 0;
-	}
-	//Start with the second, because we set the first to 0.
-	$i = 2;
-	while ($i <= $page_list_rows) {
-		$page_list = $db->sql_fetch_assoc($page_list_handle);
-		$last_page++;
-		$move_page_query = 'UPDATE ' . PAGE_TABLE . '
-			SET list = '.$last_page.' WHERE id = '.$page_list['id'];
-		$move_page = $db->sql_query($move_page_query);
-		if ($db->error[$move_page] === 1) {
-			$content = 'Failed to optimize page order.<br />';
-		}
-		$i++;
+		$content .= 'Failed to move page down.';
 	}
 }
 
 // ----------------------------------------------------------------------------
 
-// Move page down if requested.
-if ($_GET['action'] == 'move_down') {
-	$move_down_query1 = 'SELECT id,list FROM ' . PAGE_TABLE . "
-		WHERE id = $page_id LIMIT 1";
-	$move_down1 = $db->sql_query($move_down_query1);
-	if($db->error[$move_down1] === 1) {
-		$content .= 'Failed to read page information.<br />';
-	}
-	$move_down_handle1 = $db->sql_fetch_assoc($move_down1);
-	$start_pos = $move_down_handle1['list'];
-	$end_pos = $move_down_handle1['list'] + 1;
-	$move_up_query1 = "SELECT id,list FROM " . PAGE_TABLE . " WHERE list = $end_pos LIMIT 1";
-	$move_up1 = $db->sql_query($move_up_query1);
-	if ($db->sql_num_rows($move_up1) != 1) {
-		$content .= 'Failed to move page down.<br />';
-	} else {
-		$move_up_handle1 = $db->sql_fetch_assoc($move_up1);
-		$move_down_query2 = 'UPDATE ' . PAGE_TABLE . '
-			SET list = '.$end_pos.' WHERE id = '.$move_down_handle1['id'];
-		$move_down_query3 = 'UPDATE ' . PAGE_TABLE . '
-			SET list = '.$start_pos.' WHERE id = '.$move_up_handle1['id'];
-		$move_down_handle2 = $db->sql_query($move_down_query2);
-		$move_down_handle3 = $db->sql_query($move_down_query3);
-		if ($db->error[$move_down_handle2] === 1 || $db->error[$move_down_handle3] === 1) {
-			$content .= 'Failed to move page down.<br />';
-		}
-	}
-}// IF 'move_down'
-
-// ----------------------------------------------------------------------------
-
 // Move page up if requested.
 if ($_GET['action'] == 'move_up') {
-	$move_up_query1 = 'SELECT id,list FROM ' . PAGE_TABLE . " WHERE id = $page_id LIMIT 1";
-	$move_up1 = $db->sql_query($move_up_query1);
-	$move_up_handle1 = $db->sql_fetch_assoc($move_up1);
-	$start_pos = $move_up_handle1['list'];
-	$end_pos = $move_up_handle1['list'] - 1;
-	$move_down_query1 = 'SELECT id,list FROM ' . PAGE_TABLE . " WHERE list = $end_pos LIMIT 1";
-	$move_down1 = $db->sql_query($move_down_query1);
-	if ($db->sql_num_rows($move_down1) != 1) {
-		$content .= 'Failed to move page up.<br />';
+	if (page_move_up($page_id)) {
+		$content .= 'Successfully moved page up.';
 	} else {
-		$move_down_handle1 = $db->sql_fetch_assoc($move_down1);
-		$move_up_query2 = 'UPDATE ' . PAGE_TABLE . '
-			SET list = '.$end_pos.' WHERE id = '.$move_up_handle1['id'];
-		$move_up_query3 = 'UPDATE ' . PAGE_TABLE . '
-			SET list = '.$start_pos.' WHERE id = '.$move_down_handle1['id'];
-		$move_up_handle2 = $db->sql_query($move_up_query2);
-		$move_up_handle3 = $db->sql_query($move_up_query3);
-		if ($db->error[$move_up_handle2] === 1 || $db->error[$move_up_handle3] === 1) {
-			$content .= 'Failed to move page up.<br />';
-		}
+		$content .= 'Failed to move page up.';
 	}
-} // IF 'move_up'
+}
 
 // ----------------------------------------------------------------------------
 
@@ -237,13 +172,15 @@ if ($_GET['action'] == 'editsave') {
 	}
 	$title = addslashes($_POST['title']);
 	$meta_desc = addslashes($_POST['meta_desc']);
+	$parent = (int)$_POST['parent'];
 	$menu = (isset($_POST['hidden'])) ? checkbox($_POST['hidden']) : 0;
 	$show_title = (isset($_POST['show_title'])) ? checkbox($_POST['show_title']) : 0;
 	$blocks_left = addslashes($_POST['blocks_left']);
 	$blocks_right = addslashes($_POST['blocks_right']);
 	$save_query = 'UPDATE ' . PAGE_TABLE . "
-		SET {$set_text_id}title='$title',meta_desc='$meta_desc',menu=$menu,show_title=$show_title,
-		blocks_left='$blocks_left',blocks_right='$blocks_right'
+		SET {$set_text_id}title='$title', meta_desc='$meta_desc', menu=$menu,
+		show_title=$show_title, parent=$parent,
+		blocks_left='$blocks_left', blocks_right='$blocks_right'
 		WHERE id = $page_id";
 	$save_handle = $db->sql_query($save_query);
 	if ($db->error[$save_handle] === 1) {
@@ -278,8 +215,38 @@ if ($_GET['action'] == 'edit') {
 		if (strlen($edit_page['text_id']) < 1) {
 			$tab_content['edit'] .= '<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>';
 		}
+		
+		// Get list of pages for list of options as parent page
+		$parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+			ORDER BY `list` ASC';
+		$parent_page_list_handle = $db->sql_query($parent_page_list_query);
+		if ($db->error[$parent_page_list_handle] === 1) {
+			$parent_page = 'You cannot set a parent page at this time.'.
+				'<input type="hidden" name="parent" value="0" />';
+		} else {
+			$parent_page = '<select name="parent">'."\n".
+				'<option value="0">(No Parent)</option>'."\n";
+			for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
+				$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
+				// Don't show current page on this list
+				if ($page_id == $parent_page_result['id']) {
+					continue;
+				}
+
+				if ($edit_page['parent'] == $parent_page_result['id']) {
+					$parent_page .= '<option value="'.$parent_page_result['id'].'" selected>'.
+						stripslashes($parent_page_result['title']).'</option>';
+				} else {
+					$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
+						stripslashes($parent_page_result['title']).'</option>';
+				}
+			}
+			$parent_page .= '</select>'."\n";
+		}
+
 		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="'.stripslashes($edit_page['title']).'" /></td></tr>
 			<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.stripslashes($edit_page['meta_desc']).'</textarea></td></tr>
+			<tr><td width="150">Parent Page</td><td>'.$parent_page.'</td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 			<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
 			<tr class="row2"><td valign="top">Blocks:</td><td>
@@ -363,10 +330,29 @@ $tab_layout->add_tab('Manage Pages',$tab_content['manage']);
 // ----------------------------------------------------------------------------
 
 $tab_content['add'] = NULL;
+
+// Get list of pages for list of options as parent page
+$parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+	ORDER BY `list` ASC';
+$parent_page_list_handle = $db->sql_query($parent_page_list_query);
+if ($db->error[$parent_page_list_handle] === 1) {
+	$parent_page = 'You cannot set a parent page at this time.'.
+		'<input type="hidden" name="parent" value="0" />';
+} else {
+	$parent_page = '<select name="parent">'."\n".
+		'<option value="0">(No Parent)</option>'."\n";
+	for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
+		$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
+		$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
+			stripslashes($parent_page_result['title']).'</option>';
+	}
+	$parent_page .= '</select>'."\n";
+}
 $tab_content['add'] .= '<form method="POST" action="admin.php?module=page&action=new">
 	<table class="admintable">
 	<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="" /></td></tr>
 	<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor"></textarea></td></tr>
+	<tr><td width="150">Parent Page:</td><td>'.$parent_page.'</td></tr>
 	<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>
 	<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
 	<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
@@ -388,13 +374,31 @@ $tab_layout->add_tab('Add Page',$tab_content['add']);
 
 // ----------------------------------------------------------------------------
 
+
+// Get list of pages for list of options as parent page
+$parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+	ORDER BY `list` ASC';
+$parent_page_list_handle = $db->sql_query($parent_page_list_query);
+if ($db->error[$parent_page_list_handle] === 1) {
+	$parent_page = 'You cannot set a parent page at this time.'.
+		'<input type="hidden" name="parent" value="0" />';
+} else {
+	$parent_page = '<select name="parent">'."\n".
+		'<option value="0">(No Parent)</option>'."\n";
+	for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
+		$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
+		$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
+			stripslashes($parent_page_result['title']).'</option>';
+	}
+	$parent_page .= '</select>'."\n";
+}
 $tab_content['addlink'] = '<div id="tabs-3"><form method="POST" action="admin.php?module=page&action=new_link">
 	<table class="admintable" id="adm_pg_table_create_link">
 	<tr class="row1"><td width="150">Link Text (required):</td><td><input type="text" name="title" value="" /></td></tr>
 	<tr class="row2"><td valign="top">URL (required):</td><td>
-	<input type="text" name="url" value="http://" /><br />
-	</td></td></tr>
-	<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
+	<input type="text" name="url" value="http://" /></td></tr>
+	<tr class="row1"><td>Parent Page</td><td>'.$parent_page.'</td></tr>
+	<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
 	</table></form></div></div>';
 $tab_layout->add_tab('Add Link to External Page',$tab_content['addlink']);
 $content .= $tab_layout;
