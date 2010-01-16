@@ -137,31 +137,6 @@ switch ($_GET['action']) {
 
 // ----------------------------------------------------------------------------
 
-// Clean page list
-page_clean_order();
-
-// Move page down if requested.
-if ($_GET['action'] == 'move_down') {
-	if (page_move_down($page_id)) {
-		$content .= 'Successfully moved page down.';
-	} else {
-		$content .= 'Failed to move page down.';
-	}
-}
-
-// ----------------------------------------------------------------------------
-
-// Move page up if requested.
-if ($_GET['action'] == 'move_up') {
-	if (page_move_up($page_id)) {
-		$content .= 'Successfully moved page up.';
-	} else {
-		$content .= 'Failed to move page up.';
-	}
-}
-
-// ----------------------------------------------------------------------------
-
 if ($_GET['action'] == 'editsave') {
 	$set_text_id = NULL;
 	if(!isset($_POST['text_id'])) {
@@ -190,6 +165,29 @@ if ($_GET['action'] == 'editsave') {
 		log_action('Updated information for page \''.stripslashes($title).'\'');
 	}
 } // IF 'editsave'
+
+// ----------------------------------------------------------------------------
+
+// Clean page list
+page_clean_order();
+
+// Move page down if requested.
+if ($_GET['action'] == 'move_down') {
+	if (page_move_down($page_id)) {
+		$content .= 'Successfully moved page down.';
+	} else {
+		$content .= 'Failed to move page down.';
+	}
+}
+
+// Move page up if requested.
+if ($_GET['action'] == 'move_up') {
+	if (page_move_up($page_id)) {
+		$content .= 'Successfully moved page up.';
+	} else {
+		$content .= 'Failed to move page up.';
+	}
+}
 
 // ----------------------------------------------------------------------------
 
@@ -274,6 +272,9 @@ if ($acl->check_permission('page_set_home')) {
 $tab_content['manage'] .= '<table class="admintable">
 <tr><th width="350">Page:</th><th colspan="'.$numopts.'">&nbsp;</th></tr>';
 // Get page list in the order defined in the database. First is 0.
+
+// FIXME: Organize pages in their heirarchies
+
 $page_list_query = 'SELECT * FROM '.PAGE_TABLE.' ORDER BY list ASC';
 $page_list_handle = $db->sql_query($page_list_query);
 $page_list_rows = $db->sql_num_rows($page_list_handle);

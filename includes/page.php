@@ -141,6 +141,79 @@ function page_unhide() {
 }
 
 /**
+ * Generate a page list at a certain level in the page structure
+ * @global object $db Database connection object
+ * @param integer $parent Parent item of (sub)menu
+ * @param boolean $visible_only Only list pages that will appear on menu
+ * @return mixed False on fail, array of pages on success
+ */
+function page_list($parent = 0, $visible_only = false) {
+	global $db;
+
+	if (!is_numeric($parent) || is_array($parent)) {
+		return false;
+	}
+	$parent = (int)$parent;
+
+	$visible = NULL;
+	if ($visible_children_only == true) {
+		$visible = 'AND `menu` = 1 ';
+	}
+
+	$query = 'SELECT * FROM `'.PAGE_TABLE.'`
+		WHERE `parent` = 0 '.$visible.'ORDER BY `list` ASC';
+	$handle = $db->sql_query($handle);
+	if ($db->error[$handle] === 1) {
+		return false;
+	}
+	if ($db->sql_num_rows($handle) == 0) {
+		return false;
+	}
+
+	$page_list = array();
+
+	for ($i = 0; $i < $db->sql_num_rows($handle); $i++) {
+		$result = $db->sql_fetch_assoc($handle);
+
+		$page_list[$i] = $result;
+		$page_list[$i]['has_children'] = page_has_children($page_list[$i]['id']);
+	}
+	return $page_list;
+}
+
+/**
+ * Test if there are any children to the given page
+ * @global object $db Database connection object
+ * @param integer $id Page ID of page to test
+ * @param boolean $visible_children_only Only consider items that will appear in the menu
+ * @return boolean
+ */
+function page_has_children($id, $visible_children_only = false) {
+	global $db;
+
+	if (!is_numeric($parent) || is_array($parent)) {
+		return false;
+	}
+	$parent = (int)$parent;
+
+	$visible = NULL;
+	if ($visible_children_only == true) {
+		$visible = 'AND `menu` = 1 ';
+	}
+
+	$query = 'SELECT * FROM `'.PAGE_TABLE.'`
+		WHERE `parent` = '.$id.' '.$visible.'LIMIT 1';
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1) {
+		return false;
+	}
+	if ($db->sql_num_rows($handle) == 0) {
+		return false;
+	}
+	return true;
+}
+
+/**
  * Clean the list values for the pages in the database
  * @global object $db Database connection object
  * @param integer $parent Parent of pages to reorder (0 for root)
