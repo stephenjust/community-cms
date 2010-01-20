@@ -83,8 +83,8 @@ function file_upload($path = "", $contentfile = true) {
 	} else {
 		$target = ROOT.$path;
 	}
-	$filename = basename($_FILES['upload']['name']);
-	$target .= $filename ;
+	$filename = stripslashes(basename($_FILES['upload']['name']));
+	$target .= $filename;
 	$target = replace_file_special_chars($target);
 	$filename = replace_file_special_chars($filename);
 
