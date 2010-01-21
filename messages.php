@@ -58,7 +58,7 @@ $message_list_query = 'SELECT * FROM ' . MESSAGE_TABLE . '
 	WHERE recipient = '.(int)$_SESSION['userid'].' ORDER BY id DESC';
 $message_list_handle = $db->sql_query($message_list_query);
 $message_num_rows = $db->sql_num_rows($message_list_handle);
-$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . ' WHERE id = '.get_config('template').' LIMIT 1';
+$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . ' WHERE `id` = '.get_config('site_template').' LIMIT 1';
 $template_handle = $db->sql_query($template_query);
 $template = $db->sql_fetch_assoc($template_handle);
 $template_path = $template['path'];
