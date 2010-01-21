@@ -320,7 +320,7 @@ class form {
 		$value = NULL, $props = NULL) {
 		global $db;
 		$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
-			WHERE type = '.$pagetype.' ORDER BY list ASC';
+			WHERE type = '.$pagetype.' ORDER BY `title` ASC';
 		$page_query_handle = $db->sql_query($page_query);
 		$options = NULL;
 		for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {

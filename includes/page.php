@@ -20,7 +20,7 @@ function page_get_info($id,$fields = array('*')) {
 	global $db;
 	global $debug;
 	// Validate parameters
-	if (!is_int($id)) {
+	if (!is_numeric($id)) {
 		$debug->add_trace('ID is not an integer',true,'page_get_info');
 		return false;
 	}
@@ -344,5 +344,26 @@ function page_move_down($id) {
 		return false;
 	}
 	return true;
+}
+
+function page_level($id) {
+	global $db;
+
+	if (!is_numeric($id) || is_array($id)) {
+		return false;
+	}
+	$id = (int)$id;
+
+	$page_info = page_get_info($id,array('parent'));
+	if ($page_info['parent'] == 0) {
+		return 0;
+	}
+	$level = 0;
+	while ($page_info['parent'] != 0) {
+		$page_info = page_get_info($page_info['parent'],array('parent'));
+		$level++;
+	}
+	unset($page_info);
+	return $level;
 }
 ?>

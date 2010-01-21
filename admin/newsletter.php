@@ -145,7 +145,7 @@ switch ($_GET['action']) {
 $tab_content['manage'] = '<table class="admintable">
 <tr><th colspan="5"><form method="post" action="admin.php?module=newsletter"><select name="page">';
 $page_query = 'SELECT * FROM ' . PAGE_TABLE . '
-	WHERE type = 2 ORDER BY list ASC';
+	WHERE type = 2 ORDER BY title ASC';
 $page_query_handle = $db->sql_query($page_query);
 $i = 1;
 $first = 0;

@@ -216,7 +216,7 @@ if ($_GET['action'] == 'edit') {
 		
 		// Get list of pages for list of options as parent page
 		$parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-			ORDER BY `list` ASC';
+			ORDER BY `title` ASC';
 		$parent_page_list_handle = $db->sql_query($parent_page_list_query);
 		if ($db->error[$parent_page_list_handle] === 1) {
 			$parent_page = 'You cannot set a parent page at this time.'.
@@ -261,6 +261,71 @@ if ($_GET['action'] == 'edit') {
 
 // ----------------------------------------------------------------------------
 
+function adm_page_manage_list_row($id) {
+	global $acl;
+	global $db;
+
+	if (!is_numeric($id) || is_array($id)) {
+		return false;
+	}
+	$id = (int)$id;
+
+	$page_info = page_get_info($id);
+
+	if ($page_info['type'] == 0) {
+		$page_info['title'] = explode('<LINK>',$page_info['title']);
+		$page_info['title'] = $page_info['title'][0].' (Link)';
+	}
+	$return = '<tr><td>';
+	for ($i = 0; $i < page_level($page_info['id']); $i++) {
+		$return .= '<img src="<!-- $IMAGE_PATH$ -->child.png" />';
+	}
+	if (strlen($page_info['text_id']) == 0 && $page_info['type'] != 0) {
+		$return .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
+	}
+	$return .= stripslashes($page_info['title']).' ';
+	if ($page_info['id'] == get_config('home')) {
+		$return .= '(Default)';
+	}
+	if ($page_info['menu'] == 0) {
+		$return .= '(Hidden)';
+	}
+	$return .= '</td>';
+	if ($acl->check_permission('page_delete')) {
+		$return .= '
+			<td><a href="?module=page&action=del&id='.$page_info['id'].'">
+			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>';
+	}
+	$return .= '
+		<td><a href="?module=page&action=move_up&id='.$page_info['id'].'">
+		<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" />Move Up</a></td>
+		<td><a href="?module=page&action=move_down&id='.$page_info['id'].'">
+		<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" />Move Down</a></td>';
+	if ($page_info['type'] != 0) {
+		$return .= '<td><a href="?module=page&action=edit&id='.$page_info['id'].'">
+			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>';
+		if ($acl->check_permission('page_set_home')) {
+			$return .= '<td><a href="?module=page&action=home&id='.$page_info['id'].'">
+				<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" />Make Home</a></td>';
+		}
+	} else {
+		$return .= '<td>&nbsp;</td><td>&nbsp;</td>';
+	}
+	$return .= '</tr>';
+	if (page_has_children($page_info['id']) == true) {
+		$children_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+			WHERE `parent` = '.$page_info['id'].' ORDER BY `list` ASC';
+		$children_handle = $db->sql_query($children_query);
+		for ($i = 1; $i <= $db->sql_num_rows($children_handle); $i++) {
+			$children_result = $db->sql_fetch_assoc($children_handle);
+			$return .= adm_page_manage_list_row($children_result['id']);
+		}
+	}
+	return $return;
+}
+
+// ----------------------------------------------------------------------------
+
 $tab_content['manage'] = NULL;
 $numopts = 3;
 if ($acl->check_permission('page_delete')) {
@@ -273,57 +338,14 @@ $tab_content['manage'] .= '<table class="admintable">
 <tr><th width="350">Page:</th><th colspan="'.$numopts.'">&nbsp;</th></tr>';
 // Get page list in the order defined in the database. First is 0.
 
-// FIXME: Organize pages in their heirarchies
-
-$page_list_query = 'SELECT * FROM '.PAGE_TABLE.' ORDER BY list ASC';
+$page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+	WHERE `parent` = 0 ORDER BY `list` ASC';
 $page_list_handle = $db->sql_query($page_list_query);
 $page_list_rows = $db->sql_num_rows($page_list_handle);
 $rowstyle = 'row1';
 for ($i = 1; $i <= $page_list_rows; $i++) {
 	$page_list = $db->sql_fetch_assoc($page_list_handle);
-
-	if ($page_list['type'] == 0) {
-		$page_list['title'] = explode('<LINK>',$page_list['title']);
-		$page_list['title'] = $page_list['title'][0].' (Link)';
-	}
-	$tab_content['manage'] .= '<tr class="'.$rowstyle.'"><td>';
-	if (strlen($page_list['text_id']) == 0 && $page_list['type'] != 0) {
-		$tab_content['manage'] .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
-	}
-	$tab_content['manage'] .= stripslashes($page_list['title']).' ';
-	if ($page_list['id'] == get_config('home')) {
-		$tab_content['manage'] .= '(Default)';
-	}
-	if ($page_list['menu'] == 0) {
-		$tab_content['manage'] .= '(Hidden)';
-	}
-	$tab_content['manage'] .= '</td>';
-	if ($acl->check_permission('page_delete')) {
-		$tab_content['manage'] .= '
-			<td><a href="?module=page&action=del&id='.$page_list['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>';
-	}
-	$tab_content['manage'] .= '
-		<td><a href="?module=page&action=move_up&id='.$page_list['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" />Move Up</a></td>
-		<td><a href="?module=page&action=move_down&id='.$page_list['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" />Move Down</a></td>';
-	if ($page_list['type'] != 0) {
-		$tab_content['manage'] .= '<td><a href="?module=page&action=edit&id='.$page_list['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>';
-		if ($acl->check_permission('page_set_home')) {
-			$tab_content['manage'] .= '<td><a href="?module=page&action=home&id='.$page_list['id'].'">
-				<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" />Make Home</a></td>';
-		}
-	} else {
-		$tab_content['manage'] .= '<td>&nbsp;</td><td>&nbsp;</td>';
-	}
-	$tab_content['manage'] .= '</tr>';
-	if($rowstyle == 'row1') {
-		$rowstyle = 'row2';
-	} else {
-		$rowstyle = 'row1';
-	}
+	$tab_content['manage'] .= adm_page_manage_list_row($page_list['id']);
 } // FOR
 $tab_content['manage'] .= '</table>';
 $tab_layout->add_tab('Manage Pages',$tab_content['manage']);
@@ -334,7 +356,7 @@ $tab_content['add'] = NULL;
 
 // Get list of pages for list of options as parent page
 $parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-	ORDER BY `list` ASC';
+	ORDER BY `title` ASC';
 $parent_page_list_handle = $db->sql_query($parent_page_list_query);
 if ($db->error[$parent_page_list_handle] === 1) {
 	$parent_page = 'You cannot set a parent page at this time.'.
@@ -378,7 +400,7 @@ $tab_layout->add_tab('Add Page',$tab_content['add']);
 
 // Get list of pages for list of options as parent page
 $parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-	ORDER BY `list` ASC';
+	ORDER BY `title` ASC';
 $parent_page_list_handle = $db->sql_query($parent_page_list_query);
 if ($db->error[$parent_page_list_handle] === 1) {
 	$parent_page = 'You cannot set a parent page at this time.'.

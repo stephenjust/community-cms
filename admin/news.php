@@ -386,7 +386,7 @@ $tab_layout = new tabs;
 
 $page_list = '<select name="page">';
 $page_query = 'SELECT * FROM `' . PAGE_TABLE . '`
-    WHERE `type` = 1 ORDER BY `list` ASC';
+    WHERE `type` = 1 ORDER BY `title` ASC';
 $page_query_handle = $db->sql_query($page_query);
 for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
     $page = $db->sql_fetch_assoc($page_query_handle);
@@ -472,7 +472,7 @@ $tab_content['manage'] .= '</table>'."\n";
 
 $a_page_list = '<select name="where" id="a_where">';
 $a_page_query = 'SELECT * FROM `' . PAGE_TABLE . '`
-    WHERE `type` = 1 ORDER BY `list` ASC';
+    WHERE `type` = 1 ORDER BY `title` ASC';
 $a_page_query_handle = $db->sql_query($a_page_query);
 for ($i = 1; $i <= $db->sql_num_rows($a_page_query_handle); $i++) {
     $a_page = $db->sql_fetch_assoc($a_page_query_handle);
