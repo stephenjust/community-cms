@@ -156,13 +156,13 @@ function page_list($parent = 0, $visible_only = false) {
 	$parent = (int)$parent;
 
 	$visible = NULL;
-	if ($visible_children_only == true) {
+	if ($visible_only == true) {
 		$visible = 'AND `menu` = 1 ';
 	}
 
 	$query = 'SELECT * FROM `'.PAGE_TABLE.'`
 		WHERE `parent` = 0 '.$visible.'ORDER BY `list` ASC';
-	$handle = $db->sql_query($handle);
+	$handle = $db->sql_query($query);
 	if ($db->error[$handle] === 1) {
 		return false;
 	}
@@ -191,10 +191,10 @@ function page_list($parent = 0, $visible_only = false) {
 function page_has_children($id, $visible_children_only = false) {
 	global $db;
 
-	if (!is_numeric($parent) || is_array($parent)) {
+	if (!is_numeric($id) || is_array($id)) {
 		return false;
 	}
-	$parent = (int)$parent;
+	$id = (int)$id;
 
 	$visible = NULL;
 	if ($visible_children_only == true) {

@@ -1,9 +1,9 @@
 <?php
 /**
  * Community CMS
+ * $Id$
  *
- *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -37,6 +37,14 @@ function display_page($view="") {
 	$admin_include = NULL;
 	$left_blocks_content = NULL;
 	$right_blocks_content = NULL;
+
+	// Include javascript
+	$template_page->js_include = '<script language="javascript" type="text/javascript"
+		src="./scripts/jquery.js"></script>
+		<script language="javascript" type="text/javascript"
+		src="./scripts/jquery-multi-ddm.js"></script>
+		<script language="javascript" type="text/javascript"
+		src="./scripts/nav-menu.js"></script>';
 
 	// Replace <!-- $CSS_INCLUDE$ --> marker
 	$template_page->css_include =
@@ -161,35 +169,112 @@ function display_page($view="") {
  * hidden pages)
  * @return string
  */
-function display_nav_bar($mode = 1) {
+function display_nav_bar() {
 	global $page;
 	global $db;
-	$nav_menu_query = 'SELECT * FROM `' . PAGE_TABLE . '`
-		WHERE `menu` = '.$mode.' ORDER BY `list` ASC';
-	$nav_menu_handle = $db->sql_query($nav_menu_query);
+	$nav_menu = page_list();
 	$return = NULL;
-	for ($i = 1; $db->sql_num_rows($nav_menu_handle) >= $i; $i++) {
-		$nav_menu = $db->sql_fetch_assoc($nav_menu_handle);
-		if ($nav_menu['id'] == $page->id) {
-			$return .= stripslashes($nav_menu['title'])."<br />";
+	$return .= '<ul id="nav-menu">';
+	for ($i = 0; count($nav_menu) > $i; $i++) {
+		$haschild = 0;
+		$extra_text = NULL;
+		if ($nav_menu[$i]['has_children'] == true) {
+			$link_class = 'menuitem_haschild';
+			$extra_text = '<div class="childarrow"></div>';
+			if ($page->id == $nav_menu[$i]['id']) {
+				$link_class = 'menuitem_haschild_current';
+			}
+			$haschild = 1;
+		} elseif ($page->id == $nav_menu[$i]['id']) {
+			$link_class = 'menuitem_current';
 		} else {
-			if ($nav_menu['type'] == 0) {
-				$link = explode('<LINK>',$nav_menu['title']); // Check if menu entry is a link
-				$link_path = $link[1];
-				$link_name = stripslashes($link[0]);
-				unset($link);
-				$return .= "<a href='".$link_path."'>".$link_name."</a><br />";
-				unset($link_name);
-				unset($link_path);
+			$link_class = 'menuitem';
+		}
+		if ($nav_menu[$i]['type'] == 0) {
+			$link = explode('<LINK>',$nav_menu[$i]['title']); // Check if menu entry is a link
+			$link_path = $link[1];
+			$link_name = stripslashes($link[0]);
+			unset($link);
+		} else {
+			if(strlen($nav_menu[$i]['text_id']) > 0) {
+				$link_path = "index.php?page=".$nav_menu[$i]['text_id'];
 			} else {
-				if(strlen($nav_menu['text_id']) > 0) {
-					$return .= "<a href='index.php?page=".$nav_menu['text_id']."'>".stripslashes($nav_menu['title'])."</a><br />";
-				} else {
-					$return .= "<a href='index.php?id=".$nav_menu['id']."'>".stripslashes($nav_menu['title'])."</a><br />";
-				}
-			} // IF is link
-		} // IF is not current page
+				$link_path = "index.php?id=".$nav_menu[$i]['id'];
+			}
+			$link_name = stripslashes($nav_menu[$i]['title']);
+		} // IF is link
+		$return .= '<li class="'.$link_class.'" id="menuitem_'.$nav_menu[$i]['id'].'">'."\n";
+		// Generate hidden child div
+		if ($haschild == 1) {
+			$return .= display_child_menu($nav_menu[$i]['id']);
+		}
+		$return .= '<a href="'.$link_path.'">'.$link_name.'</a>'.$extra_text;
+		$return .= '</li>'."\n";
 	} // FOR
+	$return .= '</ul>';
+	return $return;
+}
+
+function display_child_menu($parent) {
+	global $db;
+	global $page;
+
+	if (!is_numeric($parent) || is_array($parent)) {
+		return false;
+	}
+	$parent = (int)$parent;
+	$return = NULL;
+
+	$items_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+		WHERE `parent` = '.$parent.' ORDER BY `list` ASC';
+	$items_handle = $db->sql_query($items_query);
+	if ($db->error[$items_handle] == 1) {
+		return false;
+	}
+	if ($db->sql_num_rows($items_handle) == 0) {
+		return false;
+	}
+
+	$return .= '<ul id="nav-menu-sub-'.$parent.'" class="nav_submenu">';
+	for ($i = 1; $i <= $db->sql_num_rows($items_handle); $i++) {
+		$items_result = $db->sql_fetch_assoc($items_handle);
+		$haschild = 0;
+		$extra_text = NULL;
+		if (page_has_children($items_result['id']) == true) {
+			$link_class = 'submenuitem_haschild';
+			$extra_text = '<div class="childarrow"></div>';
+			if ($page->id == $items_result['id']) {
+				$link_class = 'submenuitem_haschild_current';
+			}
+			$haschild = 1;
+		} elseif ($page->id == $items_result['id']) {
+			$link_class = 'submenuitem_current';
+		} else {
+			$link_class = 'submenuitem';
+		}
+		if ($items_result['type'] == 0) {
+			$link = explode('<LINK>',$items_result['title']); // Check if menu entry is a link
+			$link_path = $link[1];
+			$link_name = stripslashes($link[0]);
+			unset($link);
+		} else {
+			if(strlen($items_result['text_id']) > 0) {
+				$link_path = "index.php?page=".$items_result['text_id'];
+			} else {
+				$link_path = "index.php?id=".$items_result['id'];
+			}
+			$link_name = stripslashes($items_result['title']);
+		} // IF is link
+		$return .= '<li class="'.$link_class.'" id="menuitem_'.$items_result['id'].'">'."\n";
+		// Generate hidden child div
+		if ($haschild == 1) {
+			$return .= display_child_menu($items_result['id']);
+		}
+		$return .= '<a href="'.$link_path.'">'.$link_name.'</a>'.$extra_text;
+		$return .= '</li>'."\n";
+	}
+	$return .= '</ul>';
+
 	return $return;
 }
 

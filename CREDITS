@@ -25,17 +25,21 @@ Information available within file.
 jQuery
 (C) The jQuery Team
 http://www.jquery.com/
-GNU General Public License / MIT License
+[ GNU General Public License / MIT License ]
 
 jQuery-UI
 (C) The jQuery-UI Team
 http://www.jqueryui.com/
-GNU General Public License / MIT License
+[ GNU General Public License / MIT License ]
 
 jQuery AutoComplete Plug-In
 (c) 2009 Tomas Kirda
 http://www.devbridge.com/projects/autocomplete/jquery/
-MIT-style License
+[ MIT-style License ]
+
+jQuery "multi-ddm" Plug-In
+(c) 2009 Corey Hart
+[ scripts/license_jquery-multi-ddm.txt ]
 
 FamFamFam 'Silk' Icon Set 1.3
 (C) Mark James

@@ -4,17 +4,17 @@ img.logo {
   border: 0px;
 }
 div.nav_menu {
-  background: url('./images/menubg.png');
-  clear: both;
-  color: #000;
-  float: left;
-  font-size: small;
-  padding-left: 10px;
-  width: 190px;
+	background: url('./images/menubg.png');
+	width: 200px;
+	padding-left: 0px;
+	font-size: small;
+	color: #000;
+	float: left;
+	clear: both;
 }
 div.nav_menu_top {
 	background: url('./images/menutop.png');
-	height: 10px;
+	height: 6px;
 	width: 200px;
 	float: left;
 }
@@ -24,18 +24,77 @@ div.nav_menu_separator {
 	width: 200px;
 	float: left;
 	clear: both;
+	display: none;
 }
 div.nav_menu_bottom {
 	background: url('./images/menubottom.png');
-	height: 20px;
+	height: 6px;
 	width: 200px;
 	float: left;
 	clear: both;
 }
+div.nav_menu ul {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+div.nav_menu ul li {
+	float: left;
+	width: 200px;
+}
+div.nav_menu ul li a {
+	display: block;
+	width: 195px;
+	background: none;
+	padding-right: 0px;
+	padding-left: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+div.nav_menu .menuitem, .menuitem-hover, .menuitem_current,
+.menuitem_haschild_current, .menuitem_haschild, .menuitem_haschild-hover {
+	padding: 0px;
+}
+div.nav_menu .menuitem, .menuitem_haschild {
+	background: url('./images/menuitembg.png') no-repeat bottom;
+}
+div.nav_menu .menuitem-hover, .menuitem_haschild-hover {
+	background: url('./images/menuitembg-hover.png');
+}
+div.nav_menu .menuitem_current, .menuitem_haschild_current,
+.submenuitem_current, .submenuitem_haschild_current {
+	background: url('./images/menuitembg-current.png');
+}
+div.nav_menu .childarrow, .subchildarrow {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	left: 180px;
+	margin-top: -20px;
+	background: url('./images/arrow.png');
+	z-index: 1000;
+}
+div.nav_menu .nav_submenu {
+	background: url('./images/menubg.png');
+	border: 1px solid #5882BC;
+	position: absolute;
+	left: 200px;
+	width: 200px;
+	z-index: 9999;
+	display: none;
+}
+div.nav_menu .nav_submenu .submenuitem, .submenuitem-hover,
+.submenuitem_haschild, .submenuitem_haschild-hover {
+	padding: 0px;
+}
+div.nav_menu .nav_submenu .submenuitem-hover, .submenuitem_haschild-hover {
+	background: url('./images/menuitembg-hover.png');
+}
+
 div.nav_menu input {
-	border: 1px solid #000000;
+	border: 1px solid #5882BC;
 	width: 120px;
-	background: #CCCCCC;
+	background: #D3E1F1;
 }
 div.nav_menu a {
 	color: #333333;
