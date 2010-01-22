@@ -172,7 +172,7 @@ function display_page($view="") {
 function display_nav_bar() {
 	global $page;
 	global $db;
-	$nav_menu = page_list();
+	$nav_menu = page_list(0,true);
 	$return = NULL;
 	$return .= '<ul id="nav-menu">';
 	for ($i = 0; count($nav_menu) > $i; $i++) {
@@ -226,7 +226,7 @@ function display_child_menu($parent) {
 	$return = NULL;
 
 	$items_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-		WHERE `parent` = '.$parent.' ORDER BY `list` ASC';
+		WHERE `parent` = '.$parent.' AND `menu` = 1 ORDER BY `list` ASC';
 	$items_handle = $db->sql_query($items_query);
 	if ($db->error[$items_handle] == 1) {
 		return false;

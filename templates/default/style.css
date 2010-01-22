@@ -46,6 +46,7 @@ div.nav_menu ul li a {
 	display: block;
 	width: 195px;
 	background: none;
+	font-weight: bold;
 	padding-right: 0px;
 	padding-left: 5px;
 	padding-top: 5px;
