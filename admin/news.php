@@ -394,7 +394,12 @@ for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
 		if (isset($_GET['page'])) {
 			$_POST['page'] = $_GET['page'];
 		} else {
-			$_POST['page'] = $page['id'];
+			$home_info = page_get_info(get_config('home'),array('type'));
+			if ($home_info['type'] == 1) {
+				$_POST['page'] = get_config('home');
+			} else {
+				$_POST['page'] = $page['id'];
+			}
 		}
 	}
 	if ($page['id'] == $_POST['page']) {
