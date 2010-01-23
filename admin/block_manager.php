@@ -80,7 +80,7 @@ switch ($_GET['action']) {
 		// Parse relevant entry in block info file
 		$info_file = explode("\n",$info_file);
 		foreach ($info_file as $info_entry) {
-			if (!preg_match('/'.$edit_block->type.'#.?/',$info_entry)) {
+			if (!preg_match('/'.$edit_block->type.'#.?/i',$info_entry)) {
 				continue;
 			}
 			$info = $info_entry;

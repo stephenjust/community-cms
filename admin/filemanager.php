@@ -77,7 +77,7 @@ if ($_GET['action'] == 'new_folder') {
 		$content .= 'New folder name too short.<br />';
 		$error = 1;
 		}
-	if(!preg_match('#^[A-Za-z0-9\_]+$#',$new_folder_name) && $error != 1) {
+	if(!preg_match('#^[a-z0-9\_]+$#i',$new_folder_name) && $error != 1) {
 		$content .= 'New folder name contains an invalid character.<br />';
 		$error = 1;
 		}

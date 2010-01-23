@@ -13,6 +13,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 }
 
 $content = NULL;
+global $debug;
 
 include (ROOT.'functions/calendar.php');
 

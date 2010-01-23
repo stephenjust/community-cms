@@ -29,7 +29,7 @@ function checkbox($var,$reverse = 0) {
 
 function parse_time($time) {
 	$new_time = 0;
-	if (preg_match('#^[0-1]?[0-9]:[0-9][0-9] ?[ap]m?$#',$time)) {
+	if (preg_match('#^[0-1]?[0-9]:[0-9][0-9] ?[ap]m?$#i',$time)) {
 		$time = str_replace(array(' ','m','M'),NULL,$time);
 		$time = explode(':',$time);
 		$hour = $time[0];
@@ -48,16 +48,16 @@ function parse_time($time) {
 		if (strlen($new_time) === 4) {
 			$new_time = '0'.$new_time;
 		}
-	} elseif (preg_match('#^[0-2]?[0-9]:[0-5][0-9]$#',$time)) {
+	} elseif (preg_match('#^[0-2]?[0-9]:[0-5][0-9]$#i',$time)) {
 		$new_time = $time;
 		if (strlen($new_time) === 4) {
 			$new_time = '0'.$new_time;
 		}
-	} elseif (preg_match('#^[0-1]?[0-9] ?[ap]m?$#',$time)) {
+	} elseif (preg_match('#^[0-1]?[0-9] ?[ap]m?$#i',$time)) {
 		$time = str_replace(array(' ','m','M'),NULL,$time);
 		$minute = '00';
 		$hour = $time;
-		if (preg_match('#a$#',$time)) {
+		if (preg_match('#a$#i',$time)) {
 			$hour = str_replace(array('a','A'),NULL,$time);
 			if ($hour == '12') {
 				$hour = 0;

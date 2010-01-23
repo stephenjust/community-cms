@@ -359,7 +359,7 @@ class form {
 		$options = '<input type="radio" name="'.$name.'" id="_'.$name.'_noImg"
 			value="" checked />No Image<br />';
 		for ($i = 1; $i <= $num_icons; $i++) {
-			if (preg_match('#\.png|\.jpg$#',$icon_list[$i - 1]) == 1) {
+			if (preg_match('#\.png|\.jpg$#i',$icon_list[$i - 1]) == 1) {
 				$options .= '<div class="admin_image_list_item">';
 				$file_info = get_file_info($relative_path.'/'.$icon_list[$i - 1]);
 				if ($relative_path.'/'.$icon_list[$i - 1] == $selected) {

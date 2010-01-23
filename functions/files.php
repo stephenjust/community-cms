@@ -173,7 +173,7 @@ function file_list($directory = "", $type = 0, $selected = "") {
 					$return .= '<option value="'.$folder_open_short.'/'.$files[$i].'" />'.$files[$i].'</option>';
 					$j++;
 				} elseif ($type == 2) {
-					if (preg_match('#\.png|\.jpg$#',$files[$i]) == 1) {
+					if (preg_match('#\.png|\.jpg$#i',$files[$i]) == 1) {
 						$return .= '<div class="admin_image_list_item">';
 						$file_info = get_file_info($folder_open_short.'/'.$files[$i]);
 						if ($folder_open.'/'.$files[$i] == $selected) {
