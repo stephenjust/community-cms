@@ -48,8 +48,12 @@ function display_page($view="") {
 
 	// Replace <!-- $CSS_INCLUDE$ --> marker
 	$template_page->css_include =
-		'<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
+		'<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />'."\n".
+		'<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'print.css" media="print" />';
 	$image_path = $template_page->path.'images/';
+
+	$template_page->print_header = get_config('site_name');
+	$template_page->page_path = page_path($page->id);
 
 	// Check to make sure the page actually exists
 	global $page_not_found;

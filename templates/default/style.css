@@ -1,3 +1,9 @@
+#print_header {
+	display: none;
+}
+#page_path {
+	font-size: small;
+}
 img.logo {
   width: 686px;
   height: 100px;

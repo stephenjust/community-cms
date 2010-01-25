@@ -366,4 +366,26 @@ function page_level($id) {
 	unset($page_info);
 	return $level;
 }
+
+function page_path($id) {
+	if (!is_numeric($id) || is_array($id)) {
+		return false;
+	}
+	$id = (int)$id;
+
+	if ($id == get_config('home')) {
+		$page_info = page_get_info($id,array('title'));
+		return $page_info['title'];
+	}
+
+	$page_info = page_get_info($id,array('parent','title'));
+	$list = ' > '.$page_info['title'];
+	while ($page_info['parent'] != 0) {
+		$page_info = page_get_info($page_info['parent'],array('parent','title'));
+		$list = ' > '.$page_info['title'].$list;
+	}
+	$page_info = page_get_info(get_config('home'),array('title'));
+	$list = $page_info['title'].$list;
+	return $list;
+}
 ?>

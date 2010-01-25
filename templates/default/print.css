@@ -1,0 +1,57 @@
+body {
+	background: #FFFFFF;
+	color: #000000;
+}
+
+#print_header {
+	display: block !important;
+	font-size: 14pt;
+}
+#header {
+	display: none;
+}
+#left {
+	display: none;
+}
+#right {
+	display: none;
+}
+#center {
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+}
+#body_title {
+	display: none;
+}
+#page_path {
+	display: block !important;
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+#debug_info {
+	display: none;
+}
+#footer {
+	font-size: 10px;
+}
+
+/* CALENDAR */
+input.button_cal_back_month, input.button_cal_back_year, input.button_cal_today,
+input.button_cal_next_month, input.button_cal_next_year {
+	display: none;
+}
+table.calendar {
+	background: #FFFFFF;
+	color: #000000 !important;
+	border: 1px solid #000000;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+}
+table.calendar th {
+	font-size: 12pt;
+	font-weight: normal;
+}
+table.calendar td {
+	border: 1px solid #CCCCCC !important;
+	background: #FFFFFF !important;
+}
