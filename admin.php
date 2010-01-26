@@ -62,6 +62,14 @@ function display_admin() {
 	$template_page = new template;
 	$template_page->load_admin_file();
 	$page_title = 'Community CMS Administration';
+
+	// Don't cache compressed TinyMCE when debugging
+	if (DEBUG === 1) {
+		$mce_disk_cache = 'false';
+	} else {
+		$mce_disk_cache = 'true';
+	}
+
 	$template_page->scripts = '<link type="text/css"
 		href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
 		<script language="javascript" type="text/javascript"
@@ -87,7 +95,7 @@ function display_admin() {
 			plugins : \'style,layer,table,save,advhr,advimage,advlist,advlink,comcmsfilelink,cleanupstyles,iespell,insertdatetime,preview,searchreplace,print,contextmenu,paste,directionality,fullscreen,spellchecker,noneditable,visualchars,nonbreaking,xhtmlxtras\',
 			themes : "advanced",
 			languages : "en",
-			disk_cache : true,
+			disk_cache : '.$mce_disk_cache.',
 			debug : false
 		});
 		</script>
