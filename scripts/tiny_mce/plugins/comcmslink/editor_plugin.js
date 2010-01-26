@@ -7,9 +7,9 @@
 
 (function() {
 	// Load plugin specific language pack
-	tinymce.PluginManager.requireLangPack('filelink');
+	tinymce.PluginManager.requireLangPack('comcmslink');
 
-	tinymce.create('tinymce.plugins.FileLink', {
+	tinymce.create('tinymce.plugins.ComCMSLink', {
 		/**
 		 * Initializes the plugin, this will be executed after the plugin has been created.
 		 * This call is done before the editor instance has finished it's initialization so use the onInit event
@@ -20,11 +20,11 @@
 		 */
 		init : function(ed, url) {
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
-			ed.addCommand('mceFileLink', function() {
+			ed.addCommand('mceComCMSLink', function() {
 				ed.windowManager.open({
 					file : url + '/dialog.php',
-					width : 420 + parseInt(ed.getLang('comcmsfilelink.delta_width', 0)),
-					height : 200 + parseInt(ed.getLang('comcmsfilelink.delta_height', 0)),
+					width : 420 + parseInt(ed.getLang('comcmslink.delta_width', 0)),
+					height : 400 + parseInt(ed.getLang('comcmslink.delta_height', 0)),
 					inline : 1
 				}, {
 					plugin_url : url, // Plugin absolute URL
@@ -32,17 +32,17 @@
 				});
 			});
 
-			// Register example button
-			ed.addButton('filelink', {
-				title : 'filelink.desc',
-				cmd : 'mceFileLink',
+			// Register button
+			ed.addButton('comcmslink', {
+				title : 'comcmslink.desc',
+				cmd : 'mceComCMSLink',
 				image : url + '/img/icon.gif'
 			});
 
 			// Add a node change handler, selects the button in the UI when a image is selected
 			ed.onNodeChange.add(function(ed, cm, n, co) {
-				cm.setDisabled('filelink', co && n.nodeName != 'A');
-				cm.setActive('filelink', n.nodeName == 'A' && !n.name);
+				cm.setDisabled('comcmslink', co && n.nodeName != 'A');
+				cm.setActive('comcmslink', n.nodeName == 'A' && !n.name);
 			});
 		},
 
@@ -68,15 +68,15 @@
 		 */
 		getInfo : function() {
 			return {
-				longname : 'Example plugin',
-				author : 'Some author',
-				authorurl : 'http://tinymce.moxiecode.com',
-				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/example',
+				longname : 'Community CMS Link Plugin',
+				author : 'Stephen Just',
+				authorurl : 'http://communitycms.sourceforge.net',
+				infourl : 'http://communitycms.sourceforge.net',
 				version : "1.0"
 			};
 		}
 	});
 
 	// Register plugin
-	tinymce.PluginManager.add('comcmsfilelink', tinymce.plugins.FileLink);
+	tinymce.PluginManager.add('comcmslink', tinymce.plugins.ComCMSLink);
 })();

@@ -27,7 +27,7 @@ if($referer_directory == "") {
 	}
 $current_directory = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
 
-$referer_dir_root = str_replace('/scripts/tiny_mce/plugins/comcmsfilelink',NULL,$referer_directory);
+$referer_dir_root = str_replace('/scripts/tiny_mce/plugins/comcmslink',NULL,$referer_directory);
 
 if($current_directory == $referer_dir_root.'/admin/scripts') {
 	if ($referer_dir_root != $referer_directory) {
