@@ -1,13 +1,18 @@
+body {
+	font-family: Tahoma, sans-serif;
+	font-size: medium;
+}
 #print_header {
 	display: none;
 }
 #page_path {
+	display: none;
 	font-size: small;
 }
 img.logo {
-  width: 686px;
-  height: 100px;
-  border: 0px;
+	width: 686px;
+	height: 100px;
+	border: 0px;
 }
 div.nav_menu {
 	background: url('./images/menubg.png');
@@ -129,6 +134,7 @@ div.notification {
 }
 
 /* EDITOR STYLES */
+/* ------------------------------------------------------------------------- */
 table.black-border {
 	background-color: #FFFFFF;
 	border: 1px solid #000000 !important;
@@ -139,8 +145,23 @@ table.black-border td {
 	padding: 2px;
 	vertical-align: top;
 }
+table.no-border {
+	background-color: #FFFFFF;
+	border: 0px;
+	padding: 0px;
+}
+table.no-border td {
+	border: 0px;
+	padding: 2px;
+	vertical-align: top;
+}
+p.no-spacing {
+	margin: 0px;
+	padding: 0px;
+}
 
 /* NEWS */
+/* ------------------------------------------------------------------------- */
 div.news_item_container {
     position: relative;
     background: url('./images/news_topleft.png') no-repeat;
@@ -159,7 +180,7 @@ div.news_item_top {
 	width: 100%;
 }
 span.news_title {
-	font: 2em Cambria,'Times New Roman',Serif;
+	font: 1.5em Cambria,'Times New Roman',Serif;
 }
 span.news_title a {
 	color: #000000;
@@ -170,8 +191,8 @@ span.news_author {
     font-style: italic;
 }
 div.news_content {
-	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
-    font-size: small;
+	font-family: Tahoma,sans-serif;
+    font-size: medium;
 }
 img.news_image {
 	max-width: 100px;
@@ -182,7 +203,7 @@ img.news_image {
 	padding-right: 10px;
 }
 span.contact_name {
-	font-size: large;
+	font-size: 1.5em;
 	font-family: Cambria,
 							Georgia,
 							"Book Antiqua",
@@ -201,12 +222,7 @@ span.contact_title {
 }
 span.contact_heading {
 	font-size: medium;
-	font-family: Calibri,
-							Tahoma,
-							Verdana,
-							Arial,
-							"DejaVu Sans",
-							sans-serif;
+	font-family: Tahoma, sans-serif;
 	font-style: italic;
 	color: #AAAAAA;
 }
