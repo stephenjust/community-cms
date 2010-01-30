@@ -2,9 +2,13 @@
     Document   : editor_styles
     Created on : 9-Jan-2010, 2:49:20 PM
     Author     : Stephen
-    Description:
-        Custom classes for TinyMCE editor
+    Description: Custom classes for TinyMCE editor
 */
+
+body {
+	font-family: Tahoma, sans-serif !important;
+	font-size: medium !important;
+}
 
 table.black-border {
 	background-color: #FFFFFF;
@@ -16,4 +20,18 @@ table.black-border td {
 	padding: 2px;
 	vertical-align: top;
 }
+table.no-border {
+	background-color: #FFFFFF;
+	border: 0px;
+	padding: 0px;
+}
+table.no-border td {
+	border: 0px;
+	padding: 2px;
+	vertical-align: top;
+}
 
+p.no-spacing {
+	margin: 0px;
+	padding: 0px;
+}
