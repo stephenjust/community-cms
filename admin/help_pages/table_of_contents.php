@@ -33,6 +33,7 @@ of any administration page.
 <ol>
 <li><a href="admin.php?module=help&amp;page=tinymce_using_tinymce">Using the TinyMCE Editor</a></li>
 <li><a href="admin.php?module=help&amp;page=tinymce_what_is_it">What is TinyMCE?</a></li>
+<li><a href="admin.php?module=help&amp;page=tinymce_button_details">What do the TinyMCE buttons do?</a></li>
 <li><a href="admin.php?module=help&amp;page=tinymce_paste_in_firefox">Pasting in Firefox</a></li>
 </ol>';
 	$return .= '<h4>Users</h4>
