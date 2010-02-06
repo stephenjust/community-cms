@@ -21,11 +21,19 @@ function article_url_nopage($id) {
 }
 
 function article_url_onpage($id) {
+	global $db;
 	if (!is_numeric($id)) {
 		return '#';
 	}
 
-	return 'index.php?id=1&amp;article='.$id;
+	$page_query = 'SELECT `page` FROM `'.NEWS_TABLE.'`
+		WHERE `id` = '.$id;
+	$page_handle = $db->sql_query($page_query);
+	if ($db->sql_num_rows($page_handle) == 0) {
+		return '#';
+	}
+	$page_result = $db->sql_fetch_assoc($page_handle);
+	return 'index.php?id='.$page_result['page'].'&amp;article='.$id.'#article-'.$id;
 }
 
 function article_url_ownpage($id) {
