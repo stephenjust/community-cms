@@ -16,10 +16,8 @@ define('ROOT','./');
 $content = NULL;
 // Load error handling code
 require_once('./functions/error.php');
-// Load database configuration
-if(!include_once('./config.php')) {
-    err_page(0001);
-}
+require_once('./config.php');
+
 // Check if site is disabled.
 if($CONFIG['disabled'] == 1) {
     err_page(1);

@@ -14,7 +14,7 @@ require(ROOT.'includes/Tar.php');
 function load_template_file($filename = 'index.html') {
 	global $db; // Needed for db query
 	$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
-		WHERE id = '.get_config('template');
+		WHERE id = '.get_config('site_template');
 	$template_handle = $db->sql_query($template_query);
 	if ($db->error[$template_handle] === 1) {
 		echo 'Failed to read template information.';
