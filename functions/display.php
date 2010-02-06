@@ -160,6 +160,9 @@ function display_page($view="") {
 	$template_page_bottom->page_id = $page->id;
 	$template_page_bottom->page_ref = $page->url_reference;
 	$template_page_bottom->image_path = $image_path;
+	$template_page_bottom->replace_variable('article_url_onpage','article_url_onpage($a);');
+	$template_page_bottom->replace_variable('article_url_ownpage','article_url_ownpage($a);');
+	$template_page_bottom->replace_variable('article_url_nopage','article_url_nopage($a);');
 	echo $template_page_bottom;
 	unset($template_page_bottom);
 	return;

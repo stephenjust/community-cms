@@ -11,7 +11,14 @@ var ComCMSLinkDialog = {
 	insert : function() {
 		// Insert the contents from the input into the document
 		if (eval(document.forms[0].type_file.checked) == true) {
-			tinyMCEPopup.editor.execCommand('mceInsertContent', false, '<a href="'+document.forms[0].file_list.value+'">'+document.forms[0].linktext.value+'</a>');
+			tinyMCEPopup.editor.execCommand('mceInsertContent', false,
+				'<a href="'+document.forms[0].file_list.value+'">'+document.forms[0].linktext.value+'</a>');
+		}
+		if (eval(document.forms[0].type_article.checked) == true) {
+			if (eval(document.forms[0].type_nopage.checked) == true) {
+				tinyMCEPopup.editor.execCommand('mceInsertContent', false,
+					'<a href="$ARTICLE_URL_NOPAGE-'+document.forms[0].article_select.value+'$">'+document.forms[0].linktext.value+'</a>');
+			}
 		}
 		tinyMCEPopup.close();
 	}

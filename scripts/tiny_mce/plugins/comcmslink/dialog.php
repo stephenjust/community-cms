@@ -16,10 +16,30 @@ function update_dynamic_file_list() {
 	var newfolder = folderlist.value;
 	loadHTML(urlBaseDFL + "?newfolder=" + encodeURI(newfolder),dynamiclistdiv);
 }
+
+var urlBaseDALL = "../../../../admin/scripts/dynamic_article_link_list.php";
+
+function update_dynamic_article_link_list() {
+	var dynamiclistdiv = document.getElementById('dynamic_article_link_list');
+	var pagelist = document.getElementById('page_select');
+	var page = pagelist.value;
+	loadHTML(urlBaseDALL + "?page=" + encodeURI(page),dynamiclistdiv);
+}
 </script>
 	<script type="text/javascript" src="../../../../admin/scripts/ajax.js"></script>
 </head>
 <body id="comcmslink" style="display: none;">
+	<?php
+		/**
+		 * @ignore
+		 */
+		DEFINE('SECURITY',1);
+		DEFINE('ADMIN',1);
+		DEFINE('ROOT','../../../../');
+		include (ROOT . 'config.php');
+		include (ROOT . 'include.php');
+		initialize();
+	?>
 	<div class="tabs"></div>
 	<form onsubmit="ComCMSLinkDialog.insert();return false;" action="#">
 		<div class="panel_wrapper">
@@ -54,21 +74,20 @@ function update_dynamic_file_list() {
 				</fieldset>
 				<fieldset>
 					<legend>{#comcmslink_dlg.file}</legend>
-					<?php
-					/**
-					 * @ignore
-					 */
-					DEFINE('SECURITY',1);
-					DEFINE('ADMIN',1);
-					DEFINE('ROOT','../../../../');
-					include (ROOT . 'config.php');
-					include (ROOT . 'include.php');
-					?>
 					File <div id="dynamic_file_list"><?php echo dynamic_file_list(); ?></div>
 				</fieldset>
 				<fieldset>
 					<legend>{#comcmslink_dlg.article}</legend>
-					TODO
+					<div id="dynamic_article_link_list"><?php echo dynamic_article_link_list(); ?></div>
+					<fieldset>
+						<legend>{#comcmslink_dlg.ar_link_type}</legend>
+						<label for="type_onpage">{#comcmslink_dlg.type_onpage}</label>
+						<input type="radio" name="mode" id="type_onpage" value="onpage" /><br />
+						<label for="type_nopage">{#comcmslink_dlg.type_nopage}</label>
+						<input type="radio" name="mode" id="type_nopage" value="nopage" checked /><br />
+						<label for="type_ownpage">{#comcmslink_dlg.type_ownpage}</label>
+						<input type="radio" name="mode" id="type_ownpage" value="ownpage" /><br />
+					</fieldset>
 				</fieldset>
 			</div>
 	</div>
@@ -82,5 +101,6 @@ function update_dynamic_file_list() {
 		</div>
 	</div>
 	</form>
+	<?php clean_up(); ?>
 </body>
 </html>

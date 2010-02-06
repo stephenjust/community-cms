@@ -108,6 +108,32 @@ class template {
 		}
 	}
 
+	function replace_variable($variable,$replacement) {
+		if (!is_string($variable)) {
+			return false;
+		}
+		if (!is_string($replacement)) {
+			return false;
+		}
+
+		$matches = array();
+		preg_match_all('/\$'.$variable.'\-[\d\w]+\$/i',$this->template,$matches);
+
+		foreach ($matches as $match) {
+			if (count($match) == 0) {
+				continue;
+			}
+			preg_match('/\-(?P<value>[a-z0-9]+)\$/i',$match[0],$submatch);
+			if (isset($submatch['value'])) {
+				$a = $submatch['value'];
+			} else {
+				return false;
+			}
+			eval('$newvalue = '.$replacement);
+			$this->template = str_replace($match[0],$newvalue,$this->template);
+		}
+	}
+
 	function split($split_marker) {
 		$content = $this->template;
 		$temp = explode('<!-- $'.mb_convert_case($split_marker, MB_CASE_UPPER, "UTF-8").'$ -->',$content);
