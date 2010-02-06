@@ -142,6 +142,24 @@ class page {
 	 */
 	public function get_page_information() {
 		global $db;
+
+		// Article Page
+		if (isset($_GET['showarticle'])) {
+			$this->id = 0;
+			$this->text_id = NULL;
+			$this->showtitle = false;
+			require(ROOT . 'pagetypes/news_class.php');
+			$article = new news_item;
+			$article->set_article_id((int)$_GET['showarticle']);
+			if (!$article->get_article()) {
+				$this->exists = 0;
+				return;
+			}
+			$this->exists = 1;
+			$this->content = $article->article;
+			return;
+		}
+
 		if ($this->id != 0 && strlen($this->text_id) == 0) {
 			$page_query = 'SELECT * FROM ' . PAGE_TABLE . ' WHERE
 				id = '.$this->id.' LIMIT 1';

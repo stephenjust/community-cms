@@ -58,7 +58,7 @@ class news_item {
 					<div class="notification">Could not load article.</div>
 					</body>
 					</html>';
-				return;
+				return false;
 			}
 			if ($db->sql_num_rows($article_handle) != 1) {
 				header("HTTP/1.0 404 Not Found");
@@ -71,18 +71,18 @@ class news_item {
 					<div class="notification">Could not find requested article.</div>
 					</body>
 					</html>';
-				return;
+				return false;
 			}
 		} else {
 			if ($db->error[$article_handle] === 1) {
 				header("HTTP/1.0 404 Not Found");
 				$this->article =  '<div class="notification">Could not load article.</div>';
-				return;
+				return false;
 			}
 			if ($db->sql_num_rows($article_handle) != 1) {
 				header("HTTP/1.0 404 Not Found");
 				$this->article = '<div class="notification">Could not find requested article.</div>';
-				return;
+				return false;
 			}
 		}
 		$article = $db->sql_fetch_assoc($article_handle);
@@ -137,7 +137,7 @@ class news_item {
 
 		$this->article = (string)$template_article;
 		unset($template_article);
-        return;
+        return true;
     }
 }
 ?>

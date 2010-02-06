@@ -21,10 +21,18 @@ function article_url_nopage($id) {
 }
 
 function article_url_onpage($id) {
-	// FIXME: Stub
+	if (!is_numeric($id)) {
+		return '#';
+	}
+
+	return 'index.php?id=1&amp;article='.$id;
 }
 
 function article_url_ownpage($id) {
-	// FIXME: Stub
+	if (!is_numeric($id)) {
+		return '#';
+	}
+
+	return 'index.php?showarticle='.$id;
 }
 ?>

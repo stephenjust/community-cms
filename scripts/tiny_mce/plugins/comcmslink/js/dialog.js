@@ -19,6 +19,14 @@ var ComCMSLinkDialog = {
 				tinyMCEPopup.editor.execCommand('mceInsertContent', false,
 					'<a href="$ARTICLE_URL_NOPAGE-'+document.forms[0].article_select.value+'$">'+document.forms[0].linktext.value+'</a>');
 			}
+			if (eval(document.forms[0].type_onpage.checked) == true) {
+				tinyMCEPopup.editor.execCommand('mceInsertContent', false,
+					'<a href="$ARTICLE_URL_ONPAGE-'+document.forms[0].article_select.value+'$">'+document.forms[0].linktext.value+'</a>');
+			}
+			if (eval(document.forms[0].type_ownpage.checked) == true) {
+				tinyMCEPopup.editor.execCommand('mceInsertContent', false,
+					'<a href="$ARTICLE_URL_OWNPAGE-'+document.forms[0].article_select.value+'$">'+document.forms[0].linktext.value+'</a>');
+			}
 		}
 		tinyMCEPopup.close();
 	}
