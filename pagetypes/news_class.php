@@ -135,6 +135,10 @@ class news_item {
 			$template_article->article_details_end = NULL;
 		}
 
+		$template_article->replace_variable('article_url_onpage','article_url_onpage($a);');
+		$template_article->replace_variable('article_url_ownpage','article_url_ownpage($a);');
+		$template_article->replace_variable('article_url_nopage','article_url_nopage($a);');
+
 		$this->article = (string)$template_article;
 		unset($template_article);
         return true;
