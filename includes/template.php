@@ -123,14 +123,16 @@ class template {
 			if (count($match) == 0) {
 				continue;
 			}
-			preg_match('/\-(?P<value>[\d\w]+)\$/i',$match[0],$submatch);
-			if (isset($submatch['value'])) {
-				$a = $submatch['value'];
-			} else {
-				return false;
+			for ($i = 0; $i < count($match); $i++) {
+				preg_match('/\-(?P<value>[\d\w]+)\$/i',$match[$i],$submatch);
+				if (isset($submatch['value'])) {
+					$a = $submatch['value'];
+				} else {
+					return false;
+				}
+				eval('$newvalue = '.$replacement);
+				$this->template = str_replace($match[$i],$newvalue,$this->template);
 			}
-			eval('$newvalue = '.$replacement);
-			$this->template = str_replace($match[0],$newvalue,$this->template);
 		}
 	}
 
