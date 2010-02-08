@@ -123,7 +123,7 @@ class template {
 			if (count($match) == 0) {
 				continue;
 			}
-			preg_match('/\-(?P<value>[a-z0-9]+)\$/i',$match[0],$submatch);
+			preg_match('/\-(?P<value>[\d\w]+)\$/i',$match[0],$submatch);
 			if (isset($submatch['value'])) {
 				$a = $submatch['value'];
 			} else {

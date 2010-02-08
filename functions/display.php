@@ -142,6 +142,9 @@ function display_page($view="") {
 	$template_page->page_ref = $page->url_reference;
 	$content = $page->get_page_content();
 	$template_page->image_path = $image_path;
+	$template_page->replace_variable('article_url_onpage','article_url_onpage($a);');
+	$template_page->replace_variable('article_url_ownpage','article_url_ownpage($a);');
+	$template_page->replace_variable('article_url_nopage','article_url_nopage($a);');
 
 	// Split template here so we can send some of the page now
 	// (probably shouldn't do this because we've already loaded the content,
