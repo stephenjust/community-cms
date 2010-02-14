@@ -75,7 +75,7 @@ function display_admin() {
 		<script language="javascript" type="text/javascript"
 		src="./admin/scripts/ajax.js"></script>
 		<script language="javascript" type="text/javascript"
-		src="./admin/scripts/dynamic_file_list.js"></script>
+		src="./admin/scripts/admin.js"></script>
 		<script language="javascript" type="text/javascript"
 		src="./admin/scripts/block_options.js"></script>
 		<script language="javascript" type="text/javascript"

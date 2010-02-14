@@ -45,7 +45,12 @@ function loadHTML(url, storage)
 		{
 			//if(xhr.status == 200)
 			{
-				storage.innerHTML = xhr.responseText;
+				if (storage.innerHTML == "undefined")
+				{
+					storage = xhr.responseText;
+				} else {
+					storage.innerHTML = xhr.responseText;
+				}
 			}
 		}
 	};
