@@ -65,12 +65,20 @@ CREATE TABLE `<!-- $DB_PREFIX$ -->contacts` (
 ) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
-  `id` int(11) NOT NULL auto_increment,
-  `type` int(11) NOT NULL,
-  `label` text NOT NULL,
-  `path` text NOT NULL,
-  PRIMARY KEY  (`id`)
+	`id` int(11) NOT NULL auto_increment,
+	`type` int(11) NOT NULL,
+	`label` text NOT NULL,
+	`path` text NOT NULL,
+	PRIMARY KEY (`id`)
 ) ENGINE=MyISAM CHARACTER SET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->galleries` {
+	`id` int(11) NOT NULL auto_increment,
+	`title` text NOT NULL,
+	`description` text NOT NULL,
+	`image_dir` text NOT NULL,
+	PRIMARY KEY (`id`)
+} ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->locations` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,

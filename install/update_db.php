@@ -167,6 +167,33 @@ switch ($db_version) {
 		echo 'The database has been updated to version 0.03<br />'."\n";
 		break;
 	case 0.03:
+		set_config('db_version','0.04');
+		switch ($db->dbms) {
+			case 'mysqli':
+				$query[] = "CREATE TABLE IF NOT EXISTS `".GALLERY_TABLE."` {
+					`id` int(11) NOT NULL auto_increment,
+					`title` text NOT NULL,
+					`description` text NOT NULL,
+					`image_dir` text NOT NULL,
+					PRIMARY KEY (`id`)
+					} ENGINE=MyISAM CHARACTER SET=utf8";
+				break;
+			case 'postgresql':
+				$query[] = 'CREATE SEQUENCE "'.GALLERY_TABLE.'_id_seq"';
+				$query[] = 'CREATE TABLE "'.GALLERY_TABLE.'" {
+					"id" integer NOT NULL default nextval(\''.GALLERY_TABLE.'_id_seq\'),
+					"title" text NOT NULL,
+					"description" text NOT NULL,
+					"image_dir" text NOT NULL,
+					PRIMARY KEY ("id")
+					}';
+				$query[] = 'SELECT setval(\''.GALLERY_TABLE.'_id_seq\', (SELECT max("id") FROM "'.GALLERY_TABLE.'"))';
+				break;
+		}
+		$db_version = 0.04;
+		echo 'The database has been updated to version 0.04<br />'."\n";
+		break;
+	case 0.04:
 		echo 'You already have the latest version of the database.<br />'."\n";
 		echo "</body>\n</html>";
 		exit;

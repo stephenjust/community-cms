@@ -110,6 +110,19 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->files" (
 SELECT setval('<!-- $DB_PREFIX$ -->files_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->files"));
 
 -- ----------------------------------------------------------------------------
+-- comcms_galleries
+-- ----------------------------------------------------------------------------
+CREATE SEQUENCE "<!-- $DB_PREFIX$ -->galleries_id_seq";
+CREATE TABLE "<!-- $DB_PREFIX$ -->galleries" {
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->galleries_id_seq'),
+	"title" text NOT NULL,
+	"description" text NOT NULL,
+	"image_dir" text NOT NULL,
+	PRIMARY KEY ("id")
+};
+SELECT setval('<!-- $DB_PREFIX$ -->galleries_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->galleries"));
+
+-- ----------------------------------------------------------------------------
 -- comcms_logs
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->logs_id_seq";
