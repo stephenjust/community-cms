@@ -10,6 +10,13 @@ body {
 	font-size: medium !important;
 }
 
+a {
+	color: #0000FF;
+}
+a:visited {
+	color: #0000FF;
+}
+
 table.black-border {
 	background-color: #FFFFFF;
 	border: 1px solid #000000 !important;

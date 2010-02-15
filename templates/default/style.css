@@ -133,6 +133,13 @@ div.notification {
 	width: 195px;
 }
 
+a {
+	color: #0000FF;
+}
+a:visited {
+	color: #0000FF;
+}
+
 /* EDITOR STYLES */
 /* ------------------------------------------------------------------------- */
 table.black-border {
