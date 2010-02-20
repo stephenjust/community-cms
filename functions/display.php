@@ -145,6 +145,7 @@ function display_page($view="") {
 	$template_page->replace_variable('article_url_onpage','article_url_onpage($a);');
 	$template_page->replace_variable('article_url_ownpage','article_url_ownpage($a);');
 	$template_page->replace_variable('article_url_nopage','article_url_nopage($a);');
+	$template_page->replace_variable('gallery_embed','gallery_embed($a);');
 
 	// Split template here so we can send some of the page now
 	// (probably shouldn't do this because we've already loaded the content,
@@ -166,6 +167,7 @@ function display_page($view="") {
 	$template_page_bottom->replace_variable('article_url_onpage','article_url_onpage($a);');
 	$template_page_bottom->replace_variable('article_url_ownpage','article_url_ownpage($a);');
 	$template_page_bottom->replace_variable('article_url_nopage','article_url_nopage($a);');
+	$template_page_bottom->replace_variable('gallery_embed','gallery_embed($a);');
 	echo $template_page_bottom;
 	unset($template_page_bottom);
 	return;

@@ -24,6 +24,7 @@ require(ROOT . 'includes/template.php');
 require(ROOT . 'functions/login.php');
 require(ROOT . 'functions/article.php');
 require(ROOT . 'includes/page.php');
+require(ROOT . 'includes/gallery.php');
 if(!include_once(ROOT.'functions/page_class.php')) {
     err_page(2001);
 }
