@@ -34,7 +34,7 @@ function load_template_file($filename = 'index.html') {
 // ----------------------------------------------------------------------------
 
 // Create file upload form
-function file_upload_box($show_dirs = 0) {
+function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 	$query_string = $_SERVER['QUERY_STRING'];
 	$query_string = preg_replace('/action=.+\&/',NULL,$query_string);
 	$return = '<form enctype="multipart/form-data"
@@ -42,6 +42,9 @@ function file_upload_box($show_dirs = 0) {
 		$query_string.'" method="POST">
 		Please choose a file: <input name="upload" type="file" /><br />'.
 		"\n";
+	if ($dir != NULL) {
+		$return .= '<input type="hidden" name="path" value="'.$dir.'" />'."\n";
+	}
 	if ($show_dirs == 1) {
 		// Remember path from previous upload
 		if (isset($_POST['path'])) {
@@ -65,7 +68,13 @@ function file_upload_box($show_dirs = 0) {
 			}
 		} // FOR
 	}
-	$return .= '</select><br />';
+	$return .= '</select><br />'."\n";
+	if (is_array($extra_vars)) {
+		for ($i = 0; $i < count($extra_vars); $i++) {
+			$return .= '<input type="hidden" name="'.key($extra_vars).'" value="'.current($extra_vars).'" />'."\n";
+			if ($i < count($extra_vars)) next($extra_vars);
+		}
+	}
 	$return .= '<input type="submit" value="Upload" />
 		</form>';
 	// Don't forget to send same 'GET' vars to script!
@@ -74,7 +83,7 @@ function file_upload_box($show_dirs = 0) {
 
 // ----------------------------------------------------------------------------
 
-function file_upload($path = "", $contentfile = true) {
+function file_upload($path = "", $contentfile = true, $thumb = false) {
 	if ($path != "") {
 		$path .= '/';
 	}
@@ -99,6 +108,13 @@ function file_upload($path = "", $contentfile = true) {
 	if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
 		$return = "The file " . $filename . " has been uploaded. ";
 		log_action ('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
+		if ($thumb == true) {
+			if (generate_thumbnail($target)) {
+				$return .= 'Generated thumbnail.';
+			} else {
+				$return .= 'Failed to generate thumbnail.';
+			}
+		}
 	} else {
 		$return = "Sorry, there was a problem uploading your file.";
 	}
@@ -279,4 +295,11 @@ function replace_file_special_chars($filename) {
 	$filename = str_replace(array('\'','"','?','+','@','#','$','!'),'_',$filename);
 	return $filename;
 }
+
+// ----------------------------------------------------------------------------
+
+function generate_thumbnail($original) {
+	// FIXME: Stub
+}
+
 ?>

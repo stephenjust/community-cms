@@ -404,10 +404,18 @@ class form {
 	 * add_file_upload - Add a button to upload a file
 	 * @param string $name ID for form var
 	 */
-	function add_file_upload($name) {
+	function add_file_upload($name,$upload_dir = NULL, $gallery = false) {
+		if ($upload_dir == NULL) {
+			$script_file = ROOT.'admin/upload_mini.php';
+		} else {
+			$script_file = ROOT.'admin/upload_mini.php?dir='.$upload_dir;
+			if ($gallery == true) {
+				$script_file .= '&amp;thumb=1';
+			}
+		}
 		$this->form .= '<div class="admin_form_element">
 			<label for="_'.$name.'">&nbsp;</label><input type="button" value="Upload File"
-			onClick="window.open(\'./admin/upload_mini.php\',\'mywindow\',
+			onClick="window.open(\''.$script_file.'\',\'mywindow\',
 			\'width=400,height=200\')" id="_'.$name.'" />';
 	}
 

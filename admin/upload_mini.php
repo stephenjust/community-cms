@@ -23,10 +23,22 @@ $content = '<html>
 <body>';
 // Check if the form has been submitted.
 if(isset($_GET['upload'])) {
-	$content .= file_upload($_POST['path']);
+	if (isset($_GET['thumbs'])) {
+		$content .= file_upload($_POST['path'],true,true);
+	} else {
+		$content .= file_upload($_POST['path']);
+	}
 }
 // Display upload form and upload location selector.
-$content .= file_upload_box(1);
+if (isset($_GET['dir'])) {
+	$extra_vars = array();
+	if (isset($_GET['thumb'])) {
+		$extra_vars['thumbs'] = 1;
+	}
+	$content .= file_upload_box(0,$_GET['dir'],$extra_vars);
+} else {
+	$content .= file_upload_box(1);
+}
 $content .= '</body></html>';
 echo $content;
 clean_up();

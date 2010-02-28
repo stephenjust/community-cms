@@ -68,6 +68,26 @@ function delete_gallery($gallery) {
 
 // ----------------------------------------------------------------------------
 
+function gallery_upload_box($gallery_id,$gallery_dir) {
+	global $db;
+	global $debug;
+
+	if (!is_numeric($gallery_id)) {
+		return false;
+	}
+	if (!file_exists(ROOT.'files/'.$gallery_dir)) {
+		return false;
+	}
+
+	$form = new form;
+	$form->set_target('#');
+	$form->set_method('post');
+	$form->add_file_upload('gallery_upload',$gallery_dir,true);
+	return $form;
+}
+
+// ----------------------------------------------------------------------------
+
 $tab_layout = new tabs;
 
 // Check to make sure a gallery application is selected
@@ -123,7 +143,9 @@ switch ($_GET['action']) {
 			break;
 		}
 	case 'edit':
+		$gallery_info = gallery_info($_POST['gallery']);
 		$tab_content['edit'] = 'Editing gallery '.$_POST['gallery'];
+		$tab_content['edit'] .= gallery_upload_box($_POST['gallery'],$gallery_info['image_dir']);
 		$tab_layout->add_tab('Edit Gallery',$tab_content['edit']);
 		// TODO: Finish edit gallery view
 		break;
