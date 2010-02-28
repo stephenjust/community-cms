@@ -26,6 +26,10 @@ require(ROOT.'include.php');
 initialize();
 
 $gallery_info = gallery_info($_GET['id']);
+if (!$gallery_info) {
+	header("HTTP/1.0 404 Not Found");
+	exit;
+}
 
 switch (get_config('gallery_app')) {
 	case 'simpleviewer':
@@ -36,11 +40,11 @@ switch (get_config('gallery_app')) {
 	title="{$gallery_info['title']}"
 	textColor="000000"
 	frameColor="CCCCCC"
-	frameWidth="20"
+	frameWidth="15"
 	thumbPosition="LEFT"
 	thumbColumns="3"
-	thumbRows="4"
-	showOpenButton="TRUE"
+	thumbRows="3"
+	showOpenButton="FALSE"
 	showFullscreenButton="TRUE"
 	maxImageWidth="640"
 	maxImageHeight="640"
@@ -52,8 +56,8 @@ END;
 		$gallery_images = gallery_images($gallery_info['image_dir']);
 		for ($i = 0; $i < count($gallery_images); $i++) {
 			echo <<< END
-<image imageURL="files/{$gallery_info['image_dir']}/{$gallery_image[$i]['file']}"
-	thumbURL="files/{$gallery_info['image_dir']}/thumbs/{$gallery_image[$i]['file']}" linkURL="" linkTarget="" >
+<image imageURL="files/{$gallery_info['image_dir']}/{$gallery_images[$i]['file']}"
+	thumbURL="files/{$gallery_info['image_dir']}/thumbs/{$gallery_images[$i]['file']}" linkURL="" linkTarget="" >
 	<caption>{$gallery_images[$i]['caption']}</caption>
 </image>
 END;

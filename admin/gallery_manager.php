@@ -91,6 +91,12 @@ switch ($_GET['action']) {
 			$content .= 'Failed to create gallery.<br />'."\n";
 			break;
 		} else {
+			if (!file_exists(ROOT.'files/'.$image_dir)) {
+				mkdir(ROOT.'files/'.$image_dir);
+			}
+			if (!file_exists(ROOT.'files/'.$image_dir.'/thumbs')) {
+				mkdir(ROOT.'files/'.$image_dir.'/thumbs');
+			}
 			$content .= 'Successfully created gallery.<br />'."\n";
 			log_action('Created gallery \''.$title.'\'');
 		}

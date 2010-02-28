@@ -71,14 +71,14 @@ class gallery {
 	function __toString() {
 		switch ($this->engine) {
 			case 'simpleviewer':
-				return '<object width="100%" height="100%">
+				return '<object width="100%" height="350px">
 					<param name="movie" value="'.get_config('gallery_dir').'/web/Main.swf?galleryURL='.$this->info_file.'">
 					</param><param name="allowFullScreen" value="true">
 					</param><param name="allowscriptaccess" value="always">
 					</param><param name="bgcolor" value="FFFFFF"></param>
 					<embed src="'.get_config('gallery_dir').'/web/simpleviewer.swf?galleryURL='.$this->info_file.'"
 					type="application/x-shockwave-flash" allowscriptaccess="always"
-					allowfullscreen="true" width="100%" height="100%" bgcolor="FFFFFF">
+					allowfullscreen="true" width="100%" height="350px" bgcolor="FFFFFF">
 					</embed></object>';
 				break;
 			default:
@@ -115,6 +115,39 @@ function gallery_info($id) {
 }
 
 function gallery_images($directory) {
-	// FIXME: Stub;
+	$full_directory = ROOT.'files/'.$directory;
+	$thumbs_directory = $full_directory.'/thumbs';
+	if (!file_exists($full_directory)) {
+		return false;
+	}
+	if (!file_exists($thumbs_directory)) {
+		return false;
+	}
+
+	global $db;
+	global $debug;
+
+	$gallery_files = scandir($full_directory);
+	$thumbs_files = scandir($thumbs_directory);
+
+	// Remove '.' and '..' from directory file lists
+	array_shift($gallery_files);
+	array_shift($gallery_files);
+	array_shift($thumbs_files);
+	array_shift($thumbs_files);
+
+	$image_files = array();
+	$j = 0;
+	for ($i = 0; $i < count($gallery_files); $i++) {
+		if (is_dir($full_directory.$gallery_files[$i])) {
+			continue;
+		}
+		if (!in_array($gallery_files[$i],$thumbs_files)) {
+			continue;
+		}
+		$image_files[$j]['file'] = $gallery_files[$i];
+		$j++;
+	}
+	return $image_files;
 }
 ?>
