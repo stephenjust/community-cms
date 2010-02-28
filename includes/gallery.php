@@ -106,39 +106,15 @@ function gallery_embed($id) {
 	return $gallery;
 }
 
-function gallery_xml($id) {
-	switch (get_config('gallery_app')) {
-		case 'simpleviewer':
-			echo '<?xml version="1.0" encoding="UTF-8"?>';
-			echo '<simpleviewergallery galleryStyle="MODERN" title="'.$title.'"
-	textColor="FFFFFF"
-	frameColor="FFFFFF"
-	frameWidth="20"
-	thumbPosition="LEFT"
-	thumbColumns="3"
-	thumbRows="4"
-	showOpenButton="TRUE"
-	showFullscreenButton="TRUE"
-	maxImageWidth="640"
-	maxImageHeight="640"
-	useFlickr="false"
-	flickrUserName=""
-	flickrTags=""
-	languageCode="AUTO"
-	languageList=""
-	imagePath="images/"
-	thumbPath="thumbs/"
-
->';
-			echo '<image imageURL="images/tall.jpg" thumbURL="thumbs/tall.jpg" linkURL="" linkTarget="" >
-	<caption>Example Caption - Supports HTML</caption>
-</image>';
-			echo '</simpleviewergallery>';
-			break;
-		default:
-			break;
-	}
-	// FIXME: Incomplete
+function gallery_info($id) {
+	global $db;
+	$query = 'SELECT * FROM `'.GALLERY_TABLE.'` WHERE `id` = '.$id.' LIMIT 1';
+	$handle = $db->sql_query($query);
+	$result = $db->sql_fetch_assoc($handle);
+	return $result;
 }
 
+function gallery_images($directory) {
+	// FIXME: Stub;
+}
 ?>
