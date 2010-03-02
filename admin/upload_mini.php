@@ -23,7 +23,7 @@ $content = '<html>
 <body>';
 // Check if the form has been submitted.
 if(isset($_GET['upload'])) {
-	if (isset($_GET['thumbs'])) {
+	if (isset($_POST['thumbs'])) {
 		$content .= file_upload($_POST['path'],true,true);
 	} else {
 		$content .= file_upload($_POST['path']);

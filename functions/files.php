@@ -299,7 +299,43 @@ function replace_file_special_chars($filename) {
 // ----------------------------------------------------------------------------
 
 function generate_thumbnail($original) {
-	// FIXME: Stub
+	global $debug;
+
+	if (preg_match('/\.png$/i',$original)) {
+		$image = imageCreateFromPNG($original);
+		$imagetype = 'png';
+	} elseif (preg_match('/\.(jpg|jpeg)$/i',$original)) {
+		$image = imageCreateFromJPEG($original);
+		$imagetype = 'jpg';
+	} else {
+		$debug->add_trace('A thumbnail cannot be created from '.$original,true,'generate_thumbnail()');
+		return false;
+	}
+
+	// Add /thumbs/ to the path (using the reverse, and only replacing the first slash
+	$reverse_path = strrev($original);
+	$reverse_path = str_replace_count('/','/sbmuht/',$reverse_path,1);
+	$thumb_path = strrev($reverse_path);
+
+	$image_x = imagesx($image);
+	$image_y = imagesy($image);
+	if ($image_y >= $image_x) {
+		$thumb_x = 75;
+		$thumb_y = $image_y * ($thumb_x / $image_x);
+	} else {
+		$thumb_y = 75;
+		$thumb_x = $image_x * ($thumb_y / $image_y);
+	}
+
+	$thumb_image = imageCreateTrueColor($thumb_x,$thumb_y);
+	imagecopyresampled($thumb_image, $image, 0, 0, 0, 0, $thumb_x, $thumb_y, $image_x, $image_y);
+	if ($imagetype == 'png') {
+		imagepng($thumb_image,$thumb_path);
+	} else {
+		imagejpeg($thumb_image,$thumb_path);
+	}
+	$debug->add_trace('Generated thumbnail',false,'generate_thumbnail()');
+	return true;
 }
 
 ?>
