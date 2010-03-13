@@ -144,8 +144,9 @@ switch ($_GET['action']) {
 		}
 	case 'edit':
 		$gallery_info = gallery_info($_POST['gallery']);
-		$tab_content['edit'] = 'Editing gallery '.$_POST['gallery'];
-		$tab_content['edit'] .= gallery_upload_box($_POST['gallery'],$gallery_info['image_dir']);
+		$tab_content['edit'] = 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
+		$tab_content['edit'] .= '<input type="text" value="$GALLERY_EMBED-'.$gallery_info['id'].'$" />';
+		$tab_content['edit'] .= gallery_upload_box($gallery_info['id'],$gallery_info['image_dir']);
 		$tab_layout->add_tab('Edit Gallery',$tab_content['edit']);
 		// TODO: Finish edit gallery view
 		break;
