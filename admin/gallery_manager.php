@@ -113,9 +113,15 @@ function gallery_photo_manager($gallery_id) {
 	$image_path = ROOT.'files/'.$gallery_info['image_dir'].'/';
 	$thumbs_path = $image_path.'thumbs/';
 	for ($i = 0; $i < count($gallery_images); $i++) {
-		$image_manager .= '<tr><td><a href="'.$image_path.$gallery_images[$i]['file'].'">
+		$image_manager .= '<form method="post" action="?module=gallery_manager&amp;
+			action=edit&amp;id='.$gallery_info['id'].'&amp;edit=desc">
+			<input type="hidden" name="file_id" value="'.$gallery_images[$i]['file_id'].'" />
+			<input type="hidden" name="file_name" value="'.$gallery_images[$i]['file'].'" />';
+		$image_manager .= '<tr><td style="vertical-align: middle;"><a href="'.$image_path.$gallery_images[$i]['file'].'">
 			<img src="'.$thumbs_path.$gallery_images[$i]['file'].'" border="0px" /></a></td>
-			<td><textarea class="mceNoEditor mceSimple">TODO: Save/Load content</textarea></td></tr>';
+			<td><textarea class="mceNoEditor mceSimple" name="desc">'.$gallery_images[$i]['caption'].'</textarea></td>
+			<td style="vertical-align: middle;"><input type="submit" value="Save Description" /><br /></td></tr>';
+		$image_manager .= '</form>'."\n";
 	}
 	$image_manager .= '</table>';
 	return $image_manager;
@@ -181,7 +187,34 @@ switch ($_GET['action']) {
 		if (isset($_GET['id']) && !isset($_POST['gallery'])) {
 			$_POST['gallery'] = $_GET['id'];
 		}
+		if (!isset($_POST['gallery'])) {
+			$debug->add_trace('No gallery selected.',true,'gallery_manager.php');
+			break;
+		}
 		$gallery_info = gallery_info($_POST['gallery']);
+
+		// Edit description
+		if (isset($_GET['edit'])) {
+			if ($_GET['edit'] == 'desc' && isset($_POST['file_id']) && isset($_POST['file_name'])) {
+				if ($_POST['file_id'] == '') {
+					$description_query = 'INSERT INTO `'.GALLERY_IMAGE_TABLE.'`
+						(`gallery_id`,`file`,`caption`) VALUES
+						('.(int)$_GET['id'].',\''.$_POST['file_name'].'\',\''.addslashes($_POST['desc']).'\')';
+				} else {
+					$description_query = 'UPDATE `'.GALLERY_IMAGE_TABLE.'`
+						SET `caption` = \''.addslashes($_POST['desc']).'\'
+						WHERE `id` = '.(int)$_POST['file_id'];
+				}
+				$description_handle = $db->sql_query($description_query);
+				if ($db->error[$description_handle] === 1) {
+					$content .= 'Failed to edit image caption.';
+				} else {
+					$content .= 'Successfully edited image caption.';
+					log_action('Changed image caption for \''.$_POST['file_name'].'\'');
+				}
+			}
+		}
+
 		$tab_content['edit'] = '<span style="font-size: large; font-weight: bold;">'.$gallery_info['title'].'</span><br />'."\n";
 		$tab_content['edit'] .= 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
 		$tab_content['edit'] .= '<input type="text" value="$GALLERY_EMBED-'.$gallery_info['id'].'$" /><br />'."\n";
