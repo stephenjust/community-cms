@@ -80,6 +80,15 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->galleries` {
 	PRIMARY KEY (`id`)
 } ENGINE=MyISAM CHARACTER SET=utf8 ;
 
+CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->gallery_images` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`gallery_id` int(11) NOT NULL,
+	`file` text NOT NULL,
+	`caption` text NOT NULL,
+	PRIMARY KEY (`id`),
+	KEY `gallery_id` (`gallery_id`)
+) ENGINE=MyISAM CHARACTER SET=utf8 ;
+
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->locations` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`value` text COLLATE utf8_general_ci NOT NULL,

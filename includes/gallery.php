@@ -60,7 +60,7 @@ class gallery {
 			return false;
 		}
 		if ($db->sql_num_rows($info_handle) != 1) {
-			$debug->add_trace('Gallery '.$id.' does not exist',true,'gallery_embed()');
+			$debug->add_trace('Gallery '.$this->id.' does not exist',true,'gallery_embed()');
 			return false;
 		}
 
@@ -71,14 +71,14 @@ class gallery {
 	function __toString() {
 		switch ($this->engine) {
 			case 'simpleviewer':
-				return '<object width="100%" height="350px">
+				return '<object width="100%" height="450px">
 					<param name="movie" value="'.get_config('gallery_dir').'/web/Main.swf?galleryURL='.$this->info_file.'">
 					</param><param name="allowFullScreen" value="true">
 					</param><param name="allowscriptaccess" value="always">
 					</param><param name="bgcolor" value="FFFFFF"></param>
 					<embed src="'.get_config('gallery_dir').'/web/simpleviewer.swf?galleryURL='.$this->info_file.'"
 					type="application/x-shockwave-flash" allowscriptaccess="always"
-					allowfullscreen="true" width="100%" height="350px" bgcolor="FFFFFF">
+					allowfullscreen="true" width="100%" height="450px" bgcolor="FFFFFF">
 					</embed></object>';
 				break;
 			default:
@@ -146,6 +146,21 @@ function gallery_images($directory) {
 			continue;
 		}
 		$image_files[$j]['file'] = $gallery_files[$i];
+		// Get caption
+		$info_query = 'SELECT * FROM `'.GALLERY_IMAGE_TABLE.'` WHERE
+			`gallery_id` = (SELECT `id` FROM `'.GALLERY_TABLE.'`
+			WHERE `image_dir` = \''.$directory.'\' LIMIT 1) AND
+			`file` = \''.$gallery_files[$i].'\' LIMIT 1';
+		$info_handle = $db->sql_query($info_query);
+		if ($db->sql_num_rows($info_handle) == 0) {
+			$debug->add_trace('No image details set for '.$directory.'/'.$gallery_files[$i],false,'gallery_images()');
+			$image_files[$j]['caption'] = NULL;
+			$image_files[$j]['file_id'] = NULL;
+		} else {
+			$info = $db->sql_fetch_assoc($info_handle);
+			$image_files[$j]['caption'] = $info['caption'];
+			$image_files[$j]['file_id'] = $info['id'];
+		}
 		$j++;
 	}
 	return $image_files;

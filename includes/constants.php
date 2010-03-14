@@ -38,6 +38,7 @@ define('CONTACTS_TABLE', $CONFIG['db_prefix'] . 'contacts');
 define('CONTENT_TABLE', $CONFIG['db_prefix'] . 'content');
 define('FILE_TABLE', $CONFIG['db_prefix'] . 'files');
 define('GALLERY_TABLE', $CONFIG['db_prefix'] . 'galleries');
+define('GALLERY_IMAGE_TABLE', $CONFIG['db_prefix'] . 'gallery_images');
 define('LOCATION_TABLE', $CONFIG['db_prefix'] . 'locations');
 define('LOG_TABLE', $CONFIG['db_prefix'] . 'logs');
 define('MESSAGE_TABLE', $CONFIG['db_prefix'] . 'messages');
