@@ -82,10 +82,43 @@ function gallery_upload_box($gallery_id,$gallery_dir) {
 	}
 
 	$form = new form;
-	$form->set_target('#');
+	$form->set_target('?module=gallery_manager&amp;action=edit&amp;id='.$gallery_id);
 	$form->set_method('post');
 	$form->add_file_upload('gallery_upload',$gallery_dir,true);
+	$form->add_submit('refresh','Refresh Page');
 	return $form;
+}
+
+// ----------------------------------------------------------------------------
+
+function gallery_photo_manager($gallery_id) {
+	global $debug;
+
+	$gallery_info = gallery_info($gallery_id);
+	if (!file_exists(ROOT.'files/'.$gallery_info['image_dir'])) {
+		$debug->add_trace('Gallery folder does not exist',true,'gallery_photo_manager()');
+		return false;
+	}
+	if (!file_exists(ROOT.'files/'.$gallery_info['image_dir'].'/thumbs')) {
+		$debug->add_trace('Gallery thumbnail dir does not exist',true,'gallery_photo_manager()');
+		return false;
+	}
+
+	$gallery_images = gallery_images($gallery_info['image_dir']);
+
+	if (count($gallery_images) == 0) {
+		return 'There are currently no images in this gallery.';
+	}
+	$image_manager = '<table border="0px">';
+	$image_path = ROOT.'files/'.$gallery_info['image_dir'].'/';
+	$thumbs_path = $image_path.'thumbs/';
+	for ($i = 0; $i < count($gallery_images); $i++) {
+		$image_manager .= '<tr><td><a href="'.$image_path.$gallery_images[$i]['file'].'">
+			<img src="'.$thumbs_path.$gallery_images[$i]['file'].'" border="0px" /></a></td>
+			<td><textarea class="mceNoEditor mceSimple">TODO: Save/Load content</textarea></td></tr>';
+	}
+	$image_manager .= '</table>';
+	return $image_manager;
 }
 
 // ----------------------------------------------------------------------------
@@ -145,10 +178,14 @@ switch ($_GET['action']) {
 			break;
 		}
 	case 'edit':
+		if (isset($_GET['id']) && !isset($_POST['gallery'])) {
+			$_POST['gallery'] = $_GET['id'];
+		}
 		$gallery_info = gallery_info($_POST['gallery']);
 		$tab_content['edit'] = '<span style="font-size: large; font-weight: bold;">'.$gallery_info['title'].'</span><br />'."\n";
 		$tab_content['edit'] .= 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
 		$tab_content['edit'] .= '<input type="text" value="$GALLERY_EMBED-'.$gallery_info['id'].'$" /><br />'."\n";
+		$tab_content['edit'] .= gallery_photo_manager($gallery_info['id']);
 		$tab_content['edit'] .= gallery_upload_box($gallery_info['id'],$gallery_info['image_dir']);
 		$tab_layout->add_tab('Edit Gallery',$tab_content['edit']);
 		// TODO: Finish edit gallery view
