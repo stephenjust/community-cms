@@ -73,10 +73,12 @@ function gallery_upload_box($gallery_id,$gallery_dir) {
 	global $debug;
 
 	if (!is_numeric($gallery_id)) {
+		$debug->add_trace('Gallery ID not numeric',true,'gallery_upload_box()');
 		return false;
 	}
 	if (!file_exists(ROOT.'files/'.$gallery_dir)) {
-		return false;
+		return '<span style="font-weight: bold; color: #FF0000;">The gallery folder no longer exists.<br />
+			Please delete this gallery.</span>';
 	}
 
 	$form = new form;
@@ -144,8 +146,9 @@ switch ($_GET['action']) {
 		}
 	case 'edit':
 		$gallery_info = gallery_info($_POST['gallery']);
-		$tab_content['edit'] = 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
-		$tab_content['edit'] .= '<input type="text" value="$GALLERY_EMBED-'.$gallery_info['id'].'$" />';
+		$tab_content['edit'] = '<span style="font-size: large; font-weight: bold;">'.$gallery_info['title'].'</span><br />'."\n";
+		$tab_content['edit'] .= 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
+		$tab_content['edit'] .= '<input type="text" value="$GALLERY_EMBED-'.$gallery_info['id'].'$" /><br />'."\n";
 		$tab_content['edit'] .= gallery_upload_box($gallery_info['id'],$gallery_info['image_dir']);
 		$tab_layout->add_tab('Edit Gallery',$tab_content['edit']);
 		// TODO: Finish edit gallery view
