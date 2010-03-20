@@ -72,13 +72,15 @@ class gallery {
 		switch ($this->engine) {
 			case 'simpleviewer':
 				return '<object width="100%" height="450px">
-					<param name="movie" value="'.get_config('gallery_dir').'/web/Main.swf?galleryURL='.$this->info_file.'">
-					</param><param name="allowFullScreen" value="true">
-					</param><param name="allowscriptaccess" value="always">
-					</param><param name="bgcolor" value="FFFFFF"></param>
+					<param name="movie" value="'.get_config('gallery_dir').'/web/Main.swf?galleryURL='.$this->info_file.'"></param>
+					<param name="allowFullScreen" value="true"></param>
+					<param name="allowscriptaccess" value="always"></param>
+					<param name="bgcolor" value="FFFFFF"></param>
+					<param name="wmode" value="transparent"></param>
 					<embed src="'.get_config('gallery_dir').'/web/simpleviewer.swf?galleryURL='.$this->info_file.'"
 					type="application/x-shockwave-flash" allowscriptaccess="always"
-					allowfullscreen="true" width="100%" height="450px" bgcolor="FFFFFF">
+					allowfullscreen="true" width="100%" height="450px" bgcolor="FFFFFF"
+					wmode="transparent">
 					</embed></object>';
 				break;
 			default:
