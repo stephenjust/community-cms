@@ -120,8 +120,13 @@ function gallery_photo_manager($gallery_id) {
 		$image_manager .= '<tr><td style="vertical-align: middle;"><a href="'.$image_path.$gallery_images[$i]['file'].'">
 			<img src="'.$thumbs_path.$gallery_images[$i]['file'].'" border="0px" /></a></td>
 			<td><textarea class="mceNoEditor mceSimple" name="desc">'.$gallery_images[$i]['caption'].'</textarea></td>
-			<td style="vertical-align: middle;"><input type="submit" value="Save Description" /><br /></td></tr>';
-		$image_manager .= '</form>'."\n";
+			<td style="vertical-align: middle;"><input type="submit" value="Save Description" /><br /></form></td>
+			<td style="vertical-align: middle;">
+			<form method="post" action="?module=gallery_manager&amp;action=edit&amp;id='.$gallery_info['id'].'&amp;edit=del">
+			<input type="hidden" name="file_id" value="'.$gallery_images[$i]['file_id'].'" />
+			<input type="hidden" name="file_name" value="'.$gallery_images[$i]['file'].'" />
+			<input type="submit" value="Remove Image" /></form>
+			</td></tr>';
 	}
 	$image_manager .= '</table>';
 	return $image_manager;
@@ -211,6 +216,30 @@ switch ($_GET['action']) {
 				} else {
 					$content .= 'Successfully edited image caption.';
 					log_action('Changed image caption for \''.$_POST['file_name'].'\'');
+				}
+			} elseif ($_GET['edit'] == 'del' && isset($_POST['file_id']) && isset($_POST['file_name'])) {
+				if ($_POST['file_id'] != '') {
+					$description_query = 'DELETE FROM `'.GALLERY_IMAGE_TABLE.'`
+						WHERE `id` = '.(int)$_POST['file_id'];
+					$description_handle = $db->sql_query($description_query);
+					if ($db->error[$description_handle] === 1) {
+						$content .= 'Failed to delete image caption.<br />'."\n";
+					} else {
+						$content .= 'Successfully deleted image caption.<br />'."\n";
+					}
+				}
+				$gallery_info = gallery_info((int)$_GET['id']);
+				$image_dir = ROOT.'files/'.$gallery_info['image_dir'].'/';
+				$thumb_dir = $image_dir.'thumbs/';
+				if (file_exists($image_dir.$_POST['file_name']) && file_exists($thumb_dir.$_POST['file_name'])) {
+					$del1 = unlink($image_dir.$_POST['file_name']);
+					$del2 = unlink($thumb_dir.$_POST['file_name']);
+					if ($del1 && $del2) {
+						$content .= 'Successfully deleted image.<br />'."\n";
+						log_action('Deleted image from gallery \''.$_POST['file_name'].'\'');
+					} else {
+						$content .= 'Failed to delete image.<br />'."\n";
+					}
 				}
 			}
 		}
