@@ -33,7 +33,7 @@ function parse_time($time) {
 		$time = str_replace(array(' ','m','M'),NULL,$time);
 		$time = explode(':',$time);
 		$hour = $time[0];
-		if (eregi('a$',$time[1])) {
+		if (preg_match('/a$/i',$time[1])) {
 			$minute = str_replace(array('a','A'),NULL,$time[1]);
 			if ($hour == '12') {
 				$hour = 0;

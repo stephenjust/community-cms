@@ -137,7 +137,7 @@ switch ($_GET['view']) {
 						&& $day_info['starttime'] != $day_info['endtime']) {
 					$stime_tmp = explode(':',$day_info['starttime']);
 					$stime_tmp = mktime($stime_tmp[0],$stime_tmp[1]);
-					$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$stime_tmp).'</span> ';
+					$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$stime_tmp).'</span>'.get_config('calendar_month_time_sep');
 				}
 				$dates .= stripslashes($day_info['header']).'</a><br />'."\n";
 			}

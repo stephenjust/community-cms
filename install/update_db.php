@@ -145,6 +145,7 @@ switch ($db_version) {
 		$query[] = "INSERT INTO `".CONFIG_TABLE."` (`config_name`, `config_value`) VALUES
 			('calendar_month_day_format','{$old_calconfig['month_day_format']}'),
 			('calendar_default_view','{$old_calconfig['default_view']}'),
+			('calendar_month_time_sep',' '),
 			('calendar_month_show_cat_icons','{$old_calconfig['month_show_cat_icons']}'),
 			('calendar_month_show_stime','{$old_calconfig['month_show_stime']}'),
 			('calendar_save_locations','1'),

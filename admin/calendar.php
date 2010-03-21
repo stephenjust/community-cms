@@ -165,11 +165,13 @@ switch ($_GET['action']) {
 		$new_fields['month_show_cat_icons'] = (isset($_POST['month_show_cat_icons'])) ? checkbox($_POST['month_show_cat_icons']) : 0;
 		$new_fields['save_locations'] = (isset($_POST['save_locations'])) ? checkbox($_POST['save_locations']) : 0;
 		$new_fields['month_day_format'] = (int)$_POST['month_day_format'];
+		$new_fields['month_time_sep'] = $_POST['month_time_sep'];
 		if (set_config('calendar_default_view',$new_fields['default_view']) &&
 			set_config('calendar_month_show_stime',$new_fields['month_show_stime']) &&
 			set_config('calendar_month_show_cat_icons',$new_fields['month_show_cat_icons']) &&
 			set_config('calendar_month_day_format',$new_fields['month_day_format']) &&
-			set_config('calendar_save_locations',$new_fields['save_locations']))
+			set_config('calendar_save_locations',$new_fields['save_locations']) &&
+			set_config('calendar_month_time_sep',$new_fields['month_time_sep']))
 		{
 			$content .= 'Updated calendar settings.<br />'."\n";
 			log_action('Updated calendar settings');
@@ -317,6 +319,7 @@ $settings_form->set_target('?module=calendar&amp;action=save_settings');
 $settings_form->add_select('default_view','Default View',array('month','day'),array('Current Month','Current Day'),get_config('calendar_default_view'));
 $settings_form->add_checkbox('month_show_stime','Show Start Time on Month Calendar',get_config('calendar_month_show_stime'));
 $settings_form->add_checkbox('month_show_cat_icons','Show Category Icons on Month Calendar',get_config('calendar_month_show_cat_icons'));
+$settings_form->add_select('month_time_sep','Start Time Separator',array(' ','-',' - '),array('1:00pm Event','1:00pm-Event','1:00pm - Event'),get_config('calendar_month_time_sep'));
 $settings_form->add_select('month_day_format','Label Days on Month Calendar as',array(1,2),array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'),get_config('calendar_month_day_format'));
 $settings_form->add_checkbox('save_locations','Save Location Entries',get_config('calendar_save_locations'));
 $settings_form->add_submit('submit','Save Changes');
