@@ -35,7 +35,7 @@ function get_selected_items($prefix = 'item') {
 	$form_keys = array_keys($_POST);
 	$item_keys = array();
 	for ($i = 0; $i < count($form_keys); $i++) {
-		if (ereg('^'.$prefix.'_',$form_keys[$i])) {
+		if (preg_match('/^'.$prefix.'_/',$form_keys[$i])) {
 			$item_keys[] = $form_keys[$i];
 		}
 	}
@@ -243,11 +243,46 @@ function copy_article($article,$new_location) {
 
 // ----------------------------------------------------------------------------
 
+function save_priorities($form_array) {
+	global $db;
+
+	if (!is_array($form_array)) {
+		return false;
+	}
+	foreach($form_array AS $key => $value) {
+		if (preg_match('/^pri\-/',$key)) {
+			$key = str_replace('pri-','',$key);
+			$pri_save_query = 'UPDATE `'.NEWS_TABLE.'`
+				SET `priority` = '.(int)$value.'
+				WHERE `id` = '.(int)$key;
+			$pri_save_handle = $db->sql_query($pri_save_query);
+			if ($db->error[$pri_save_handle] === 1) {
+				return false;
+			}
+		}
+		unset($key);
+		unset($value);
+		unset($pri_save_query);
+		unset($pri_save_handle);
+	}
+	return true;
+}
+
+// ----------------------------------------------------------------------------
+
 switch ($_GET['action']) {
 	default:
 
 		break;
 	case 'multi':
+		if (isset($_POST['pri'])) {
+			if (save_priorities($_POST)) {
+				$content .= 'Updated priorities.<br />';
+			} else {
+				$content .= 'Failed to update priorities.<br />';
+			}
+			break;
+		}
 		$selected_items = get_selected_items();
 
 		// Check if any items are selected
@@ -293,37 +328,6 @@ switch ($_GET['action']) {
 		}
 		if ($_POST['news_action'] == 'copy') {
 			copy_article($selected_items,$_POST['where']);
-		}
-		break;
-
-// ----------------------------------------------------------------------------
-
-	case 'pin':
-		if (!is_numeric($_GET['id'])) {
-			$content .= 'Invalid entry.<br />'."\n";
-			break;
-		}
-		$pin_query = 'UPDATE `'.NEWS_TABLE.'` SET `pin` = 1 WHERE `id` = '.$_GET['id'];
-		$pin_handle = $db->sql_query($pin_query);
-		if ($db->error[$pin_handle] === 1) {
-			$content .= 'Failed to pin entry.<br />'."\n";
-			break;
-		} else {
-			$content .= 'Successfully pinned entry.<br />'."\n";
-		}
-		break;
-	case 'unpin':
-		if (!is_numeric($_GET['id'])) {
-			$content .= 'Invalid entry.<br />'."\n";
-			break;
-		}
-		$pin_query = 'UPDATE `'.NEWS_TABLE.'` SET `pin` = 0 WHERE `id` = '.$_GET['id'];
-		$pin_handle = $db->sql_query($pin_query);
-		if ($db->error[$pin_handle] === 1) {
-			$content .= 'Failed to unpin entry.<br />'."\n";
-			break;
-		} else {
-			$content .= 'Successfully unpinned entry.<br />'."\n";
 		}
 		break;
 
@@ -435,7 +439,8 @@ $tab_content['manage'] .= '<tr>
 	<th width="1"></th>
 	<th width="30">ID</th>
 	<th>Title:</th>
-	<th colspan="3"></th></tr>';
+	<th colspan="2"></th>
+	<th>Priority</th></tr>'."\n";
 
 // Form for action on selected item(s)
 $tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp;action=multi">
@@ -446,7 +451,7 @@ if ($_POST['page'] == '*') {
     $page_list_query = 'SELECT * FROM `' . NEWS_TABLE . '` ORDER BY `id` DESC';
 } else {
     $page_list_query = 'SELECT * FROM `' . NEWS_TABLE . '`
-		WHERE `page` = '.stripslashes($_POST['page']).' ORDER BY `pin` DESC, `id` DESC';
+		WHERE `page` = '.stripslashes($_POST['page']).' ORDER BY `priority` DESC, `id` DESC';
 }
 $page_list_handle = $db->sql_query($page_list_query);
 $page_list_rows = $db->sql_num_rows($page_list_handle);
@@ -456,11 +461,7 @@ if ($page_list_rows == 0) {
 }
 for ($i = 1; $i <= $page_list_rows; $i++) {
     $page_list = $db->sql_fetch_assoc($page_list_handle);
-	if ($page_list['pin'] == 1) {
-		$pin_link = '<a href="?module=news&amp;action=unpin&amp;id='.$page_list['id'].'&amp;page='.$_POST['page'].'">Unpin</a>';
-	} else {
-		$pin_link = '<a href="?module=news&amp;action=pin&amp;id='.$page_list['id'].'&amp;page='.$_POST['page'].'">Pin</a>';
-	}
+	$priority_box = '<input type="text" size="3" maxlength="11" name="pri-'.$page_list['id'].'" value="'.$page_list['priority'].'" />';
     $tab_content['manage'] .= '<tr><td>
 		<input type="checkbox" name="item_'.$page_list['id'].'" /></td>
 		<td>'.$page_list['id'].'</td><td>'.
@@ -471,7 +472,7 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
         <a href="?module=news_edit_article&amp;id='.$page_list['id'].'">
         <img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
         height="16px" border="0px" /></a></td>
-		<td>'.$pin_link.'</td></tr>';
+		<td>'.$priority_box.'</td></tr>';
 		} // FOR
 $tab_content['manage'] .= '</table>'."\n";
 
@@ -488,7 +489,8 @@ for ($i = 1; $i <= $db->sql_num_rows($a_page_query_handle); $i++) {
 $a_page_list .= '<option value="0">No Page</option>
     </select>';
 
-$tab_content['manage'] .= 'With selected:<br />'."\n".
+$tab_content['manage'] .= '<input type="submit" name="pri" value="Update Priorities" /><br /><br />'."\n".
+	'With selected:<br />'."\n".
 	'<input type="radio" id="a_del" name="news_action" value="del" />'."\n".
 	'<label for="a_del" class="ws">Delete</label><br />'."\n".
 	'<input type="radio" id="a_move" name="news_action" value="move" />'."\n".

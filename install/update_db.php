@@ -88,6 +88,8 @@ switch ($db_version) {
 		(\'show_fe_errors\',\'Show Front-End Errors\',\'Allow a user to view error messages in the CMS front-end that would normally be hidden from users\',0)';
 
 		$query[] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `db_version` = 0.02';
+		execute_queries($query);
+		$query = array();
 		$db_version = 0.02;
 // ----------------------------------------------------------------------------
 // QUERY ARRAY (VERSION 0.02 -> 0.03)
@@ -164,6 +166,8 @@ switch ($db_version) {
 			$query[] = "INSERT INTO `".CONFIG_TABLE."` (`config_name`, `config_value`) VALUES
 			('admin_email','{$old_config['admin_email']}')";
 		}
+		execute_queries($query);
+		$query = array();
 		$db_version = 0.03;
 		echo 'The database has been updated to version 0.03<br />'."\n";
 		break;
@@ -191,6 +195,10 @@ switch ($db_version) {
 				$query[] = 'SELECT setval(\''.GALLERY_TABLE.'_id_seq\', (SELECT max("id") FROM "'.GALLERY_TABLE.'"))';
 				break;
 		}
+		$query[] = 'ALTER TABLE `'.NEWS_TABLE.'`
+			CHANGE `pin` `priority` int NOT NULL DEFAULT 0';
+		execute_queries($query);
+		$query = array();
 		$db_version = 0.04;
 		echo 'The database has been updated to version 0.04<br />'."\n";
 		break;
@@ -204,22 +212,26 @@ switch ($db_version) {
 }
 
 // ----------------------------------------------------------------------------
-$num_queries = count($query);
 
-$_SESSION['userid'] = 1;
-
-for($i = 0; $i < $num_queries; $i++) {
-	$handle = $db->sql_query($query[$i]);
-	echo '<div class="query">';
-	echo htmlentities($query[$i]);
-	if(!$handle) {
-		echo ' <span style="color: #CC0000; font-weight: bold;">FAILED</span><br />';
-		$error = 1;
-	} else {
-		echo ' <span style="color: #00CC00; font-weight: bold;">SUCCESS</span><br />';
+function execute_queries($query) {
+	global $error;
+	$num_queries = count($query);
+	$_SESSION['userid'] = 1;
+	for($i = 0; $i < $num_queries; $i++) {
+		$handle = $db->sql_query($query[$i]);
+		echo '<div class="query">';
+		echo htmlentities($query[$i]);
+		if(!$handle) {
+			echo ' <span style="color: #CC0000; font-weight: bold;">FAILED</span><br />';
+			$error = 1;
+		} else {
+			echo ' <span style="color: #00CC00; font-weight: bold;">SUCCESS</span><br />';
+		}
+		echo '</div>';
 	}
-	echo '</div>';
 }
+
+
 if($error == 1) {
 	echo 'Something went wrong. That is bad. You may need to repair the database
 		manually.';
