@@ -159,6 +159,17 @@ $tab_content['list'] = '<form method="POST" action="admin.php?module=filemanager
 $tab_content['list'] .= '<input type="submit" value="Change Directory" />
 </form>
 <br />';
+
+// Show special info about newsicons folder
+if ($_POST['folder_list'] == 'newsicons') {
+	$tab_content['list'] .= '<div class="info">
+		The \'newsicons\' folder contains all of the icons that can be used
+		with news articles or event listings. All of the images must be in PNG
+		or Jpeg format. Images uploaded to this folder will automatically be
+		resized to match your current icon size setting (default 100x100).
+		</div><br />';
+}
+
 $file_list = new file_list;
 $file_list->set_directory($_POST['folder_list']);
 $file_list->get_list();

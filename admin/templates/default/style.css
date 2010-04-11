@@ -152,6 +152,14 @@ div.notice {
 	width: 300px;
 	z-index: 3;
 }
+div.info {
+	background: #CCDDFF;
+	border: 1px solid #AABBDD;
+	font-size: small;
+	font-style: italic;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
 div.admin_form_element {
     display: block;
     float: left;
