@@ -104,19 +104,43 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 			'the file again.';
 	}
 
+	// Handle uploads to 'newsicons'
+	if ($path == 'newsicons/') {
+		if (preg_match('/(\.png|\.jp[e]?g)$/s',$filename)) {
+			move_uploaded_file($_FILES['upload']['tmp_name'], $target);
+			generate_thumbnail($target,$target,1,1,100,100);
+			$return = "The file " . $filename . " has been uploaded. ";
+			log_action ('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
+			return $return;
+		} else {
+			return 'The \'newsicons\' folder can only contain PNG and Jpeg images.';
+		}
+	}
+
 	// Move the temporary file to its new location
 	if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
 		$return = "The file " . $filename . " has been uploaded. ";
 		log_action ('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
 		if ($thumb == true) {
-			if (generate_thumbnail($target)) {
+			if (generate_thumbnail($target,NULL,75,75,0,0)) {
 				$return .= 'Generated thumbnail.';
 			} else {
 				$return .= 'Failed to generate thumbnail.';
 			}
 		}
 	} else {
-		$return = "Sorry, there was a problem uploading your file.";
+		$return = "Sorry, there was a problem uploading your file.<br />";
+
+		// Specific errors
+		if ($_FILES['upload']['error'] == 1 || $_FILES['upload']['error'] == 2) {
+			$return .= 'File is too large.<br />';
+		} elseif ($_FILES['upload']['error'] == 4) {
+			$return .= 'No file was uploaded.<br />';
+		}
+		// Show error code
+		if (DEBUG === 1) {
+			$return .= 'Error code: '.$_FILES['upload']['error'];
+		}
 	}
 	return $return;
 }
@@ -298,9 +322,24 @@ function replace_file_special_chars($filename) {
 
 // ----------------------------------------------------------------------------
 
-function generate_thumbnail($original) {
+/**
+ * Resize an image
+ * @global object $debug Debug object
+ * @param string $original Path to original file
+ * @param string $thumb_path Path to new file; if NULL, put it in /thumbs/ subdir
+ * @param integer $min_w Minimum thumbnail width; cannot be 0
+ * @param integer $min_h Minimum thumbnail height; cannot be 0
+ * @param integer $max_w Maximum thumbnail width; 0 is no limit
+ * @param integer $max_h Maximum thumbnail height; 0 is no limit
+ * @return boolean Success
+ */
+function generate_thumbnail($original,$thumb_path = NULL,$min_w = 1,$min_h = 1,$max_w = 0,$max_h = 0) {
 	global $debug;
 
+	if ($min_w == 0 || $min_h == 0) {
+		$debug->add_trace('Cannot have minimum dimension of 0px',true,'generate_thumbnail()');
+		return false;
+	}
 	if (preg_match('/\.png$/i',$original)) {
 		$image = imageCreateFromPNG($original);
 		$imagetype = 'png';
@@ -312,23 +351,52 @@ function generate_thumbnail($original) {
 		return false;
 	}
 
-	// Add /thumbs/ to the path (using the reverse, and only replacing the first slash
-	$reverse_path = strrev($original);
-	$reverse_path = str_replace_count('/','/sbmuht/',$reverse_path,1);
-	$thumb_path = strrev($reverse_path);
+	if ($thumb_path == NULL) {
+		// Add /thumbs/ to the path (using the reverse, and only replacing the first slash
+		$reverse_path = strrev($original);
+		$reverse_path = str_replace_count('/','/sbmuht/',$reverse_path,1);
+		$thumb_path = strrev($reverse_path);
+	}
 
 	$image_x = imagesx($image);
 	$image_y = imagesy($image);
-	if ($image_y >= $image_x) {
-		$thumb_x = 75;
-		$thumb_y = $image_y * ($thumb_x / $image_x);
+
+	// If maximum dimensions are set
+	if ($max_h != 0 || $max_w != 0) {
+		if ($max_h == 0 && $max_w != 0 && $image_x > $max_w) {
+			$new_x = $max_w;
+			$new_y = $image_y * ($new_x / $image_x);
+		} elseif ($max_h != 0 && $max_w == 0 && $image_y > $max_h) {
+			$new_y = $max_h;
+			$new_x = $image_x * ($new_y / $image_y);
+		} else {
+			$new_x = $max_w;
+			$new_y = $image_y * ($new_x / $image_x);
+			if ($new_y > $max_w) {
+				$new_y = $max_h;
+				$new_x = $image_x * ($new_y / $image_y);
+			}
+		}
+		// Handle minimum values
+		if ($new_x < $min_w) {
+			$new_x = $min_w;
+		}
+		if ($new_y < $min_h) {
+			$new_y = $min_h;
+		}
 	} else {
-		$thumb_y = 75;
-		$thumb_x = $image_x * ($thumb_y / $image_y);
+		// No max value - one dimension has no upper limit
+		if ($image_y >= $image_x) {
+			$new_x = $min_w;
+			$new_y = $image_y * ($new_x / $image_x);
+		} else {
+			$new_y = $min_h;
+			$new_x = $image_x * ($new_y / $image_y);
+		}
 	}
 
-	$thumb_image = imageCreateTrueColor($thumb_x,$thumb_y);
-	imagecopyresampled($thumb_image, $image, 0, 0, 0, 0, $thumb_x, $thumb_y, $image_x, $image_y);
+	$thumb_image = imageCreateTrueColor($new_x,$new_y);
+	imagecopyresampled($thumb_image, $image, 0, 0, 0, 0, $new_x, $new_y, $image_x, $image_y);
 	if ($imagetype == 'png') {
 		imagepng($thumb_image,$thumb_path);
 	} else {
