@@ -106,12 +106,30 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 
 	// Handle uploads to 'newsicons'
 	if ($path == 'newsicons/') {
-		if (preg_match('/(\.png|\.jp[e]?g)$/s',$filename)) {
-			move_uploaded_file($_FILES['upload']['tmp_name'], $target);
-			generate_thumbnail($target,$target,1,1,100,100);
-			$return = "The file " . $filename . " has been uploaded. ";
-			log_action ('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
-			return $return;
+		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
+			if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
+				if (generate_thumbnail($target,$target,1,1,100,100)) {
+					$return = "The file " . $filename . " has been uploaded. ";
+					log_action ('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
+				} else {
+					$return = "Failed to generate thumbnail.<br />\n";
+				}
+				return $return;
+			} else {
+				$return = "Sorry, there was a problem uploading your file.<br />";
+
+				// Specific errors
+				if ($_FILES['upload']['error'] == 1 || $_FILES['upload']['error'] == 2) {
+					$return .= 'File is too large.<br />';
+				} elseif ($_FILES['upload']['error'] == 4) {
+					$return .= 'No file was uploaded.<br />';
+				}
+				// Show error code
+				if (DEBUG === 1) {
+					$return .= 'Error code: '.$_FILES['upload']['error'];
+				}
+				return $return;
+			}
 		} else {
 			return 'The \'newsicons\' folder can only contain PNG and Jpeg images.';
 		}
@@ -316,7 +334,7 @@ function replace_file_special_chars($filename) {
 		return false;
 	}
 
-	$filename = str_replace(array('\'','"','?','+','@','#','$','!'),'_',$filename);
+	$filename = str_replace(array('\'','"','?','+','@','#','$','!',' '),'_',$filename);
 	return $filename;
 }
 
@@ -336,6 +354,10 @@ function replace_file_special_chars($filename) {
 function generate_thumbnail($original,$thumb_path = NULL,$min_w = 1,$min_h = 1,$max_w = 0,$max_h = 0) {
 	global $debug;
 
+	if (!file_exists($original)) {
+		$debug->add_trace('Failed to find original file',true,'generate_thumbnail()');
+		return false;
+	}
 	if ($min_w == 0 || $min_h == 0) {
 		$debug->add_trace('Cannot have minimum dimension of 0px',true,'generate_thumbnail()');
 		return false;
