@@ -56,8 +56,8 @@ class file_list {
                     </a></td><td>'.$file_info['label'].'</td><td><a href="admin.php?module='.$_GET['module'].'&action=edit&file='.
                     $this->script_folder.'/'.$this->file_array[$i - 1].'"><img src="<!-- $IMAGE_PATH$ -->edit.png"
                     alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td><td>
-                    <a href="admin.php?module='.$_GET['module'].'&action=delete&filename='.
-                    $this->script_folder.'/'.$this->file_array[$i - 1].'">
+                    <a href="admin.php?module='.$_GET['module'].'&amp;action=delete&amp;filename='.
+                    $this->script_folder.'/'.$this->file_array[$i - 1].'&amp;path='.$_POST['folder_list'].'">
                     <img src="<!-- $IMAGE_PATH$ -->delete.png" width="16px" height="16px" border="0px"></a></tr>';
                 $display_count++;
             }

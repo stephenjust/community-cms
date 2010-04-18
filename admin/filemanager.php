@@ -150,7 +150,11 @@ if ($_GET['action'] == 'edit') {
 	$tab_layout->add_tab('Edit File Properties',$tab_content['edit']);
 }
 if (!isset($_POST['folder_list']) && !isset($_POST['path'])) {
-	$_POST['folder_list'] = NULL;
+	if (isset($_GET['path'])) {
+		$_POST['folder_list'] = $_GET['path'];
+	} else {
+		$_POST['folder_list'] = NULL;
+	}
 } elseif (!isset($_POST['folder_list']) && isset($_POST['path'])) {
 	$_POST['folder_list'] = $_POST['path'];
 }
