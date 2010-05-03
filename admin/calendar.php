@@ -110,7 +110,7 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'delete':
-		if (delete_date($_POST['date_del'])) {
+		if (delete_date($_GET['date_del'])) {
 			$content .= 'Successfully deleted date entry.<br />'."\n";
 		} else {
 			$content .= 'Failed to delete date entry.<br />'."\n";
@@ -201,20 +201,27 @@ switch ($_GET['action']) {
 
 // ----------------------------------------------------------------------------
 
+if (isset($_GET['month']) && !isset($_POST['month'])) {
+	$_POST['month'] = $_GET['month'];
+}
+if (isset($_GET['year']) && !isset($_POST['year'])) {
+	$_POST['year'] = $_GET['year'];
+}
+
 if (isset($_POST['month'])) {
 	if ($_POST['month'] > 12 || $_POST['month'] < 1) {
 		$_POST['month'] = date('m');
-		}
-	} else {
+	}
+} else {
 	$_POST['month'] = date('m');
-	}
+}
 if (isset($_POST['year'])) {
-	if($_POST['year'] < 1 || $_POST['year'] > 9999) {
+	if ($_POST['year'] < 1 || $_POST['year'] > 9999) {
 		$_POST['year'] = date('Y');
-		}
-	} else {
-	$_POST['year'] = date('Y');
 	}
+} else {
+	$_POST['year'] = date('Y');
+}
 $tab_layout = new tabs;
 $tab_content['manage'] = '<form method="post" action="?module=calendar"><select name="month">';
 $months = array('January','February','March','April','May','June','July',
@@ -231,9 +238,8 @@ while ($monthcount <= 12) {
 	}
 }
 $tab_content['manage'] .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$_POST['year'].'" /><input type="submit" value="Change" /></form>';
-$tab_content['manage'] .= '<form method="post" action="?module=calendar&action=delete">
-<table class="admintable">
-<tr><th width="20px"></th><th>Date:</th><th>Start Time:</th><th>End Time:</th><th>Heading:</th><th width="20px"></th></tr>';
+$tab_content['manage'] .= '<table class="admintable">
+<tr><th>Date:</th><th>Start Time:</th><th>End Time:</th><th>Heading:</th><th colspan="2" width="40px"></th></tr>';
 $rowcount = 1;
 $date_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
 	WHERE year = '.$_POST['year'].' AND month = '.$_POST['month'].'
@@ -258,14 +264,16 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 	unset($end_time_temp);
 
 	$cal_time = mktime(0,0,0,$cal['month'],$cal['day'],$cal['year']);
-	$tab_content['manage'] .= '<tr><td class="row'.$rowcount.'">
-		<input type="radio" name="date_del" value="'.$cal['id'].'" /></td>
-		<td class="row'.$rowcount.'">'.date('M d, Y',$cal_time).'</td>
-		<td class="row'.$rowcount.'">'.$starttime.'</td>
-		<td class="row'.$rowcount.'">'.$endtime.'</td>
-		<td class="row'.$rowcount.'">'.stripslashes($cal['header']).'</td>
-		<td class="row'.$rowcount.'"><a href="admin.php?module=calendar_edit_date&id='.$cal['id'].'">
+	$tab_content['manage'] .= '<tr class="row'.$rowcount.'">
+		<td>'.date('M d, Y',$cal_time).'</td>
+		<td>'.$starttime.'</td>
+		<td>'.$endtime.'</td>
+		<td>'.stripslashes($cal['header']).'</td>
+		<td><a href="admin.php?module=calendar_edit_date&amp;id='.$cal['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
+		height="16px" border="0px" /></a></td>
+		<td><a href="admin.php?module=calendar&amp;action=delete&amp;date_del='.$cal['id'].'&amp;month='.$cal['month'].'&amp;year='.$cal['year'].'">
+		<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px"
 		height="16px" border="0px" /></a></td></tr>';
 	if ($rowcount == 1) {
 		$rowcount = 2;
@@ -273,10 +281,7 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 		$rowcount = 1;
 	}
 }
-$tab_content['manage'] .= '<tr>
-	<td colspan="6" class="row'.$rowcount.'"><input type="submit" value="Delete" /></td></tr>
-</table>
-</form>';
+$tab_content['manage'] .= '</table>';
 $tab_layout->add_tab('Manage Events',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------

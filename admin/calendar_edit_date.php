@@ -12,6 +12,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+global $debug;
 include('./functions/calendar.php');
 
 $content = NULL;
@@ -92,7 +93,9 @@ switch ($_GET['action']) {
 		if ($db->error[$edit_date] === 1) {
 			$content = 'Failed to edit date information.<br />';
 		} else {
-			$content = 'Successfully edited date information. '.log_action('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.stripslashes($title).'\'');
+			$content = 'Successfully edited date information.<br />';
+			log_action('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.stripslashes($title).'\'');
+			$content .= '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
 		}
 		break;
 
