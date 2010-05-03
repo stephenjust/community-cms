@@ -99,9 +99,9 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 
 	// Check if a file by that name already exists
 	if (file_exists($target)) {
-		return 'A file by that name already exists. Plesae use a different '.
-			'file name or delete the old file before attempting to upload '.
-			'the file again.';
+		return '<span class="errormessage">A file by that name already exists.'.
+			'Please use a different file name or delete the old file before '.
+			'attempting to upload the file again.</span>';
 	}
 
 	// Handle uploads to 'newsicons'
@@ -112,7 +112,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 					$return = "The file " . $filename . " has been uploaded. ";
 					log_action ('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
 				} else {
-					$return = "Failed to generate thumbnail.<br />\n";
+					$return = "<span class=\"errormessage\">Failed to generate thumbnail.</span><br />\n";
 				}
 				return $return;
 			} else {
@@ -120,9 +120,9 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 
 				// Specific errors
 				if ($_FILES['upload']['error'] == 1 || $_FILES['upload']['error'] == 2) {
-					$return .= 'File is too large.<br />';
+					$return .= '<span class="errormessage">File is too large.</span><br />';
 				} elseif ($_FILES['upload']['error'] == 4) {
-					$return .= 'No file was uploaded.<br />';
+					$return .= '<span class="errormessage">No file was uploaded.</span><br />';
 				}
 				// Show error code
 				if (DEBUG === 1) {
@@ -131,7 +131,8 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 				return $return;
 			}
 		} else {
-			return 'The \'newsicons\' folder can only contain PNG and Jpeg images.';
+			return '<span class="errormessage">The \'newsicons\' folder can '.
+				'only contain PNG and Jpeg images.</span>';
 		}
 	}
 
@@ -143,7 +144,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 			if (generate_thumbnail($target,NULL,75,75,0,0)) {
 				$return .= 'Generated thumbnail.';
 			} else {
-				$return .= 'Failed to generate thumbnail.';
+				$return .= '<span class="errormessage">Failed to generate thumbnail.</span>';
 			}
 		}
 	} else {
@@ -151,9 +152,9 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 
 		// Specific errors
 		if ($_FILES['upload']['error'] == 1 || $_FILES['upload']['error'] == 2) {
-			$return .= 'File is too large.<br />';
+			$return .= '<span class="errormessage">File is too large.</span><br />';
 		} elseif ($_FILES['upload']['error'] == 4) {
-			$return .= 'No file was uploaded.<br />';
+			$return .= '<span class="errormessage">No file was uploaded.</span><br />';
 		}
 		// Show error code
 		if (DEBUG === 1) {

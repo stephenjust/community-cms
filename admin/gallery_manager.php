@@ -149,7 +149,7 @@ switch ($_GET['action']) {
 	case 'create':
 		$title = addslashes($_POST['title']);
 		$description = addslashes($_POST['description']);
-		$image_dir = addslashes($_POST['image_dir']);
+		$image_dir = replace_file_special_chars($_POST['image_dir']);
 		$create_query = 'INSERT INTO `'.GALLERY_TABLE.'` (`title`,`description`,`image_dir`)
 			VALUES (\''.$title.'\',\''.$description.'\',\''.$image_dir.'\')';
 		$create_handle = $db->sql_query($create_query);

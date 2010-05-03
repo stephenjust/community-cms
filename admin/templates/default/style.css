@@ -102,6 +102,11 @@ div.errormessage {
   bottom: 0px;
   z-index: 1;
 }
+span.errormessage {
+	color: #FF0000;
+	font-family: Arial;
+	font-weight: bold;
+}
 .admintable {
 	width: 100%;
 	border: 1px solid #e78f08;
