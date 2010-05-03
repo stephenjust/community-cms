@@ -79,6 +79,14 @@ switch ($_GET['action']) {
 		$month = $event_date_parts[0];
 		$day = $event_date_parts[1];
 
+		// Store month and year so that 'manage' tab will default here
+		if (!isset($_POST['month'])) {
+			$_POST['month'] = $month;
+		}
+		if (!isset($_POST['year'])) {
+			$_POST['year'] = $year;
+		}
+
 		if ($start_time == "" || $end_time == "" || $year == "" || $title == "") {
 			$content .= 'One or more fields was not filled out. Please complete the fields marked with a star and resubmit.<br />'."\n";
 			break;
