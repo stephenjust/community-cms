@@ -40,6 +40,8 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 	$return = '<form enctype="multipart/form-data"
 		action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&amp;'.
 		$query_string.'" method="POST">
+		<!-- Limit file size to 64MB -->
+		<input type="hidden" name="MAX_FILE_SIZE" value="67108864" />
 		Please choose a file: <input name="upload" type="file" /><br />'.
 		"\n";
 	if ($dir != NULL) {
