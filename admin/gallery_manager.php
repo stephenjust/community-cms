@@ -170,24 +170,8 @@ switch ($_GET['action']) {
 			WHERE `title` = \''.$title.'\'';
 		$gal_id_handle = $db->sql_query($gal_id_query);
 		$gal_id = $db->sql_fetch_assoc($gal_id_handle);
-		$_POST['gallery'] = $gal_id['id'];
+		$_GET['id'] = $gal_id['id'];
 		$_GET['action'] = 'edit';
-	case 'change':
-		if (!isset($_POST['gallery'])) {
-			$content .= 'No gallery selected.<br />'."\n";
-			break;
-		}
-		if (isset($_POST['edit'])) {
-			$_GET['id'] = $_POST['gallery'];
-			$_GET['action'] = 'edit';
-		} elseif (isset($_POST['del'])) {
-			if (delete_gallery($_POST['gallery'])) {
-				$content .= 'Successfully deleted gallery.'."\n";
-			} else {
-				$content .= 'Failed to delete gallery.<br />'."\n";
-			}
-			break;
-		}
 	case 'edit':
 		if (isset($_GET['id']) && !isset($_POST['gallery'])) {
 			$_POST['gallery'] = $_GET['id'];
@@ -243,14 +227,23 @@ switch ($_GET['action']) {
 				}
 			}
 		}
-
 		$tab_content['edit'] = '<span style="font-size: large; font-weight: bold;">'.$gallery_info['title'].'</span><br />'."\n";
 		$tab_content['edit'] .= 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
 		$tab_content['edit'] .= '<input type="text" value="$GALLERY_EMBED-'.$gallery_info['id'].'$" /><br />'."\n";
 		$tab_content['edit'] .= gallery_photo_manager($gallery_info['id']);
 		$tab_content['edit'] .= gallery_upload_box($gallery_info['id'],$gallery_info['image_dir']);
 		$tab_layout->add_tab('Edit Gallery',$tab_content['edit']);
-		// TODO: Finish edit gallery view
+		break;
+	case 'delete':
+		if (!isset($_GET['id'])) {
+			$content .= 'No gallery selected.<br />'."\n";
+			break;
+		}
+		if (delete_gallery((int)$_GET['id'])) {
+			$content .= 'Successfully deleted gallery.'."\n";
+		} else {
+			$content .= 'Failed to delete gallery.<br />'."\n";
+		}
 		break;
 	default:
 		break;
@@ -292,23 +285,20 @@ switch (get_config('gallery_app')) {
 			$tab_content['manage'] = 'No galleries currently exist.<br />';
 		} else {
 			// Start gallery list
-			$tab_content['manage'] = '<form method="post" action="?module=gallery_manager&amp;action=change">
-				<table class="admintable"><tr>
-				<th width="1px"></th><th>Title</th><th>Image Directory</th></tr>';
+			$tab_content['manage'] = '<table class="admintable"><tr>
+				<th>Title</th><th>Image Directory</th><th colspan="2" width="1px"></th></tr>';
 
 			// Populate table
 			for ($i = 1; $i <= $db->sql_num_rows($gallery_list_handle); $i++) {
 				$gallery_list = $db->sql_fetch_assoc($gallery_list_handle);
 				$tab_content['manage'] .= '<tr>
-					<td><input type="radio" name="gallery" value="'.$gallery_list['id'].'" /></td>
 					<td>'.$gallery_list['title'].'</td>
-					<td>'.$gallery_list['image_dir'].'</td></tr>';
+					<td>'.$gallery_list['image_dir'].'</td>
+					<td><a href="?module=gallery_manager&amp;action=edit&amp;id='.$gallery_list['id'].'">Edit</a></td>
+					<td><a href="?module=gallery_manager&amp;action=delete&amp;id='.$gallery_list['id'].'">Delete</a></td>';
 			}
 
 			$tab_content['manage'] .= '</table>';
-			$tab_content['manage'] .= 'With selected:<br />'."\n";
-			$tab_content['manage'] .= '<input type="submit" name="edit" value="Edit" />';
-			$tab_content['manage'] .= '<input type="submit" name="del" value="Delete" /></form>';
 		}
 
 		$tab_layout->add_tab('Manage Galleries',$tab_content['manage']);
