@@ -19,6 +19,7 @@ checkuser_admin();
 $content = '<html>
 <head>
 <title>Upload File</title>
+<link type="text/css" href="./templates/default/style.css" rel="StyleSheet" />
 </head>
 <body>';
 // Check if the form has been submitted.
