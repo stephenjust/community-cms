@@ -43,7 +43,7 @@ switch (get_config('gallery_app')) {
 	frameWidth="10"
 	thumbPosition="LEFT"
 	thumbColumns="3"
-	thumbRows="2"
+	thumbRows="3"
 	showOpenButton="FALSE"
 	showFullscreenButton="TRUE"
 	maxImageWidth="640"

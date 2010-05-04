@@ -160,7 +160,7 @@ function gallery_images($directory) {
 			$image_files[$j]['file_id'] = NULL;
 		} else {
 			$info = $db->sql_fetch_assoc($info_handle);
-			$image_files[$j]['caption'] = $info['caption'];
+			$image_files[$j]['caption'] = stripslashes($info['caption']);
 			$image_files[$j]['file_id'] = $info['id'];
 		}
 		$j++;

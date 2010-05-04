@@ -85,6 +85,13 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 
 // ----------------------------------------------------------------------------
 
+/**
+ * file_upload - Handle files uploaded via a form
+ * @param string $path Directory to store file - special case if = newsicons
+ * @param boolean $contentfile File belongs in file/ heirarchy?
+ * @param boolean $thumb Generate a thumbnail (75x75)?
+ * @return string
+ */
 function file_upload($path = "", $contentfile = true, $thumb = false) {
 	if ($path != "") {
 		$path .= '/';
@@ -143,30 +150,14 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	// Handle uploads to 'newsicons'
 	if ($path == 'newsicons/') {
 		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
-			if (@move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
-				if (generate_thumbnail($target,$target,1,1,100,100)) {
-					$return = "The file " . $filename . " has been uploaded. ";
-					log_action ('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
-				} else {
-					$return = "<span class=\"errormessage\">Failed to generate thumbnail.</span><br />\n";
-				}
-				return $return;
+			@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
+			if (generate_thumbnail($target,$target,1,1,100,100)) {
+				$return = "The file " . $filename . " has been uploaded. ";
+				log_action ('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
 			} else {
-				// FIXME: remove this - it should be redundant now
-				$return = "Sorry, there was a problem uploading your file.<br />";
-
-				// Specific errors
-				if ($_FILES['upload']['error'] == 1 || $_FILES['upload']['error'] == 2) {
-					$return .= '<span class="errormessage">File is too large.</span><br />';
-				} elseif ($_FILES['upload']['error'] == 4) {
-					$return .= '<span class="errormessage">No file was uploaded.</span><br />';
-				}
-				// Show error code
-				if (DEBUG === 1) {
-					$return .= 'Error code: '.$_FILES['upload']['error'];
-				}
-				return $return;
+				$return = "<span class=\"errormessage\">Failed to generate thumbnail.</span><br />\n";
 			}
+			return $return;
 		} else {
 			return '<span class="errormessage">The \'newsicons\' folder can '.
 				'only contain PNG and Jpeg images.</span>';
@@ -174,29 +165,14 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	}
 
 	// Move temporary file to its new location
-	if (@move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
-		$return = "The file " . $filename . " has been uploaded. ";
-		log_action ('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
-		if ($thumb == true) {
-			if (generate_thumbnail($target,NULL,75,75,0,0)) {
-				$return .= 'Generated thumbnail.';
-			} else {
-				$return .= '<span class="errormessage">Failed to generate thumbnail.</span>';
-			}
-		}
-	} else {
-		// FIXME: remove this - it should be redundant now
-		$return = "Sorry, there was a problem uploading your file.<br />";
-
-		// Specific errors
-		if ($_FILES['upload']['error'] == 1 || $_FILES['upload']['error'] == 2) {
-			$return .= '<span class="errormessage">File is too large.</span><br />';
-		} elseif ($_FILES['upload']['error'] == 4) {
-			$return .= '<span class="errormessage">No file was uploaded.</span><br />';
-		}
-		// Show error code
-		if (DEBUG === 1) {
-			$return .= 'Error code: '.$_FILES['upload']['error'];
+	@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
+	$return = "The file " . $filename . " has been uploaded. ";
+	log_action ('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
+	if ($thumb == true) {
+		if (generate_thumbnail($target,NULL,75,75,0,0)) {
+			$return .= 'Generated thumbnail.';
+		} else {
+			$return .= '<span class="errormessage">Failed to generate thumbnail.</span>';
 		}
 	}
 	return $return;
@@ -204,7 +180,13 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 
 // ----------------------------------------------------------------------------
 
-// Create a folder list
+/**
+ * folder_list - Generate a list of folders
+ * @param <type> $directory
+ * @param <type> $current
+ * @param <type> $type
+ * @return <type> 
+ */
 function folder_list($directory = "",$current = "",$type = 0) {
 	$folder_root = './files/';
 	if (!preg_match('#.#',$directory)) {
@@ -345,6 +327,12 @@ function dynamic_file_list($directory = '',$root = ROOT) {
 
 // ----------------------------------------------------------------------------
 
+/**
+ * get_file_info - Look up file information in the database
+ * @global object $db Database connection object
+ * @param string $file Path to file
+ * @return array
+ */
 function get_file_info($file) {
 	global $db;
 	$file_info_query = 'SELECT * FROM ' . FILE_TABLE . '
