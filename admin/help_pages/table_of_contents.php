@@ -19,6 +19,12 @@ of any administration page.
 <ol>
 <li><a href="admin.php?module=help&amp;page=news_new_article">Create New Article</a></li>
 </ol>';
+	$return .= '<h4>Image Galleries</h4>
+<ol>
+<li><a href="admin.php?module=help&amp;page=gallery_set_up">Setting up Community CMS to Enable Image Galleries</a></li>
+<li><a href="admin.php?module=help&amp;page=gallery_create">Creating a new Image Gallery</a></li>
+<li><a href="admin.php?module=help&amp;page=gallery_add_images">Adding Images to your Image Gallery</a></li>
+</ol>';
 	$return .= '<h4>Newsletters</h4>
 <ol>
 <li><a href="admin.php?module=help&amp;page=newsletter_new_newsletter">Creating a Newsletter</a></li>
