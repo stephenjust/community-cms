@@ -104,6 +104,40 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 			'attempting to upload the file again.</span>';
 	}
 
+	// Handle file upload errors sooner rather than later
+	if ($_FILES['upload']['error'] != 0) {
+		$return = "Sorry, there was a problem uploading your file.<br />";
+
+		// List of errors
+		switch ($_FILES['upload']['error']) {
+			case 1:
+				$return .= '<span class="errormessage">File is too large (limited by php.ini)</span><br />';
+				break;
+			case 2:
+				$return .= '<span class="errormessage">File is too large (limited by form)</span><br />';
+				break;
+			case 3:
+				$return .= '<span class="errormessage">File was only partially uploaded</span><br />';
+				break;
+			case 4:
+				$return .= '<span class="errormessage">No file was uploaded</span><br />';
+				break;
+			case 6:
+				$return .= '<span class="errormessage">Temporary folder does not exist</span><br />';
+				break;
+			case 7:
+				$return .= '<span class="errormessage">Could not write to temporary folder</span><br />';
+				break;
+			case 7:
+				$return .= '<span class="errormessage">A PHP extension prevented the upload</span><br />';
+				break;
+			default:
+				$return .= '<span class="errormessage">Error '.$_FILES['upload']['error'].'</span><br />';
+				break;
+		}
+		return $return;
+	}
+
 	// Handle uploads to 'newsicons'
 	if ($path == 'newsicons/') {
 		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
@@ -116,6 +150,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 				}
 				return $return;
 			} else {
+				// FIXME: remove this - it should be redundant now
 				$return = "Sorry, there was a problem uploading your file.<br />";
 
 				// Specific errors
@@ -148,6 +183,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 			}
 		}
 	} else {
+		// FIXME: remove this - it should be redundant now
 		$return = "Sorry, there was a problem uploading your file.<br />";
 
 		// Specific errors
