@@ -107,7 +107,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	// Handle uploads to 'newsicons'
 	if ($path == 'newsicons/') {
 		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
-			if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
+			if (@move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
 				if (generate_thumbnail($target,$target,1,1,100,100)) {
 					$return = "The file " . $filename . " has been uploaded. ";
 					log_action ('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
@@ -136,8 +136,8 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 		}
 	}
 
-	// Move the temporary file to its new location
-	if (move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
+	// Move temporary file to its new location
+	if (@move_uploaded_file($_FILES['upload']['tmp_name'], $target)) {
 		$return = "The file " . $filename . " has been uploaded. ";
 		log_action ('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
 		if ($thumb == true) {
