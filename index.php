@@ -12,7 +12,7 @@
 define('SECURITY',1);
 define('ROOT','./');
 
-$required_db_version = 0.03;
+$required_db_version = 0.05;
 // Load error handling code
 require_once('./functions/error.php');
 // Load database configuration

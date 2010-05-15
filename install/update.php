@@ -1,6 +1,6 @@
 <?php
 $page = "<h1>Update Database</h1>\n";
-$new_db_version = 0.03;
+$new_db_version = 0.05;
 if (!defined('SECURITY')) {
 	define('SECURITY',1);
 }

@@ -203,6 +203,34 @@ switch ($db_version) {
 		echo 'The database has been updated to version 0.04<br />'."\n";
 		break;
 	case 0.04:
+		switch ($db->dbms) {
+			case 'mysqli':
+				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` INT NOT NULL DEFAULT \'1\' AFTER `menu`';
+				$queery[] = 'CREATE TABLE IF NOT EXISTS `'.PAGE_GROUP_TABLE.'` (
+					`id` INT NOT NULL auto_increment PRIMARY KEY,
+					`label` TEXT NOT NULL,
+					INDEX (`id`)
+					) ENGINE = MYISAM CHARACTER SET=utf8';
+				break;
+			case 'postgresql':
+				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` integer NOT NULL DEFAULT \'1\' AFTER `menu`';
+				$query[] = 'CREATE SEQUENCE "'.PAGE_GROUP_TABLE.'_id_seq"';
+				$query[] = 'CREATE TABLE "'.PAGE_GROUP_TABLE.'" (
+					"id" integer NOT NULL default nextval(\''.PAGE_GROUP_TABLE.'_id_seq\') PRIMARY KEY,
+					"label" text NOT NULL,
+					PRIMARY KEY("id")
+					)';
+				$query[] = 'SELECT setval(\''.PAGE_GROUP_TABLE.'_id_seq\', (SELECT max(id) FROM "'.PAGE_GROUP_TABLE.'"))';
+				break;
+		}
+		$query[] = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
+			VALUES (\'Default Group\')';
+		execute_queries($query);
+		$query = array();
+		$db_version = 0.05;
+		echo 'The database has been updated to version 0.05<br />'."\n";
+		break;
+	case 0.05:
 		echo 'You already have the latest version of the database.<br />'."\n";
 		echo "</body>\n</html>";
 		exit;
@@ -214,6 +242,7 @@ switch ($db_version) {
 // ----------------------------------------------------------------------------
 
 function execute_queries($query) {
+	global $db;
 	global $error;
 	$num_queries = count($query);
 	$_SESSION['userid'] = 1;
@@ -238,6 +267,7 @@ if($error == 1) {
 } else {
 	echo 'Update successful. <a href="../index.php">View Site</a>';
 	include('../functions/admin.php');
+	set_config('db_version',$db_version);
 	log_action('Upgraded Community CMS');
 }
 clean_up();
