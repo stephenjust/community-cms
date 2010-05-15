@@ -126,6 +126,25 @@ switch ($_GET['action']) {
 		}
 		break; // case 'del'
 
+	case 'new_page_group':
+		if (!isset($_POST['page_group_name'])) {
+			$content .= 'Invalid page group name.<br />'."\n";
+		}
+		if (strlen($_POST['page_group_name']) == 0) {
+			$content .= 'Page group name must not be left blank.<br />'."\n";
+		}
+		$new_page_group = addslashes($_POST['page_group_name']);
+		$new_page_group_query = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
+			VALUES (\''.$new_page_group.'\')';
+		$new_page_group_handle = $db->sql_query($new_page_group_query);
+		if ($db->error[$new_page_group_handle] === 1) {
+			$content .= 'Failed to create new page group.<br />'."\n";
+		} else {
+			$content .= 'Created new page group.<br />'."\n";
+			log_action('Created page group \''.stripslashes($new_page_group).'\'');
+		}
+		break; // case 'new_page_group'
+
 	case 'hide':
 		// FIXME: Implement page hiding
 		break;
@@ -415,20 +434,28 @@ if ($db->error[$parent_page_list_handle] === 1) {
 	}
 	$parent_page .= '</select>'."\n";
 }
-$tab_content['addlink'] = '<div id="tabs-3"><form method="POST" action="admin.php?module=page&action=new_link">
+$tab_content['addlink'] = '<form method="POST" action="admin.php?module=page&action=new_link">
 	<table class="admintable" id="adm_pg_table_create_link">
 	<tr class="row1"><td width="150">Link Text (required):</td><td><input type="text" name="title" value="" /></td></tr>
 	<tr class="row2"><td valign="top">URL (required):</td><td>
 	<input type="text" name="url" value="http://" /></td></tr>
 	<tr class="row1"><td>Parent Page</td><td>'.$parent_page.'</td></tr>
 	<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
-	</table></form></div></div>';
+	</table></form>';
 $tab_layout->add_tab('Add Link to External Page',$tab_content['addlink']);
 
 // ----------------------------------------------------------------------------
 
-// FIXME: Finish page group support.
 $tab_content['page_groups'] = NULL;
+// Add page group form
+$tab_content['page_groups'] .= '<h1>Add Page Group</h1>
+	<form method="post" action="?module=page&amp;action=new_page_group">
+	Group Name: <input type="text" name="page_group_name" />
+	<input type="submit" value="Add Group" />
+	</form><br />';
+
+$tab_content['page_groups'] .= '<h1>Page Groups List</h1>';
+// FIXME: Finish page group support.
 $tab_layout->add_tab('Page Groups',$tab_content['page_groups']);
 $content .= $tab_layout;
 
