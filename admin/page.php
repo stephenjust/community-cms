@@ -424,6 +424,12 @@ $tab_content['addlink'] = '<div id="tabs-3"><form method="POST" action="admin.ph
 	<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
 	</table></form></div></div>';
 $tab_layout->add_tab('Add Link to External Page',$tab_content['addlink']);
+
+// ----------------------------------------------------------------------------
+
+// FIXME: Finish page group support.
+$tab_content['page_groups'] = NULL;
+$tab_layout->add_tab('Page Groups',$tab_content['page_groups']);
 $content .= $tab_layout;
 
 ?>

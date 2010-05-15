@@ -155,7 +155,7 @@ CREATE SEQUENCE "<!-- $DB_PREFIX$ -->news_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->news" (
 	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->news_id_seq'),
 	"page" integer default NULL,
-	"pin" integer NOT NULL default 0,
+	"priority" integer NOT NULL default 0,
 	"name" text,
 	"description" text,
 	"author" text,
@@ -205,6 +205,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->pages" (
 	"show_title" integer NOT NULL default '1',
 	"type" integer NOT NULL,
 	"menu" integer NOT NULL,
+	"page_group" integer NOT NULL default '1',
 	"parent" integer NOT NULL default '0',
 	"list" integer NOT NULL default '0',
 	"blocks_left" text NULL,
@@ -213,6 +214,17 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->pages" (
 	PRIMARY KEY  ("id")
 );
 SELECT setval('<!-- $DB_PREFIX$ -->pages_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->pages"));
+
+-- ----------------------------------------------------------------------------
+-- comcms_page_groups
+-- ----------------------------------------------------------------------------
+CREATE SEQUENCE "<!-- $DB_PREFIX$ -->page_groups_id_seq";
+CREATE TABLE "<!-- $DB_PREFIX$ -->page_groups" (
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->page_groups_id_seq') PRIMARY KEY,
+	"label" text NOT NULL,
+	PRIMARY KEY("id")
+);
+SELECT setval('<!-- $DB_PREFIX$ -->page_groups_id_seq', (SELECT max(id) FROM "<!-- $DB_PREFIX$ -->page_groups"));
 
 -- ----------------------------------------------------------------------------
 -- comcms_page_messages

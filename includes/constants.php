@@ -46,6 +46,7 @@ define('NEWS_TABLE', $CONFIG['db_prefix'] . 'news');
 define('NEWS_CONFIG_TABLE', $CONFIG['db_prefix'] . 'news_settings');
 define('NEWSLETTER_TABLE', $CONFIG['db_prefix'] . 'newsletters');
 define('PAGE_TABLE', $CONFIG['db_prefix'] . 'pages');
+define('PAGE_GROUP_TABLE', $CONFIG['db_prefix'] . 'page_groups');
 define('PAGE_MESSAGE_TABLE', $CONFIG['db_prefix'] . 'page_messages');
 define('PAGE_TYPE_TABLE', $CONFIG['db_prefix'] . 'pagetypes');
 define('POLL_ANSWER_TABLE', $CONFIG['db_prefix'] . 'poll_answers');
