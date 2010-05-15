@@ -212,7 +212,7 @@ div.admin_image_list_item img {
  * Autocomplete box
  */
 .autocomplete-w1 {
-	background:url(admin/templates/default/ac-shadow.png) no-repeat bottom right;
+	background:url(./images/ac-shadow.png) no-repeat bottom right;
 	position:absolute;
 	top:0px;
 	left:0px;
