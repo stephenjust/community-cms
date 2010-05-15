@@ -15,6 +15,10 @@ $root = "./";
 $content = NULL;
 $date = date('Y-m-d H:i:s');
 if ($_GET['action'] == 'edit') {
+	if (!isset($_POST['id'])) {
+		$content .= 'Form error.';
+		return true;
+	}
 	if (strlen($_POST['image']) <= 3) {
 		$_POST['image'] = NULL;
 	}
@@ -29,7 +33,10 @@ if ($_GET['action'] == 'edit') {
 	$showdate = $_POST['date_params'];
 	$image = $_POST['image'];
 	$page = $_POST['page'];
-	$edit_article_query = 'UPDATE ' . NEWS_TABLE . " SET name='$name',description='$edit_content',page='$page',image='$image',date_edited='$date',showdate='$showdate' WHERE id = $edit_id";
+	$edit_article_query = 'UPDATE `' . NEWS_TABLE . "`
+		SET `name`='$name',`description`='$edit_content',`page`='$page',
+		`image`='$image',`date_edited`='$date',`showdate`='$showdate'
+		WHERE `id` = $edit_id";
 	$edit_article = $db->sql_query($edit_article_query);
 	if ($db->error[$edit_article] === 1) {
 		$content .= 'Failed to edit article. <br />';
