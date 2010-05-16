@@ -182,16 +182,11 @@ class acl {
 		$this->permission_list = array();
 		
 		// Add key
-		$prep = $db->sql_prepare('acl_new_key','INSERT INTO '.ACL_KEYS_TABLE.'
+		$new_key_query = 'INSERT INTO '.ACL_KEYS_TABLE.'
 			(acl_name,acl_longname,acl_description,acl_value_default)
-			VALUES ( ?, ?, ?, ? )');
-		if (!$prep) {
-			return false;
-		}
-		$prep_exec = $db->sql_prepare_exec('acl_new_key',
-			array($name,$longname,$description,$default_value),
-			array('text','text','text','int'));
-		if (!$prep_exec) {
+			VALUES (\''.$name.'\',\''.addslashes($longname).'\',\''.addslashes($description).'\','.(int)$default_value.')';
+		$new_key_handle = $db->sql_query($new_key_query);
+		if ($db->error[$new_key_handle] === 1) {
 			return false;
 		}
 	}

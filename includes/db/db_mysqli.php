@@ -55,6 +55,9 @@ class db_mysqli extends db {
 	function sql_escape_string($string) {
 		return mysqli_real_escape_string($this->connect,$string);
 	}
+	function sql_insert_id($query) {
+		return mysqli_insert_id($this->connect);
+	}
 
 	function sql_prepare($name,$query) {
 		global $debug;

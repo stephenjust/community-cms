@@ -59,6 +59,10 @@ class db_postgresql extends db {
 	function sql_escape_string($string) {
 		return pg_escape_string($this->connect, $string);
 	}
+	function sql_insert_id() {
+		// Fixme: find pgsql equivilant of this
+		return false;
+	}
 
 	function sql_prepare($name,$query) {
 		global $debug;
