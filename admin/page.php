@@ -13,6 +13,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 }
 
 $content = NULL;
+global $debug;
 
 if (!$acl->check_permission('adm_page')) {
 	$content .= 'You do not have the necessary permissions to access this module.';
@@ -140,10 +141,76 @@ switch ($_GET['action']) {
 		if ($db->error[$new_page_group_handle] === 1) {
 			$content .= 'Failed to create new page group.<br />'."\n";
 		} else {
+			$acl->create_key('pagegroupedit-'.$db->sql_insert_id($new_page_group_handle),
+					'Edit Page Group \''.stripslashes($new_page_group).'\'',
+					'Allow user to edit pages in the group \''.$new_page_group.'\'',0);
 			$content .= 'Created new page group.<br />'."\n";
 			log_action('Created page group \''.stripslashes($new_page_group).'\'');
 		}
 		break; // case 'new_page_group'
+
+	case 'delete_page_group':
+		if (!isset($_GET['id'])) {
+			$content .= 'No page group specified to delete.<br />'."\n";
+		}
+		// Verify that page group is empty
+		$pg_verify_empty_query = 'SELECT `page_group` FROM `'.PAGE_TABLE.'`
+			WHERE `page_group` = '.(int)$_GET['id'];
+		$pg_verify_empty_handle = $db->sql_query($pg_verify_empty_query);
+		if ($db->error[$pg_verify_empty_handle] === 1) {
+			$content .= 'Failed to verify that this group is empty.<br />'."\n";
+			break;
+		}
+		if ($db->sql_num_rows($pg_verify_empty_handle) != 0) {
+			$content .= 'This group is not empty. Plase reassign groups to any
+				pages that may be a member of this group.<br />'."\n";
+			break;
+		}
+
+		// Remove any permission assignments related to this group
+		$get_permission_query = 'SELECT `acl_table`.`acl_record_id` FROM
+			`'.ACL_KEYS_TABLE.'` `key_table`, `'.ACL_TABLE.'` `acl_table` WHERE
+			`acl_table`.`acl_id` = `key_table`.`acl_id`
+			AND `key_table`.`acl_name` = \'pagegroupedit-'.(int)$_GET['id'].'\'';
+		$get_permission_handle = $db->sql_query($get_permission_query);
+		if ($db->error[$get_permission_handle] === 1) {
+			$content .= 'Failed to search for users who have permission to edit this group.<br />'."\n";
+			break;
+		}
+		for ($i = 1; $i <= $db->sql_num_rows($get_permission_handle); $i++) {
+			$permission_entry = $db->sql_fetch_assoc($get_permission_handle);
+			$remove_permission_query = 'DELETE FROM `'.ACL_TABLE.'` WHERE
+				`acl_record_id` = '.$permission_entry['acl_record_id'];
+			$remove_permission_handle = $db->sql_query($remove_permission_query);
+			if ($db->error[$remove_permission_handle] === 1) {
+				$content .= 'Failed to remove permission to edit this group from a user group.<br />'."\n";
+				break;
+			}
+		}
+		$content .= 'Removed permission to access this group from '.$db->sql_num_rows($get_permission_handle).' users.<br />'."\n";
+		$debug->add_trace('Removed permissions from group \'pagegroupedit-'.(int)$_GET['id'].'\'',false,'page.php');
+
+		// Remove permission key
+		$del_acl_key_query = 'DELETE FROM `'.ACL_KEYS_TABLE.'` WHERE
+			`acl_name` = \'pagegroupedit-'.(int)$_GET['id'].'\'';
+		$del_acl_key_handle = $db->sql_query($del_acl_key_query);
+		if ($db->error[$del_acl_key_handle] === 1) {
+			$content .= 'Failed to delete permission key associated with this group.<br />'."\n";
+			break;
+		}
+		$content .= 'Removed permission key for this group.<br />'."\n";
+
+		// Delete group
+		$del_group_query = 'DELETE FROM `'.PAGE_GROUP_TABLE.'` WHERE
+			`id` = '.(int)$_GET['id'];
+		$del_group_handle = $db->sql_query($del_group_query);
+		if ($db->error[$del_group_handle] === 1) {
+			$content .= 'Failed to delete page group.<br />'."\n";
+			break;
+		}
+		$content .= 'Removed page group.<br />'."\n";
+		log_action('Deleted page group');
+		break; // case 'delete_page_group'
 
 	case 'hide':
 		// FIXME: Implement page hiding
@@ -455,6 +522,25 @@ $tab_content['page_groups'] .= '<h1>Add Page Group</h1>
 	</form><br />';
 
 $tab_content['page_groups'] .= '<h1>Page Groups List</h1>';
+$page_group_list_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
+	ORDER BY `id` ASC';
+$page_group_list_handle = $db->sql_query($page_group_list_query);
+if ($db->error[$page_group_list_handle] === 1) {
+	$tab_content['page_groups'] .= 'Failed to fetch group list.<br />';
+} elseif ($db->sql_num_rows($page_group_list_handle) == 0) {
+	$tab_content['page_groups'] .= 'No page groups exist. This should never
+		occur. Please create a new page group.<br />';
+} else {
+	$tab_content['page_groups'] .= '<table class="admintable"><tr>
+		<th>Group Name</th><th width="1px"></th></tr>';
+	for ($i = 1; $i <= $db->sql_num_rows($page_group_list_handle); $i++) {
+		$page_group_list = $db->sql_fetch_assoc($page_group_list_handle);
+		$tab_content['page_groups'] .= '<tr><td>'.$page_group_list['label'].'</td>
+			<td><a href="?module=page&amp;action=delete_page_group&amp;id='.$page_group_list['id'].'">
+				<img src="<!-- $IMAGE_PATH$ -->delete.png" border="0px" alt="Delete" /></a></td></tr>';
+	}
+	$tab_content['page_groups'] .= '</table>';
+}
 // FIXME: Finish page group support.
 $tab_layout->add_tab('Page Groups',$tab_content['page_groups']);
 $content .= $tab_layout;
