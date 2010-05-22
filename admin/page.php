@@ -39,12 +39,13 @@ if ($_GET['action'] == 'new') {
 		$_POST['show_title'] = NULL;
 	}
 	$parent = (int)$_POST['parent'];
+	$page_group = (int)$_POST['page_group'];
 	$show_title = checkbox($_POST['show_title']);
 	// Add page to database.
 	$new_page_query = 'INSERT INTO ' . PAGE_TABLE . '
-		(text_id,title,meta_desc,show_title,type,menu,parent)
+		(text_id,title,meta_desc,show_title,type,menu,parent,page_group)
 		VALUES (\''.$text_id.'\',\''.addslashes($_POST['title']).'\',\''.addslashes($_POST['meta_desc']).'\','.$show_title.',
-		\''.(int)$_POST['type'].'\','.$menu.','.$parent.')';
+		\''.(int)$_POST['type'].'\','.$menu.','.$parent.','.$page_group.')';
 	$new_page = $db->sql_query($new_page_query);
 	if ($db->error[$new_page] === 1) {
 		$content .= 'Failed to add page.<br />';
@@ -224,24 +225,27 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'editsave') {
+	// TODO: Make sure you have permission to edit this page
 	$set_text_id = NULL;
 	if(!isset($_POST['text_id'])) {
 		$_POST['text_id'] = NULL;
 	}
 	if ($text_id == $_POST['text_id'] && $text_id != NULL) {
-		$set_text_id = "text_id='$text_id',";
+		$set_text_id = "`text_id`='$text_id', ";
 	}
 	$title = addslashes($_POST['title']);
 	$meta_desc = addslashes($_POST['meta_desc']);
+	$page_group = (int)$_POST['page_group'];
 	$parent = (int)$_POST['parent'];
 	$menu = (isset($_POST['hidden'])) ? checkbox($_POST['hidden']) : 0;
 	$show_title = (isset($_POST['show_title'])) ? checkbox($_POST['show_title']) : 0;
 	$blocks_left = addslashes($_POST['blocks_left']);
 	$blocks_right = addslashes($_POST['blocks_right']);
 	$save_query = 'UPDATE ' . PAGE_TABLE . "
-		SET {$set_text_id}title='$title', meta_desc='$meta_desc', menu=$menu,
-		show_title=$show_title, parent=$parent,
-		blocks_left='$blocks_left', blocks_right='$blocks_right'
+		SET {$set_text_id}`title`='$title', `meta_desc`='$meta_desc',
+		`menu`=$menu, `show_title`=$show_title, `parent`=$parent,
+		`page_group`=$page_group, `blocks_left`='$blocks_left',
+		`blocks_right`='$blocks_right'
 		WHERE id = $page_id";
 	$save_handle = $db->sql_query($save_query);
 	if ($db->error[$save_handle] === 1) {
@@ -282,6 +286,7 @@ $tab_layout = new tabs;
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'edit') {
+	// TODO: Make sure you have permission to edit this page group
 	$tab_content['edit'] = NULL;
 	$edit_page_query = 'SELECT * FROM ' . PAGE_TABLE . "
 		WHERE id = $page_id LIMIT 1";
@@ -293,7 +298,6 @@ if ($_GET['action'] == 'edit') {
 		$show_title = checkbox($edit_page['show_title'],1);
 		$hidden = checkbox($edit_page['menu'],1);
 		$tab_content['edit'] .= '<form method="POST" action="admin.php?module=page&action=editsave">
-			<div id="tabs-0">
 			<table class="admintable">
 			<input type="hidden" name="id" id="adm_page" value="'.$page_id.'" />';
 		if (strlen($edit_page['text_id']) < 1) {
@@ -328,9 +332,33 @@ if ($_GET['action'] == 'edit') {
 			$parent_page .= '</select>'."\n";
 		}
 
+		// Get list of page groups
+		// TODO: exlude those that you don't have permission to edit
+		$page_group_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
+			ORDER BY `id` ASC';
+		$page_group_handle = $db->sql_query($page_group_query);
+		if ($db->error[$page_group_handle] === 1) {
+			$debug->add_trace('Failed to read page group table',true,'admin/page.php');
+			$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
+		} else {
+			$page_group = '<select name="page_group">';
+			for ($i = 1; $i <= $db->sql_num_rows($page_group_handle); $i++) {
+				$page_group_result = $db->sql_fetch_assoc($page_group_handle);
+				if ($page_group_result['id'] == $edit_page['page_group']) {
+					$page_group .= '<option value="'.$page_group_result['id'].'" selected>'.
+						$page_group_result['label'].'</option>'."\n";
+				} else {
+					$page_group .= '<option value="'.$page_group_result['id'].'">'.
+						$page_group_result['label'].'</option>'."\n";
+				}
+			}
+			$page_group .= '</select>';
+		}
+
 		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="'.stripslashes($edit_page['title']).'" /></td></tr>
 			<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.stripslashes($edit_page['meta_desc']).'</textarea></td></tr>
-			<tr><td width="150">Parent Page</td><td>'.$parent_page.'</td></tr>
+			<tr><td width="150">Parent Page:</td><td>'.$parent_page.'</td></tr>
+			<tr><td width="150">Page Group:</td><td>'.$page_group.'</td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 			<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
 			<tr class="row2"><td valign="top">Blocks:</td><td>
@@ -339,7 +367,6 @@ if ($_GET['action'] == 'edit') {
 			</td></tr>
 			<tr class="row1"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
 			</table>
-			</div>
 			</form>';
 	}
 	$tab_layout->add_tab('Edit Page',$tab_content['edit']);
@@ -377,7 +404,7 @@ function adm_page_manage_list_row($id) {
 		$return .= '(Hidden)';
 	}
 	$return .= '</td>';
-	if ($acl->check_permission('page_delete')) {
+	if ($acl->check_permission('page_delete') && page_editable($page_info['page_group'])) {
 		$return .= '
 			<td><a href="?module=page&action=del&id='.$page_info['id'].'">
 			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>';
@@ -388,8 +415,12 @@ function adm_page_manage_list_row($id) {
 		<td><a href="?module=page&action=move_down&id='.$page_info['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" />Move Down</a></td>';
 	if ($page_info['type'] != 0) {
-		$return .= '<td><a href="?module=page&action=edit&id='.$page_info['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>';
+		if (page_editable($page_info['page_group'])) {
+			$return .= '<td><a href="?module=page&action=edit&id='.$page_info['id'].'">
+				<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>';
+		} else {
+			$return .= '<td></td>';
+		}
 		if ($acl->check_permission('page_set_home')) {
 			$return .= '<td><a href="?module=page&action=home&id='.$page_info['id'].'">
 				<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" />Make Home</a></td>';
@@ -457,11 +488,31 @@ if ($db->error[$parent_page_list_handle] === 1) {
 	}
 	$parent_page .= '</select>'."\n";
 }
+
+// Get list of page groups
+// TODO: Exlude those that you don't have permission to edit
+$page_group_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
+	ORDER BY `id` ASC';
+$page_group_handle = $db->sql_query($page_group_query);
+if ($db->error[$page_group_handle] === 1) {
+	$debug->add_trace('Failed to read page group table',true,'admin/page.php');
+	$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
+} else {
+	$page_group = '<select name="page_group">';
+	for ($i = 1; $i <= $db->sql_num_rows($page_group_handle); $i++) {
+		$page_group_result = $db->sql_fetch_assoc($page_group_handle);
+		$page_group .= '<option value="'.$page_group_result['id'].'">'.
+			$page_group_result['label'].'</option>'."\n";
+	}
+	$page_group .= '</select>';
+}
+
 $tab_content['add'] .= '<form method="POST" action="admin.php?module=page&action=new">
 	<table class="admintable">
 	<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="" /></td></tr>
 	<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor"></textarea></td></tr>
 	<tr><td width="150">Parent Page:</td><td>'.$parent_page.'</td></tr>
+	<tr><td width="150">Page Group:</td><td>'.$page_group.'</td></tr>
 	<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>
 	<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
 	<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
