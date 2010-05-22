@@ -388,4 +388,28 @@ function page_path($id) {
 	$list = $page_info['title'].$list;
 	return $list;
 }
+
+function page_editable($page_id) {
+	global $acl;
+	global $debug;
+
+	// Validate input
+	if (!is_numeric($page_id)) {
+		$debug->add_trace('Invalid page ID',true,'page_editable()');
+		return false;
+	}
+	$page_id = (int)$page_id;
+
+	// First, check for permission to edit specific page group
+	if ($acl->check_permission('pagegroupedit-'.$page_id)) {
+		return true;
+	}
+
+	// Then check for global permission
+	if ($acl->check_permission('pageeditall')) {
+		return true;
+	}
+
+	return false;
+}
 ?>
