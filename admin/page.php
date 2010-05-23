@@ -12,6 +12,45 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+function set_home_page($id) {
+	global $acl;
+	global $db;
+	global $debug;
+
+	if (!$acl->check_permission('page_set_home')) {
+		$debug->add_trace('Need permission \'page_set_home\' to perform this action',true,'set_home_page()');
+		return false;
+	}
+
+	// Validate variables
+	if (!is_numeric($id)) {
+		$debug->add_trace('Page ID is not numeric',true,'set_home_page()');
+		return false;
+	}
+	$id = (int)$id;
+
+	$check_query = 'SELECT `id`,`title` FROM `'.PAGE_TABLE."`
+		WHERE `id` = $id LIMIT 1";
+	$check_handle = $db->sql_query($check_query);
+	if ($db->error[$check_handle] === 1) {
+		$debug->add_trace('Failed to read page table',true,'set_home_page()');
+		return false;
+	}
+	if ($db->sql_num_rows($check_handle) == 1) {
+		if(!set_config('home',$id)) {
+			$debug->add_trace('Failed to set config value',true,'set_home_page()');
+			return false;
+		} else {
+			$check_page = $db->sql_fetch_assoc($check_handle);
+			log_action('Set home page to \''.stripslashes($check_page['title']).'\'');
+			return true;
+		}
+	} else {
+		$debug->add_trace('Page ID provided does not belong to an existing page',true,'set_home_page()');
+		return false;
+	}
+}
+
 $content = NULL;
 global $debug;
 
@@ -86,26 +125,10 @@ if ($_GET['action'] == 'new_link') {
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'home') {
-	if (!$acl->check_permission('page_set_home')) {
-		$content .= 'You are not authorized to change the default page.<br />';
+	if (set_home_page($page_id)) {
+		$content .= 'Changed home page.<br />'."\n";
 	} else {
-		$check_page_query = 'SELECT id,title FROM ' . PAGE_TABLE . "
-			WHERE id = $page_id LIMIT 1";
-		$check_page_handle = $db->sql_query($check_page_query);
-		if ($db->error[$check_page_handle] === 1) {
-			$content .= 'Failed to check if page exists.<br />';
-		}
-		if ($db->sql_num_rows($check_page_handle) == 1) {
-			if(!set_config('home',$page_id)) {
-				$content .= 'Failed to change home page.<br />';
-			} else {
-				$check_page = $db->sql_fetch_assoc($check_page_handle);
-				$content .= 'Successfully changed home page.<br />'."\n";
-				log_action('Set home page to \''.stripslashes($check_page['title']).'\'');
-			}
-		} else {
-			$content .= 'Could not find the page you are trying to delete.';
-		}
+		$content .= 'Failed to change home page.<br />'."\n";
 	}
 } // IF 'home'
 
