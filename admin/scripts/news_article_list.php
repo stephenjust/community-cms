@@ -30,7 +30,7 @@ if (!isset($_GET['page'])) {
 }
 
 // Get article list
-if ($page_id == '*') {
+if (!is_numeric($page_id)) {
     $article_list_query = 'SELECT * FROM `' . NEWS_TABLE . '` ORDER BY `id` DESC';
 } else {
     $article_list_query = 'SELECT * FROM `' . NEWS_TABLE . '`

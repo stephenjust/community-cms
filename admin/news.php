@@ -388,7 +388,7 @@ switch ($_GET['action']) {
 
 $tab_layout = new tabs;
 
-$page_list = '<select name="page" id="adm_article_page_list" onChange="update_article_list(0)">';
+$page_list = '<select name="page" id="adm_article_page_list" onChange="update_article_list(\'-\')">';
 $page_query = 'SELECT * FROM `' . PAGE_TABLE . '`
     WHERE `type` = 1 ORDER BY `title` ASC';
 $page_query_handle = $db->sql_query($page_query);

@@ -45,7 +45,7 @@ function update_article_list(page) {
 	var pagelist = document.getElementById('adm_article_page_list');
 	listdiv.innerHTML = 'Loading...';
 
-	if (page == 0) {
+	if (page == '-') {
 		page = pagelist.value;
 	}
 
