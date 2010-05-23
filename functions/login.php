@@ -126,9 +126,11 @@ function checkuser_admin() {
 	global $db;
 	if(!isset($_SESSION['type'])) {
 		err_page(3004);
+		return false;
 	}
 	if(!$acl->check_permission('admin_access')) {
 		err_page(3004);
+		return false;
 	}
 	$query = 'SELECT username,password,realname,type,lastlogin FROM '
 		. USER_TABLE . ' WHERE username = \''.$_SESSION['user'].'\'
@@ -152,5 +154,6 @@ function checkuser_admin() {
 	}
 	$userinfo = $db->sql_fetch_assoc($access);
 	define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);
+	return true;
 }
 ?>

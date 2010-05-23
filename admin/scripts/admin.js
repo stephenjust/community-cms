@@ -38,4 +38,17 @@ function gallery_dir_check() {
 		gallerydirfield.style.background = 'auto';
 	}
 }
+
+function update_article_list(page) {
+	var urlBase = './admin/scripts/news_article_list.php';
+	var listdiv = document.getElementById('adm_news_article_list');
+	var pagelist = document.getElementById('adm_article_page_list');
+	listdiv.innerHTML = 'Loading...';
+
+	if (page == 0) {
+		page = pagelist.value;
+	}
+
+	loadHTML(urlBase + "?page=" + encodeURI(page),listdiv);
+}
 -->

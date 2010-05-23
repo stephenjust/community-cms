@@ -388,7 +388,7 @@ switch ($_GET['action']) {
 
 $tab_layout = new tabs;
 
-$page_list = '<select name="page">';
+$page_list = '<select name="page" id="adm_article_page_list" onChange="update_article_list(0)">';
 $page_query = 'SELECT * FROM `' . PAGE_TABLE . '`
     WHERE `type` = 1 ORDER BY `title` ASC';
 $page_query_handle = $db->sql_query($page_query);
@@ -428,53 +428,16 @@ if ($_POST['page'] == '*') {
 $page_list .= '<option value="0" '.$no_page.'>No Page</option>
     <option value="*" '.$all_page.'>All Pages</option>
     </select>';
-$tab_content['manage'] = '<table class="admintable">';
 
 // Change page form
-$tab_content['manage'] .= '<tr><th colspan="4">
-	<form method="POST" action="admin.php?module=news">'.$page_list
-	.'<input type="submit" value="Change Page" /></form></th></tr>';
-	
-$tab_content['manage'] .= '<tr>
-	<th width="1"></th>
-	<th width="30">ID</th>
-	<th>Title:</th>
-	<th colspan="2"></th>
-	<th>Priority</th></tr>'."\n";
+$tab_content['manage'] = $page_list;
 
 // Form for action on selected item(s)
 $tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp;action=multi">
 	<input type="hidden" name="page" value="'.$_POST['page'].'" />';
 
-// Get page list in the order defined in the database. First is 0.
-if ($_POST['page'] == '*') {
-    $page_list_query = 'SELECT * FROM `' . NEWS_TABLE . '` ORDER BY `id` DESC';
-} else {
-    $page_list_query = 'SELECT * FROM `' . NEWS_TABLE . '`
-		WHERE `page` = '.stripslashes($_POST['page']).' ORDER BY `priority` DESC, `id` DESC';
-}
-$page_list_handle = $db->sql_query($page_list_query);
-$page_list_rows = $db->sql_num_rows($page_list_handle);
-if ($page_list_rows == 0) {
-    $tab_content['manage'] .= '<tr><td colspan="2"></td><td>There are no articles on this
-        page.</td><td colspan="3"></td></tr>';
-}
-for ($i = 1; $i <= $page_list_rows; $i++) {
-    $page_list = $db->sql_fetch_assoc($page_list_handle);
-	$priority_box = '<input type="text" size="3" maxlength="11" name="pri-'.$page_list['id'].'" value="'.$page_list['priority'].'" />';
-    $tab_content['manage'] .= '<tr><td>
-		<input type="checkbox" name="item_'.$page_list['id'].'" /></td>
-		<td>'.$page_list['id'].'</td><td>'.
-        stripslashes($page_list['name']).'</td><td>
-        <a href="?module=news&amp;action=delete&amp;id='.$page_list['id'].'&amp;page='.$_POST['page'].'">
-        <img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px"
-        height="16px" border="0px" /></a></td><td>
-        <a href="?module=news_edit_article&amp;id='.$page_list['id'].'">
-        <img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
-        height="16px" border="0px" /></a></td>
-		<td>'.$priority_box.'</td></tr>';
-		} // FOR
-$tab_content['manage'] .= '</table>'."\n";
+$tab_content['manage'] .= '<div id="adm_news_article_list">Loading...</div>'."\n";
+$tab_content['manage'] .= '<script type="text/javascript">update_article_list('.$_POST['page'].');</script>';
 
 $a_page_list = '<select name="where" id="a_where">';
 $a_page_query = 'SELECT * FROM `' . PAGE_TABLE . '`
