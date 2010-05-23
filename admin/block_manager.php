@@ -203,28 +203,17 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 $content = $message;
-$tab_content['manage'] = NULL;
-$tab_content['manage'] .= '<table class="admintable">
-	<tr><th>Info:</th><th width="40" colspan="2"></th></tr>';
-// Get block list by id
-$block_list_query = 'SELECT * FROM ' . BLOCK_TABLE . ' ORDER BY id DESC';
+$block_list_query = 'SELECT * FROM `' . BLOCK_TABLE . '` ORDER BY `id` DESC';
 $block_list_handle = $db->sql_query($block_list_query);
-if($db->sql_num_rows($block_list_handle) == 0) {
-	$tab_content['manage'] .= '<tr><td colspan="3">No blocks exist.</td></tr>';
-} else {
-	$i = 1;
-	while ($i <= $db->sql_num_rows($block_list_handle)) {
-		$block_list = $db->sql_fetch_assoc($block_list_handle);
-		$attribute_list = ($block_list['attributes'] == '') ? NULL : ' ('.$block_list['attributes'].')';
-		$tab_content['manage'] .= '<tr>
-<td>'.$block_list['type'].$attribute_list.'</td>
-<td><a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
-</tr>';
-		$i++;
-	}
+$block_list_rows = array();
+for ($i = 1; $i <= $db->sql_num_rows($block_list_handle); $i++) {
+	$block_list = $db->sql_fetch_assoc($block_list_handle);
+	$attribute_list = ($block_list['attributes'] == '') ? NULL : ' ('.$block_list['attributes'].')';
+	$block_list_rows[] = array($block_list['type'].$attribute_list,
+			'<a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a>',
+			'<a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>');
 }
-$tab_content['manage'] .= '</table>';
+$tab_content['manage'] = create_table(array('Info','Delete','Edit'), $block_list_rows);
 $tabs['manage'] = $tab_layout->add_tab('Manage Blocks',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------

@@ -132,6 +132,13 @@ function create_table($columns, $values) {
 	}
 	$return .= "\t</tr>\n";
 
+	// Handle no content gracefully
+	if (count($values) == 0) {
+		$return .= "\t<tr>\n";
+		$return .= "\t\t<td colspan=\"".count($columns)."\">No data found.</td>";
+		$return .= "\t</tr>\n";
+	}
+
 	for ($i = 0; $i < count($values); $i++) {
 		$return .= "\t<tr>\n";
 		for ($j = 0; $j < count($values[$i]); $j++) {
