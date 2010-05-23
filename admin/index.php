@@ -32,34 +32,23 @@ if ($_GET['action'] == 'new_log') {
 $tab_layout = new tabs;
 // Display log messages
 $tab_content['activity'] = NULL;
-$log_message_query = 'SELECT * FROM ' . LOG_TABLE . ' log, ' . USER_TABLE . ' u
+$log_message_query = 'SELECT `log`.`date`,`log`.`action`,
+	`u`.`realname`,`log`.`ip_addr`
+	FROM ' . LOG_TABLE . ' log, ' . USER_TABLE . ' u
 	WHERE log.user_id = u.id ORDER BY log.date DESC LIMIT 5';
 $log_message_handle = $db->sql_query($log_message_query);
-if (!$log_message_handle) {
-	$tab_content['activity'] .= 'Failed to read log messages.<br />';
+if ($db->error[$log_message_handle] === 1) {
+	$tab_content['activity'] .= 'Failed to read log messages.<br />'."\n";
 }
-$num_messages = $db->sql_num_rows($log_message_handle);
-$tab_content['activity'] .= '<table class="ui-corner-all admintable">
-<tr>
-<th>Date</th><th>Action</th><th>User</th><th>IP</th>
-</tr>';
-$rowtype = 1;
-if ($num_messages == 0) {
-	$tab_content['activity'] .= '<tr class="row1">
-		<td colspan="4">No log messages.</td></tr>';
+$table_values = array();
+for ($i = 1; $i <= $db->sql_num_rows($log_message_handle); $i++) {
+	$next_row = $db->sql_fetch_row($log_message_handle);
+	// Convert IP address from long to proper IP address
+	$next_row[3] = long2ip($next_row[3]);
+	$table_values[] = $next_row;
 }
-for ($i = 1; $i <= $num_messages; $i++) {
-	$log_message = $db->sql_fetch_assoc($log_message_handle);
-	$tab_content['activity'] .= '<tr class="row'.$rowtype.'">
-<td>'.$log_message['date'].'</td><td>'.stripslashes($log_message['action']).'</td><td>'.stripslashes($log_message['realname']).'</td><td>'.long2ip($log_message['ip_addr']).'</td>
-</tr>';
-	if ($rowtype == 1) {
-		$rowtype = 2;
-	} else {
-		$rowtype = 1;
-	}
-} // FOR $i
-$tab_content['activity'] .= '</table>';
+$tab_content['activity'] .= create_table(array('Date','Action','User','IP'),
+		$table_values);
 if ($acl->check_permission('log_post_custom_message')) {
 	$tab_content['activity'] .= '<form method="post" action="?action=new_log">
 		<input type="text" name="message" /><input type="submit" value="Add Message" />

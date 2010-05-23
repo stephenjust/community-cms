@@ -132,19 +132,17 @@ if ($_GET['action'] == 'new_link') {
 
 // ----------------------------------------------------------------------------
 
-if ($_GET['action'] == 'home') {
-	if (set_home_page($page_id)) {
-		$content .= 'Changed home page.<br />'."\n";
-	} else {
-		$content .= 'Failed to change home page.<br />'."\n";
-	}
-} // IF 'home'
-
-// ----------------------------------------------------------------------------
-
 switch ($_GET['action']) {
 	default:
 		break;
+
+	case 'home':
+		if (set_home_page($page_id)) {
+			$content .= 'Changed home page.<br />'."\n";
+		} else {
+			$content .= 'Failed to change home page.<br />'."\n";
+		}
+		break; // case 'home'
 
 	case 'del':
 		if ((int)$_GET['id'] == $_GET['id']) {

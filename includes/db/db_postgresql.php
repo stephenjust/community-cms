@@ -56,6 +56,9 @@ class db_postgresql extends db {
 	function sql_fetch_assoc($query) {
 		return pg_fetch_assoc($this->query[$query]);
 	}
+	function sql_fetch_row($query) {
+		return pg_fetch_row($this->query[$query]);
+	}
 	function sql_escape_string($string) {
 		return pg_escape_string($this->connect, $string);
 	}

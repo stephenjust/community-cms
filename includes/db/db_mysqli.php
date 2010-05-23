@@ -52,6 +52,9 @@ class db_mysqli extends db {
 	function sql_fetch_assoc($query) {
 		return mysqli_fetch_assoc($this->query[$query]);
 	}
+	function sql_fetch_row($query) {
+		return mysqli_fetch_row($this->query[$query]);
+	}
 	function sql_escape_string($string) {
 		return mysqli_real_escape_string($this->connect,$string);
 	}
