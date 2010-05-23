@@ -35,38 +35,24 @@ if ($_GET['action'] == 'delete') {
 
 // ----------------------------------------------------------------------------
 
-$log_message_query = 'SELECT * FROM `' . LOG_TABLE . '` l, `' . USER_TABLE . '` u
-	WHERE l.user_id = u.id ORDER BY l.date DESC LIMIT 50';
+$tab_content['view'] = NULL;
+$log_message_query = 'SELECT `log`.`date`,`log`.`action`,
+	`u`.`realname`,`log`.`ip_addr`
+	FROM ' . LOG_TABLE . ' log, ' . USER_TABLE . ' u
+	WHERE log.user_id = u.id ORDER BY log.date DESC LIMIT 50';
 $log_message_handle = $db->sql_query($log_message_query);
 if ($db->error[$log_message_handle] === 1) {
-	$content .= 'Failed to read log messages.<br />';
+	$tab_content['view'] .= 'Failed to read log messages.<br />'."\n";
 }
-$i = 1;
-$num_messages = $db->sql_num_rows($log_message_handle);
-$tab_content['view'] = '<table class="admintable">
-	<tr><th>Date</th><th>Action</th><th>User</th><th>IP</th></tr>';
-if ($num_messages == 0) {
-	$tab_content['view'] .= '<tr class="row1">
-		<td colspan="4">No log messages.</td>
-		</tr>';
+$table_values = array();
+for ($i = 1; $i <= $db->sql_num_rows($log_message_handle); $i++) {
+	$next_row = $db->sql_fetch_row($log_message_handle);
+	// Convert IP address from long to proper IP address
+	$next_row[3] = long2ip($next_row[3]);
+	$table_values[] = $next_row;
 }
-$rowtype = 1;
-while ($i <= $num_messages) {
-	$log_message = $db->sql_fetch_assoc($log_message_handle);
-	$tab_content['view'] .= '<tr class="row'.$rowtype.'">
-		<td>'.$log_message['date'].'</td>
-		<td>'.stripslashes($log_message['action']).'</td>
-		<td>'.stripslashes($log_message['realname']).'</td>
-		<td>'.long2ip($log_message['ip_addr']).'</td>
-		</tr>';
-	if ($rowtype == 1) {
-		$rowtype = 2;
-	} else {
-		$rowtype = 1;
-	}
-	$i++;
-}
-$tab_content['view'] .= '</table>';
+$tab_content['view'] .= create_table(array('Date','Action','User','IP'),
+		$table_values);
 $tab_layout = new tabs;
 $tab_layout->add_tab('View Log Messages',$tab_content['view']);
 
