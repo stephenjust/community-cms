@@ -12,6 +12,14 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+/**
+ * set_home_page - Change the default CMS page
+ * @global object $acl Permission object
+ * @global object $db Database connection object
+ * @global object $debug Debugger object
+ * @param integer $id Page ID to set as the default page
+ * @return boolean Success
+ */
 function set_home_page($id) {
 	global $acl;
 	global $db;
