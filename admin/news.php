@@ -433,8 +433,7 @@ $page_list .= '<option value="0" '.$no_page.'>No Page</option>
 $tab_content['manage'] = $page_list;
 
 // Form for action on selected item(s)
-$tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp;action=multi">
-	<input type="hidden" name="page" value="'.$_POST['page'].'" />';
+$tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp;action=multi">';
 
 $tab_content['manage'] .= '<div id="adm_news_article_list">Loading...</div>'."\n";
 $tab_content['manage'] .= '<script type="text/javascript">update_article_list('.$_POST['page'].');</script>';

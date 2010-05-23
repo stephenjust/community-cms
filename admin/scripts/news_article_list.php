@@ -57,6 +57,7 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 } // FOR
 
 $content = create_table(array('','ID','Title','Delete','Edit','Priority'),$list_rows);
+$content .= '<input type="hidden" name="page" value="'.$page_id.'" />';
 
 echo $content;
 
