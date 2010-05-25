@@ -75,6 +75,15 @@ select {
 	height: 1.8em;
 }
 
+span.mceEditor {
+	display: block;
+	float: left;
+}
+div.mcePlaceHolder {
+	display: block;
+	float: left;
+}
+
 /* 
  * Administration Specific Styles
  */

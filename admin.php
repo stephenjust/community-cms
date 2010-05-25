@@ -114,6 +114,7 @@ function display_admin() {
 			theme_advanced_toolbar_location : "top",
 			theme_advanced_toolbar_align : "left",
 			theme_advanced_statusbar_location : "bottom",
+			theme_advanced_resizing : "true",
 			theme_advanced_fonts:"Arial=arial,helvetica,sans-serif;Arial Narrow=arial narrow,arial,sans-serif;Arial Black=arial black,avant garde;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Tahoma=tahoma,arial,helvetica,sans-serif;Times New Roman=times new roman,times;Verdana=verdana,geneva",
 			theme_advanced_font_sizes:"x-small,small,medium,large,x-large,xx-large",
 			extended_valid_elements : "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
