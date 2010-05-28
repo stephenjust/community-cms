@@ -51,4 +51,17 @@ function update_article_list(page) {
 
 	loadHTML(urlBase + "?page=" + encodeURI(page),listdiv);
 }
+
+function update_newsletter_list(page) {
+	var urlBase = './admin/scripts/newsletter_list.php';
+	var listdiv = document.getElementById('adm_newsletter_list');
+	var pagelist = document.getElementById('adm_newsletter_page_list');
+	listdiv.innerHTML = 'Loading...';
+
+	if (page == '-') {
+		page = pagelist.value;
+	}
+
+	loadHTML(urlBase + "?page=" + encodeURI(page),listdiv);
+}
 -->

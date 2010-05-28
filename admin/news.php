@@ -436,7 +436,7 @@ $tab_content['manage'] = $page_list;
 $tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp;action=multi">';
 
 $tab_content['manage'] .= '<div id="adm_news_article_list">Loading...</div>'."\n";
-$tab_content['manage'] .= '<script type="text/javascript">update_article_list('.$_POST['page'].');</script>';
+$tab_content['manage'] .= '<script type="text/javascript">update_article_list(\''.$_POST['page'].'\');</script>';
 
 $a_page_list = '<select name="where" id="a_where">';
 $a_page_query = 'SELECT * FROM `' . PAGE_TABLE . '`

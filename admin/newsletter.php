@@ -142,8 +142,11 @@ switch ($_GET['action']) {
 		break;
 }
 
-$tab_content['manage'] = '<table class="admintable">
-<tr><th colspan="5"><form method="post" action="admin.php?module=newsletter"><select name="page">';
+if (isset($_GET['page'])) {
+	$_POST['page'] = $_GET['page'];
+}
+
+$tab_content['manage'] = '<select name="page" id="adm_newsletter_page_list" onChange="update_newsletter_list(\'-\')">';
 $page_query = 'SELECT * FROM ' . PAGE_TABLE . '
 	WHERE type = 2 ORDER BY title ASC';
 $page_query_handle = $db->sql_query($page_query);
@@ -174,34 +177,14 @@ if ($_POST['page'] == '*') {
 	$tab_content['manage'] .= '<option value="*">All Pages</option>'."\n";
 }
 
-$tab_content['manage'] .= '</select><input type="submit" value="Change Page" /></form></th></tr>
-	<tr><th width="350">Label:</th><th>Month</th><th>Year</th><th colspan="2"></th></tr>';
+$tab_content['manage'] .= '</select>';
 
-// Get page message list in the order defined in the database. First is 0.
-$nl_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . '
-	WHERE page = '.stripslashes($_POST['page']).' ORDER BY year DESC,month DESC';
-// Alter query if set to "All Pages"
-if (stripslashes($_POST['page']) == '*') {
-	$nl_query = str_replace('WHERE page = *',NULL,$nl_query);
-}
-
-$nl_handle = $db->sql_query($nl_query);
-$i = 1;
-if($db->sql_num_rows($nl_handle) == 0) {
-	$tab_content['manage'] .= '<tr><td colspan="5">There are no newsletter entries on this page.</td></tr>';
-}
-while ($i <= $db->sql_num_rows($nl_handle)) {
-	$nl = $db->sql_fetch_assoc($nl_handle);
-	$tab_content['manage'] .= '<tr>
-		<td class="adm_page_list_item">'.strip_tags(stripslashes($nl['label']),'<br>').'</td>
-		<td>'.$months[$nl['month']-1].'</td><td>'.$nl['year'].'</td>
-		<td><a href="?module=newsletter&amp;action=delete&amp;id='.$nl['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
-		<td><a href="?module=newsletter&amp;action=edit&amp;id='.$nl['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
-		</tr>';
-	$i++;
-}
-$tab_content['manage'] .= '</table>';
+$tab_content['manage'] .= '<div id="adm_newsletter_list">Loading...</div>';
+$tab_content['manage'] .= '<script type="text/javascript">update_newsletter_list(\''.$_POST['page'].'\');</script>';
 $tab_layout->add_tab('Manage Newsletters',$tab_content['manage']);
+
+// ----------------------------------------------------------------------------
+
 $form = new form;
 $form->set_target('admin.php?module=newsletter&amp;action=new');
 $form->set_method('post');
