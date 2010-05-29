@@ -2,6 +2,8 @@
 <!DOCTYPE pagelist SYSTEM "../docs/page_list.dtd">
 <pagelist>
 	<category name="Main">
+		<link label="Admin Home" url="admin.php"></link>
+		<link label="View Site" url="index.php" target="_blank"></link>
 		<link label="Configuration" module="site_config" acl="adm_site_config"></link>
 	</category>
 	<category name="Help">
@@ -20,7 +22,7 @@
 		<link label="Image Galleries" module="gallery_manager" acl="adm_gallery_manager"></link>
 		<link label="Gallery Settings" module="gallery_settings" acl="adm_gallery_settings"></link>
 	</category>
-	<category name="calendar">
+	<category name="Calendar">
 		<link label="Manage Events" module="calendar" acl="adm_calendar"></link>
 		<link label="Manage Locations" module="calendar_locations" acl="adm_calendar_locations"></link>
 		<link label="Edit Date" module="calendar_edit_date" acl="adm_calendar_edit_date" hide="1"></link>
@@ -52,7 +54,7 @@
 		<link label="Edit User" module="user_edit" acl="adm_user_edit" hide="1"></link>
 		<link label="Groups" module="user_groups" acl="adm_user_groups"></link>
 	</category>
-	<category name="Logs">
+	<category name="Utilities">
 		<link label="View Logs" module="log_view" acl="adm_log_view"></link>
 		<link label="View Configuration" module="config_view" acl="adm_config_view"></link>
 	</category>

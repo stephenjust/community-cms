@@ -72,6 +72,16 @@ if ($pear_found) {
 }
 $content .= '</td></tr>'."\n";
 
+// Check for XMLReader Class
+$xmlreader_found = @ new xmlreader;
+$content .= '<tr><td>XMLReader</td><td>';
+if (is_object($xmlreader_found)) {
+	$content .= 'Found';
+} else {
+	$content .= 'Not Found';
+	$error = 1;
+}
+
 $content .= '</table>'."\n";
 if ($error == 0) {
 	$content .= '<form method="POST" action="index.php?page=2"><input type="submit" value="Next" /></form>';

@@ -1,9 +1,6 @@
 <!--
 window.onload=$(function(){
 
-	// Accordion
-	$("#menu").accordion({ header: "h3" });
-
 	// Tabs
 	$('#tabs').tabs();
 

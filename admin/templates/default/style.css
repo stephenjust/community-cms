@@ -87,17 +87,18 @@ div.mcePlaceHolder {
 /* 
  * Administration Specific Styles
  */
-span.nav_header {
-	font-family: Cambria,Arial,'Sans Serif',Serif;
-	font-weight: bold;
-	text-align: center;
+ #menu > div > h3 {
+	 font-family: Tahoma, sans-serif;
+	 font-size: large;
+	 margin-bottom: 0px;
+	 margin-top: 8px;
 }
-.adm_page_list_item {
-	background: #FFFFFF;
-	border: 1px solid #CCCCCC;
+#menu > div > div > a {
+	color: #000066;
+	text-decoration: none;
 }
-.adm_page_list_item:hover {
-  background: #CCCCCC;
+#menu > div > div > a:hover {
+	text-decoration: underline;
 }
 
 div.errormessage {

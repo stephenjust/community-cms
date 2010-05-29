@@ -21,52 +21,59 @@ if (@SECURITY != 1) {
 function admin_nav() {
 	global $db;
 	global $acl;
-	$pl_file = ROOT.'admin/menu.info';
-	$pl_handle = fopen($pl_file,'r');
-	$page_list = fread($pl_handle,filesize($pl_file));
-	fclose($pl_handle);
-	$page_list = str_replace("\t",NULL,$page_list); // Remove tabs
-	$admin_pages = explode("\n",$page_list);
-	unset($page_list);
-	$last_heading = 'Main';
-	$result = NULL;
-	$list_index = 0;
-	$page_index = 0;
 
-	// Cycle through page list
-	for ($i = 0; $i < count($admin_pages); $i++) {
-		// Make sure page is not commented out
-		if (strlen($admin_pages[$i]) > 3 && !preg_match('#\/\/#',$admin_pages[$i])) { // 1
-			$admin_menu_item[$i] = explode('#',$admin_pages[$i]);
-			// Check to make sure that you have permission to view the page
-			if (isset($admin_menu_item[$i][4]) && $acl->check_permission($admin_menu_item[$i][4])) { // 2
-				// Check if we're still in the same page category
-				if ($admin_menu_item[$i][0] != $last_heading
-					&& $admin_menu_item[$i][1] == 1) { // 3
-					$result .= '</div></div>
-						<div><h3><a href="#">'.stripslashes($admin_menu_item[$i][0]).'</a></h3>
-						<div>';
-					$last_heading = $admin_menu_item[$i][0];
-					$list_index++;
-				} // 3
-				// Add list item
-				if ($admin_menu_item[$i][1] == 1) { // 4
-					// Check if this is the current page
-					if ($_GET['module'] == $admin_menu_item[$i][3]) {
-						$page_index = $list_index;
-					}
-					$result .= '<a href="admin.php?module='
-						.$admin_menu_item[$i][3].'">'.$admin_menu_item[$i][2].'</a><br />';
-				} // 4
-			} // 2
+	// Read menu XML file
+	$xmlreader = new XMLReader;
+	$xmlreader->open(ROOT.'admin/page_list.xml');
+	$result = NULL;
+	while($xmlreader->read()) {
+		if ($xmlreader->nodeType == XMLREADER::DOC_TYPE ||
+				$xmlreader->nodeType == XMLREADER::COMMENT ||
+				$xmlreader->nodeType == XMLREADER::XML_DECLARATION) {
+			continue;
 		}
-	} // FOR
-	$result .= '</div></div></div>';
-	$result .= '<script type="text/javascript">
-		$(function() {
-		$("#menu").accordion({ header: "h3" }).accordion( "activate" , '.$page_index.' );
-		});
-		</script>';
+		if ($xmlreader->name == 'category' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
+			$cat_name = $xmlreader->getAttribute('name');
+			$cat_label = '<h3>'.$cat_name."</h3>\n";
+			$item_count = 0;
+			$cat_items = NULL;
+		}
+		if ($xmlreader->name == 'category' && $xmlreader->nodeType == XMLREADER::END_ELEMENT) {
+			if ($item_count != 0) {
+				$result .= "<div>\n".$cat_label."<div>\n".$cat_items."</div>\n</div>\n";
+			}
+		}
+
+		if ($xmlreader->name == 'link' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
+			if ($xmlreader->getAttribute('hide') != '1') {
+				$acl_value = $xmlreader->getAttribute('acl');
+				if ($acl_value != '') {
+					// Don't show link if you don't have permission to use it
+					if (!$acl->check_permission('$acl_value')) {
+						continue;
+					}
+				}
+				$label = $xmlreader->getAttribute('label');
+				$url = $xmlreader->getAttribute('url');
+				$module = $xmlreader->getAttribute('module');
+				$target = $xmlreader->getAttribute('target');
+				if ($target != '') {
+					$target = ' target="'.$target.'"';
+				}
+				if ($url == '' && $module != '') {
+					$path = 'admin.php?module='.$module;
+				} else {
+					$path = $url;
+				}
+				$cat_items .= '<a href="'.$path.'"'.$target.'>'.$label."</a><br />\n";
+				$item_count++;
+			}
+		}
+		if ($xmlreader->name == 'link' && $xmlreader->nodeType == XMLREADER::END_ELEMENT) {
+
+		}
+	}
+	$xmlreader->close();
 	return $result;
 }
 

@@ -157,10 +157,7 @@ function display_admin() {
 		});
 		</script>';
 	$image_path = $template_page->path.'images/';
-	$template_page->nav_bar = '<div id="menu"><div><h3><a href="#">Main</a></h3><div>
-<a href="admin.php?'.SID.'">Admin Home</a><br />
-<a href="index.php?'.SID.'" target="_blank">View Site</a><br />
-'.admin_nav();
+	$template_page->nav_bar = '<div id="menu">'.admin_nav().'</div>';
 	$template_page->nav_login = display_login_box();
 	$template_page->page_title = $page_title;
 	$css_include = '<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
