@@ -214,7 +214,7 @@ unset($folder_open);
 unset($directory);
 $num_files = count($files);
 $i = 2;
-if($num_files < 4) { // ( ., .., blocks.info, and a block file)
+if($num_files < 3) { // ( ., .., and a block file)
 	$tab_content['create'] .= 'No installed blocks.';
 	$block_types_list = '<select name="type" disabled>';
 } else {
@@ -222,7 +222,7 @@ if($num_files < 4) { // ( ., .., blocks.info, and a block file)
 	while($i < $num_files) {
 		$block_type = explode('_',$files[$i]);
 		$block_type = $block_type[0];
-		if(!preg_match('#^\.#',$files[$i]) && !preg_match('#~$#',$files[$i]) && !preg_match('#\.info$#',$files[$i])) {
+		if(!preg_match('#^\.#',$files[$i]) && !preg_match('#~$#',$files[$i])) {
 			$block_types_list .= '<option value="'.$block_type.'">'.$block_type.'</option>';
 		}
 		$i++;
