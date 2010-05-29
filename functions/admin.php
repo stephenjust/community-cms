@@ -32,10 +32,15 @@ function admin_nav() {
 	$result = NULL;
 	$list_index = 0;
 	$page_index = 0;
+
+	// Cycle through page list
 	for ($i = 0; $i < count($admin_pages); $i++) {
+		// Make sure page is not commented out
 		if (strlen($admin_pages[$i]) > 3 && !preg_match('#\/\/#',$admin_pages[$i])) { // 1
 			$admin_menu_item[$i] = explode('#',$admin_pages[$i]);
+			// Check to make sure that you have permission to view the page
 			if (isset($admin_menu_item[$i][4]) && $acl->check_permission($admin_menu_item[$i][4])) { // 2
+				// Check if we're still in the same page category
 				if ($admin_menu_item[$i][0] != $last_heading
 					&& $admin_menu_item[$i][1] == 1) { // 3
 					$result .= '</div></div>
@@ -44,7 +49,9 @@ function admin_nav() {
 					$last_heading = $admin_menu_item[$i][0];
 					$list_index++;
 				} // 3
+				// Add list item
 				if ($admin_menu_item[$i][1] == 1) { // 4
+					// Check if this is the current page
 					if ($_GET['module'] == $admin_menu_item[$i][3]) {
 						$page_index = $list_index;
 					}
