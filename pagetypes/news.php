@@ -15,22 +15,33 @@ if (!defined('SECURITY')) {
 	exit;
 }
 
+/**
+ * news_get_config - Get news module configuration from the database
+ * @global object $db Database Connection Object
+ * @return array
+ */
+function news_get_config() {
+	global $db;
+
+	$query = 'SELECT * FROM ' . NEWS_CONFIG_TABLE . ' LIMIT 1';
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1) {
+		die('Could not load news settings.<br />');
+		return array();
+	} elseif ($db->sql_num_rows($handle) == 0) {
+		die('There are no news settings available.<br />');
+		return array();
+	}
+	$news_config = $db->sql_fetch_assoc($handle);
+	return $news_config;
+}
+
 global $page;
 global $db;
 global $debug;
 $return = NULL;
 
-// Load configuration
-$news_config_query = 'SELECT * FROM ' . NEWS_CONFIG_TABLE . ' LIMIT 1';
-$news_config_handle = $db->sql_query($news_config_query);
-if ($db->error[$news_config_handle] === 1) {
-	$page->notification .= 'Could not load news settings.<br />';
-	return $return;
-} elseif ($db->sql_num_rows($news_config_handle) == 0) {
-	$page->notification .= 'There are no news settings available.<br />';
-	return $return;
-}
-$news_config = $db->sql_fetch_assoc($news_config_handle);
+$news_config = news_get_config();
 
 // Check for display mode
 if (isset($_GET['article'])) {
