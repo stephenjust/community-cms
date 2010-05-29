@@ -69,95 +69,83 @@ switch ($_GET['action']) {
 		$edit_block->get_block_information();
 
 		// Read block info file
-		$info_file_handle = fopen(ROOT.'content_blocks/blocks.info','r');
-		if (!$info_file_handle) {
-			$message .= 'Failed to read block information file.<br />'."\n";
-			break;
-		}
-		$info_file = fread($info_file_handle,filesize(ROOT.'content_blocks/blocks.info'));
-		fclose($info_file_handle);
-
-		// Parse relevant entry in block info file
-		$info_file = explode("\n",$info_file);
-		foreach ($info_file as $info_entry) {
-			if (!preg_match('/'.$edit_block->type.'#.?/i',$info_entry)) {
-				continue;
+		$file_path = ROOT.'includes/blocks.xml';
+		$xmlreader = new XMLReader;
+		$xmlreader->open($file_path);
+		$correct_block = false;
+		$options_list = false;
+		$attribute_count = 0;
+		$attribute_list = array();
+		$options = NULL;
+		while ($xmlreader->read()) {
+			if ($xmlreader->name == 'block' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
+				if ($xmlreader->getAttribute('name') == $edit_block->type) {
+					$correct_block = true;
+				}
 			}
-			$info = $info_entry;
-		}
-		if (!isset($info)) {
-			$message .= 'Entry missing for this block type. Is the info file corrupted?<br />'."\n";
-			break;
-		}
+			if ($xmlreader->name == 'block' && $xmlreader->nodeType == XMLREADER::END_ELEMENT) {
+				$correct_block = false;
+			}
 
-		unset($info_file);
-		unset($info_entry);
+			if ($xmlreader->name == 'attribute' && $xmlreader->nodeType == XMLREADER::ELEMENT && $correct_block == true) {
+				$options .= $xmlreader->getAttribute('label')." \n";
+				$attribute_list[] = $xmlreader->getAttribute('name');
+				switch ($xmlreader->getAttribute('type')) {
+					default:
+						$options .= 'Not supported.<br />'."\n";
+						break;
+					case 'int':
+						$options .= '<input type="text" maxlength="9" size="3" name="'
+							.$xmlreader->getAttribute('name').'" value="'
+							.$edit_block->attribute[$xmlreader->getAttribute('name')].'"/><br />';
+						break;
+					case 'option':
+						$options .= '<select name="'.$xmlreader->getAttribute('name').'">'."\n";
+						$options_list = true;
+						$field_name = $xmlreader->getAttribute('name');
+						break;
+				}
+				$attribute_count++;
+			}
+
+			if ($xmlreader->name == 'value'
+					&& $xmlreader->nodeType == XMLREADER::ELEMENT
+					&& $options_list == true
+					&& $correct_block == true) {
+				if ($edit_block->attribute[$field_name] == $xmlreader->readString()) {
+					$options .= '<option value="'.$xmlreader->readString().'" selected>'.$xmlreader->readString().'</option>';
+				} else {
+					$options .= '<option value="'.$xmlreader->readString().'">'.$xmlreader->readString().'</option>';
+				}
+			}
+
+			if ($xmlreader->name == 'values'
+					&& $xmlreader->nodeType == XMLREADER::END_ELEMENT
+					&& $options_list == true
+					&& $correct_block == true) {
+				$options .= '</select><br />'."\n";
+				unset($field_name);
+				$options_list = false;
+			}
+		}
+		$xmlreader->close();
+		$attribute_list = array2csv($attribute_list);
+		if ($attribute_count == 0) {
+			$options .= 'No options.<br />';
+		}
 
 		$tab_content['edit'] = NULL;
 		$tab_content['edit'] .= 'Block Type: '.$edit_block->type.'<br />'."\n";
 		$tab_content['edit'] .= 'Options:<br />'."\n";
-
-		// Separate block type in info file from attributes
-		$info_temp = explode('#',$info);
-		$attributes = $info_temp[1];
-		unset($info_temp);
-
-		// Parse attributes
-		$attributes = explode('&',$attributes);
-		$num_attributes = count($attributes);
-		$j = 1;
-
-		// If no attributes
-		if ($num_attributes == 0 || strlen($attributes[0]) < 1) {
-			$tab_content['edit'] .= 'No options available.<br />
-				<form method="post" action="?module=block_manager"><input type="submit" value="Go back" /></form>'."\n";
-			$tab_layout->add_tab('Edit Block',$tab_content['edit']);
-			break;
+		$tab_content['edit'] .= '<form method="post" action="?module=block_manager&amp;action=edit_save">'."\n"
+			.$options.'<input type="hidden" name="attributes" value="'.$attribute_list.'" />'
+			.'<input type="hidden" name="id" value="'.$edit_id.'" />'."\n";
+		if ($attribute_count != 0) {
+			$tab_content['edit'] .= '<input type="Submit" value="Save Changes" />';
 		}
+		$tab_content['edit'] .= '</form><form method="post" action="?module=block_manager"><input type="submit" value="Go back" /></form>'."\n";
 
-		// Begin the form
-		$tab_content['edit'] .= '<form method="post" action="?module=block_manager&amp;action=edit_save">'."\n";
-		$allattributes = NULL;
-		for ($j = 1; $j <= $num_attributes; $j++) {
-			$atb = explode('=',$attributes[$j - 1]);
-			$temp = explode('(\'',$atb[0]);
-			$attribute_name = $temp[0];
-			$temp = substr($temp[1],0,-2);
-			$attribute_description = $temp;
-			unset($temp);
-			$tab_content['edit'] .= $attribute_description.'=';
-			if (preg_match('#\{.+\}#',$atb[1])) {
-				$temp = explode('{',$atb[1]);
-				$attribute_type = $temp[0];
-				$atb[1] = $temp[0];
-				$possible_responses = substr($temp[1],0,-1);
-			}
 
-			// Handle each field type
-			if ($atb[1] == 'int') { // $atb[1] = attribute type
-				$tab_content['edit'] .= '<input type="text" maxlength="9" size="3" name="'.$attribute_name.'" value="'.$edit_block->attribute[$attribute_name].'" /><br />'."\n";
-			} elseif ($atb[1] == 'option') {
-				$tab_content['edit'] .= '<select name="'.$attribute_name.'">'."\n";
-				$possible_responses = explode(',',$possible_responses);
-				for ($i = 1; $i <= count($possible_responses); $i++) {
-					if ($edit_block->attribute[$attribute_name] == $possible_responses[$i - 1]) {
-						$tab_content['edit'] .= '<option value="'.$possible_responses[$i - 1].'" selected>'.$possible_responses[$i - 1].'</option>'."\n";
-					} else {
-						$tab_content['edit'] .= '<option value="'.$possible_responses[$i - 1].'">'.$possible_responses[$i - 1].'</option>'."\n";
-					}
-				}
-				$tab_content['edit'] .= '</select><br />'."\n";
-			} else {
-				$tab_content['edit'] .= 'Not supported.<br />'."\n";
-			}
-			$allattributes .= $attribute_name;
-			if ($j != $num_attributes) {
-				$allattributes .= ',';
-				}
-			} // FOR $j
-		$tab_content['edit'] .= '<input type="hidden" name="attributes" value="'.$allattributes.'" />';
-		$tab_content['edit'] .= '<input type="hidden" name="id" value="'.$edit_id.'" />'."\n";
-		$tab_content['edit'] .= '<input type="Submit" value="Save Changes" /></form>';
 		$tab_layout->add_tab('Edit Block',$tab_content['edit']);
 		break;
 
