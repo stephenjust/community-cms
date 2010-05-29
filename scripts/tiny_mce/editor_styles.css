@@ -33,7 +33,7 @@ table.no-border {
 	padding: 0px;
 }
 table.no-border td {
-	border: 0px;
+	border: 1px #666666 dashed;
 	padding: 2px;
 	vertical-align: top;
 }
