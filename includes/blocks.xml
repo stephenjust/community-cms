@@ -8,6 +8,12 @@
 	<block name="text">
 		<attribute name="article_id" label="Article ID" type="int">
 		</attribute>
+		<attribute name="show_border" label="Show Border" type="option">
+			<values>
+				<value>yes</value>
+				<value>no</value>
+			</values>
+		</attribute>
 	</block>
 	<block name="events">
 		<attribute name="mode" label="Display Mode" type="option">
