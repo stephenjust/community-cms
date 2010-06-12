@@ -12,6 +12,54 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+function permission_list($group = 0) {
+	global $acl;
+
+	$return = NULL;
+	$permission_list = $acl->permission_list;
+	$form_var_list = array_keys($permission_list);
+	$form_var_list = array2csv($form_var_list);
+	$return .= '<input type="hidden" name="var_list" value="'.$form_var_list.'" />';
+
+	// Each category of permission is handled seperately, then anything
+	// remaining will be placed in "unsorted permissions"
+
+	// General
+	$perm_list = array('all',
+		'admin_access',
+		'set_permissions',
+		'show_fe_errors');
+	$return .= permission_list_table($permission_list,$group,'General',$perm_list);
+
+	// Unsorted Permissions
+	$perm_list = array_keys($permission_list);
+	$return .= permission_list_table($permission_list,$group,'Unsorted',$perm_list);
+
+	return $return;
+}
+
+function permission_list_table(&$permission_list,$group,$category,$perm_list) {
+	global $acl;
+
+	$return = "<h3>$category</h3>\n";
+	$table_content = array();
+	foreach($perm_list AS $perm) {
+		$current_perm = $acl->check_permission($perm,$group,false);
+		if ($current_perm == 1) {
+			$checkbox = '<input type="checkbox" name="'.$perm.'" checked />';
+		} else {
+			$checkbox = '<input type="checkbox" name="'.$perm.'" />';
+		}
+
+		$table_content[] = array($checkbox,$permission_list[$perm]['longname'],$permission_list[$perm]['description']);
+		unset($permission_list[$perm]);
+	}
+	$return .= create_table(array('','Name','Description'),$table_content);
+	unset($table_content);
+
+	return $return;
+}
+
 $content = NULL;
 if ($_GET['action'] == 'delete') {
 	if ($_GET['id'] == 1) {
@@ -50,18 +98,27 @@ if ($_GET['action'] == 'new') {
 
 if ($_GET['action'] == 'permsave') {
 	$set_perm_error = 0;
-	if (!isset($_POST['id'])) {
+	if (!isset($_POST['id']) || !isset($_POST['var_list'])) {
 		$content .= 'Failed to update permissions.<br />';
 	} else {
+		$var_list = csv2array($_POST['var_list']);
 		$id = (int)$_POST['id'];
 		unset($_POST['id']);
-		foreach ($_POST as $form_var => $form_var_value) {
+		foreach ($var_list as $form_var) {
+			if (!isset($_POST[$form_var])) {
+				$form_var_value = NULL;
+			} else {
+				$form_var_value = $_POST[$form_var];
+			}
+			$new_setting = checkbox($form_var_value);
 			if (array_key_exists($form_var,$acl->permission_list)) {
-				$set_perm = $acl->set_permission($form_var,checkbox($form_var_value),$id,true);
+				$set_perm = $acl->set_permission($form_var,$new_setting,$id,true);
 				if (!$set_perm) {
 					$set_perm_error = 1;
 				}
 				unset($set_perm);
+			} else {
+				$debug->add_trace('Permission \''.$form_var.'\' does not exist',true,'user_groups.php');
 			}
 		}
 		unset($form_var);
@@ -82,17 +139,10 @@ $tab_layout = new tabs;
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'perm') {
-	$tab_content['permission'] = NULL;
-	$form = new form;
-	$form->set_target('admin.php?module=user_groups&action=permsave');
-	$form->set_method('post');
-	$form->add_hidden('id',(int)$_GET['id']);
-	foreach ($acl->permission_list as $permission) {
-		$acl_current[$permission['shortname']] = $acl->check_permission($permission['shortname'],(int)$_GET['id'],true);
-		$form->add_checkbox($permission['shortname'],$permission['longname'],$acl_current[$permission['shortname']]);
-	}
-	$form->add_submit('submit','Save');
-	$tab_content['permission'] .= $form;
+	$tab_content['permission'] = '<form method="post" action="admin.php?module=user_groups&action=permsave">
+		<input type="hidden" name="id" value="'.(int)$_GET['id'].'" />';
+	$tab_content['permission'] .= permission_list((int)$_GET['id']);
+	$tab_content['permission'] .= '<input type="submit" value="Save" /></form>';
 	unset($permission);
 
 	$tab_layout->add_tab('Manage Group Permissions',$tab_content['permission']);

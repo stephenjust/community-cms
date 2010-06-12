@@ -227,6 +227,8 @@ switch ($db_version) {
 			VALUES (\'Default Group\')';
 		$query[] = 'INSERT INTO `'.ACL_KEYS_TABLE.'` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`)
 			VALUES (\'adm_page\',\'Admin Page Module\',\'Allow a user to access the page manager module\',0),
+			(\'admin_access\',\'Admin Access\',\'Allow a user to access the administrative section of the CMS\',0),
+			(\'set_permissions\',\'Set Permissions\',\'Allow a user to modify the permission settings for user groups\',0),
 			(\'page_set_home\',\'Change Default Page\',\'Allow a user to change the default CMS page\',0),
 			(\'pagegroupedit-1\',\'Edit Page Group \\\'Default Group\\\'\',\'Allow user to edit pages in the group \\\'Default Group\\\'\',0)';
 		execute_queries($query);

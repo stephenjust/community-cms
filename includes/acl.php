@@ -22,11 +22,15 @@ class acl {
 	 * check_permission - Read from the ACL and check if user is allowed to complete action
 	 * @param string $acl_key Name of property in Access Control List
 	 * @param int $group Group to check (current user's group if not set)
+	 * @param boolean $true_if_all Automatically return true if the group has 'All Permissions' set
 	 * @global object $db Database connection object
+	 * @global object $debug Debug object
 	 * @return boolean True if allowed to complete action, false if not.
 	 */
-	public function check_permission($acl_key, $group = 0) {
+	public function check_permission($acl_key, $group = 0, $true_if_all = true) {
 		global $db;
+		global $debug;
+
 		if (!is_numeric($group)) {
 			return false;
 		}
@@ -42,26 +46,36 @@ class acl {
 		if ($this->permission_list == array()) {
 			$this->permission_list = $this->get_acl_key_names();
 		}
-		foreach ($group_array AS $cur_group) {
-			// Check if group has the dangerous 'all' property
-			$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
-				WHERE `acl_id` = \''.$this->permission_list['all']['id'].'\'
-				AND `group` = '.$cur_group;
-			$acl_all_handle = $db->sql_query($acl_all_query);
-			if ($db->error[$acl_all_handle] === 1) {
-				return false;
-			} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
-				return true;
-			} else {
-				unset($acl_all_query);
-				unset($acl_all_handle);
-				unset($cur_group);
+		if ($true_if_all == true) {
+			foreach ($group_array AS $cur_group) {
+				// Check if group has the dangerous 'all' property
+				$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
+					WHERE `acl_id` = \''.$this->permission_list['all']['id'].'\'
+					AND `group` = '.$cur_group;
+				$acl_all_handle = $db->sql_query($acl_all_query);
+				if ($db->error[$acl_all_handle] === 1) {
+					return false;
+				} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
+					$acl_all_result = $db->sql_fetch_assoc($acl_all_handle);
+					if ($acl_all_result['value'] == 1) {
+						$debug->add_trace('Permission \''.$acl_key.'\' granted to group \''.$cur_group.'\' by having all permissions',false,'check_permission()');
+						return true;
+					}
+				} else {
+					unset($acl_all_result);
+					unset($acl_all_query);
+					unset($acl_all_handle);
+					unset($cur_group);
+				}
 			}
 		}
 		foreach ($group_array AS $cur_group) {
 			// Check if user or group has the requested property
+			if (!isset($this->permission_list[$acl_key])) {
+				return false;
+			}
 			$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
-				WHERE `acl_key` = \''.$this->permission_list[$acl_key]['id'].'\'
+				WHERE `acl_id` = \''.$this->permission_list[$acl_key]['id'].'\'
 				AND `group` = '.$cur_group;
 			$acl_all_handle = $db->sql_query($acl_all_query);
 			if ($db->error[$acl_all_handle] === 1) {
@@ -82,9 +96,11 @@ class acl {
 	
 	public function set_permission($acl_key, $value, $group) {
 		global $db;
+		global $debug;
+
 		$value = (int)$value;
 		if (!array_key_exists($acl_key,$this->permission_list)) {
-			echo 'The key \''.$acl_key.'\' does not exist.<br />';
+			$debug->add_trace('The key \''.$acl_key.'\' does not exist.',true,'set_permission()');
 			return false;
 		}
 		if (!$this->check_permission('set_permissions')) {
@@ -103,6 +119,7 @@ class acl {
 			$set_permission_query = 'UPDATE `' . ACL_TABLE . '`
 				SET `value` = '.$value.'
 				WHERE `acl_record_id` = '.$check_if_exists['acl_record_id'];
+			$debug->add_trace('Set permission \''.$acl_key.'\' for group '.$group.' to '.$value,false,'set_permission()');
 		} else {
 			$set_permission_query = 'INSERT INTO `' . ACL_TABLE . '`
 				(`acl_id`,`group`,`value`)
@@ -112,6 +129,23 @@ class acl {
 		if ($db->error[$set_permission_handle] === 1) {
 			return false;
 		}
+
+		// Make sure that you did not remove the permission necessary to change permissions
+		if (!$this->check_permission('set_permissions')) {
+			$debug->add_trace('Removed vital permission \''.$acl_key.'.\' Reverting.',true,'set_permission()');
+			$revert_permission_query = 'UPDATE `' . ACL_TABLE . '`
+				SET `value` = 1
+				WHERE `acl_record_id` = '.$check_if_exists['acl_record_id'];
+			$revert_permission_handle = $db->sql_query($revert_permission_query);
+			if ($db->error[$revert_permission_handle] === 1) {
+				die('You no longer have the necessary permission to edit
+					permissions. This is a fatal error. Please repair the
+					database manually.');
+			}
+			echo 'You cannot remove the permission \''.$acl_key.'\' because doing
+				so will prevent you from making further changes.<br />';
+		}
+
 		return true;
 	}
 

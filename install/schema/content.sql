@@ -2,6 +2,8 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl` (`acl_id`, `group`, `value`) VALUES
 (1, 1, 1);;
 INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`) VALUES
 ('all','All Permissions','Grant this permission to allow all actions within the CMS',0),
+('admin_access','Admin Access','Allow a user to access the administrative section of the CMS',0),
+('set_permissions','Set Permissions','Allow a user to modify the permission settings for user groups',0),
 ('adm_page','Admin Page Module','Allow a user to access the page manager module',0),
 ('show_fe_errors','Show Front-End Errors','Allow a user to view error messages in the CMS front-end that would normally be hidden from users',0),
 ('page_set_home','Change Default Page','Allow a user to change the defualt CMS page',0),

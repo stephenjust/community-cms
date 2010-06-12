@@ -49,7 +49,7 @@ function admin_nav() {
 				$acl_value = $xmlreader->getAttribute('acl');
 				if ($acl_value != '') {
 					// Don't show link if you don't have permission to use it
-					if (!$acl->check_permission('$acl_value')) {
+					if (!$acl->check_permission($acl_value)) {
 						continue;
 					}
 				}
