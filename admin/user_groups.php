@@ -28,8 +28,19 @@ function permission_list($group = 0) {
 	$perm_list = array('all',
 		'admin_access',
 		'set_permissions',
-		'show_fe_errors');
+		'show_fe_errors',
+		'adm_help',
+		'adm_feedback');
 	$return .= permission_list_table($permission_list,$group,'General',$perm_list);
+
+	// Pages
+	$perm_list = array('adm_page');
+	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
+
+	// User Groups
+	$perm_list = array('adm_user_groups',
+		'group_create');
+	$return .= permission_list_table($permission_list,$group,'User Groups',$perm_list);
 
 	// Unsorted Permissions
 	$perm_list = array_keys($permission_list);
@@ -61,6 +72,11 @@ function permission_list_table(&$permission_list,$group,$category,$perm_list) {
 }
 
 $content = NULL;
+if (!$acl->check_permission('adm_user_groups')) {
+	$content .= 'You do not have the necessary permissions to use this module.<br />';
+	return true;
+}
+
 if ($_GET['action'] == 'delete') {
 	if ($_GET['id'] == 1) {
 		$message = 'Cannot delete Administrator group.';
@@ -79,17 +95,19 @@ if ($_GET['action'] == 'delete') {
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'new') {
-	if (strlen($_POST['group_name']) < 2) {
-		$content .= '<strong>Error: </strong>Your group name was too short.<br />';
-	} else {
-		$create_group_query = 'INSERT INTO ' . USER_GROUPS_TABLE . '
-			(`name`, `label_format`) VALUES
-			(\''.addslashes($_POST['group_name']).'\',\''.addslashes($_POST['label_format']).'\')';
-		$create_group_handle = $db->sql_query($create_group_query);
-		if($db->error[$create_group_handle] === 1) {
-			$content .= '<strong>Error: </strong>Failed to create group.<br />';
+	if ($acl->check_permission('group_create')) {
+		if (strlen($_POST['group_name']) < 2) {
+			$content .= '<strong>Error: </strong>Your group name was too short.<br />';
 		} else {
-			$content .= 'Created group \''.$_POST['group_name'].'\'.<br />'.log_action('Created user group \''.addslashes($_POST['group_name']).'\'');
+			$create_group_query = 'INSERT INTO ' . USER_GROUPS_TABLE . '
+				(`name`, `label_format`) VALUES
+				(\''.addslashes($_POST['group_name']).'\',\''.addslashes($_POST['label_format']).'\')';
+			$create_group_handle = $db->sql_query($create_group_query);
+			if($db->error[$create_group_handle] === 1) {
+				$content .= '<strong>Error: </strong>Failed to create group.<br />';
+			} else {
+				$content .= 'Created group \''.$_POST['group_name'].'\'.<br />'.log_action('Created user group \''.addslashes($_POST['group_name']).'\'');
+			}
 		}
 	}
 }
@@ -187,16 +205,18 @@ $tab['manage'] = $tab_layout->add_tab('Manage Groups',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-$tab_content['create'] = NULL;
-$tab_content['create'] .= '<form method="POST" action="admin.php?module=user_groups&action=new"><table class="admintable">
-	<tr><td>Group Name:</td><td><input type="text" name="group_name" /></td>
-	</tr>
-	<tr><td>Styling:</td><td><input type="text" name="label_format" />CSS Code</td>
-	</tr>
-	<tr><td class="empty"></td><td><input type="submit" value="Create Group" /></td>
-	</tr>
-	</table></form>';
-$tab['create'] = $tab_layout->add_tab('Create Group',$tab_content['create']);
+if ($acl->check_permission('group_create')) {
+	$tab_content['create'] = NULL;
+	$tab_content['create'] .= '<form method="POST" action="admin.php?module=user_groups&action=new"><table class="admintable">
+		<tr><td>Group Name:</td><td><input type="text" name="group_name" /></td>
+		</tr>
+		<tr><td>Styling:</td><td><input type="text" name="label_format" />CSS Code</td>
+		</tr>
+		<tr><td class="empty"></td><td><input type="submit" value="Create Group" /></td>
+		</tr>
+		</table></form>';
+	$tab['create'] = $tab_layout->add_tab('Create Group',$tab_content['create']);
+}
 
 $content .= $tab_layout;
 ?>

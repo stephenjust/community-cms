@@ -157,6 +157,20 @@ function display_admin() {
 		});
 		</script>';
 	$image_path = $template_page->path.'images/';
+
+	$icon_bar = NULL;
+	if ($acl->check_permission('adm_feedback')) {
+		$icon_bar .= '<a href="admin.php?module=feedback">
+			<img src="<!-- $IMAGE_PATH$ -->send_feedback.png" alt="Send Feedback" border="0px" /></a>';
+	}
+	if ($acl->check_permission('adm_help')) {
+		$icon_bar .= '<a href="admin.php?module=help">
+			<img src="<!-- $IMAGE_PATH$ -->help.png" alt="Help" border="0px" /></a>';
+	}
+	$icon_bar .= '<a href="index.php?login=2">
+		<img src="<!-- $IMAGE_PATH$ -->log_out.png" alt="Log Out" border="0px" /></a>';
+	$template_page->icon_bar = $icon_bar;
+
 	$template_page->nav_bar = '<div id="menu">'.admin_nav().'</div>';
 	$template_page->nav_login = display_login_box();
 	$template_page->page_title = $page_title;
