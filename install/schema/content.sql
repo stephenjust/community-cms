@@ -10,6 +10,7 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 ('adm_user_groups','User Groups Module','Allow a user to access the user groups module',0),
 ('show_fe_errors','Show Front-End Errors','Allow a user to view error messages in the CMS front-end that would normally be hidden from users',0),
 ('page_set_home','Change Default Page','Allow a user to change the defualt CMS page',0),
+('page_order','Change Page Order','Allow a user to rearrange pages on the CMS menu',0),
 ('pagegroupedit-1','Edit Page Group \'Default Group\'','Allow user to edit pages in the group \'Default Group\'',0),
 ('group_create','Create User Groups','Allow a user to create a new user group',0);;
 INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES

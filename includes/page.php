@@ -266,13 +266,18 @@ function page_clean_order($parent = 0) {
 
 /**
  * Move a page up the list in the site structure
+ * @global object $acl Permission object
  * @global object $db Database connection object
  * @param integer $id Page ID to move up
  * @return boolean
  */
 function page_move_up($id) {
+	global $acl;
 	global $db;
 
+	if (!$acl->check_permission('page_order')) {
+		return false;
+	}
 	if (!is_numeric($id) || is_array($id)) {
 		return false;
 	}
@@ -307,13 +312,18 @@ function page_move_up($id) {
 
 /**
  * Move a page down the list in the site structure
+ * @global object $acl Permissions object
  * @global object $db Database connection object
  * @param integer $id Page ID to move down
  * @return boolean
  */
 function page_move_down($id) {
+	global $acl;
 	global $db;
 
+	if (!$acl->check_permission('page_order')) {
+		return false;
+	}
 	if (!is_numeric($id) || is_array($id)) {
 		return false;
 	}

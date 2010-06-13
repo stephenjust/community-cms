@@ -438,11 +438,13 @@ function adm_page_manage_list_row($id) {
 			<td><a href="?module=page&action=del&id='.$page_info['id'].'">
 			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>';
 	}
-	$return .= '
-		<td><a href="?module=page&action=move_up&id='.$page_info['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" />Move Up</a></td>
-		<td><a href="?module=page&action=move_down&id='.$page_info['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" />Move Down</a></td>';
+	if ($acl->check_permission('page_order')) {
+		$return .= '
+			<td><a href="?module=page&action=move_up&id='.$page_info['id'].'">
+			<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" />Move Up</a></td>
+			<td><a href="?module=page&action=move_down&id='.$page_info['id'].'">
+			<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" />Move Down</a></td>';
+	}
 	if ($page_info['type'] != 0) {
 		if (page_editable($page_info['page_group'])) {
 			$return .= '<td><a href="?module=page&action=edit&id='.$page_info['id'].'">
@@ -473,12 +475,15 @@ function adm_page_manage_list_row($id) {
 // ----------------------------------------------------------------------------
 
 $tab_content['manage'] = NULL;
-$numopts = 3;
+$numopts = 1;
 if ($acl->check_permission('page_delete')) {
 	$numopts++;
 }
 if ($acl->check_permission('page_set_home')) {
 	$numopts++;
+}
+if ($acl->check_permission('page_order')) {
+	$numopts = $numopts + 2;
 }
 $tab_content['manage'] .= '<table class="admintable">
 <tr><th width="350">Page:</th><th colspan="'.$numopts.'">&nbsp;</th></tr>';

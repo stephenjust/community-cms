@@ -234,6 +234,7 @@ switch ($db_version) {
 			(\'adm_page\',\'Page Module\',\'Allow a user to access the page manager module\',0),
 			(\'adm_user_groups\',\'User Groups Module\',\'Allow a user to access the user groups module\',0),
 			(\'page_set_home\',\'Change Default Page\',\'Allow a user to change the default CMS page\',0),
+			(\'page_order\',\'Change Page Order\',\'Allow a user to rearrange pages on the CMS menu\',0),
 			(\'group_create\',\'Create User Groups\',\'Allow a user to create a new user group\',0),
 			(\'pagegroupedit-1\',\'Edit Page Group \\\'Default Group\\\'\',\'Allow user to edit pages in the group \\\'Default Group\\\'\',0)';
 		execute_queries($query);

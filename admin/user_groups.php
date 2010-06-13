@@ -34,7 +34,9 @@ function permission_list($group = 0) {
 	$return .= permission_list_table($permission_list,$group,'General',$perm_list);
 
 	// Pages
-	$perm_list = array('adm_page');
+	$perm_list = array('adm_page',
+		'page_set_home',
+		'page_order');
 	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
 
 	// User Groups
