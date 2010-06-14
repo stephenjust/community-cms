@@ -33,16 +33,26 @@ function permission_list($group = 0) {
 		'adm_feedback');
 	$return .= permission_list_table($permission_list,$group,'General',$perm_list);
 
+	// Maintentance/Settings
+	$perm_list = array('adm_site_config',
+		'adm_gallery_settings',
+		'adm_news_settings',
+		'calendar_settings',
+		'adm_filemanager',
+		'adm_log_view',
+		'adm_config_view');
+	$return .= permission_list_table($permission_list,$group,'Maintenance/Settings',$perm_list);
+
 	// Pages
 	$perm_list = array('adm_page',
 		'page_set_home',
 		'page_order');
 	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
 
-	// User Groups
+	// Users (and groups)
 	$perm_list = array('adm_user_groups',
 		'group_create');
-	$return .= permission_list_table($permission_list,$group,'User Groups',$perm_list);
+	$return .= permission_list_table($permission_list,$group,'Users',$perm_list);
 
 	// Unsorted Permissions
 	$perm_list = array_keys($permission_list);

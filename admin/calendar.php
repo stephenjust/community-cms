@@ -168,23 +168,25 @@ switch ($_GET['action']) {
 		}
 		break;
 	case 'save_settings':
-		$new_fields['default_view'] = addslashes($_POST['default_view']);
-		$new_fields['month_show_stime'] = (isset($_POST['month_show_stime'])) ? checkbox($_POST['month_show_stime']) : 0;
-		$new_fields['month_show_cat_icons'] = (isset($_POST['month_show_cat_icons'])) ? checkbox($_POST['month_show_cat_icons']) : 0;
-		$new_fields['save_locations'] = (isset($_POST['save_locations'])) ? checkbox($_POST['save_locations']) : 0;
-		$new_fields['month_day_format'] = (int)$_POST['month_day_format'];
-		$new_fields['month_time_sep'] = $_POST['month_time_sep'];
-		if (set_config('calendar_default_view',$new_fields['default_view']) &&
-			set_config('calendar_month_show_stime',$new_fields['month_show_stime']) &&
-			set_config('calendar_month_show_cat_icons',$new_fields['month_show_cat_icons']) &&
-			set_config('calendar_month_day_format',$new_fields['month_day_format']) &&
-			set_config('calendar_save_locations',$new_fields['save_locations']) &&
-			set_config('calendar_month_time_sep',$new_fields['month_time_sep']))
-		{
-			$content .= 'Updated calendar settings.<br />'."\n";
-			log_action('Updated calendar settings');
-		} else  {
-			$content .= 'Failed to save settings.<br />'."\n";
+		if ($acl->check_permission('calendar_settings')) {
+			$new_fields['default_view'] = addslashes($_POST['default_view']);
+			$new_fields['month_show_stime'] = (isset($_POST['month_show_stime'])) ? checkbox($_POST['month_show_stime']) : 0;
+			$new_fields['month_show_cat_icons'] = (isset($_POST['month_show_cat_icons'])) ? checkbox($_POST['month_show_cat_icons']) : 0;
+			$new_fields['save_locations'] = (isset($_POST['save_locations'])) ? checkbox($_POST['save_locations']) : 0;
+			$new_fields['month_day_format'] = (int)$_POST['month_day_format'];
+			$new_fields['month_time_sep'] = $_POST['month_time_sep'];
+			if (set_config('calendar_default_view',$new_fields['default_view']) &&
+				set_config('calendar_month_show_stime',$new_fields['month_show_stime']) &&
+				set_config('calendar_month_show_cat_icons',$new_fields['month_show_cat_icons']) &&
+				set_config('calendar_month_day_format',$new_fields['month_day_format']) &&
+				set_config('calendar_save_locations',$new_fields['save_locations']) &&
+				set_config('calendar_month_time_sep',$new_fields['month_time_sep']))
+			{
+				$content .= 'Updated calendar settings.<br />'."\n";
+				log_action('Updated calendar settings');
+			} else  {
+				$content .= 'Failed to save settings.<br />'."\n";
+			}
 		}
 		break;
 
@@ -325,82 +327,84 @@ $tab_layout->add_tab('Create Event',$tab_content['create']);
 
 // ----------------------------------------------------------------------------
 
-$tab_content['settings'] = '<h1>Calendar Settings</h1>';
-$settings_form = new form;
-$settings_form->set_method('post');
-$settings_form->set_target('?module=calendar&amp;action=save_settings');
-$settings_form->add_select('default_view','Default View',array('month','day'),array('Current Month','Current Day'),get_config('calendar_default_view'));
-$settings_form->add_checkbox('month_show_stime','Show Start Time on Month Calendar',get_config('calendar_month_show_stime'));
-$settings_form->add_checkbox('month_show_cat_icons','Show Category Icons on Month Calendar',get_config('calendar_month_show_cat_icons'));
-$settings_form->add_select('month_time_sep','Start Time Separator',array(' ','-',' - '),array('1:00pm Event','1:00pm-Event','1:00pm - Event'),get_config('calendar_month_time_sep'));
-$settings_form->add_select('month_day_format','Label Days on Month Calendar as',array(1,2),array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'),get_config('calendar_month_day_format'));
-$settings_form->add_checkbox('save_locations','Save Location Entries',get_config('calendar_save_locations'));
-$settings_form->add_submit('submit','Save Changes');
-$tab_content['settings'] .= $settings_form;
-unset($settings_form);
+if ($acl->check_permission('calendar_settings')) {
+	$tab_content['settings'] = '<h1>Calendar Settings</h1>';
+	$settings_form = new form;
+	$settings_form->set_method('post');
+	$settings_form->set_target('?module=calendar&amp;action=save_settings');
+	$settings_form->add_select('default_view','Default View',array('month','day'),array('Current Month','Current Day'),get_config('calendar_default_view'));
+	$settings_form->add_checkbox('month_show_stime','Show Start Time on Month Calendar',get_config('calendar_month_show_stime'));
+	$settings_form->add_checkbox('month_show_cat_icons','Show Category Icons on Month Calendar',get_config('calendar_month_show_cat_icons'));
+	$settings_form->add_select('month_time_sep','Start Time Separator',array(' ','-',' - '),array('1:00pm Event','1:00pm-Event','1:00pm - Event'),get_config('calendar_month_time_sep'));
+	$settings_form->add_select('month_day_format','Label Days on Month Calendar as',array(1,2),array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'),get_config('calendar_month_day_format'));
+	$settings_form->add_checkbox('save_locations','Save Location Entries',get_config('calendar_save_locations'));
+	$settings_form->add_submit('submit','Save Changes');
+	$tab_content['settings'] .= $settings_form;
+	unset($settings_form);
 
-$tab_content['settings'] .= '<form method="post" action="?module=calendar&amp;action=create_category">
-<h1>Create New Category</h1>
-<table class="admintable">
-<tr><td width="150" class="row1">Name:</td><td class="row1"><input type=\'text\' name=\'category_name\' /></td></tr>
-<tr><td width="150" class="row2">Colour:</td><td class="row2">
-<input type="radio" name="colour" value="red" /><img src="./admin/templates/default/images/icon_red.png" width="10px" height="10px" alt="Red" />
-<input type="radio" name="colour" value="orange" /><img src="./admin/templates/default/images/icon_orange.png" width="10px" height="10px" alt="Orange" />
-<input type="radio" name="colour" value="yellow" /><img src="./admin/templates/default/images/icon_yellow.png" width="10px" height="10px" alt="Yellow" />
-<input type="radio" name="colour" value="green" /><img src="./admin/templates/default/images/icon_green.png" width="10px" height="10px" alt="Green" />
-<input type="radio" name="colour" value="cyan" /><img src="./admin/templates/default/images/icon_cyan.png" width="10px" height="10px" alt="Cyan" />
-<input type="radio" name="colour" value="blue" /><img src="./admin/templates/default/images/icon_blue.png" width="10px" height="10px" alt="Blue" /><br />
-<input type="radio" name="colour" value="purple" /><img src="./admin/templates/default/images/icon_purple.png" width="10px" height="10px" alt="Purple" />
-<input type="radio" name="colour" value="black" /><img src="./admin/templates/default/images/icon_black.png" width="10px" height="10px" alt="Black" />
-</td></tr>
-<tr><td width="150" class="row1">&nbsp;</td><td class="row1"><input type="submit" value="Create" /></td></tr>
-</table>
-</form>
+	$tab_content['settings'] .= '<form method="post" action="?module=calendar&amp;action=create_category">
+	<h1>Create New Category</h1>
+	<table class="admintable">
+	<tr><td width="150" class="row1">Name:</td><td class="row1"><input type=\'text\' name=\'category_name\' /></td></tr>
+	<tr><td width="150" class="row2">Colour:</td><td class="row2">
+	<input type="radio" name="colour" value="red" /><img src="./admin/templates/default/images/icon_red.png" width="10px" height="10px" alt="Red" />
+	<input type="radio" name="colour" value="orange" /><img src="./admin/templates/default/images/icon_orange.png" width="10px" height="10px" alt="Orange" />
+	<input type="radio" name="colour" value="yellow" /><img src="./admin/templates/default/images/icon_yellow.png" width="10px" height="10px" alt="Yellow" />
+	<input type="radio" name="colour" value="green" /><img src="./admin/templates/default/images/icon_green.png" width="10px" height="10px" alt="Green" />
+	<input type="radio" name="colour" value="cyan" /><img src="./admin/templates/default/images/icon_cyan.png" width="10px" height="10px" alt="Cyan" />
+	<input type="radio" name="colour" value="blue" /><img src="./admin/templates/default/images/icon_blue.png" width="10px" height="10px" alt="Blue" /><br />
+	<input type="radio" name="colour" value="purple" /><img src="./admin/templates/default/images/icon_purple.png" width="10px" height="10px" alt="Purple" />
+	<input type="radio" name="colour" value="black" /><img src="./admin/templates/default/images/icon_black.png" width="10px" height="10px" alt="Black" />
+	</td></tr>
+	<tr><td width="150" class="row1">&nbsp;</td><td class="row1"><input type="submit" value="Create" /></td></tr>
+	</table>
+	</form>
 
-<form method="POST" action="?module=calendar&amp;action=delete_category">
-<h1>Delete Category</h1>
-<table class="admintable">
-<tr><td width="150" class="row1">Category:</td><td class="row1">&nbsp;</td></tr>
-<tr><td colspan="2" class="row2">';
-$category_query = 'SELECT * FROM ' . CALENDAR_CATEGORY_TABLE;
-$category_handle = $db->sql_query($category_query);
-for ($i = 1; $i <= $db->sql_num_rows($category_handle); $i++) {
-	$cat = $db->sql_fetch_assoc($category_handle);
-	$tab_content['settings'] .= '<input type="radio" name="delete_category_id" value="'.$cat['cat_id'].'" />
-		<img src="./admin/templates/default/images/icon_'.$cat['colour'].'.png"
-		width="10px" height="10px" alt="'.$cat['colour'].'" /> '.stripslashes($cat['label']).'<br />';
-}
+	<form method="POST" action="?module=calendar&amp;action=delete_category">
+	<h1>Delete Category</h1>
+	<table class="admintable">
+	<tr><td width="150" class="row1">Category:</td><td class="row1">&nbsp;</td></tr>
+	<tr><td colspan="2" class="row2">';
+	$category_query = 'SELECT * FROM ' . CALENDAR_CATEGORY_TABLE;
+	$category_handle = $db->sql_query($category_query);
+	for ($i = 1; $i <= $db->sql_num_rows($category_handle); $i++) {
+		$cat = $db->sql_fetch_assoc($category_handle);
+		$tab_content['settings'] .= '<input type="radio" name="delete_category_id" value="'.$cat['cat_id'].'" />
+			<img src="./admin/templates/default/images/icon_'.$cat['colour'].'.png"
+			width="10px" height="10px" alt="'.$cat['colour'].'" /> '.stripslashes($cat['label']).'<br />';
+	}
 
-$tab_content['settings'] .= '</td></tr>
-<tr><td width="150" class="row1">&nbsp;</td><td class="row1">
-<input type="submit" value="Delete" /></td></tr>
-</table>
-</form>';
+	$tab_content['settings'] .= '</td></tr>
+	<tr><td width="150" class="row1">&nbsp;</td><td class="row1">
+	<input type="submit" value="Delete" /></td></tr>
+	</table>
+	</form>';
 
 // ----------------------------------------------------------------------------
 
-$tab_content['settings'] .= '<h1>Delete Old Entries</h1>'."\n";
-$current_year = date('Y');
-$old_year = $current_year - 3;
-$num_old_query = 'SELECT `id` FROM `'.CALENDAR_TABLE.'` WHERE `year` <= '.$old_year;
-$num_old_handle = $db->sql_query($num_old_query);
-if ($db->error[$num_old_handle] === 1) {
-	$button_label = 'Error';
-	$button_disabled = 1;
-} else {
-	$button_disabled = 0;
-	if ($db->sql_num_rows($num_old_handle) == 0) {
+	$tab_content['settings'] .= '<h1>Delete Old Entries</h1>'."\n";
+	$current_year = date('Y');
+	$old_year = $current_year - 3;
+	$num_old_query = 'SELECT `id` FROM `'.CALENDAR_TABLE.'` WHERE `year` <= '.$old_year;
+	$num_old_handle = $db->sql_query($num_old_query);
+	if ($db->error[$num_old_handle] === 1) {
+		$button_label = 'Error';
 		$button_disabled = 1;
-		$button_label = 'No old entries ('.$old_year.' and previous)';
 	} else {
-		$button_label = 'Delete '.$db->sql_num_rows($num_old_handle).' old entries ('.$old_year.' and previous)';
+		$button_disabled = 0;
+		if ($db->sql_num_rows($num_old_handle) == 0) {
+			$button_disabled = 1;
+			$button_label = 'No old entries ('.$old_year.' and previous)';
+		} else {
+			$button_label = 'Delete '.$db->sql_num_rows($num_old_handle).' old entries ('.$old_year.' and previous)';
+		}
 	}
+	$button_disabled = ($button_disabled == 1) ? 'disabled' : NULL;
+	$tab_content['settings'] .= '<form method="POST" action="?module=calendar&amp;action=delete_old_entries">
+	<input type="submit" value="'.$button_label.'" '.$button_disabled.' />
+	</form>';
+	$tab_layout->add_tab('Settings',$tab_content['settings']);
 }
-$button_disabled = ($button_disabled == 1) ? 'disabled' : NULL;
-$tab_content['settings'] .= '<form method="POST" action="?module=calendar&amp;action=delete_old_entries">
-<input type="submit" value="'.$button_label.'" '.$button_disabled.' />
-</form>';
-$tab_layout->add_tab('Settings',$tab_content['settings']);
 
 // ----------------------------------------------------------------------------
 
