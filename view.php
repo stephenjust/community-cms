@@ -36,17 +36,21 @@ if(!isset($_GET['view'])) {
 if(!isset($_GET['article_id'])) {
     $_GET['article_id'] = "";
 }
-$template_handle = load_template_file('article_page.html');
-$template = $template_handle['contents'];
-$template_path = $template_handle['template_path'];
 // Get item contents.
 $article = new news_item;
 $article->set_article_id((int)$_GET['article_id']);
 $article->template = 'article_page';
 $article->get_article();
 $last_article_date = $article->date;
-echo $article;
+$template_page = new template;
+$template_page->template = $article;
+$template_page->replace_variable('article_url_onpage','article_url_onpage($a);');
+$template_page->replace_variable('article_url_ownpage','article_url_ownpage($a);');
+$template_page->replace_variable('article_url_nopage','article_url_nopage($a);');
+$template_page->replace_variable('gallery_embed','gallery_embed($a);');
 unset($article);
+echo $template_page;
+unset($template_page);
 
 // Close database connections and clean up loose ends.
 clean_up();
