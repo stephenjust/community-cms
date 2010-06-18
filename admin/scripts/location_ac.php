@@ -1,7 +1,7 @@
 <?php
 /**
  * Community CMS
- * $Id: block_options.php 520 2009-12-21 19:53:53Z stephenjust $
+ * $Id$
  *
  * @copyright Copyright (C) 2007-2009 Stephen Just
  * @author stephenjust@users.sourceforge.net

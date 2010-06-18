@@ -175,12 +175,14 @@ switch ($_GET['action']) {
 			$new_fields['save_locations'] = (isset($_POST['save_locations'])) ? checkbox($_POST['save_locations']) : 0;
 			$new_fields['month_day_format'] = (int)$_POST['month_day_format'];
 			$new_fields['month_time_sep'] = $_POST['month_time_sep'];
+			$new_fields['default_location'] = $_POST['default_location'];
 			if (set_config('calendar_default_view',$new_fields['default_view']) &&
 				set_config('calendar_month_show_stime',$new_fields['month_show_stime']) &&
 				set_config('calendar_month_show_cat_icons',$new_fields['month_show_cat_icons']) &&
 				set_config('calendar_month_day_format',$new_fields['month_day_format']) &&
 				set_config('calendar_save_locations',$new_fields['save_locations']) &&
-				set_config('calendar_month_time_sep',$new_fields['month_time_sep']))
+				set_config('calendar_month_time_sep',$new_fields['month_time_sep']) &&
+				set_config('calendar_default_location',$new_fields['default_location']))
 			{
 				$content .= 'Updated calendar settings.<br />'."\n";
 				log_action('Updated calendar settings');
@@ -249,7 +251,7 @@ while ($monthcount <= 12) {
 }
 $tab_content['manage'] .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$_POST['year'].'" /><input type="submit" value="Change" /></form>';
 $tab_content['manage'] .= '<table class="admintable">
-<tr><th>Date:</th><th>Start Time:</th><th>End Time:</th><th>Heading:</th><th colspan="2" width="40px"></th></tr>';
+<tr><th>Date</th><th>Start Time</th><th>End Time</th><th>Heading</th><th colspan="2" width="40px"></th></tr>';
 $rowcount = 1;
 $date_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
 	WHERE year = '.$_POST['year'].' AND month = '.$_POST['month'].'
@@ -313,12 +315,17 @@ for ($b = 1; $b <= $db->sql_num_rows($category_list_handle); $b++) {
     $category_ids[$b - 1] = $category_list['cat_id'];
     $category_names[$b - 1] = $category_list['label'];
 }
+if (!isset($_POST['location'])) {
+	$new_location = get_config('calendar_default_location');
+} else {
+	$new_location = stripslashes($_POST['location']);
+}
 $form_create->add_select('category','Category',$category_ids,$category_names,$category);
 $form_create->add_textbox('stime','Start Time*',$_POST['stime']);
 $form_create->add_textbox('etime','End Time*',$_POST['etime']);
 $form_create->add_date_cal('date','Date',stripslashes($_POST['date']));
 $form_create->add_textarea('content','Description',stripslashes($_POST['content']));
-$form_create->add_textbox('location','Location',stripslashes($_POST['location']));
+$form_create->add_textbox('location','Location',$new_location);
 $form_create->add_icon_list('image','Image','newsicons',$image);
 $form_create->add_checkbox('hide','Hidden',$hide);
 $form_create->add_submit('submit','Create Event');
@@ -338,6 +345,7 @@ if ($acl->check_permission('calendar_settings')) {
 	$settings_form->add_select('month_time_sep','Start Time Separator',array(' ','-',' - '),array('1:00pm Event','1:00pm-Event','1:00pm - Event'),get_config('calendar_month_time_sep'));
 	$settings_form->add_select('month_day_format','Label Days on Month Calendar as',array(1,2),array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'),get_config('calendar_month_day_format'));
 	$settings_form->add_checkbox('save_locations','Save Location Entries',get_config('calendar_save_locations'));
+	$settings_form->add_textbox('default_location','Default Event Location',get_config('calendar_default_location'),'');
 	$settings_form->add_submit('submit','Save Changes');
 	$tab_content['settings'] .= $settings_form;
 	unset($settings_form);

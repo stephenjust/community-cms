@@ -53,6 +53,10 @@ window.onload=$(function(){
 		serviceUrl:'./admin/scripts/location_ac.php',
 		width:200
 	});
+	$('#_default_location').autocomplete({
+		serviceUrl:'./admin/scripts/location_ac.php',
+		width:200
+	});
 
 });
 -->
