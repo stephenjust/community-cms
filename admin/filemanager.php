@@ -54,13 +54,13 @@ if ($_GET['action'] == 'saveinfo') {
 			$content .= edit_information($id,$path,$label);
 		}
 	}
+	unset($_POST['path']);
 }
 
 // ----------------------------------------------------------------------------
 
 // Upload file
 if (isset($_GET['upload'])) {
-// TODO: Add automatic thumbnail generation for large images.
 	$content .= file_upload($_POST['path']);
 }
 // ----------------------------------------------------------------------------
@@ -159,25 +159,14 @@ if (!isset($_POST['folder_list']) && !isset($_POST['path'])) {
 	$_POST['folder_list'] = $_POST['path'];
 }
 $tab_content['list'] = '<form method="POST" action="admin.php?module=filemanager">
-'.folder_list('',$_POST['folder_list'],1); // Create listbox with folder names and a form to navigate folders.
-$tab_content['list'] .= '<input type="submit" value="Change Directory" />
-</form>
-<br />';
+'.folder_list('',$_POST['folder_list'],1,'adm_file_dir_list','onChange="update_file_list(\'-\')"'); // Create listbox with folder names and a form to navigate folders.
+$tab_content['list'] .= '</form>
+<br />
+<div id="adm_file_list">Loading...</div>
+<script type="text/javascript">
+update_file_list(\''.$_POST['folder_list'].'\');
+</script>';
 
-// Show special info about newsicons folder
-if ($_POST['folder_list'] == 'newsicons') {
-	$tab_content['list'] .= '<div class="info">
-		The \'newsicons\' folder contains all of the icons that can be used
-		with news articles or event listings. All of the images must be in PNG
-		or Jpeg format. Images uploaded to this folder will automatically be
-		resized to match your current icon size setting (default 100x100).
-		</div><br />';
-}
-
-$file_list = new file_list;
-$file_list->set_directory($_POST['folder_list']);
-$file_list->get_list();
-$tab_content['list'] .= $file_list;
 $tab_content['list'] .= '<br />
 <br />
 <form method="post" action="?module=filemanager&action=new_folder">

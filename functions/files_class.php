@@ -9,6 +9,7 @@ class file_list {
     public $script_folder;
     public $file_list;
     public $file_array;
+	public $folder_form;
     function __construct() {
         $this->folder = NULL;
         $this->script_folder = NULL;
@@ -42,6 +43,12 @@ class file_list {
         if(strlen($this->folder) < 1) {
             return;
         }
+		if (!isset($_GET['module'])) {
+			$_GET['module'] = 'filemanager';
+		}
+		if (!isset($_POST['folder_list']) && isset($this->folder_form)) {
+			$_POST['folder_list'] = $this->folder_form;
+		}
         $this->file_array = scandir($this->folder);
         $num_files = count($this->file_array);
         $return = '<table class="admintable">'."\n<tr>\n<th>File Name</th>
@@ -54,11 +61,11 @@ class file_list {
                 $return .= '<tr><td><a href="'.$this->script_folder.'/'
                     .$this->file_array[$i - 1].'">'.$this->file_array[$i - 1].'
                     </a></td><td>'.$file_info['label'].'</td><td><a href="admin.php?module='.$_GET['module'].'&action=edit&file='.
-                    $this->script_folder.'/'.$this->file_array[$i - 1].'"><img src="<!-- $IMAGE_PATH$ -->edit.png"
+                    $this->script_folder.'/'.$this->file_array[$i - 1].'"><img src="./admin/templates/default/images/edit.png"
                     alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td><td>
                     <a href="admin.php?module='.$_GET['module'].'&amp;action=delete&amp;filename='.
                     $this->script_folder.'/'.$this->file_array[$i - 1].'&amp;path='.$_POST['folder_list'].'">
-                    <img src="<!-- $IMAGE_PATH$ -->delete.png" width="16px" height="16px" border="0px"></a></tr>';
+                    <img src="./admin/templates/default/images/delete.png" width="16px" height="16px" border="0px"></a></tr>';
                 $display_count++;
             }
         }

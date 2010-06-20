@@ -64,4 +64,17 @@ function update_newsletter_list(page) {
 
 	loadHTML(urlBase + "?page=" + encodeURI(page),listdiv);
 }
+
+function update_file_list(dir) {
+	var urlBase = './admin/scripts/file_list.php';
+	var listdiv = document.getElementById('adm_file_list');
+	var dirlist = document.getElementById('adm_file_dir_list');
+	listdiv.innerHTML = 'Loading...';
+
+	if (dir == '-') {
+		dir = dirlist.value;
+	}
+
+	loadHTML(urlBase + "?directory=" + encodeURI(dir),listdiv);
+}
 -->

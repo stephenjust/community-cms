@@ -187,7 +187,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
  * @param <type> $type
  * @return <type> 
  */
-function folder_list($directory = "",$current = "",$type = 0) {
+function folder_list($directory = "",$current = "",$type = 0,$name='folder_list',$extra='') {
 	$folder_root = './files/';
 	if (!preg_match('#.#',$directory)) {
 		$folder_open = $folder_root.$directory;
@@ -200,7 +200,7 @@ function folder_list($directory = "",$current = "",$type = 0) {
 			$return .= 'There are no files to display in this folder.';
 		}
 		if ($type == 1) { // Start listbox if that is the view mode specified.
-			$return .= '<select name="folder_list">
+			$return .= '<select name="'.$name.'" id="'.$name.'" '.$extra.'>
 <option value="">Default</option>';
 		}
 		while ($i < $num_files) {
