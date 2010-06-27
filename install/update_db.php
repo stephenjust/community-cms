@@ -206,11 +206,17 @@ switch ($db_version) {
 		switch ($db->dbms) {
 			case 'mysqli':
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` INT NOT NULL DEFAULT \'1\' AFTER `menu`';
-				$queery[] = 'CREATE TABLE IF NOT EXISTS `'.PAGE_GROUP_TABLE.'` (
+				$query[] = 'CREATE TABLE IF NOT EXISTS `'.PAGE_GROUP_TABLE.'` (
 					`id` INT NOT NULL auto_increment PRIMARY KEY,
 					`label` TEXT NOT NULL,
 					INDEX (`id`)
 					) ENGINE = MYISAM CHARACTER SET=utf8';
+				$query[] = 'CREATE TABLE IF NOT EXISTS `'.CALENDAR_SOURCES_TABLE.'` (
+					`id` int(11) NOT NULL auto_increment,
+					`desc` TEXT NOT NULL,
+					`url` TEXT NOT NULL,
+					PRIMARY KEY (`id`)
+					) ENGINE=MyISAM CHARACTER SET=utf8 ;';
 				break;
 			case 'postgresql':
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` integer NOT NULL DEFAULT \'1\' AFTER `menu`';
@@ -221,6 +227,14 @@ switch ($db_version) {
 					PRIMARY KEY("id")
 					)';
 				$query[] = 'SELECT setval(\''.PAGE_GROUP_TABLE.'_id_seq\', (SELECT max(id) FROM "'.PAGE_GROUP_TABLE.'"))';
+				$query[] = 'CREATE SEQUENCE "'.CALENDAR_SOURCES_TABLE.'_id_seq"';
+				$query[] = 'CREATE TABLE "'.CALENDAR_SOURCES_TABLE.'" (
+					"id" integer NOT NULL default nextval(\''.CALENDAR_SOURCES_TABLE.'_id_seq\'),
+					"desc" text NOT NULL,
+					"url" text NOT NULL,
+					PRIMARY KEY ("id")
+					)';
+				$query[] = 'SELECT setval(\''.CALENDAR_SOURCES_TABLE.'_id_seq\', (SELECT max("id") FROM "'.CALENDAR_SOURCES_TABLE.'"))';
 				break;
 		}
 		$query[] = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
