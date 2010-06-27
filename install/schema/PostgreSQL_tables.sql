@@ -46,12 +46,13 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->calendar" (
 	"year" integer NOT NULL,
 	"month" integer NOT NULL,
 	"day" integer NOT NULL,
-	header text NOT NULL,
-	description text,
-	location text,
-	author text,
-	image text default NULL,
-	hidden integer NOT NULL,
+	"header" text NOT NULL,
+	"description" text,
+	"location" text,
+	"author" text,
+	"image" text default NULL,
+	"hidden" integer NOT NULL,
+	"imported" text,
 	PRIMARY KEY ("id")
 );
 SELECT setval('<!-- $DB_PREFIX$ -->calendar_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->calendar"));

@@ -206,6 +206,7 @@ switch ($db_version) {
 		switch ($db->dbms) {
 			case 'mysqli':
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` INT NOT NULL DEFAULT \'1\' AFTER `menu`';
+				$query[] = 'ALTER TABLE `'.CALENDAR_TABLE.'` ADD `imported` TEXT NULL DEFAULT NULL AFTER `hidden`';
 				$query[] = 'CREATE TABLE IF NOT EXISTS `'.PAGE_GROUP_TABLE.'` (
 					`id` INT NOT NULL auto_increment PRIMARY KEY,
 					`label` TEXT NOT NULL,
@@ -220,6 +221,7 @@ switch ($db_version) {
 				break;
 			case 'postgresql':
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` integer NOT NULL DEFAULT \'1\' AFTER `menu`';
+				$query[] = 'ALTER TABLE `'.CALENDAR_TABLE.'` ADD `imported` text AFTER `hidden`';
 				$query[] = 'CREATE SEQUENCE "'.PAGE_GROUP_TABLE.'_id_seq"';
 				$query[] = 'CREATE TABLE "'.PAGE_GROUP_TABLE.'" (
 					"id" integer NOT NULL default nextval(\''.PAGE_GROUP_TABLE.'_id_seq\') PRIMARY KEY,

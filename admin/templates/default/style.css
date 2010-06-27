@@ -149,6 +149,17 @@ span.errormessage {
 	background: #f6a828;
 }
 
+div.importable_event {
+	border: 1px solid #CCCCCC;
+	display: inline-block;
+	margin: 3px;
+	overflow: hidden;
+	padding: 3px;
+	width: 450px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
 table.log_messages th {
 	background: #DDDDDD;
 	text-align: left;

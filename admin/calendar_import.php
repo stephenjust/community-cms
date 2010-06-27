@@ -54,18 +54,18 @@ if ($first_line != "BEGIN:VCALENDAR") {
 while (isset($contents[0])) {
 	$current_line = array_shift($contents);
 	$current_line = str_replace(array("\n","\r"),NULL,$current_line);
-	if (eregi('^PRODID:.*',$current_line) ||
-		eregi('^VERSION:.*',$current_line) ||
-		eregi('^CALSCALE:.*',$current_line) ||
-		eregi('^METHOD:.*',$current_line) ||
-		eregi('^X-WR-.*',$current_line) ||
-		eregi('^TRANSP:.*',$current_line) ||
-		eregi('^STATUS:.*',$current_line) ||
-		eregi('^CREATED:.*',$current_line) ||
-		eregi('^LAST-MODIFIED:.*',$current_line) ||
-		eregi('^SEQUENCE:.*',$current_line) ||
-		eregi('^CLASS:.*',$current_line) ||
-		eregi('^DTSTAMP:.*',$current_line)) {
+	if (preg_match('/^PRODID:.*/i',$current_line) ||
+		preg_match('/^VERSION:.*/i',$current_line) ||
+		preg_match('/^CALSCALE:.*/i',$current_line) ||
+		preg_match('/^METHOD:.*/i',$current_line) ||
+		preg_match('/^X-WR-.*/i',$current_line) ||
+		preg_match('/^TRANSP:.*/i',$current_line) ||
+		preg_match('/^STATUS:.*/i',$current_line) ||
+		preg_match('/^CREATED:.*/i',$current_line) ||
+		preg_match('/^LAST-MODIFIED:.*/i',$current_line) ||
+		preg_match('/^SEQUENCE:.*/i',$current_line) ||
+		preg_match('/^CLASS:.*/i',$current_line) ||
+		preg_match('/^DTSTAMP:.*/i',$current_line)) {
 
 	} elseif ($current_line == 'BEGIN:VEVENT') {
 		$active_event = 1;
@@ -77,7 +77,7 @@ while (isset($contents[0])) {
 		$start = NULL;
 		$end = NULL;
 		$uid = NULL;
-		echo '<div class="importable_event" style="border-bottom: 1px solid #000000;">';
+		echo '<div class="importable_event">';
 	} elseif ($current_line == 'END:VEVENT') {
 		// Check if this event already exists (we need a UID for this)
 		if ($uid != NULL) {
@@ -105,12 +105,12 @@ while (isset($contents[0])) {
 // ----------------------------------------------------------------------------
 		$active_event = 0;
 		echo '</div>';
-	} elseif (eregi('^SUMMARY:.*',$current_line)) {
+	} elseif (preg_match('/^SUMMARY:.*/i',$current_line)) {
 		$summary = str_replace('SUMMARY:',NULL,$current_line);
 
 // ----------------------------------------------------------------------------
 
-	} elseif (eregi('^DTSTART;VALUE=DATE:[0-9]+',$current_line)) {
+	} elseif (preg_match('/^DTSTART;VALUE=DATE:[0-9]+/i',$current_line)) {
 		$start = str_replace('DTSTART;VALUE=DATE:',NULL,$current_line);
 		$syear = substr($start,0,4);
 		$smonth = substr($start,4,2);
@@ -121,7 +121,7 @@ while (isset($contents[0])) {
 		unset($smonth);
 		unset($sday);
 
-	} elseif (eregi('^DTSTART:[0-9]{8}T[0-9]{6}Z',$current_line)) {
+	} elseif (preg_match('/^DTSTART:[0-9]{8}T[0-9]{6}Z/i',$current_line)) {
 		$start = str_replace(array('DTSTART:','T','Z'),NULL,$current_line);
 		$syear = substr($start,0,4);
 		$smonth = substr($start,4,2);
@@ -138,7 +138,7 @@ while (isset($contents[0])) {
 
 // ----------------------------------------------------------------------------
 
-	} elseif (eregi('^DTEND;VALUE=DATE:[0-9]+',$current_line)) {
+	} elseif (preg_match('/^DTEND;VALUE=DATE:[0-9]+/i',$current_line)) {
 		$end = str_replace('DTEND;VALUE=DATE:',NULL,$current_line);
 		$eyear = substr($end,0,4);
 		$emonth = substr($end,4,2);
@@ -149,7 +149,7 @@ while (isset($contents[0])) {
 		unset($emonth);
 		unset($eday);
 
-	} elseif (eregi('^DTEND:[0-9]{8}T[0-9]{6}Z',$current_line)) {
+	} elseif (preg_match('/^DTEND:[0-9]{8}T[0-9]{6}Z/i',$current_line)) {
 		$end = str_replace(array('DTEND:','T','Z'),NULL,$current_line);
 		$eyear = substr($end,0,4);
 		$emonth = substr($end,4,2);
@@ -166,11 +166,11 @@ while (isset($contents[0])) {
 
 // ----------------------------------------------------------------------------
 
-	} elseif (eregi('^UID:.*',$current_line)) {
+	} elseif (preg_match('/^UID:.*/i',$current_line)) {
 		$uid = str_replace('UID:',NULL,$current_line);
-	} elseif (eregi('^LOCATION:.*',$current_line)) {
+	} elseif (preg_match('/^LOCATION:.*/i',$current_line)) {
 		$location = str_replace('LOCATION:',NULL,$current_line);
-	} elseif (eregi('^DESCRIPTION:.*',$current_line)) {
+	} elseif (preg_match('/^DESCRIPTION:.*/i',$current_line)) {
 		$desc = str_replace('DESCRIPTION:',NULL,$current_line);
 	} elseif ($current_line == 'END:VCALENDAR') {
 		break;

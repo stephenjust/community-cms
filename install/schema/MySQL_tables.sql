@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`author` text,
 	`image` text default NULL,
 	`hidden` tinyint(1) NOT NULL,
+	`imported` text default NULL,
 	PRIMARY KEY  (`id`),
 	KEY `category` (`category`)
 ) ENGINE=MyISAM CHARACTER SET=utf8 ;
