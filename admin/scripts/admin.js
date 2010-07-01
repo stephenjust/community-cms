@@ -1,42 +1,75 @@
 <!--
-var urlBaseDFL = "./admin/scripts/dynamic_file_list.php";
+// Block list functions
+function block_list_update() {
+	var urlBase = "./admin/scripts/block_list.php";
+	var pagefield = document.getElementById('adm_page');
+	var page = pagefield.value;
+	var blocklist = document.getElementById('adm_block_list');
+	var blocklist_left = document.getElementById('adm_blocklist_left');
+	var blocks_left;
+	if (blocklist_left == undefined) {
+		blocks_left = '0';
+	} else {
+		blocks_left = blocklist_left.value;
+	}
+	var blocklist_right = document.getElementById('adm_blocklist_right');
+	var blocks_right;
+	if (blocklist_right == undefined) {
+		blocks_right = '0';
+	} else {
+		blocks_right = blocklist_right.value;
+	}
+	loadHTML(urlBase + "?a=update&page=" + encodeURI(page) + "&left=" + encodeURI(blocks_left) + "&right=" + encodeURI(blocks_right),blocklist);
+}
 
+function block_list_add(position,side) {
+	var blocklist_field = document.getElementById('adm_blocklist_' + side);
+	var add_field = document.getElementById('adm_add_block_list');
+	if (add_field == undefined) {
+		return;
+	}
+	var blocklist = blocklist_field.value;
+	var block_add = add_field.value;
+	blocklist = blocklist.split(',');
+	blocklist.splice(position,0,block_add);
+	blocklist = blocklist.join(',');
+	blocklist_field.value = blocklist;
+	block_list_update();
+}
+
+function block_list_remove(position,side) {
+	var blocklist_field = document.getElementById('adm_blocklist_' + side);
+	var blocklist = blocklist_field.value;
+	blocklist = blocklist.split(',');
+	blocklist.splice(position,1);
+	blocklist = blocklist.join(',');
+	blocklist_field.value = blocklist;
+	block_list_update();
+}
+
+function block_options_list_update() {
+	var urlBase = "./admin/scripts/block_options.php";
+	var blocktypeoptions = document.getElementById('adm_block_type_options');
+	var blocktypelist = document.getElementById('adm_block_type_list');
+	var blocktype = blocktypelist.value;
+	loadHTML(urlBase + "?blocktype=" + encodeURI(blocktype),blocktypeoptions);
+}
+
+// Other functions
 function update_dynamic_file_list() {
+	var urlBase = "./admin/scripts/dynamic_file_list.php";
 	var dynamiclistdiv = document.getElementById('dynamic_file_list');
 	var folderlist = document.getElementById('dynamic_folder_dropdown_box');
 	var newfolder = folderlist.value;
-	loadHTML(urlBaseDFL + "?newfolder=" + encodeURI(newfolder),dynamiclistdiv);
+	loadHTML(urlBase + "?newfolder=" + encodeURI(newfolder),dynamiclistdiv);
 }
 
-var urlBaseDALL = "./admin/scripts/dynamic_article_link_list.php";
-
 function update_dynamic_article_link_list() {
+	var urlBase = "./admin/scripts/dynamic_article_link_list.php";
 	var dynamiclistdiv = document.getElementById('dynamic_article_link_list');
 	var pagelist = document.getElementById('page_select');
 	var page = pagelist.value;
-	loadHTML(urlBaseDALL + "?page=" + encodeURI(page),dynamiclistdiv);
-}
-
-// Unused
-function gallery_dir_check() {
-	var scriptURL = "./admin/scripts/gallery_dir_check.php";
-	var gallerydircheckdiv = document.getElementById('_gallery_dir_check_');
-	var gallerytypefield = document.getElementById('_gallery_app');
-	var gallerytype = gallerytypefield.value;
-	var gallerydirfield = document.getElementById('_gallery_dir');
-	var gallerydir = gallerydirfield.value;
-	if (gallerytype == 'disabled') {
-		return;
-	}
-	loadHTML(scriptURL + "?type=" + encodeURI(gallerytype) + "&dir=" + encodeURI(gallerydir),gallerydircheckdiv);
-	var gallerydircheckresponse = gallerydircheckdiv.innerHTML;
-	if (gallerydircheckresponse == "false") {
-		gallerydirfield.style.border = '1px solid #FF0000';
-		gallerydirfield.style.background = '#FFCCCC';
-	} else {
-		gallerydirfield.style.border = 'auto';
-		gallerydirfield.style.background = 'auto';
-	}
+	loadHTML(urlBase + "?page=" + encodeURI(page),dynamiclistdiv);
 }
 
 function update_article_list(page) {

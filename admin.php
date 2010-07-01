@@ -77,10 +77,6 @@ function display_admin() {
 		<script language="javascript" type="text/javascript"
 		src="./admin/scripts/admin.js"></script>
 		<script language="javascript" type="text/javascript"
-		src="./admin/scripts/block_options.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./admin/scripts/block_list.js"></script>
-		<script language="javascript" type="text/javascript"
 		src="./scripts/jquery.js"></script>
 		<script language="javascript" type="text/javascript"
 		src="./scripts/jquery-ui.js"></script>
