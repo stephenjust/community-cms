@@ -6,12 +6,12 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
+
 /**
  * Description of calendar_class
  *
  * @author stephen
  */
-
 class calendar {
 	public $year = 2000;
 	public $month = 1;

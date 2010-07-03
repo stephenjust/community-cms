@@ -47,24 +47,8 @@ switch ($_GET['view']) {
 		$template_month->next_month = $month_cal->next_month;
 		$template_month->next_year = $month_cal->next_year;
 
-		// Insert day names according to chosen format
-		if (get_config('calendar_month_day_format') == 1) {
-			$template_month->cal_sunday = 'Sunday';
-			$template_month->cal_monday = 'Monday';
-			$template_month->cal_tuesday = 'Tuesday';
-			$template_month->cal_wednesday = 'Wednesday';
-			$template_month->cal_thursday = 'Thursday';
-			$template_month->cal_friday = 'Friday';
-			$template_month->cal_saturday = 'Saturday';
-		} else {
-			$template_month->cal_sunday = 'Sun';
-			$template_month->cal_monday = 'Mon';
-			$template_month->cal_tuesday = 'Tues';
-			$template_month->cal_wednesday = 'Wed';
-			$template_month->cal_thursday = 'Thurs';
-			$template_month->cal_friday = 'Fri';
-			$template_month->cal_saturday = 'Sat';
-		}
+		// Replace day of week placeholders
+		monthcal_day_strings($template_month);
 
 		// Week template
 		$template_week = new template;

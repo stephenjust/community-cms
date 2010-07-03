@@ -364,24 +364,29 @@ table.calendar_day td.description {
 	overflow: hidden;
 	table-layout: fixed;
 }
-input.button_cal_back_month {
+table.calendar_nav {
 	float: right;
+}
+table.calendar_nav td {
+	border: 0px;
+	background: none;
+	height: auto;
+	width: auto;
+	padding: 0px;
+}
+input.button_cal_back_month {
 	width: 33px;
 }
 input.button_cal_back_year {
-	float: right;
 	width: 44px;
 }
 input.button_cal_today {
-	float: right;
 	width: 58px;
 }
 input.button_cal_next_month {
-	float: right;
 	width: 33px;
 }
 input.button_cal_next_year {
-	float: right;
 	width: 44px;
 }
 
