@@ -84,10 +84,7 @@ if($current_directory == $referer_directory.'/admin/scripts') {
 		}
 	}
 	$xmlreader->close();
-	// FIXME: Initialization should not be necessary.
-	initialize();
 	$attribute_list = array2csv($attribute_list);
-	clean_up();
 	if ($attribute_count == 0) {
 		echo 'No options.<br />';
 	}

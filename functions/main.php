@@ -168,10 +168,12 @@ function truncate($text,$numb) {
 function array2csv($array) {
 	global $debug;
 	if (count($array) == 0) {
-		$debug->add_trace('Array provided is empty',true,'array2csv');
+		if (is_object($debug))
+			$debug->add_trace('Array provided is empty',true,'array2csv');
 		return '';
 	}
-	$debug->add_trace('Array provided has '.count($array).' entries',false,'array2csv');
+	if (is_object($debug))
+		$debug->add_trace('Array provided has '.count($array).' entries',false,'array2csv');
 	$string = NULL;
 	$array_count = count($array);
 	for ($i = 0; $i < $array_count; $i++) {
@@ -184,7 +186,8 @@ function array2csv($array) {
 		if (strlen($array[$i]) > 0) {
 			$string .= $array[$i];
 		} else {
-			$debug->add_trace('Empty array element found',false,'array2csv');
+			if (is_object($debug))
+				$debug->add_trace('Empty array element found',false,'array2csv');
 		}
 		if ($i != $array_count - 1) {
 			$string .= ',';
