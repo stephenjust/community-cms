@@ -99,7 +99,9 @@ if (isset($_GET['article'])) {
 					$article_found = true;
 				}
 			}
-			$start = $start + 10;
+			if ($article_found == false) {
+				$start = $start + get_config('news_num_articles');
+			}
 		}
 		if ($start >= 1000) {
 			$debug->add_trace('Gave up looking for article',true,'news.php');
