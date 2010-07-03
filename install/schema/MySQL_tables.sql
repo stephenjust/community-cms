@@ -135,13 +135,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	KEY `page` (`page`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
 
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news_settings` (
-	`num_articles` INT(3) NOT NULL ,
-    `default_date_setting` INT(3) NOT NULL ,
-    `show_author` INT(3) NOT NULL ,
-    `show_edit_time` INT(3) NOT NULL
-) ENGINE = MYISAM ;
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
   `id` int(11) NOT NULL auto_increment,
   `page` int(11) NOT NULL,

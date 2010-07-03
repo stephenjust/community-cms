@@ -43,9 +43,6 @@ INSERT INTO `<!-- $DB_PREFIX$ -->config` (`config_name`, `config_value`) VALUES
 ('time_format','h:i A');;
 INSERT INTO `<!-- $DB_PREFIX$ -->news` (`page`, `name`, `description`, `author`, `date`, `image`) VALUES
 (1, 'Welcome to Community CMS ALPHA!', '<p>Welcome to Community CMS, the web content system aimed at non-profit organizations and communities. The CMS features a news bulletin board, a calendar, a system for displaying newsletters, a contact information managing tool, and an administration system to make editing your content easy. To see what\'s new in this release, click <a href="http://communitycms.sourceforge.net/whatsnew-0.6.html">here</a>.</p>', 'Administrator', '2008-06-20 22:25:38', NULL);;
-INSERT INTO `<!-- $DB_PREFIX$ -->news_settings`
-    (num_articles ,default_date_setting ,show_author ,show_edit_time) VALUES
-('10', '1', '1', '1');;
 INSERT INTO `<!-- $DB_PREFIX$ -->pages` (text_id, title, meta_desc, type, menu, list, hidden) VALUES
 ('home', 'Home', '', 1, 1, 0, 0),
 ('calendar', 'Calendar', '', 3, 1, 1, 0),

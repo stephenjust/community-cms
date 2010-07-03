@@ -29,10 +29,11 @@ function pagination($start, $num, $all_elements) {
 		$debug->add_trace('Start number is not an integer or is an invalid integer',true,'pagination');
 		return false;
 	}
-	if (!is_int($num)) {
+	if (!is_numeric($num)) {
 		$debug->add_trace('Number of entries to display on a page is not an integer',true,'pagination');
 		return false;
 	}
+	$num = (int)$num;
 	// If the total number of items to paginate will not fill more than one
 	// page, don't bother calculating whether anything must be done.
 	if (count($all_elements) <= $num) {

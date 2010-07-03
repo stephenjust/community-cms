@@ -181,16 +181,6 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->news" (
 SELECT setval('<!-- $DB_PREFIX$ -->news_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->news"));
 
 -- ----------------------------------------------------------------------------
--- comcms_news_settings
--- ----------------------------------------------------------------------------
-CREATE TABLE "<!-- $DB_PREFIX$ -->news_settings" (
-	"num_articles" integer NOT NULL ,
-    "default_date_setting" integer NOT NULL ,
-    "show_author" integer NOT NULL ,
-    "show_edit_time" integer NOT NULL
-);
-
--- ----------------------------------------------------------------------------
 -- comcms_newsletters
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->newsletters_id_seq";

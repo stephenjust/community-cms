@@ -260,6 +260,26 @@ switch ($db_version) {
 			(\'page_order\',\'Change Page Order\',\'Allow a user to rearrange pages on the CMS menu\',0),
 			(\'group_create\',\'Create User Groups\',\'Allow a user to create a new user group\',0),
 			(\'pagegroupedit-1\',\'Edit Page Group \\\'Default Group\\\'\',\'Allow user to edit pages in the group \\\'Default Group\\\'\',0)';
+
+		// Get old news configuration
+		$old_nconfig_query = 'SELECT * FROM `'.$CONFIG['db_prefix'].'news_settings`';
+		$old_nconfig_handle = $db->sql_query($old_nconfig_query);
+		if ($db->error[$old_nconfig_handle] === 1) {
+			die ('A database error occured. Please retry the upgrade.');
+		}
+		if ($db->sql_num_rows($old_nconfig_handle) == 0) {
+			die ('Your news configuration table is empty. Please reinstall Community CMS.');
+		}
+		$old_nconfig = $db->sql_fetch_assoc($old_nconfig_handle);
+
+		// Move news config into global config table
+		$query[] = 'INSERT INTO `'.CONFIG_TABLE.'` (\'config_name\',\'config_value\')
+			VALUES
+			(\'news_num_articles\',\''.$old_nconfig['num_articles'].'\'),
+			(\'news_default_date_setting\',\''.$old_nconfig['default_date_setting'].'\'),
+			(\'news_show_author\',\''.$old_nconfig['show_author'].'\'),
+			(\'news_show_edit_time\',\''.$old_nconfig['show_edit_time'].'\')';
+		$query[] = 'DROP TABLE `'.$CONFIG['db_prefix'].'news_settings`';
 		execute_queries($query);
 		$query = array();
 		$db_version = 0.05;

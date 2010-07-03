@@ -9,21 +9,11 @@ class news_item {
     public $article;
     public $date;
     public $template;
-    public $news_config;
     function __construct() {
         $this->article_id = NULL;
         $this->article = NULL;
         $this->date = NULL;
         $this->template = 'article';
-        global $db;
-        $news_config_query = 'SELECT * FROM ' . NEWS_CONFIG_TABLE . ' LIMIT 1';
-        $news_config_handle = $db->sql_query($news_config_query);
-        if ($db->error[$news_config_handle] === 1) {
-            $this->__destruct();
-        } elseif ($db->sql_num_rows($news_config_handle) == 0) {
-            $this->destruct();
-        }
-        $this->news_config = $db->sql_fetch_assoc($news_config_handle);
     }
     function __destruct() {
 
@@ -121,14 +111,14 @@ class news_item {
 		$template_article->article_date_day = $date_day;
 		$template_article->article_date_year = $date_year;
 		$template_article->article_date = $date;
-		if ($this->news_config['show_author'] == 0) {
+		if (get_config('news_show_author') == 0) {
 			$template_article->replace_range('article_author',NULL);
 		} else {
 			$template_article->article_author = stripslashes($article['author']);
 		}
 
 		// Remove info div entirely if author and date are hidden
-		if ($this->news_config['show_author'] == 0 && $article['showdate'] == 0) {
+		if (get_config('news_show_author') == 0 && $article['showdate'] == 0) {
 			$template_article->replace_range('article_details',NULL);
 		} else {
 			$template_article->article_details_start = NULL;

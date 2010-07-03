@@ -7,18 +7,6 @@ global $acl;
 global $db;
 global $page;
 
-// Load configuration
-$news_config_query = 'SELECT * FROM ' . NEWS_CONFIG_TABLE . ' LIMIT 1';
-$news_config_handle = $db->sql_query($news_config_query);
-if ($db->error[$news_config_handle] === 1) {
-	$page->notification .= 'Could not load news settings.<br />';
-	return $return;
-} elseif ($db->sql_num_rows($news_config_handle) == 0) {
-	$page->notification .= 'There are no news settings available.<br />';
-	return $return;
-}
-$news_config = $db->sql_fetch_assoc($news_config_handle);
-
 $text_block = new block;
 $text_block->block_id = $block_info['id'];
 $return = NULL;
@@ -77,7 +65,7 @@ if($db->sql_num_rows($text_handle) == 0) {
 	$template_text_block->article_title = stripslashes($text['name']);
 
 	// Hide author if requested
-	if ($news_config['show_author'] == 0) {
+	if (get_config('news_show_author') == 0) {
 		$template_text_block->replace_range('article_author',NULL);
 	} else {
 		$template_text_block->article_author = stripslashes($text['author']);

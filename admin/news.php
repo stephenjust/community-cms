@@ -14,15 +14,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 $root = "./";
 $content = NULL;
 
-$news_config_query = 'SELECT * FROM `' . NEWS_CONFIG_TABLE . '` LIMIT 1';
-$news_config_handle = $db->sql_query($news_config_query);
-if ($db->error[$news_config_handle] === 1) {
-    $content .= 'Could not load configuration from the database.<br />';
-} elseif ($db->sql_num_rows($news_config_handle) == 0) {
-    $content .= 'There is no configuration record in the database.<br />';
-}
-$news_config = $db->sql_fetch_assoc($news_config_handle);
-
 // ----------------------------------------------------------------------------
 
 /**
@@ -478,7 +469,9 @@ $form->add_hidden('author',$_SESSION['name']);
 $form->add_textarea('content','Content',NULL,'rows="20"');
 $form->add_page_list('page','Page',1,1);
 $form->add_icon_list('image','Image','newsicons');
-$form->add_select('date_params','Date Settings',array(0,1,2),array('Hide','Show','Show Mini'),$news_config['default_date_setting']);
+$form->add_select('date_params','Date Settings',
+		array(0,1,2),array('Hide','Show','Show Mini'),
+		get_config('news_default_date_setting'));
 $form->add_submit('submit','Create Article');
 $tab_content['create'] = $form;
 $tab_layout->add_tab('Create Article',$tab_content['create']);
