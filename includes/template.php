@@ -10,6 +10,7 @@
 
 class template {
 	public $template;
+	public $template_name;
 	public $path;
 	public $return;
 	public function __set($name,$value) {
@@ -60,6 +61,9 @@ class template {
 			} else {
 				$template = $db->sql_fetch_assoc($template_handle);
 				$path .= $template['path'];
+				$template_name = str_replace('templates/',NULL,$template['path']);
+				$template_name = str_replace('/',NULL,$template_name);
+				$this->template_name = $template_name;
 				if (!file_exists($path.$file)) {
 					throw new Exception('Template file does not exist.');
 				}

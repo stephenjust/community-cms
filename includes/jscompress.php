@@ -3,7 +3,7 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -39,8 +39,6 @@ $jsdir    = dirname(__FILE__) . '/..';
 // List of JS files
 $js_elements = array(
 	'admin/scripts/ajax.js',
-	'admin/scripts/dynamic_file_list.js',
-	'admin/scripts/block_options.js',
 	'scripts/jquery.js',
 	'scripts/jquery-ui.js',
 	'scripts/jquery-custom.js');
