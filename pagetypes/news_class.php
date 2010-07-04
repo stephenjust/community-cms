@@ -32,7 +32,9 @@ class news_item {
         return;
     }
 	public function get_article() {
+		global $acl;
 		global $db;
+		global $debug;
 		$article_query = 'SELECT * FROM ' . NEWS_TABLE . '
 			WHERE id = '.$this->article_id.' LIMIT 1';
 		$article_handle = $db->sql_query($article_query);
@@ -101,6 +103,22 @@ class news_item {
 		} else {
 
 		}
+
+		// Edit bar permission check
+		if ($acl->check_permission('news_fe_manage') && $acl->check_permission('admin_access')) {
+			$edit_bar = news_edit_bar($article['id']);
+			if ($edit_bar != NULL) {
+				$template_article->edit_bar_start = NULL;
+				$template_article->edit_bar_end = NULL;
+				$template_article->edit_bar = news_edit_bar($article['id']);
+			} else {
+				$template_article->replace_range('edit_bar',NULL);
+				$debug->add_trace('Article edit bar is empty',false,'get_article()');
+			}
+		} else {
+			$template_article->replace_range('edit_bar',NULL);
+		}
+
 		$template_article->article_title = '<a href="view.php?article_id='.$article['id'].'" target="_blank">'.stripslashes($article['name']).'</a>';
 		$template_article->article_title_nolink = stripslashes($article['name']);
 		$template_article->article_content = stripslashes($article['description']);

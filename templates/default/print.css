@@ -35,6 +35,11 @@ body {
 	font-size: 10px;
 }
 
+/* NEWS */
+div.news_edit_bar {
+	display: none;
+}
+
 /* CALENDAR */
 input.button_cal_back_month, input.button_cal_back_year, input.button_cal_today,
 input.button_cal_next_month, input.button_cal_next_year {

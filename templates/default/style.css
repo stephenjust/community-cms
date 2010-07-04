@@ -209,15 +209,33 @@ img.news_image {
 	padding: 5px;
 	padding-right: 10px;
 }
+div.news_edit_bar {
+	background: #CCCCCC;
+	border: 1px #999999 solid;
+	float: right;
+	min-height: 1px;
+	min-width: 1px;
+	vertical-align: middle;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+div.news_edit_bar img {
+	border: 0px;
+	padding: 2px;
+}
+
+/*
+CONTACTS
+*/
 span.contact_name {
 	font-size: 1.5em;
 	font-family: Cambria,
-							Georgia,
-							"Book Antiqua",
-							"Times New Roman",
-							"Century Schoolbook",
-							"Bitstream Vera Serif",
-							serif;
+				Georgia,
+				"Book Antiqua",
+				"Times New Roman",
+				"Century Schoolbook",
+				"Bitstream Vera Serif",
+				serif;
 }
 span.contact_name a {
 	color: #000000;
