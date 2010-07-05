@@ -3,7 +3,7 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -34,11 +34,17 @@ if(!isset($_GET['view'])) {
 }
 
 if(!isset($_GET['article_id'])) {
-    $_GET['article_id'] = "";
+	header('HTTP/1.0 404 Not Found');
+    exit;
+}
+$article_id = (int)$_GET['article_id'];
+if ($article_id == 0) {
+	header('HTTP/1.0 404 Not Found');
+	exit;
 }
 // Get item contents.
 $article = new news_item;
-$article->set_article_id((int)$_GET['article_id']);
+$article->set_article_id($article_id);
 $article->template = 'article_page';
 $article->get_article();
 $last_article_date = $article->date;
