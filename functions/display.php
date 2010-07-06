@@ -42,9 +42,9 @@ function display_page($view="") {
 	$template_page->js_include = '<script language="javascript" type="text/javascript"
 		src="./scripts/jquery.js"></script>
 		<script language="javascript" type="text/javascript"
-		src="./scripts/jquery-multi-ddm.js"></script>
+		src="./scripts/ajax.js"></script>
 		<script language="javascript" type="text/javascript"
-		src="./scripts/nav-menu.js"></script>';
+		src="./scripts/cms_fe.js"></script>';
 
 	// Replace <!-- $CSS_INCLUDE$ --> marker
 	$template_page->css_include =

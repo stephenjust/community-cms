@@ -73,7 +73,7 @@ function display_admin() {
 	$template_page->scripts = '<link type="text/css"
 		href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
 		<script language="javascript" type="text/javascript"
-		src="./admin/scripts/ajax.js"></script>
+		src="./scripts/ajax.js"></script>
 		<script language="javascript" type="text/javascript"
 		src="./admin/scripts/admin.js"></script>
 		<script language="javascript" type="text/javascript"
