@@ -70,12 +70,14 @@ function display_admin() {
 		$mce_disk_cache = 'true';
 	}
 
+	$admin_js_mtime = filemtime('./admin/scripts/admin.js');
+
 	$template_page->scripts = '<link type="text/css"
 		href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
 		<script language="javascript" type="text/javascript"
 		src="./scripts/ajax.js"></script>
 		<script language="javascript" type="text/javascript"
-		src="./admin/scripts/admin.js"></script>
+		src="./admin/scripts/admin.js?t='.$admin_js_mtime.'"></script>
 		<script language="javascript" type="text/javascript"
 		src="./scripts/jquery.js"></script>
 		<script language="javascript" type="text/javascript"
@@ -157,14 +159,17 @@ function display_admin() {
 	$icon_bar = NULL;
 	if ($acl->check_permission('adm_feedback')) {
 		$icon_bar .= '<a href="admin.php?module=feedback">
-			<img src="<!-- $IMAGE_PATH$ -->send_feedback.png" alt="Send Feedback" border="0px" /></a>';
+			<img src="<!-- $IMAGE_PATH$ -->send_feedback.png" alt="Send Feedback"
+			border="0px" width="32px" height="32px" /></a>';
 	}
 	if ($acl->check_permission('adm_help')) {
 		$icon_bar .= '<a href="admin.php?module=help">
-			<img src="<!-- $IMAGE_PATH$ -->help.png" alt="Help" border="0px" /></a>';
+			<img src="<!-- $IMAGE_PATH$ -->help.png" alt="Help"
+			border="0px" width="32px" height="32px" /></a>';
 	}
 	$icon_bar .= '<a href="index.php?login=2">
-		<img src="<!-- $IMAGE_PATH$ -->log_out.png" alt="Log Out" border="0px" /></a>';
+		<img src="<!-- $IMAGE_PATH$ -->log_out.png" alt="Log Out"
+		border="0px" width="32px" height="32px" /></a>';
 	$template_page->icon_bar = $icon_bar;
 
 	$template_page->nav_bar = '<div id="menu">'.admin_nav().'</div>';
