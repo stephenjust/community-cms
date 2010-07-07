@@ -89,7 +89,7 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
  * file_upload - Handle files uploaded via a form
  * @param string $path Directory to store file - special case if = newsicons
  * @param boolean $contentfile File belongs in file/ heirarchy?
- * @param boolean $thumb Generate a thumbnail (75x75)?
+ * @param boolean $thumb Generate a thumbnail (75x75) and make original 800x800 (largest)
  * @return string
  */
 function file_upload($path = "", $contentfile = true, $thumb = false) {
@@ -170,9 +170,14 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	log_action ('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
 	if ($thumb == true) {
 		if (generate_thumbnail($target,NULL,75,75,0,0)) {
-			$return .= 'Generated thumbnail.';
+			$return .= 'Generated thumbnail. ';
 		} else {
 			$return .= '<span class="errormessage">Failed to generate thumbnail.</span>';
+		}
+		if (generate_thumbnail($target,$target,1,1,800,800)) {
+			$return .= 'Resized original image. ';
+		} else {
+			$return .= '<span class="errormessage">Failed to resize original.</span>';
 		}
 	}
 	return $return;

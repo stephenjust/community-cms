@@ -33,6 +33,7 @@ if (!$gallery_info) {
 
 switch (get_config('gallery_app')) {
 	case 'simpleviewer':
+		// FIXME: Don't hardcode maxImageWidth & maxImageHeight
 		echo <<< END
 <?xml version="1.0" encoding="UTF-8"?>
 <simpleviewergallery
@@ -46,8 +47,8 @@ switch (get_config('gallery_app')) {
 	thumbRows="3"
 	showOpenButton="FALSE"
 	showFullscreenButton="TRUE"
-	maxImageWidth="640"
-	maxImageHeight="640"
+	maxImageWidth="800"
+	maxImageHeight="800"
 	imagePath="files/{$gallery_info['image_dir']}/"
 	thumbPath="files/{$gallery_info['image_dir']}/thumbs/"
 
