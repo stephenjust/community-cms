@@ -105,12 +105,12 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->locations` (
 ) ENGINE=MyISAM CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
-  `log_id` int(11) NOT NULL auto_increment,
-  `date` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
-  `user_id` int(5) NOT NULL,
-  `action` text NOT NULL,
-  `ip_addr` INT(10) unsigned NOT NULL,
-  PRIMARY KEY  (`log_id`)
+	`log_id` int(11) NOT NULL auto_increment,
+	`date` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+	`user_id` int(5) NOT NULL,
+	`action` text NOT NULL,
+	`ip_addr` INT(10) unsigned NOT NULL,
+	PRIMARY KEY  (`log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
@@ -136,14 +136,14 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
-  `id` int(11) NOT NULL auto_increment,
-  `page` int(11) NOT NULL,
-  `year` int(4) NOT NULL default '2008',
-  `month` int(2) NOT NULL default '1',
-  `label` text character set utf8 collate utf8_unicode_ci,
-  `path` text character set utf8 collate utf8_unicode_ci,
-  `hidden` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+	`id` int(11) NOT NULL auto_increment,
+	`page` int(11) NOT NULL,
+	`year` int(4) NOT NULL default '2008',
+	`month` int(2) NOT NULL default '1',
+	`label` text character set utf8 collate utf8_unicode_ci,
+	`path` text character set utf8 collate utf8_unicode_ci,
+	`hidden` tinyint(1) NOT NULL default '0',
+	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
@@ -190,20 +190,20 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_questions` (
-  `question_id` int(5) NOT NULL auto_increment,
-  `question` text NOT NULL,
-  `short_name` text NOT NULL,
-  `type` int(2) NOT NULL default '1',
-  `active` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`question_id`)
+	`question_id` int(5) NOT NULL auto_increment,
+	`question` text NOT NULL,
+	`short_name` text NOT NULL,
+	`type` int(2) NOT NULL default '1',
+	`active` tinyint(1) NOT NULL default '1',
+	PRIMARY KEY  (`question_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_answers` (
-  `answer_id` int(6) NOT NULL auto_increment,
-  `question_id` int(5) NOT NULL,
-  `answer` text NOT NULL,
-  `answer_order` int(2) NOT NULL,
-  PRIMARY KEY  (`answer_id`)
+	`answer_id` int(6) NOT NULL auto_increment,
+	`question_id` int(5) NOT NULL,
+	`answer` text NOT NULL,
+	`answer_order` int(2) NOT NULL,
+	PRIMARY KEY  (`answer_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`password` text NOT NULL,
 	`realname` text NOT NULL,
 	`title` text NULL,
-    `groups` text NULL,
+	`groups` text NULL,
 	`phone` text NOT NULL,
 	`email` text NOT NULL,
 	`address` text NOT NULL,
