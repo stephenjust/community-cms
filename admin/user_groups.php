@@ -51,8 +51,11 @@ function permission_list($group = 0) {
 
 	// News
 	$perm_list = array('adm_news',
+		'adm_news_edit_article',
 		'news_create',
-		'news_delete');
+		'news_delete',
+		'news_edit',
+		'news_fe_manage');
 	$return .= permission_list_table($permission_list,$group,'News',$perm_list);
 
 	// Pages

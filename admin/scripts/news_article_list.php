@@ -52,9 +52,11 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 			.'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
 			.'height="16px" border="0px" /></a>';
 	}
-	$current_row[] = '<a href="?module=news_edit_article&amp;id='
-		.$article_list['id'].'"><img src="./admin/templates/default/images/edit.png" '
-		.'alt="Edit" width="16px" height="16px" border="0px" /></a>';
+	if ($acl->check_permission('news_edit')) {
+		$current_row[] = '<a href="?module=news_edit_article&amp;id='
+			.$article_list['id'].'"><img src="./admin/templates/default/images/edit.png" '
+			.'alt="Edit" width="16px" height="16px" border="0px" /></a>';
+	}
 	$current_row[] = '<input type="text" size="3" maxlength="11" name="pri-'.$article_list['id'].'" value="'.$article_list['priority'].'" />';
 	$list_rows[] = $current_row;
 } // FOR
@@ -63,7 +65,9 @@ $label_array = array('','ID','Title');
 if ($acl->check_permission('news_delete')) {
 	$label_array[] = 'Delete';
 }
-$label_array[] = 'Edit';
+if ($acl->check_permission('news_edit')) {
+	$label_array[] = 'Edit';
+}
 $label_array[] = 'Priority';
 $content = create_table($label_array,$list_rows);
 $content .= '<input type="hidden" name="page" value="'.$page_id.'" />';

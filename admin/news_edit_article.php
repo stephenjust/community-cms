@@ -11,6 +11,12 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
+
+if (!$acl->check_permission('adm_news_edit_article') || !$acl->check_permission('news_edit')) {
+	$content = 'You do not have the necessary permissions to access this page.<br />';
+	return true;
+}
+
 $root = "./";
 $content = NULL;
 $date = date('Y-m-d H:i:s');
