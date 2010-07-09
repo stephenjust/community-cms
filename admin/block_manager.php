@@ -3,16 +3,16 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
-	}
-$root = "./";
-$message = NULL;
+}
+
+$content = NULL;
 
 $tab_layout = new tabs;
 
@@ -21,7 +21,7 @@ switch ($_GET['action']) {
 		break;
 
 	case 'delete':
-		$message .= delete_block($_GET['id']);
+		$content .= delete_block($_GET['id']);
 		break;
 
 	case 'new':
@@ -44,10 +44,10 @@ switch ($_GET['action']) {
 			VALUES (\''.$type.'\',\''.$attributes_final.'\')';
 		$new_handle = $db->sql_query($new_query);
 		if($db->error[$new_handle] === 1) {
-			$message .= 'Failed to create block.';
+			$content .= 'Failed to create block.';
 			break;
 		}
-		$message .= 'Successfully created block.<br />'."\n";
+		$content .= 'Successfully created block.<br />'."\n";
 		log_action('Created block \''.$type.' ('.$attributes_final.')\'');
 		unset($type);
 		break;
@@ -56,11 +56,11 @@ switch ($_GET['action']) {
 
 	case 'edit':
 		if (!isset($_GET['id'])) {
-			$message .= 'No block to edit.<br />'."\n";
+			$content .= 'No block to edit.<br />'."\n";
 			break;
 		}
 		if (!is_numeric($_GET['id'])) {
-			$message .= 'Invalid block ID.<br />'."\n";
+			$content .= 'Invalid block ID.<br />'."\n";
 			break;
 		}
 		$edit_id = (int)$_GET['id'];
@@ -153,15 +153,15 @@ switch ($_GET['action']) {
 
 	case 'edit_save':
 		if (!isset($_POST['id'])) {
-			$message .= 'No block to save.<br />'."\n";
+			$content .= 'No block to save.<br />'."\n";
 			break;
 		}
 		if (!is_numeric($_POST['id'])) {
-			$message .= 'Invalid block ID.<br />'."\n";
+			$content .= 'Invalid block ID.<br />'."\n";
 			break;
 		}
 		if (!isset($_POST['attributes'])) {
-			$message .= 'No attributes to save.<br />'."\n";
+			$content .= 'No attributes to save.<br />'."\n";
 			break;
 		}
 		$attributes = explode(',',$_POST['attributes']);
@@ -180,17 +180,16 @@ switch ($_GET['action']) {
 			WHERE `id` = '.(int)$_POST['id'].'';
 		$new_handle = $db->sql_query($new_query);
 		if($db->error[$new_handle] === 1) {
-			$message .= 'Failed to edit block.';
+			$content .= 'Failed to edit block.';
 			break;
 		}
-		$message .= 'Successfully edited block.<br />'."\n";
+		$content .= 'Successfully edited block.<br />'."\n";
 		log_action('Edited block \''.$_POST['id'].' ('.$attributes_final.')\'');
 		break;
 }
 
 // ----------------------------------------------------------------------------
 
-$content = $message;
 $block_list_query = 'SELECT * FROM `' . BLOCK_TABLE . '` ORDER BY `id` DESC';
 $block_list_handle = $db->sql_query($block_list_query);
 $block_list_rows = array();
