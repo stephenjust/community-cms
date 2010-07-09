@@ -46,6 +46,12 @@ class acl {
 		if ($this->permission_list == array()) {
 			$this->permission_list = $this->get_acl_key_names();
 		}
+
+		// See if permission exists
+		if (!isset($this->permission_list[$acl_key])) {
+			$debug->add_trace('Permission \''.$acl_key.'\' does not exist',true,'acl->check_permission()');
+		}
+
 		if ($true_if_all == true) {
 			foreach ($group_array AS $cur_group) {
 				// Check if group has the dangerous 'all' property
@@ -58,7 +64,6 @@ class acl {
 				} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
 					$acl_all_result = $db->sql_fetch_assoc($acl_all_handle);
 					if ($acl_all_result['value'] == 1) {
-						$debug->add_trace('Permission \''.$acl_key.'\' granted to group \''.$cur_group.'\' by having all permissions',false,'check_permission()');
 						return true;
 					}
 				} else {

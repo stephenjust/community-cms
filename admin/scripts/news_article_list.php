@@ -20,6 +20,7 @@ initialize('ajax');
 if (!$acl->check_permission('adm_news') || !checkuser_admin()) {
 	die ('You do not have the necessary permissions to access this page.');
 }
+
 if (!isset($_GET['page'])) {
 	die ('No page ID provided to script.');
 } else {
@@ -45,10 +46,12 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 	$current_row[] = '<input type="checkbox" name="item_'.$article_list['id'].'" />';
 	$current_row[] = $article_list['id'];
 	$current_row[] = stripslashes($article_list['name']);
-	$current_row[] = '<a href="?module=news&amp;action=delete&amp;id='
-		.$article_list['id'].'&amp;page='.$page_id.'">'
-		.'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
-		.'height="16px" border="0px" /></a>';
+	if ($acl->check_permission('news_delete')) {
+		$current_row[] = '<a href="?module=news&amp;action=delete&amp;id='
+			.$article_list['id'].'&amp;page='.$page_id.'">'
+			.'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
+			.'height="16px" border="0px" /></a>';
+	}
 	$current_row[] = '<a href="?module=news_edit_article&amp;id='
 		.$article_list['id'].'"><img src="./admin/templates/default/images/edit.png" '
 		.'alt="Edit" width="16px" height="16px" border="0px" /></a>';
@@ -56,7 +59,13 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 	$list_rows[] = $current_row;
 } // FOR
 
-$content = create_table(array('','ID','Title','Delete','Edit','Priority'),$list_rows);
+$label_array = array('','ID','Title');
+if ($acl->check_permission('news_delete')) {
+	$label_array[] = 'Delete';
+}
+$label_array[] = 'Edit';
+$label_array[] = 'Priority';
+$content = create_table($label_array,$list_rows);
 $content .= '<input type="hidden" name="page" value="'.$page_id.'" />';
 
 echo $content;

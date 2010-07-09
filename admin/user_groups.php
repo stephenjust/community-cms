@@ -49,6 +49,12 @@ function permission_list($group = 0) {
 		'block_delete');
 	$return .= permission_list_table($permission_list,$group,'Blocks',$perm_list);
 
+	// News
+	$perm_list = array('adm_news',
+		'news_create',
+		'news_delete');
+	$return .= permission_list_table($permission_list,$group,'News',$perm_list);
+
 	// Pages
 	$perm_list = array('adm_page',
 		'page_set_home',

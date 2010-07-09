@@ -14,6 +14,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 $root = "./";
 $content = NULL;
 
+if (!$acl->check_permission('adm_news')) {
+	$content .= '<span class="errormessage">You do not have the necessary permissions to access this module.</span>';
+	return true;
+}
+
 // ----------------------------------------------------------------------------
 
 /**
@@ -41,14 +46,20 @@ function get_selected_items($prefix = 'item') {
 
 /**
  * delete_article - Deletes one or more news articles
+ * @global object $acl
  * @global object $db
  * @global object $debug
  * @param mixed $article
  * @return boolean
  */
 function delete_article($article) {
+	global $acl;
 	global $db;
 	global $debug;
+
+	if (!$acl->check_permission('news_delete')) {
+		return false;
+	}
 
 	$id = array();
 	if (is_numeric($article)) {
@@ -299,7 +310,7 @@ switch ($_GET['action']) {
 
 		if ($_POST['news_action'] == 'del') {
 			if (!delete_article($selected_items)) {
-				$content .= 'Failed to delete article(s)<br />'."\n";
+				$content .= '<span class="errormessage">Failed to delete article(s)</span><br />'."\n";
 			} else {
 				$content .= 'Successfully deleted article(s)<br />'."\n";
 			}
@@ -335,6 +346,10 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'new':
+		if (!$acl->check_permission('news_create')) {
+			$content .= '<span class="errormessage">You do not have the necessary permissions required to create new news articles.</span><br />';
+			break;
+		}
 		// Clean up variables.
 		$title = addslashes($_POST['title']);
 		$title = str_replace('"','&quot;',$title);
@@ -443,10 +458,12 @@ $a_page_list .= '<option value="0">No Page</option>
     </select>';
 
 $tab_content['manage'] .= '<input type="submit" name="pri" value="Update Priorities" /><br /><br />'."\n".
-	'With selected:<br />'."\n".
-	'<input type="radio" id="a_del" name="news_action" value="del" />'."\n".
-	'<label for="a_del" class="ws">Delete</label><br />'."\n".
-	'<input type="radio" id="a_move" name="news_action" value="move" />'."\n".
+	'With selected:<br />'."\n";
+if ($acl->check_permission('news_delete')) {
+	$tab_content['manage'] .= '<input type="radio" id="a_del" name="news_action" value="del" />'."\n".
+		'<label for="a_del" class="ws">Delete</label><br />'."\n";
+}
+$tab_content['manage'] .= '<input type="radio" id="a_move" name="news_action" value="move" />'."\n".
 	'<label for="a_move" class="ws">Move</label><br />'."\n".
 	'<input type="radio" id="a_copy" name="news_action" value="copy" />'."\n".
 	'<label for="a_copy" class="ws">Copy</label><br />'."\n".
@@ -461,20 +478,22 @@ $tab_content['manage'] .= '</form>'."\n";
 
 $tab_layout->add_tab('Manage News',$tab_content['manage']);
 
-$form = new form;
-$form->set_target('admin.php?module=news&amp;action=new');
-$form->set_method('post');
-$form->add_textbox('title','Heading');
-$form->add_hidden('author',$_SESSION['name']);
-$form->add_textarea('content','Content',NULL,'rows="20"');
-$form->add_page_list('page','Page',1,1);
-$form->add_icon_list('image','Image','newsicons');
-$form->add_select('date_params','Date Settings',
-		array(0,1,2),array('Hide','Show','Show Mini'),
-		get_config('news_default_date_setting'));
-$form->add_submit('submit','Create Article');
-$tab_content['create'] = $form;
-$tab_layout->add_tab('Create Article',$tab_content['create']);
+if ($acl->check_permission('news_create')) {
+	$form = new form;
+	$form->set_target('admin.php?module=news&amp;action=new');
+	$form->set_method('post');
+	$form->add_textbox('title','Heading');
+	$form->add_hidden('author',$_SESSION['name']);
+	$form->add_textarea('content','Content',NULL,'rows="20"');
+	$form->add_page_list('page','Page',1,1);
+	$form->add_icon_list('image','Image','newsicons');
+	$form->add_select('date_params','Date Settings',
+			array(0,1,2),array('Hide','Show','Show Mini'),
+			get_config('news_default_date_setting'));
+	$form->add_submit('submit','Create Article');
+	$tab_content['create'] = $form;
+	$tab_layout->add_tab('Create Article',$tab_content['create']);
+}
 
 $content .= $tab_layout;
 ?>
