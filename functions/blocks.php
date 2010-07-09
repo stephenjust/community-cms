@@ -39,10 +39,25 @@ function get_block($block_id = NULL) {
 	return $block_content;
 }
 
+/**
+ * delete_block - Delete a block
+ * @global object $acl Permission object
+ * @global object $db Database connection object
+ * @global object $debug Debug object
+ * @param integer $id Block ID
+ * @return string Response message
+ */
 function delete_block($id) {
+	global $acl;
 	global $db;
 	global $debug;
 	$message = NULL;
+
+	if (!$acl->check_permission('block_delete')) {
+		$message = '<span class="errormessage">You do not have the necessary permissions to delete a block.</span><br />';
+		return $message;
+	}
+
 	// Check data types
 	if (!is_numeric($id)) {
 		$message .= 'Malformed block ID provided.<br />'."\n";

@@ -30,6 +30,10 @@ switch ($_GET['action']) {
 		break;
 
 	case 'new':
+		if (!$acl->check_permission('block_create')) {
+			$content .= '<span class="errormessage">You do not have the permissions required to create a new block.</span><br />';
+			break;
+		}
 		$type = addslashes($_POST['type']);
 		$attributes = addslashes($_POST['attributes']);
 		if(strlen($attributes) > 0) {
@@ -201,51 +205,64 @@ $block_list_rows = array();
 for ($i = 1; $i <= $db->sql_num_rows($block_list_handle); $i++) {
 	$block_list = $db->sql_fetch_assoc($block_list_handle);
 	$attribute_list = ($block_list['attributes'] == '') ? NULL : ' ('.$block_list['attributes'].')';
-	$block_list_rows[] = array($block_list['type'].$attribute_list,
+	if ($acl->check_permission('block_delete')) {
+		$block_list_rows[] = array($block_list['type'].$attribute_list,
 			'<a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a>',
 			'<a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>');
+	} else {
+		$block_list_rows[] = array($block_list['type'].$attribute_list,
+			'<a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>');
+	}
 }
-$tab_content['manage'] = create_table(array('Info','Delete','Edit'), $block_list_rows);
+$heading_list = array('Info');
+if ($acl->check_permission('block_delete')) {
+	$heading_list[] = 'Delete';
+}
+$heading_list[] = 'Edit';
+$tab_content['manage'] = create_table($heading_list, $block_list_rows);
 $tabs['manage'] = $tab_layout->add_tab('Manage Blocks',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-$tab_content['create'] = NULL;
-$directory = 'content_blocks/';
-$folder_open = ROOT.$directory;
-$files = scandir($folder_open);
-unset($folder_open);
-unset($directory);
-$num_files = count($files);
-$i = 2;
-if($num_files < 3) { // ( ., .., and a block file)
-	$tab_content['create'] .= 'No installed blocks.';
-	$block_types_list = '<select name="type" disabled>';
-} else {
-	$block_types_list = '<select name="type" id="adm_block_type_list" onChange="block_options_list_update()">';
-	while($i < $num_files) {
-		$block_type = explode('_',$files[$i]);
-		$block_type = $block_type[0];
-		if(!preg_match('#^\.#',$files[$i]) && !preg_match('#~$#',$files[$i])) {
-			$block_types_list .= '<option value="'.$block_type.'">'.$block_type.'</option>';
+if ($acl->check_permission('block_create')) {
+	$tab_content['create'] = NULL;
+	$directory = 'content_blocks/';
+	$folder_open = ROOT.$directory;
+	$files = scandir($folder_open);
+	unset($folder_open);
+	unset($directory);
+	$num_files = count($files);
+	$i = 2;
+	if($num_files < 3) { // ( ., .., and a block file)
+		$tab_content['create'] .= 'No installed blocks.';
+		$block_types_list = '<select name="type" disabled>';
+	} else {
+		$block_types_list = '<select name="type" id="adm_block_type_list" onChange="block_options_list_update()">';
+		while($i < $num_files) {
+			$block_type = explode('_',$files[$i]);
+			$block_type = $block_type[0];
+			if(!preg_match('#^\.#',$files[$i]) && !preg_match('#~$#',$files[$i])) {
+				$block_types_list .= '<option value="'.$block_type.'">'.$block_type.'</option>';
+			}
+			$i++;
+			unset($block_type);
 		}
-		$i++;
-		unset($block_type);
-	}
-	$block_types_list .= '</select>';
+		$block_types_list .= '</select>';
 
 // ----------------------------------------------------------------------------
 
-	$tab_content['create'] .= '<form method="post" action="admin.php?module=block_manager&action=new">
-<table class="admintable">
-<tr><td>Type:</td><td>'.$block_types_list.'</td></tr>
-<tr><td>Options:</td><td><noscript>You need JavaScript enabled for the block options view to work properly.</noscript>
-<div id="adm_block_type_options"></div></td></tr>
-<tr><td class="empty"></td><td><input type="submit" value="Submit" /></td></tr>
-</table></form>
-<script language="javascript" type="text/javascript">
-block_options_list_update()</script>';
+		$tab_content['create'] .= '<form method="post" action="admin.php?module=block_manager&action=new">
+			<table class="admintable">
+			<tr><td>Type:</td><td>'.$block_types_list.'</td></tr>
+			<tr><td>Options:</td><td><noscript>You need JavaScript enabled for the block options view to work properly.</noscript>
+			<div id="adm_block_type_options"></div></td></tr>
+			<tr><td class="empty"></td><td><input type="submit" value="Submit" /></td></tr>
+			</table></form>
+			<script language="javascript" type="text/javascript">
+			block_options_list_update()</script>';
+	}
+	$tab_layout->add_tab('Create Block',$tab_content['create']);
 }
-$tab_layout->add_tab('Create Block',$tab_content['create']);
+
 $content .= $tab_layout;
 ?>

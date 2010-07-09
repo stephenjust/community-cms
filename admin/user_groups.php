@@ -44,7 +44,9 @@ function permission_list($group = 0) {
 	$return .= permission_list_table($permission_list,$group,'Maintenance/Settings',$perm_list);
 
 	// Blocks
-	$perm_list = array('adm_block_manager');
+	$perm_list = array('adm_block_manager',
+		'block_create',
+		'block_delete');
 	$return .= permission_list_table($permission_list,$group,'Blocks',$perm_list);
 
 	// Pages

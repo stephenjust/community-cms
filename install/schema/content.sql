@@ -15,6 +15,8 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 ('adm_user_groups','User Groups Module','Allow a user to access the user groups module',0),
 ('adm_log_view','View Logs','Allow a user to access the admin activity logs',0),
 ('adm_config_view','View Configuration','Allow a user to view all of the CMS configuration values',0),
+('block_create','Create Blocks','Allow a user to create new blocks',0),
+('block_delete','Delete Blocks','Allow a user to delete blocks',0),
 ('calendar_settings','Calendar Settings','Allow a user to modify calendar settings',0),
 ('show_fe_errors','Show Front-End Errors','Allow a user to view error messages in the CMS front-end that would normally be hidden from users',0),
 ('page_set_home','Change Default Page','Allow a user to change the defualt CMS page',0),

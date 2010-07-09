@@ -256,6 +256,8 @@ switch ($db_version) {
 			(\'adm_user_groups\',\'User Groups Module\',\'Allow a user to access the user groups module\',0),
 			(\'adm_log_view\',\'View Logs\',\'Allow a user to access the admin activity logs\',0),
 			(\'adm_config_view\',\'View Configuration\',\'Allow a user to view all of the CMS configuration values\',0),
+			(\'block_create\',\'Create Blocks\',\'Allow a user to create new blocks\',0),
+			(\'block_delete\',\'Delete Blocks\',\'Allow a user to delete blocks\',0),
 			(\'calendar_settings\',\'Calendar Settings\',\'Allow a user to modify calendar settings\',0),
 			(\'page_set_home\',\'Change Default Page\',\'Allow a user to change the default CMS page\',0),
 			(\'page_order\',\'Change Page Order\',\'Allow a user to rearrange pages on the CMS menu\',0),
