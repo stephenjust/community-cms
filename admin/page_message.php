@@ -51,7 +51,7 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
 	if (!isset($_POST['page'])) {
 		$_POST['page'] = get_config('home');
 	}
-	if (!eregi('<LINK>',$page['title'])) {
+	if (!preg_match('/<LINK>/',$page['title'])) {
 		if ($page['id'] == $_POST['page']) {
 			$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
 		} else {
