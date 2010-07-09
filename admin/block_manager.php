@@ -14,6 +14,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 $content = NULL;
 
+if (!$acl->check_permission('adm_block_manager')) {
+	$content .= 'You do not have the necessary permissions to access this module.';
+	return true;
+}
+
 $tab_layout = new tabs;
 
 switch ($_GET['action']) {

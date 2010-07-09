@@ -251,6 +251,7 @@ switch ($db_version) {
 			(\'adm_filemanager\',\'File Manager\',\'Allow a user to access the file manager module\',0),
 			(\'adm_gallery_settings\',\'Gallery Settings\',\'Allow a user to configure image galleries\',0),
 			(\'adm_news_settings\',\'News Settings\',\'Allow a user to configure news settings\',0),
+			(\'adm_block_manager\',\'Block Module\',\'Allow a user to access the block manager module\',0),
 			(\'adm_page\',\'Page Module\',\'Allow a user to access the page manager module\',0),
 			(\'adm_user_groups\',\'User Groups Module\',\'Allow a user to access the user groups module\',0),
 			(\'adm_log_view\',\'View Logs\',\'Allow a user to access the admin activity logs\',0),

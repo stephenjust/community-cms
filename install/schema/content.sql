@@ -7,6 +7,7 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 ('adm_help','Admin Help Module','Allow a user to access the help module',0),
 ('adm_feedback','Admin Feedback Module','Allow a user to access the admin feedback module',0),
 ('adm_site_config','Site Configuration','Allow a user to modify the CMS configuration',0),
+('adm_block_manager','Block Module','Allow a user to access the block manager module',0),
 ('adm_filemanager','File Manager','Allow a user to access the file manager module',0),
 ('adm_gallery_settings','Gallery Settings','Allow a user to configure image galleries',0),
 ('adm_news_settings','News Settings','Allow a user to configure news settings',0),
