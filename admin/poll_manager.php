@@ -3,13 +3,18 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
+}
+
+if (!$acl->check_permission('adm_poll_manager')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
 }
 
 $content = NULL;
@@ -65,6 +70,8 @@ for ($i = 1; $i <= $db->sql_num_rows($question_list_handle); $i++) {
 		$rowstyle = 'row1';
 	}
 } // FOR
-$content .= '</table><br />
-<a href="admin.php?module=poll_new">New Poll</a>';
+$content .= '</table><br />';
+if ($acl->check_permission('adm_poll_new')) {
+	$content .= '<a href="admin.php?module=poll_new">New Poll</a>';
+}
 ?>

@@ -3,13 +3,18 @@
  * Community CMS
  * $Id: calendar.php 533 2009-12-25 05:49:37Z stephenjust $
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
+}
+
+if (!$acl->check_permission('adm_calendar_locations')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
 }
 
 $content = NULL;

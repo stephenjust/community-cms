@@ -3,13 +3,18 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
+}
+
+if (!$acl->check_permission('adm_calendar')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
 }
 
 $content = NULL;
@@ -416,47 +421,49 @@ if ($acl->check_permission('calendar_settings')) {
 
 // ----------------------------------------------------------------------------
 
-$tab_content['import'] = NULL;
+if ($acl->check_permission('adm_calendar_import')) {
+	$tab_content['import'] = NULL;
 
-// FIXME: Remove the warning below
-$tab_content['import'] .= 'This feature does not work yet. It is still in development.<br /><br />';
+	// FIXME: Remove the warning below
+	$tab_content['import'] .= 'This feature does not work yet. It is still in development.<br /><br />';
 
-$tab_content['import'] .= 'Using this tool, you can import calendar information from '.
-	'Google Calendar and other iCal compatible online calendars.';
+	$tab_content['import'] .= 'Using this tool, you can import calendar information from '.
+		'Google Calendar and other iCal compatible online calendars.';
 
-$tab_content['import'] .= '<h1>Source List</h1>';
-$sources_query = 'SELECT * FROM `' . CALENDAR_SOURCES_TABLE . '`';
-$sources_handle = $db->sql_query($sources_query);
-if ($db->error[$sources_handle] === 1) {
-	$tab_content['import'] .= 'Failed to read sources.<br />'."\n";
-} else {
-	$num_sources = $db->sql_num_rows($sources_handle);
-	if ($num_sources == 0) {
-		$tab_content['import'] .= 'No sources available. Please add a new source.<br />'."\n";
+	$tab_content['import'] .= '<h1>Source List</h1>';
+	$sources_query = 'SELECT * FROM `' . CALENDAR_SOURCES_TABLE . '`';
+	$sources_handle = $db->sql_query($sources_query);
+	if ($db->error[$sources_handle] === 1) {
+		$tab_content['import'] .= 'Failed to read sources.<br />'."\n";
 	} else {
-		$tab_content['import'] .= '<table class="admintable">'."\n";
-		$tab_content['import'] .= '<tr><th>Source</th><th colspan="2"></th></th>'."\n";
-		for ($i = 1; $i <= $num_sources; $i++) {
-			$source = $db->sql_fetch_assoc($sources_handle);
-			$tab_content['import'] .= '<tr><td>'.stripslashes($source['desc']).'</td>
-				<td><a href="?module=calendar_import&amp;id='.$source['id'].'">Import</a></td><td><a href="?module=calendar&amp;action=delete_source&amp;id='.$source['id'].'">Delete</a></td></tr>'."\n";
+		$num_sources = $db->sql_num_rows($sources_handle);
+		if ($num_sources == 0) {
+			$tab_content['import'] .= 'No sources available. Please add a new source.<br />'."\n";
+		} else {
+			$tab_content['import'] .= '<table class="admintable">'."\n";
+			$tab_content['import'] .= '<tr><th>Source</th><th colspan="2"></th></th>'."\n";
+			for ($i = 1; $i <= $num_sources; $i++) {
+				$source = $db->sql_fetch_assoc($sources_handle);
+				$tab_content['import'] .= '<tr><td>'.stripslashes($source['desc']).'</td>
+					<td><a href="?module=calendar_import&amp;id='.$source['id'].'">Import</a></td><td><a href="?module=calendar&amp;action=delete_source&amp;id='.$source['id'].'">Delete</a></td></tr>'."\n";
+			}
+			$tab_content['import'] .= '</table>'."\n";
 		}
-		$tab_content['import'] .= '</table>'."\n";
 	}
-}
 
 // ----------------------------------------------------------------------------
 
-$tab_content['import'] .= '<h1>Add Source</h1>';
-$add_src_form = new form;
-$add_src_form->set_method('post');
-$add_src_form->set_target('?module=calendar&amp;action=new_source');
-$add_src_form->add_textbox('desc','Description');
-$add_src_form->add_textbox('url','Location');
-$add_src_form->add_submit('submit','Add Source');
-$tab_content['import'] .= $add_src_form;
+	$tab_content['import'] .= '<h1>Add Source</h1>';
+	$add_src_form = new form;
+	$add_src_form->set_method('post');
+	$add_src_form->set_target('?module=calendar&amp;action=new_source');
+	$add_src_form->add_textbox('desc','Description');
+	$add_src_form->add_textbox('url','Location');
+	$add_src_form->add_submit('submit','Add Source');
+	$tab_content['import'] .= $add_src_form;
 
-$tab_layout->add_tab('Import Entries',$tab_content['import']);
+	$tab_layout->add_tab('Import Entries',$tab_content['import']);
+}
 
 $content .= $tab_layout;
 ?>

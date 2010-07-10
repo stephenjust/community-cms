@@ -3,7 +3,7 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,6 +11,12 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
+
+if (!$acl->check_permission('adm_poll_results')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
+}
+
 $content = '<h1>Poll Results</h1>';
 $question_query = 'SELECT * FROM ' . POLL_QUESTION_TABLE . '
 	WHERE question_id = '.addslashes($_GET['id']).' LIMIT 1';

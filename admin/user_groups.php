@@ -41,6 +41,7 @@ function permission_list($group = 0) {
 		'calendar_settings',
 		'adm_filemanager',
 		'adm_log_view',
+		'log_clear',
 		'adm_config_view');
 	$return .= permission_list_table($permission_list,$group,'Maintenance/Settings',$perm_list);
 
@@ -49,6 +50,13 @@ function permission_list($group = 0) {
 		'block_create',
 		'block_delete');
 	$return .= permission_list_table($permission_list,$group,'Blocks',$perm_list);
+
+	// Calendar
+	$perm_list = array('adm_calendar',
+		'adm_calendar_edit_date',
+		'adm_calendar_import',
+		'adm_calendar_locations');
+	$return .= permission_list_table($permission_list,$group,'Calendar',$perm_list);
 
 	// Contacts
 	$perm_list = array('adm_contacts_manage');
@@ -84,6 +92,12 @@ function permission_list($group = 0) {
 		'adm_page_message_edit',
 		'adm_page_message_new');
 	$return .= permission_list_table($permission_list,$group,'Page Messages',$perm_list);
+
+	// Polls
+	$perm_list = array('adm_poll_manager',
+		'adm_poll_new',
+		'adm_poll_results');
+	$return .= permission_list_table($permission_list,$group,'Polls',$perm_list);
 
 	// Users (and groups)
 	$perm_list = array('adm_user',
