@@ -49,17 +49,24 @@ for ($i = 1; $i <= $nl_list_rows; $i++) {
 	$current_row[] = strip_tags(stripslashes($nl_list['label']));
 	$current_row[] = $months[$nl_list['month']-1];
 	$current_row[] = $nl_list['year'];
-	$current_row[] = '<a href="?module=newsletter&amp;action=delete&amp;id='
-		.$nl_list['id'].'&amp;page='.$page_id.'">'
-		.'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
-		.'height="16px" border="0px" /></a>';
+	if ($acl->check_permission('newsletter_delete')) {
+		$current_row[] = '<a href="?module=newsletter&amp;action=delete&amp;id='
+			.$nl_list['id'].'&amp;page='.$page_id.'">'
+			.'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
+			.'height="16px" border="0px" /></a>';
+	}
 	$current_row[] = '<a href="?module=newsletter&amp;action=edit&amp;id='
 		.$nl_list['id'].'"><img src="./admin/templates/default/images/edit.png" '
 		.'alt="Edit" width="16px" height="16px" border="0px" /></a>';
 	$list_rows[] = $current_row;
 } // FOR
 
-$content = create_table(array('Label','Month','Year','',''),$list_rows);
+$label_list = array('Label','Month','Year');
+if ($acl->check_permission('newsletter_delete')) {
+	$label_list[] = 'Delete';
+}
+$label_list[] = 'Edit';
+$content = create_table($label_list,$list_rows);
 
 echo $content;
 

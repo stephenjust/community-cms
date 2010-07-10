@@ -58,6 +58,12 @@ function permission_list($group = 0) {
 		'news_fe_manage');
 	$return .= permission_list_table($permission_list,$group,'News',$perm_list);
 
+	// Newsletters
+	$perm_list = array('adm_newsletter',
+		'newsletter_create',
+		'newsletter_delete');
+	$return .= permission_list_table($permission_list,$group,'Newsletters',$perm_list);
+
 	// Pages
 	$perm_list = array('adm_page',
 		'page_set_home',

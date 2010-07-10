@@ -12,9 +12,21 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+if (!$acl->check_permission('adm_newsletter')) {
+	$content = 'You do not have the necessary permissions to access this module.<br />';
+	return true;
+}
+
 function delete_newsletter($id) {
+	global $acl;
 	global $db;
 	global $debug;
+
+	// Check permission
+	if (!$acl->check_permission('newsletter_delete')) {
+		return false;
+	}
+
 	// Validate parameters
 	if (!is_numeric($id)) {
 		$debug->add_trace('Invalid newsletter ID',true,'delete_newsletter()');
@@ -56,6 +68,10 @@ switch ($_GET['action']) {
 
 		break;
 	case 'new':
+		if (!$acl->check_permission('newsletter_create')) {
+			$content .= '<span class="errormessage">You do not have the necessary permissions to create a new newsletter.</span><br />';
+			break;
+		}
 		$_POST['file_list'] = (isset($_POST['file_list'])) ? $_POST['file_list'] : NULL;
 		$label = addslashes($_POST['label']);
 		if (strlen($_POST['file_list']) <= 3) {
@@ -185,19 +201,21 @@ $tab_layout->add_tab('Manage Newsletters',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-$form = new form;
-$form->set_target('admin.php?module=newsletter&amp;action=new');
-$form->set_method('post');
-$form->add_textbox('label','Label');
-$form->add_file_list('file','File','newsletters');
-$form->add_file_upload('upload');
-$form->add_select('month','Month',array(1,2,3,4,5,6,7,8,9,10,11,12),array('January',
-	'February','March','April','May','June','July','August','September','October',
-	'November','December'),date('m'));
-$form->add_textbox('year','Year',date('Y'),'maxlength="4" size="4"');
-$form->add_page_list('page','Page',2);
-$form->add_submit('submit','Create Newsletter');
-$tab_content['create'] = $form;
-$tab_layout->add_tab('Create Newsletter',$tab_content['create']);
+if ($acl->check_permission('newsletter_create')) {
+	$form = new form;
+	$form->set_target('admin.php?module=newsletter&amp;action=new');
+	$form->set_method('post');
+	$form->add_textbox('label','Label');
+	$form->add_file_list('file','File','newsletters');
+	$form->add_file_upload('upload');
+	$form->add_select('month','Month',array(1,2,3,4,5,6,7,8,9,10,11,12),array('January',
+		'February','March','April','May','June','July','August','September','October',
+		'November','December'),date('m'));
+	$form->add_textbox('year','Year',date('Y'),'maxlength="4" size="4"');
+	$form->add_page_list('page','Page',2);
+	$form->add_submit('submit','Create Newsletter');
+	$tab_content['create'] = $form;
+	$tab_layout->add_tab('Create Newsletter',$tab_content['create']);
+}
 $content .= $tab_layout;
 ?>
