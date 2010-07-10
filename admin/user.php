@@ -3,13 +3,18 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
+}
+
+if (!$acl->check_permission('adm_user')) {
+	$content .= '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
 }
 
 $content = NULL;
@@ -56,6 +61,8 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		$rowstyle = 'row1';
 	}
 }
-$content .= '</table><br />
-<a href="admin.php?module=user_create">Add User</a>';
+$content .= '</table><br />';
+if ($acl->check_permission('adm_user_create')) {
+	$content .= '<a href="admin.php?module=user_create">Add User</a>';
+}
 ?>

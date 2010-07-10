@@ -29,6 +29,7 @@ function permission_list($group = 0) {
 		'admin_access',
 		'set_permissions',
 		'show_fe_errors',
+		'log_post_custom_message',
 		'adm_help',
 		'adm_feedback');
 	$return .= permission_list_table($permission_list,$group,'General',$perm_list);
@@ -71,7 +72,10 @@ function permission_list($group = 0) {
 	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
 
 	// Users (and groups)
-	$perm_list = array('adm_user_groups',
+	$perm_list = array('adm_user',
+		'adm_user_create',
+		'adm_user_edit',
+		'adm_user_groups',
 		'group_create');
 	$return .= permission_list_table($permission_list,$group,'Users',$perm_list);
 
