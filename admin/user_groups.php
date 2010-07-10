@@ -50,6 +50,14 @@ function permission_list($group = 0) {
 		'block_delete');
 	$return .= permission_list_table($permission_list,$group,'Blocks',$perm_list);
 
+	// Contacts
+	$perm_list = array('adm_contacts_manage');
+	$return .= permission_list_table($permission_list,$group,'Contacts',$perm_list);
+
+	// Image Galleries
+	$perm_list = array('adm_gallery_manager');
+	$return .= permission_list_table($permission_list,$group,'Image Galleries',$perm_list);
+
 	// News
 	$perm_list = array('adm_news',
 		'adm_news_edit_article',

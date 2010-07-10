@@ -14,6 +14,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 $content = NULL;
 global $debug;
 
+if (!$acl->check_permission('adm_gallery_manager')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
+}
+
 // ----------------------------------------------------------------------------
 
 /**

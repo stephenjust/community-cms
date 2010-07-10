@@ -12,6 +12,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+if (!$acl->check_permission('adm_contacts_manage')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
+}
+
 $content = NULL;
 $tab_layout = new tabs;
 
