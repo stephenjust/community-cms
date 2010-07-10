@@ -79,6 +79,12 @@ function permission_list($group = 0) {
 		'page_order');
 	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
 
+	// Page Messages
+	$perm_list = array('adm_page_message',
+		'adm_page_message_edit',
+		'adm_page_message_new');
+	$return .= permission_list_table($permission_list,$group,'Page Messages',$perm_list);
+
 	// Users (and groups)
 	$perm_list = array('adm_user',
 		'adm_user_create',

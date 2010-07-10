@@ -3,13 +3,18 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
+}
+
+if (!$acl->check_permission('adm_page_message')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
 }
 
 $content = NULL;
@@ -79,13 +84,13 @@ while ($i <= $db->sql_num_rows($page_message_handle)) {
 		</tr>';
 	$i++;
 }
-$tab_content['manage'] .= '<tr>
-<td colspan="3">
-<form method="post" action="?module=page_message_new&amp;page='.(int)$_POST['page'].'">
-<input type="submit" value="New Page Message" />
-</form>
-</td>
-</tr></table>';
+if ($acl->check_permission('page_message_new')) {
+	$tab_content['manage'] .= '<tr><td colspan="3">
+		<form method="post" action="?module=page_message_new&amp;page='.(int)$_POST['page'].'">
+		<input type="submit" value="New Page Message" />
+		</form></td></tr>';
+}
+$tab_content['manage'] .= '</table>';
 $tab_layout->add_tab('Manage Page Messages',$tab_content['manage']);
 $content .= $tab_layout;
 ?>
