@@ -38,8 +38,19 @@ class news_item {
 		global $acl;
 		global $db;
 		global $debug;
-		$article_query = 'SELECT * FROM ' . NEWS_TABLE . '
-			WHERE id = '.$this->article_id.' LIMIT 1';
+
+		if ($acl->check_permission('news_fe_show_unpublished')) {
+			$article_query = 'SELECT *
+				FROM `'.NEWS_TABLE.'`
+				WHERE `id` = '.$this->article_id.'
+				LIMIT 1';
+		} else {
+			$article_query = 'SELECT *
+				FROM `'.NEWS_TABLE.'`
+				WHERE `id` = '.$this->article_id.'
+				AND	`publish` = 1
+				LIMIT 1';
+		}
 		$article_handle = $db->sql_query($article_query);
 		if ($this->template == 'article_page') {
 			if ($db->error[$article_handle] === 1) {
@@ -122,7 +133,12 @@ class news_item {
 			$template_article->replace_range('edit_bar',NULL);
 		}
 
-		$template_article->article_title = '<a href="view.php?article_id='.$article['id'].'" target="_blank">'.stripslashes($article['name']).'</a>';
+		$article_title = stripslashes($article['name']);
+		if ($article['publish'] == 0) {
+			$article_title .= ' [NOT PUBLISHED]';
+		}
+
+		$template_article->article_title = '<a href="view.php?article_id='.$article['id'].'" target="_blank">'.$article_title.'</a>';
 		$template_article->article_title_nolink = stripslashes($article['name']);
 		$template_article->article_content = stripslashes($article['description']);
 		$template_article->article_image = $picture;

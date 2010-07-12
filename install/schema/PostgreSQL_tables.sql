@@ -176,6 +176,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->news" (
 	"date_edited" timestamp NULL default NULL,
 	"image" text,
 	"showdate" integer NOT NULL default '1',
+	"publish" integer NOT NULL default '1',
 	PRIMARY KEY ("id")
 );
 SELECT setval('<!-- $DB_PREFIX$ -->news_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->news"));

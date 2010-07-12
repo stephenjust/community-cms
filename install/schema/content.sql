@@ -41,6 +41,8 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 ('news_delete','Delete Articles','Allow a user to delete news articles',0),
 ('news_edit','Edit Articles','Allow a user to edit news articles',0),
 ('news_fe_manage','Manage News from Front-End','Allow a user to manage news articles from the front-end',0),
+('news_fe_show_unpublished','Show Unpublished News on Site','Allow a user to see unpublished articles from the site front-end',0),
+('news_publish','Publish/Unpublish Articles','Allow a user to publish or unpublish news articles',0),
 ('newsletter_create','Create Newsletter','Allow a user to create a new newsletter',0),
 ('newsletter_delete','Delete Newsletter','Allow a user to delete a newsletter',0),
 ('show_fe_errors','Show Front-End Errors','Allow a user to view error messages in the CMS front-end that would normally be hidden from users',0),

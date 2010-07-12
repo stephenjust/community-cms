@@ -11,8 +11,16 @@ $text_block = new block;
 $text_block->block_id = $block_info['id'];
 $return = NULL;
 $text_block->get_block_information();
-$text_query = 'SELECT * FROM ' . NEWS_TABLE . '
-	WHERE id = '.$text_block->attribute['article_id'].' ORDER BY id DESC';
+if ($acl->check_permission('news_fe_show_unpublished')) {
+	$text_query = 'SELECT * FROM ' . NEWS_TABLE . '
+		WHERE id = '.$text_block->attribute['article_id'].'
+		ORDER BY id DESC';
+} else {
+	$text_query = 'SELECT * FROM ' . NEWS_TABLE . '
+		WHERE id = '.$text_block->attribute['article_id'].'
+		AND `publish` = 1
+		ORDER BY id DESC';
+}
 $text_handle = $db->sql_query($text_query);
 if($db->error[$text_handle] === 1) {
 	if ($acl->check_permission('show_fe_errors')) {

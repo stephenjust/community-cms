@@ -16,6 +16,7 @@ if (!defined('SECURITY')) {
 }
 
 function get_article_list($page,$start = 1) {
+	global $acl;
 	global $db;
 	global $debug;
 
@@ -31,9 +32,18 @@ function get_article_list($page,$start = 1) {
 	$page = (int)$page;
 
 	$first_date = NULL;
-	$query = 'SELECT `id` FROM `' . NEWS_TABLE . '`
-		WHERE `page` = '.$page.' ORDER BY `priority` DESC, `date` DESC, `id` DESC
-		LIMIT '.get_config('news_num_articles').' OFFSET '.$start.'';
+	if ($acl->check_permission('news_fe_show_unpublished')) {
+		$query = 'SELECT `id` FROM `' . NEWS_TABLE . '`
+			WHERE `page` = '.$page.'
+			ORDER BY `priority` DESC, `date` DESC, `id` DESC
+			LIMIT '.get_config('news_num_articles').' OFFSET '.$start.'';
+	} else {
+		$query = 'SELECT `id` FROM `' . NEWS_TABLE . '`
+			WHERE `page` = '.$page.'
+			AND `publish` = 1
+			ORDER BY `priority` DESC, `date` DESC, `id` DESC
+			LIMIT '.get_config('news_num_articles').' OFFSET '.$start.'';
+	}
 	$handle = $db->sql_query($query);
 
 	if ($db->sql_num_rows($handle) == 0) {
@@ -105,8 +115,18 @@ if (isset($_GET['article'])) {
 		return $return.' ';
 	}
 	$article_id = (int)$_GET['article'];
-	$article_page_query = 'SELECT `page` FROM `'.NEWS_TABLE.'`
-		WHERE `id` = '.$article_id.' LIMIT 1';
+	if ($acl->check_permission('news_fe_show_unpublished')) {
+		$article_page_query = 'SELECT `page`
+			FROM `'.NEWS_TABLE.'`
+			WHERE `id` = '.$article_id.'
+			LIMIT 1';
+	} else {
+		$article_page_query = 'SELECT `page`
+			FROM `'.NEWS_TABLE.'`
+			WHERE `id` = '.$article_id.'
+			AND `publish` = 1
+			LIMIT 1';
+	}
 	$article_page_handle = $db->sql_query($article_page_query);
 	if ($db->error[$article_page_handle] === 1) {
 		$debug->add_trace('Failed to look up article\'s page in the database',true,'news.php');
