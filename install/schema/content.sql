@@ -48,6 +48,7 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 ('page_order','Change Page Order','Allow a user to rearrange pages on the CMS menu',0),
 ('pagegroupedit-1','Edit Page Group \'Default Group\'','Allow user to edit pages in the group \'Default Group\'',0),
 ('user_create','Create User','Allow a user to create new users',0),
+('user_delete','Delete User','Allow a user to delete other users',0),
 ('group_create','Create User Groups','Allow a user to create a new user group',0);;
 INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
 (0, 'Default Category', 'red', ''),

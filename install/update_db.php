@@ -284,6 +284,7 @@ switch ($db_version) {
 			(\'page_order\',\'Change Page Order\',\'Allow a user to rearrange pages on the CMS menu\',0),
 			(\'group_create\',\'Create User Groups\',\'Allow a user to create a new user group\',0),
 			(\'user_create\',\'Create User\',\'Allow a user to create new users\',0),
+			(\'user_delete\',\'Delete User\',\'Allow a user to delete other users\',0),
 			(\'pagegroupedit-1\',\'Edit Page Group \\\'Default Group\\\'\',\'Allow user to edit pages in the group \\\'Default Group\\\'\',0)';
 
 		// Get old news configuration

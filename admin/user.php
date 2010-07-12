@@ -20,8 +20,12 @@ if (!$acl->check_permission('adm_user')) {
 $content = NULL;
 switch ($_GET['action']) {
 	case 'delete':
+		if (!$acl->check_permission('user_delete')) {
+			$content .= '<span class="errormessage">You do not have the necessary permissions to delete a user.</span><br />';
+			break;
+		}
 		if ($_GET['id'] == 1) {
-			$content .= 'Cannot delete Administrator.<br />';
+			$content .= '<span class="errormessage">Cannot delete Administrator.</span><br />';
 			break;
 		}
 		$delete_user_query = 'DELETE FROM ' . USER_TABLE . '
@@ -138,13 +142,19 @@ $tab_layout = new tabs;
 // ----------------------------------------------------------------------------
 
 $tab_content['manage'] = '<table class="admintable">
-<tr><th>ID</th><th>Username</th><th width="350">Name:</th><th colspan="2">&nbsp;</th></tr>';
+<tr><th>ID</th><th>Username</th><th width="350">Name</th>';
+$cols = 4;
+if ($acl->check_permission('user_delete')) {
+	$tab_content['manage'] .= '<th></th>';
+	$cols++;
+}
+$tab_content['manage'] .= "<th></th></tr>\n";
 $page_list_query = 'SELECT * FROM ' . USER_TABLE . '
 	ORDER BY realname ASC';
 $page_list_handle = $db->sql_query($page_list_query);
 $page_list_rows = $db->sql_num_rows($page_list_handle);
 if($page_list_rows == 0) {
-	$tab_content['manage'] .= '<tr class="row1"><td colspan="5">An error has occured. No users were found.</td></tr>';
+	$tab_content['manage'] .= '<tr class="row1"><td colspan="'.$cols.'">An error has occured. No users were found.</td></tr>';
 }
 $rowstyle = 'row1';
 for ($i = 1; $i <= $page_list_rows; $i++) {
@@ -152,9 +162,11 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 	$tab_content['manage'] .= '<tr class="'.$rowstyle.'">
 		<td>'.$page_list['id'].'</td>
 		<td>'.$page_list['username'].'</td>
-		<td>'.stripslashes($page_list['realname']).'</td>
-		<td><a href="?module=user&action=delete&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
-		<td><a href="?module=user_edit&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
+		<td>'.stripslashes($page_list['realname']).'</td>';
+	if ($acl->check_permission('user_delete')) {
+		$tab_content['manage'] .= '<td><a href="?module=user&action=delete&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>';
+	}
+	$tab_content['manage'] .= '<td><a href="?module=user_edit&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 		</tr>';
 	if ($rowstyle == 'row1') {
 		$rowstyle = 'row2';
@@ -163,7 +175,7 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 	}
 }
 $tab_content['manage'] .= '</table>';
-$tab_layout->add_tab('Manage',$tab_content['manage']);
+$tab_layout->add_tab('Manage Users',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
