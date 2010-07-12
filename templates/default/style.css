@@ -223,6 +223,17 @@ div.news_edit_bar img {
 	border: 0px;
 	padding: 2px;
 }
+span.news_not_published_label {
+	background: #FFEEEE;
+	border: 1px solid #990000;
+	color: #990000;
+	font-size: x-small;
+	font-family: Arial, sans-serif;
+	padding-left: 2px;
+	padding-right: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+}
 
 /*
 CONTACTS

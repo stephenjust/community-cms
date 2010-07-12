@@ -135,7 +135,7 @@ class news_item {
 
 		$article_title = stripslashes($article['name']);
 		if ($article['publish'] == 0) {
-			$article_title .= ' [NOT PUBLISHED]';
+			$article_title .= ' <span class="news_not_published_label">NOT PUBLISHED</span>';
 		}
 
 		$template_article->article_title = '<a href="view.php?article_id='.$article['id'].'" target="_blank">'.$article_title.'</a>';
