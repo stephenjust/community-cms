@@ -265,7 +265,6 @@ switch ($db_version) {
 			(\'adm_poll_new\',\'Create Poll\',\'Allow a user to create a new poll\',0),
 			(\'adm_poll_results\',\'Poll Results\',\'Allow a user to see the results of polls\',0),
 			(\'adm_user\',\'User Module\',\'Allow a user to access the user manager module\',0),
-			(\'adm_user_create\',\'New User Module\',\'Allow a user to access the new user module\',0),
 			(\'adm_user_edit\',\'Edit User Module\',\'Allow a user to access the edit user module\',0),
 			(\'adm_user_groups\',\'User Groups Module\',\'Allow a user to access the user groups module\',0),
 			(\'adm_log_view\',\'View Logs\',\'Allow a user to access the admin activity logs\',0),
@@ -284,6 +283,7 @@ switch ($db_version) {
 			(\'page_set_home\',\'Change Default Page\',\'Allow a user to change the default CMS page\',0),
 			(\'page_order\',\'Change Page Order\',\'Allow a user to rearrange pages on the CMS menu\',0),
 			(\'group_create\',\'Create User Groups\',\'Allow a user to create a new user group\',0),
+			(\'user_create\',\'Create User\',\'Allow a user to create new users\',0),
 			(\'pagegroupedit-1\',\'Edit Page Group \\\'Default Group\\\'\',\'Allow user to edit pages in the group \\\'Default Group\\\'\',0)';
 
 		// Get old news configuration

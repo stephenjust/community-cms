@@ -49,8 +49,7 @@
 		<link label="Edit Page Message" module="page_message_edit" acl="adm_page_message_edit" hide="1"></link>
 	</category>
 	<category name="Users">
-		<link label="New User" module="user_create" acl="adm_user_create"></link>
-		<link label="User List" module="user" acl="adm_user"></link>
+		<link label="User Manager" module="user" acl="adm_user"></link>
 		<link label="Edit User" module="user_edit" acl="adm_user_edit" hide="1"></link>
 		<link label="Groups" module="user_groups" acl="adm_user_groups"></link>
 	</category>

@@ -101,7 +101,7 @@ function permission_list($group = 0) {
 
 	// Users (and groups)
 	$perm_list = array('adm_user',
-		'adm_user_create',
+		'user_create',
 		'adm_user_edit',
 		'adm_user_groups',
 		'group_create');
