@@ -156,6 +156,7 @@ switch ($db_version) {
 			('cookie_path','/'),
 			('db_version', '0.03'),
 			('footer','".addslashes($old_config['footer'])."'),
+			('gallery_app','built-in'),
 			('home','{$old_config['home']}'),
 			('site_active','{$old_config['active']}'),
 			('site_name','".addslashes($old_config['name'])."'),

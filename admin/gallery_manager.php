@@ -279,7 +279,9 @@ switch (get_config('gallery_app')) {
 		if (file_exists($example_file)) {
 			$debug->add_trace('The SimpleViewer example folder still exists',false,'gallery_manager.php');
 		}
+		// Continue with same procedure as 'built-in'...
 
+	case 'built-in':
 		$gallery_list_query = 'SELECT * FROM `'.GALLERY_TABLE.'` ORDER BY `id` DESC';
 		$gallery_list_handle = $db->sql_query($gallery_list_query);
 		if ($db->error[$gallery_list_handle] === 1) {

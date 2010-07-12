@@ -65,6 +65,7 @@ INSERT INTO `<!-- $DB_PREFIX$ -->config` (`config_name`, `config_value`) VALUES
 ('cookie_path','/'),
 ('db_version', '0.05'),
 ('footer','<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=223968&amp;type=1" width="88" height="31" border="0" type="image/png" alt="SourceForge.net Logo" /></a><br />Powered by Community CMS'),
+('gallery_app','built-in'),
 ('home','1'),
 ('news_default_date_setting','1'),
 ('news_num_articles','10'),

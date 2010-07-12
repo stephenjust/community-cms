@@ -70,6 +70,12 @@ class gallery {
 
 	function __toString() {
 		switch ($this->engine) {
+			case 'built-in':
+				return '<div id="image_gallery-'.$this->id.'" class="image_gallery">
+					<script type="text/javascript">gallery_load(\''.$this->id.'\');</script>
+					<noscript>You need to enable Javascript to view this image gallery.</noscript>
+					</div>';
+				break;
 			case 'simpleviewer':
 				return '<object width="100%" height="450px">
 					<param name="movie" value="'.get_config('gallery_dir').'/web/Main.swf?galleryURL='.$this->info_file.'"></param>

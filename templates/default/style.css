@@ -414,6 +414,42 @@ span.newsletter_year {
 	font-style: italic;
 }
 
+/*
+IMAGE GALLERY (BUILT-IN)
+*/
+div.image_gallery {
+	display: block;
+	border: 0px;
+}
+div.image_gallery > div.gallery_nav {
+	display: block;
+	padding: 2px;
+	text-align: center;
+}
+div.image_gallery > div.gallery_nav > div.nav_image {
+	display: inline-block;
+	height: 75px;
+	width: 75px;
+	padding: 0px;
+	overflow: hidden;
+}
+div.image_gallery > div.gallery_nav > div.nav_image > img {
+	border: 0px;
+	cursor: pointer;
+	margin: 0px;
+}
+div.image_gallery > div.gallery_body {
+	width: 100%;
+	min-height: 200px;
+	text-align: center;
+	vertical-align: middle;
+	font-size: larger;
+	color: #666666;
+}
+div.image_gallery > div.gallery_body > img {
+	max-width: 100%;
+}
+
 div.errormessage {
 	color: #FF0000;
 	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;

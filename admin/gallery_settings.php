@@ -11,6 +11,12 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
+
+if (!$acl->check_permission('adm_gallery_settings')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
+}
+
 $content = NULL;
 
 // ----------------------------------------------------------------------------
@@ -28,8 +34,8 @@ $form->set_target('admin.php?module=gallery_settings&amp;action=save');
 $form->set_method('post');
 $form->add_select('gallery_app',
 		'Gallery Type',
-		array('disabled','simpleviewer'),
-		array('Disabled','SimpleViewer'),
+		array('built-in','simpleviewer'),
+		array('Built-In','SimpleViewer'),
 		get_config('gallery_app'));
 $form->add_textbox('gallery_dir',
 		'Gallery Directory',
