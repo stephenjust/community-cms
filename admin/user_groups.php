@@ -72,7 +72,9 @@ function permission_list($group = 0) {
 		'news_create',
 		'news_delete',
 		'news_edit',
-		'news_fe_manage');
+		'news_publish',
+		'news_fe_manage',
+		'news_fe_show_unpublished');
 	$return .= permission_list_table($permission_list,$group,'News',$perm_list);
 
 	// Newsletters
