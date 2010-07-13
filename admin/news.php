@@ -11,8 +11,8 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
-$root = "./";
 $content = NULL;
+include(ROOT.'functions/news.php');
 
 if (!$acl->check_permission('adm_news')) {
 	$content .= '<span class="errormessage">You do not have the necessary permissions to access this module.</span>';
@@ -40,234 +40,6 @@ function get_selected_items($prefix = 'item') {
 		$items[] = str_replace($prefix.'_',NULL,$item_keys[$i]);
 	}
 	return $items;
-}
-
-// ----------------------------------------------------------------------------
-
-/**
- * delete_article - Deletes one or more news articles
- * @global object $acl
- * @global object $db
- * @global object $debug
- * @param mixed $article
- * @return boolean
- */
-function delete_article($article) {
-	global $acl;
-	global $db;
-	global $debug;
-
-	if (!$acl->check_permission('news_delete')) {
-		return false;
-	}
-
-	$id = array();
-	if (is_numeric($article)) {
-		$id[] = $article;
-	} elseif (is_array($article)) {
-		$id = $article;
-	}
-	unset($article);
-
-	for ($i = 0; $i < count($id); $i++) {
-		$current = $id[$i];
-
-		// Check data type
-		if (!is_numeric($current)) {
-			$debug->add_trace('Given non-numeric input',false,'delete_article');
-			unset($current);
-			continue;
-		}
-
-		// Read article information for log
-		$info_query = 'SELECT `news`.`id`,`news`.`name` FROM
-			`' . NEWS_TABLE . '` `news` WHERE
-			`news`.`id` = '.$current.' LIMIT 1';
-		$info_handle = $db->sql_query($info_query);
-		if ($db->error[$info_handle] === 1) {
-			$debug->add_trace('Query failed',true,'delete_article');
-			return false;
-		}
-		if ($db->sql_num_rows($info_handle) === 0) {
-			$debug->add_trace('Article not found',true,'delete_article');
-			return false;
-		}
-		$info = $db->sql_fetch_assoc($info_handle);
-
-		// Delete article
-        $delete_query = 'DELETE FROM `' . NEWS_TABLE . '`
-			WHERE `id` = '.$current;
-        $delete = $db->sql_query($delete_query);
-        if ($db->error[$delete] === 1) {
-            return false;
-        } else {
-            log_action('Deleted news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
-        }
-
-		unset($delete_query);
-		unset($delete);
-		unset($info_query);
-		unset($info_handle);
-		unset($info);
-		unset($current);
-	}
-	return true;
-}
-
-// ----------------------------------------------------------------------------
-
-function move_article($article,$new_location) {
-	global $db;
-	global $debug;
-
-	$id = array();
-	if (is_numeric($article)) {
-		$id[] = $article;
-	} elseif (is_array($article)) {
-		$id = $article;
-	}
-	unset($article);
-
-	if (!is_numeric($new_location)) {
-		$debug->add_trace('Given non-numeric input for new location',true,'move_article');
-	}
-
-	for ($i = 0; $i < count($id); $i++) {
-		$current = $id[$i];
-
-		// Check data type
-		if (!is_numeric($current)) {
-			$debug->add_trace('Given non-numeric input',true,'move_article');
-			unset($current);
-			continue;
-		}
-
-		// Read article information for log
-		$info_query = 'SELECT `news`.`id`,`news`.`name` FROM
-			`' . NEWS_TABLE . '` `news` WHERE
-			`news`.`id` = '.$current.' LIMIT 1';
-		$info_handle = $db->sql_query($info_query);
-		if ($db->error[$info_handle] === 1) {
-			$debug->add_trace('Query failed',true,'move_article');
-			return false;
-		}
-		if ($db->sql_num_rows($info_handle) === 0) {
-			$debug->add_trace('Article not found',true,'move_article');
-			return false;
-		}
-		$info = $db->sql_fetch_assoc($info_handle);
-
-		// Move article
-        $move_query = 'UPDATE `' . NEWS_TABLE . '`
-			SET `page` = '.$new_location.'
-			WHERE `id` = '.$current;
-        $move = $db->sql_query($move_query);
-        if ($db->error[$move] === 1) {
-            return false;
-        } else {
-            log_action('Moved news article \''.stripslashes($info['name']).'\'');
-        }
-
-		unset($move_query);
-		unset($move);
-		unset($info_query);
-		unset($info_handle);
-		unset($info);
-		unset($current);
-	}
-	return true;
-}
-
-// ----------------------------------------------------------------------------
-
-function copy_article($article,$new_location) {
-	global $db;
-	global $debug;
-
-	$id = array();
-	if (is_numeric($article)) {
-		$id[] = $article;
-	} elseif (is_array($article)) {
-		$id = $article;
-	}
-	unset($article);
-
-	if (!is_numeric($new_location)) {
-		$debug->add_trace('Given non-numeric input for new location',true,'copy_article');
-	}
-
-	for ($i = 0; $i < count($id); $i++) {
-		$current = $id[$i];
-
-		// Check data type
-		if (!is_numeric($current)) {
-			$debug->add_trace('Given non-numeric input',true,'copy_article');
-			unset($current);
-			continue;
-		}
-
-		// Read article information for log
-		$info_query = 'SELECT * FROM
-			`' . NEWS_TABLE . '` WHERE
-			`id` = '.$current.' LIMIT 1';
-		$info_handle = $db->sql_query($info_query);
-		if ($db->error[$info_handle] === 1) {
-			$debug->add_trace('Query failed',true,'copy_article');
-			return false;
-		}
-		if ($db->sql_num_rows($info_handle) === 0) {
-			$debug->add_trace('Article not found',true,'copy_article');
-			return false;
-		}
-		$info = $db->sql_fetch_assoc($info_handle);
-
-		// Move article
-        $move_query = 'INSERT INTO `' . NEWS_TABLE . '`
-			(`page`,`name`,`description`,`author`,`date`,`date_edited`,`image`,`showdate`)
-			VALUES ('.$new_location.",'{$info['name']}','{$info['description']}','{$info['author']}',
-			'{$info['date']}','{$info['date_edited']}','{$info['image']}',{$info['showdate']})";
-        $move = $db->sql_query($move_query);
-        if ($db->error[$move] === 1) {
-            return false;
-        } else {
-            log_action('Copied news article \''.stripslashes($info['name']).'\'');
-        }
-
-		unset($move_query);
-		unset($move);
-		unset($info_query);
-		unset($info_handle);
-		unset($info);
-		unset($current);
-	}
-	return true;
-}
-
-// ----------------------------------------------------------------------------
-
-function save_priorities($form_array) {
-	global $db;
-
-	if (!is_array($form_array)) {
-		return false;
-	}
-	foreach($form_array AS $key => $value) {
-		if (preg_match('/^pri\-/',$key)) {
-			$key = str_replace('pri-','',$key);
-			$pri_save_query = 'UPDATE `'.NEWS_TABLE.'`
-				SET `priority` = '.(int)$value.'
-				WHERE `id` = '.(int)$key;
-			$pri_save_handle = $db->sql_query($pri_save_query);
-			if ($db->error[$pri_save_handle] === 1) {
-				return false;
-			}
-		}
-		unset($key);
-		unset($value);
-		unset($pri_save_query);
-		unset($pri_save_handle);
-	}
-	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -386,6 +158,23 @@ switch ($_GET['action']) {
 			unset($page_title_handle);
 			unset($page_title_);
 			$content .= 'Successfully added article. <br />'.log_action('Article \''.$title.'\' added to \''.$page_title.'\'');
+		}
+		break;
+
+// ----------------------------------------------------------------------------
+
+	case 'publish':
+		if (!news_publish($_GET['id'])) {
+			$content .= '<span class="errormessage">Failed to publish article.</span><br />'."\n";
+		} else {
+			$content .= 'Successfully published article.<br />'."\n";
+		}
+		break;
+	case 'unpublish':
+		if (!news_publish($_GET['id'],false)) {
+			$content .= '<span class="errormessage">Failed to unpublish article</span><br />'."\n";
+		} else {
+			$content .= 'Successfully unpublished article<br />'."\n";
 		}
 		break;
 }

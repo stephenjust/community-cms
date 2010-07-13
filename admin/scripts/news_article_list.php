@@ -45,7 +45,12 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 	$current_row = array();
 	$current_row[] = '<input type="checkbox" name="item_'.$article_list['id'].'" />';
 	$current_row[] = $article_list['id'];
-	$current_row[] = stripslashes($article_list['name']);
+	$article_title = stripslashes($article_list['name']);
+	if ($article_list['publish'] == 0) {
+		$article_title .= ' (Not published)';
+	}
+	$current_row[] = $article_title;
+	unset($article_title);
 	if ($acl->check_permission('news_delete')) {
 		$current_row[] = '<a href="?module=news&amp;action=delete&amp;id='
 			.$article_list['id'].'&amp;page='.$page_id.'">'
@@ -57,6 +62,13 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 			.$article_list['id'].'"><img src="./admin/templates/default/images/edit.png" '
 			.'alt="Edit" width="16px" height="16px" border="0px" /></a>';
 	}
+	if ($acl->check_permission('news_publish')) {
+		if ($article_list['publish'] == 1) {
+			$current_row[] = '<a href="?module=news&amp;action=unpublish&amp;id='.$article_list['id'].'&amp;page='.$page_id.'">Unpublish</a>';
+		} else {
+			$current_row[] = '<a href="?module=news&amp;action=publish&amp;id='.$article_list['id'].'&amp;page='.$page_id.'">Publish</a>';
+		}
+	}
 	$current_row[] = '<input type="text" size="3" maxlength="11" name="pri-'.$article_list['id'].'" value="'.$article_list['priority'].'" />';
 	$list_rows[] = $current_row;
 } // FOR
@@ -67,6 +79,9 @@ if ($acl->check_permission('news_delete')) {
 }
 if ($acl->check_permission('news_edit')) {
 	$label_array[] = 'Edit';
+}
+if ($acl->check_permission('news_publish')) {
+	$label_array[] = 'Publish';
 }
 $label_array[] = 'Priority';
 $content = create_table($label_array,$list_rows);
