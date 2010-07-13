@@ -2,6 +2,9 @@
  * COMMUNITY CMS ADMIN STYLESHEET
  */
 
+ body {
+	 min-width: 800px;
+}
 #header {
 	background: url('./images/headbg.png') center left;
 	background-color: #505060;
@@ -15,9 +18,10 @@
 div.iconbar {
 	background: #505060;
 	border: 1px solid #9999AA;
+	float: right;
+	right: 3px;
 	padding: 3px;
-	position: absolute;
-	right: 2px;
+	position: relative;
 	text-align: right;
 	top: 2px;
 	z-index: 1000;
