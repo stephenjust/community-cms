@@ -17,7 +17,6 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 ('adm_gallery_manager','Gallery Manager','Allow a user to access the gallery manager module',0),
 ('adm_gallery_settings','Gallery Settings','Allow a user to configure image galleries',0),
 ('adm_news','News Module','Allow a user to access the news article module',0),
-('adm_news_edit_article','News Edit Module','Allow a user to access the news edit module',0),
 ('adm_news_settings','News Settings','Allow a user to configure news settings',0),
 ('adm_newsletter','Newsletter Module','Allow a user to access the newsletter module',0),
 ('adm_page','Page Module','Allow a user to access the page manager module',0),

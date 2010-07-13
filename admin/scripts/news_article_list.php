@@ -58,7 +58,7 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 			.'height="16px" border="0px" /></a>';
 	}
 	if ($acl->check_permission('news_edit')) {
-		$current_row[] = '<a href="?module=news_edit_article&amp;id='
+		$current_row[] = '<a href="?module=news&amp;action=edit&amp;id='
 			.$article_list['id'].'"><img src="./admin/templates/default/images/edit.png" '
 			.'alt="Edit" width="16px" height="16px" border="0px" /></a>';
 	}

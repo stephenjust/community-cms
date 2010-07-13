@@ -17,7 +17,6 @@
 	</category>
 	<category name="News">
 		<link label="Articles" module="news" acl="adm_news"></link>
-		<link label="Edit Article" module="news_edit_article" acl="adm_news_edit_article" hide="1"></link>
 		<link label="Module Settings" module="news_settings" acl="adm_news_settings"></link>
 		<link label="Image Galleries" module="gallery_manager" acl="adm_gallery_manager"></link>
 		<link label="Gallery Settings" module="gallery_settings" acl="adm_gallery_settings"></link>

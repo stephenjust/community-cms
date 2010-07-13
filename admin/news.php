@@ -3,7 +3,7 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -43,6 +43,8 @@ function get_selected_items($prefix = 'item') {
 }
 
 // ----------------------------------------------------------------------------
+
+$tab_layout = new tabs;
 
 switch ($_GET['action']) {
 	default:
@@ -157,7 +159,8 @@ switch ($_GET['action']) {
 			unset($page_title_query);
 			unset($page_title_handle);
 			unset($page_title_);
-			$content .= 'Successfully added article. <br />'.log_action('Article \''.$title.'\' added to \''.$page_title.'\'');
+			$content .= 'Successfully added article. <br />';
+			log_action('Article \''.$title.'\' added to \''.$page_title.'\'');
 		}
 		break;
 
@@ -166,22 +169,121 @@ switch ($_GET['action']) {
 	case 'publish':
 		if (!news_publish($_GET['id'])) {
 			$content .= '<span class="errormessage">Failed to publish article.</span><br />'."\n";
-		} else {
-			$content .= 'Successfully published article.<br />'."\n";
+			break;
 		}
+		$content .= 'Successfully published article.<br />'."\n";
 		break;
 	case 'unpublish':
 		if (!news_publish($_GET['id'],false)) {
 			$content .= '<span class="errormessage">Failed to unpublish article</span><br />'."\n";
-		} else {
-			$content .= 'Successfully unpublished article<br />'."\n";
+			break;
 		}
+		$content .= 'Successfully unpublished article<br />'."\n";
+		break;
+
+	case 'edit':
+		if (!$acl->check_permission('news_edit')) {
+			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
+			break;
+		}
+		if (!isset($_GET['id'])) {
+			break;
+		}
+		if (!is_numeric($_GET['id'])) {
+			$content .= '<span class="errormessage">Invalid article ID.</span><br />';
+			break;
+		}
+		$article_id = (int)$_GET['id'];
+
+		// Get article information
+		$edit_query = 'SELECT * FROM ' . NEWS_TABLE . '
+			WHERE id = '.$article_id.' LIMIT 1';
+		$edit_handle = $db->sql_query($edit_query);
+		if ($db->sql_num_rows($edit_handle) == 0) {
+			$content .= '<span class="errormessage">The article you are trying to edit does not exist.</span><br />';
+			break;
+		}
+		$article_page_group = page_group_news($article_id);
+		if (!$acl->check_permission('pagegroupedit-'.$article_page_group)) {
+			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
+			break;
+		}
+
+		$edit = $db->sql_fetch_assoc($edit_handle);
+		$edit_form = new form;
+		$edit_form->set_method('post');
+		$edit_form->set_target('admin.php?module=news&amp;action=editsave');
+		$edit_form->add_hidden('id',$edit['id']);
+		$edit_form->add_textbox('title','Heading',stripslashes($edit['name']));
+		$edit_form->add_textarea('update_content','Content',stripslashes($edit['description']));
+		$edit_form->add_page_list('page', 'Page', 1, 1, $edit['page']);
+		$edit_form->add_icon_list('image','Image','newsicons',$edit['image']);
+		$edit_form->add_select('date_params','Date',array(0,1,2),
+				array('Hide Date','Show Date','Show Mini'),$edit['showdate']);
+		$edit_form->add_submit('submit','Submit');
+		$tab_layout->add_tab('Edit Article',$edit_form);
+		break;
+
+// ----------------------------------------------------------------------------
+
+	case 'editsave':
+		if (!$acl->check_permission('news_edit')) {
+			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
+			break;
+		}
+		if (!isset($_POST['id'])) {
+			$content .= '<span class="errormessage">Invalid article ID.</span><br />';
+			break;
+		}
+		if (!is_numeric($_POST['id'])) {
+			$content .= '<span class="errormessage">Invalid article ID.</span><br />';
+			break;
+		}
+		$article_id = (int)$_POST['id'];
+
+		// Pre-save checks
+		$edit_query = 'SELECT * FROM ' . NEWS_TABLE . '
+			WHERE id = '.$article_id.' LIMIT 1';
+		$edit_handle = $db->sql_query($edit_query);
+		if ($db->sql_num_rows($edit_handle) == 0) {
+			$content .= '<span class="errormessage">The article you are trying to edit does not exist.</span><br />';
+			break;
+		}
+		$article_page_group = page_group_news($article_id);
+		if (!$acl->check_permission('pagegroupedit-'.$article_page_group)) {
+			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
+			break;
+		}
+
+		// Clean up variables.
+		if (strlen($_POST['image']) <= 3) {
+			$_POST['image'] = NULL;
+		}
+		$edit_content = addslashes(remove_comments($_POST['update_content']));
+		$edit_id = addslashes($_POST['id']);
+		$name = $_POST['title'];
+		$name = str_replace('"','&quot;',$name);
+		$name = str_replace('<','&lt;',$name);
+		$name = str_replace('>','&gt;',$name);
+		$name = addslashes($name);
+		$showdate = (int)$_POST['date_params'];
+		$image = $_POST['image'];
+		$page = (int)$_POST['page'];
+		$edit_article_query = 'UPDATE `' . NEWS_TABLE . "`
+			SET `name`='$name',`description`='$edit_content',`page`='$page',
+			`image`='$image',`date_edited`='".DATE_TIME."',`showdate`='$showdate'
+			WHERE `id` = $edit_id";
+		$edit_article = $db->sql_query($edit_article_query);
+		if ($db->error[$edit_article] === 1) {
+			$content .= '<span class="errormessage">Failed to edit article.</span><br />';
+			break;
+		}
+		$content .= 'Successfully edited article. <br />';
+		log_action('Edited news article \''.$name.'\'');
 		break;
 }
 
 // ----------------------------------------------------------------------------
-
-$tab_layout = new tabs;
 
 $page_list = '<select name="page" id="adm_article_page_list" onChange="update_article_list(\'-\')">';
 $page_query = 'SELECT * FROM `' . PAGE_TABLE . '`

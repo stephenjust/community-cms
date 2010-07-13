@@ -338,20 +338,7 @@ function news_edit_bar($article_id) {
 	global $acl;
 	global $db;
 
-	// Find the correct page group
-	$page_group_query = 'SELECT `page_group`.`id` FROM
-		`'.PAGE_GROUP_TABLE.'` `page_group`,
-		`'.PAGE_TABLE.'` `page`,
-		`'.NEWS_TABLE.'` `news` WHERE
-		`news`.`id` = '.$article_id.' AND
-		`news`.`page` = `page`.`id` AND
-		`page`.`page_group` = `page_group`.`id`';
-	$page_group_handle = $db->sql_query($page_group_query);
-	$page_group = $db->sql_fetch_assoc($page_group_handle);
-	$page_group_id = $page_group['id'];
-	unset($page_group_query);
-	unset($page_group_handle);
-	unset($page_group);
+	$page_group_id = page_group_news($article_id);
 
 	// Make sure the user can edit content in this page group
 	if (!$acl->check_permission('pagegroupedit-'.$page_group_id)) {
@@ -360,7 +347,7 @@ function news_edit_bar($article_id) {
 
 	$return = NULL;
 	if ($acl->check_permission('news_edit') && $acl->check_permission('adm_news_edit_article')) {
-		$return .= '<a href="admin.php?module=news_edit_article&amp;id='.$article_id.'">
+		$return .= '<a href="admin.php?module=news&amp;action=edit&amp;id='.$article_id.'">
 			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" /></a>';
 	}
 

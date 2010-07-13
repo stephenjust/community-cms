@@ -422,4 +422,39 @@ function page_editable($page_id) {
 
 	return false;
 }
+
+/**
+ * page_group_news - Get the page group that a news article belongs to
+ * @global object $db Database connection object
+ * @param integer $article_id News article ID
+ * @return mixed False (on fail) or a page group ID
+ */
+function page_group_news($article_id) {
+	global $db;
+
+	// Validate parameters
+	if (!is_numeric($article_id)) {
+		return false;
+	}
+	$article_id = (int)$article_id;
+
+	// Find the correct page group
+	$query = 'SELECT `page_group`.`id` FROM
+		`'.PAGE_GROUP_TABLE.'` `page_group`,
+		`'.PAGE_TABLE.'` `page`,
+		`'.NEWS_TABLE.'` `news` WHERE
+		`news`.`id` = '.$article_id.' AND
+		`news`.`page` = `page`.`id` AND
+		`page`.`page_group` = `page_group`.`id`';
+	$handle = $db->sql_query($query);
+	if ($db->sql_num_rows($handle) != 1) {
+		return false;
+	}
+	$page_group = $db->sql_fetch_assoc($handle);
+	$id = $page_group['id'];
+	unset($query);
+	unset($handle);
+	unset($page_group);
+	return $id;
+}
 ?>
