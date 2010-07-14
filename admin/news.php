@@ -181,6 +181,8 @@ switch ($_GET['action']) {
 		$content .= 'Successfully unpublished article<br />'."\n";
 		break;
 
+// ----------------------------------------------------------------------------
+
 	case 'edit':
 		if (!$acl->check_permission('news_edit')) {
 			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
