@@ -71,6 +71,7 @@ INSERT INTO `<!-- $DB_PREFIX$ -->config` (`config_name`, `config_value`) VALUES
 ('gallery_app','built-in'),
 ('home','1'),
 ('news_default_date_setting','1'),
+('news_default_publish_value','0'),
 ('news_num_articles','10'),
 ('news_show_author','1'),
 ('news_show_edit_time','0'),

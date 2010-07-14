@@ -20,10 +20,12 @@ if($_GET['action'] == 'save') {
 	$def_date = (int)$_POST['date'];
 	$show_author = (isset($_POST['author'])) ? checkbox($_POST['author']) : 0;
 	$show_edit = (isset($_POST['etime'])) ? checkbox($_POST['etime']) : 0;
+	$def_pub_val = (int)$_POST['default_publish_value'];
 	if (!set_config('news_num_articles',$num_articles) ||
 			!set_config('news_default_date_setting',$def_date) ||
 			!set_config('news_show_author',$show_author) ||
-			!set_config('news_show_edit_time',$show_edit)) {
+			!set_config('news_show_edit_time',$show_edit) ||
+			!set_config('news_default_publish_value',$def_pub_val)) {
 		$content .= 'Failed to update configuration.<br />';
 	} else {
 		$content .= 'Successfully updated configuration.<br />'.
@@ -42,6 +44,7 @@ $form->add_select('date','Default Date View',array(0,1,2),array('Hide Date',
 	'Show Date','Show Mini'),get_config('news_default_date_setting'));
 $form->add_checkbox('author','Show Author',get_config('news_show_author'));
 $form->add_checkbox('etime','Show Edit Time',get_config('news_show_edit_time'));
+$form->add_select('default_publish_value','Articles default to',array(0,1),array('Un-published','Published'),get_config('news_default_publish_value'));
 $form->add_submit('submit','Save Configuration');
 $tab_layout->add_tab('Configure Module',$form);
 $content .= $tab_layout;

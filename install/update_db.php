@@ -309,6 +309,7 @@ switch ($db_version) {
 			VALUES
 			(\'news_num_articles\',\''.$old_nconfig['num_articles'].'\'),
 			(\'news_default_date_setting\',\''.$old_nconfig['default_date_setting'].'\'),
+			(\'news_default_publish_value\',\'0\'),
 			(\'news_show_author\',\''.$old_nconfig['show_author'].'\'),
 			(\'news_show_edit_time\',\''.$old_nconfig['show_edit_time'].'\')';
 		$query[] = 'DROP TABLE `'.$CONFIG['db_prefix'].'news_settings`';

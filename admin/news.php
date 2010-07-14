@@ -137,9 +137,14 @@ switch ($_GET['action']) {
 		if(strlen($image) <= 3) {
 			$image = NULL;
 		}
+		if ($acl->check_permission('news_publish')) {
+			$publish = (int)$_POST['publish'];
+		} else {
+			$publish = (int)get_config('news_default_publish_value');
+		}
 		$new_article_query = 'INSERT INTO `' . NEWS_TABLE . "`
-			(`page`,`name`,`description`,`author`,`image`,`date`,`date_edited`,`showdate`)
-			VALUES ($page,'$title','$article_content','$author','$image','".DATE_TIME."','','$showdate')";
+			(`page`,`name`,`description`,`author`,`image`,`date`,`date_edited`,`showdate`,`publish`)
+			VALUES ($page,'$title','$article_content','$author','$image','".DATE_TIME."','','$showdate',$publish)";
 		$new_article = $db->sql_query($new_article_query);
 		if($db->error[$new_article] === 1) {
 			$content .= 'Failed to add article. <br />';
@@ -383,6 +388,9 @@ if ($acl->check_permission('news_create')) {
 	$form->add_select('date_params','Date Settings',
 			array(0,1,2),array('Hide','Show','Show Mini'),
 			get_config('news_default_date_setting'));
+	if ($acl->check_permission('news_publish')) {
+		$form->add_select('publish','Publish',array(0,1),array('No','Yes'),get_config('news_default_publish_value'));
+	}
 	$form->add_submit('submit','Create Article');
 	$tab_content['create'] = $form;
 	$tab_layout->add_tab('Create Article',$tab_content['create']);
