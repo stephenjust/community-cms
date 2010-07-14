@@ -402,9 +402,14 @@ class form {
 
 	/**
 	 * add_file_upload - Add a button to upload a file
+	 * @global object $acl Permission object
 	 * @param string $name ID for form var
 	 */
 	function add_file_upload($name,$upload_dir = NULL, $gallery = false) {
+		global $acl;
+		if (!$acl->check_permission('file_upload')) {
+			return;
+		}
 		if ($upload_dir == NULL) {
 			$script_file = ROOT.'admin/upload_mini.php';
 		} else {

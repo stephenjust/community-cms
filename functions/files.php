@@ -33,8 +33,19 @@ function load_template_file($filename = 'index.html') {
 
 // ----------------------------------------------------------------------------
 
-// Create file upload form
+/**
+ * file_upload_box - Create a file upload form
+ * @global object $acl
+ * @param integer $show_dirs
+ * @param string $dir
+ * @param string $extra_vars
+ * @return string Form HTML
+ */
 function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
+	global $acl;
+	if (!$acl->check_permission('file_upload')) {
+		return '';
+	}
 	$query_string = $_SERVER['QUERY_STRING'];
 	$query_string = preg_replace('/action=.+\&/',NULL,$query_string);
 	$return = '<form enctype="multipart/form-data"
@@ -87,12 +98,17 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 
 /**
  * file_upload - Handle files uploaded via a form
+ * @global object $acl Permission object
  * @param string $path Directory to store file - special case if = newsicons
  * @param boolean $contentfile File belongs in file/ heirarchy?
  * @param boolean $thumb Generate a thumbnail (75x75) and make original 800x800 (largest)
  * @return string
  */
 function file_upload($path = "", $contentfile = true, $thumb = false) {
+	global $acl;
+	if (!$acl->check_permission('file_upload')) {
+		return '<span class="errormessage">You are not allowed to upload files.</span>';
+	}
 	if ($path != "") {
 		$path .= '/';
 	}

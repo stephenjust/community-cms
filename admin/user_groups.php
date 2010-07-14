@@ -39,7 +39,6 @@ function permission_list($group = 0) {
 		'adm_gallery_settings',
 		'adm_news_settings',
 		'calendar_settings',
-		'adm_filemanager',
 		'adm_log_view',
 		'log_clear',
 		'adm_config_view');
@@ -61,6 +60,12 @@ function permission_list($group = 0) {
 	// Contacts
 	$perm_list = array('adm_contacts_manage');
 	$return .= permission_list_table($permission_list,$group,'Contacts',$perm_list);
+
+	// Files
+	$perm_list = array('adm_filemanager',
+		'file_upload',
+		'file_create_folder');
+	$return .= permission_list_table($permission_list,$group,'Files',$perm_list);
 
 	// Image Galleries
 	$perm_list = array('adm_gallery_manager');

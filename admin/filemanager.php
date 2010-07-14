@@ -3,13 +3,18 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
+}
+
+if (!$acl->check_permission('adm_filemanager')) {
+	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
+	return true;
 }
 
 $content = NULL;
@@ -61,35 +66,39 @@ if ($_GET['action'] == 'saveinfo') {
 
 // Upload file
 if (isset($_GET['upload'])) {
-	$content .= file_upload($_POST['path']);
+	if ($acl->check_permission('file_upload')) {
+		$content .= file_upload($_POST['path']);
+	}
 }
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'new_folder') {
-	$new_folder_name = addslashes($_POST['new_folder_name']);
-	$error = 0;
-	// Validate folder name
-	if (strlen($new_folder_name) > 30) {
-		$content .= 'New folder name too long.<br />';
-		$error = 1;
+	if ($acl->check_permission('file_create_folder')) {
+		$new_folder_name = addslashes($_POST['new_folder_name']);
+		$error = 0;
+		// Validate folder name
+		if (strlen($new_folder_name) > 30) {
+			$content .= 'New folder name too long.<br />';
+			$error = 1;
 		}
-	if(strlen($new_folder_name) < 4) {
-		$content .= 'New folder name too short.<br />';
-		$error = 1;
+		if(strlen($new_folder_name) < 4) {
+			$content .= 'New folder name too short.<br />';
+			$error = 1;
 		}
-	if(!preg_match('#^[a-z0-9\_]+$#i',$new_folder_name) && $error != 1) {
-		$content .= 'New folder name contains an invalid character.<br />';
-		$error = 1;
+		if(!preg_match('#^[a-z0-9\_]+$#i',$new_folder_name) && $error != 1) {
+			$content .= 'New folder name contains an invalid character.<br />';
+			$error = 1;
 		}
-	if($error != 1) {
-		if(!file_exists(ROOT.'files/'.$new_folder_name)) {
-			mkdir(ROOT.'files/'.$new_folder_name);
-			log_action('Created new directory \'files/'.$new_folder_name.'\'');
+		if($error != 1) {
+			if(!file_exists(ROOT.'files/'.$new_folder_name)) {
+				mkdir(ROOT.'files/'.$new_folder_name);
+				log_action('Created new directory \'files/'.$new_folder_name.'\'');
 			} else {
-			$content .= 'A file or folder with that name already exists.';
+				$content .= 'A file or folder with that name already exists.';
 			}
 		} // IF error
-	} // IF 'new_folder'
+	}
+} // IF 'new_folder'
 
 // ----------------------------------------------------------------------------
 
@@ -167,20 +176,24 @@ $tab_content['list'] .= '</form>
 update_file_list(\''.$_POST['folder_list'].'\');
 </script>';
 
-$tab_content['list'] .= '<br />
-<br />
-<form method="post" action="?module=filemanager&action=new_folder">
-New folder: <input type="text" name="new_folder_name" maxlength="30" />
-<input type="submit" value="Create Folder" />
-</form>';
+if ($acl->check_permission('file_create_folder')) {
+	$tab_content['list'] .= '<br />
+		<br />
+		<form method="post" action="?module=filemanager&action=new_folder">
+		New folder: <input type="text" name="new_folder_name" maxlength="30" />
+		<input type="submit" value="Create Folder" />
+		</form>';
+}
 $tab_layout->add_tab('File List',$tab_content['list']);
 
 // ----------------------------------------------------------------------------
 
-$tab_content['upload'] = NULL;
+if ($acl->check_permission('file_upload')) {
+	$tab_content['upload'] = NULL;
 
-// Display upload form and upload location selector.
-$tab_content['upload'] .= file_upload_box(1);
-$tab_layout->add_tab('Upload File',$tab_content['upload']);
+	// Display upload form and upload location selector.
+	$tab_content['upload'] .= file_upload_box(1);
+	$tab_layout->add_tab('Upload File',$tab_content['upload']);
+}
 $content .= $tab_layout;
 ?>

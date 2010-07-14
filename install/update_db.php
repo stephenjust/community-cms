@@ -274,6 +274,8 @@ switch ($db_version) {
 			(\'block_create\',\'Create Blocks\',\'Allow a user to create new blocks\',0),
 			(\'block_delete\',\'Delete Blocks\',\'Allow a user to delete blocks\',0),
 			(\'calendar_settings\',\'Calendar Settings\',\'Allow a user to modify calendar settings\',0),
+			(\'file_create_folder\',\'Create Folders\',\'Allow a user to create new folders\',0),
+			(\'file_upload\',\'Upload Files\',\'Allow a user to upload files\',0),
 			(\'log_clear\',\'Clear Logs\',\'Allow a user to clear all log messages\',0),
 			(\'log_post_custom_message\',\'Post Custom Log Messages\',\'Allow a user to post custom log messages\',0),
 			(\'news_create\',\'Create Articles\',\'Allow a user to create new news articles\',0),
