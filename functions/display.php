@@ -346,7 +346,7 @@ function news_edit_bar($article_id) {
 	}
 
 	$return = NULL;
-	if ($acl->check_permission('news_edit') && $acl->check_permission('adm_news_edit_article')) {
+	if ($acl->check_permission('news_edit') && $acl->check_permission('adm_news')) {
 		$return .= '<a href="admin.php?module=news&amp;action=edit&amp;id='.$article_id.'">
 			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" /></a>';
 	}
