@@ -93,8 +93,11 @@ if (isset($_POST['vote']) && isset($_POST['vote_poll'])) {
 	$user_ip = $_SERVER['REMOTE_ADDR'];
 	poll_vote($question_id,$answer_id,$user_ip);
 }
-$page->set_id($page_id);
-$page->set_text_id($page_text_id);
+if ($page_id == NULL && $page_text_id != NULL) {
+	$page->set_page($page_text_id,false);
+} else {
+	$page->set_page($page_id);
+}
 if (file_exists('./install')) {
 	$debug->add_trace('The ./install directory still exists',true,'index.php');
 }

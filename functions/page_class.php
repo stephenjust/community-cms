@@ -1,9 +1,9 @@
 <?php
 /**
  * Community CMS
+ * $Id$
  *
- *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -94,6 +94,7 @@ class page {
 	function __destruct() {
 
 	}
+
 	/**
 	 * Set type of page to load for pages without ID
 	 * @param string $type Name of page type to load
@@ -106,45 +107,43 @@ class page {
 				break;
 		}
 	}
+
 	/**
-	 * Set the page's ID
-	 * @param int $id Page id
-	 * @return void
+	 * set_page - Set the current page by whatever identifier is provided
+	 * @param mixed $reference Numeric ID or String
+	 * @param boolean $is_id If $reference is a numeric ID, true; else a text ID
+	 * @return boolean Success
 	 */
-	public function set_id($id) {
-		if($this->id == $id) {
-			return;
-		}
-		$this->id = (int)$id;
-		$this->get_page_information();
-		return;
-	}
-	/**
-	 * Set the page's Text ID
-	 * @param string $id Text ID
-	 * @return void
-	 */
-	public function set_text_id($id) {
-		if($this->text_id == $id) {
+	public function set_page($reference, $is_id = true) {
+		if ($is_id == true) {
+			if (!is_numeric($reference)) {
+				return false;
+			}
+			$this->id = (int)$reference;
+		} else {
+			if (strlen($reference) == 0) {
+				return false;
+			}
+			$this->text_id = (string)$reference;
 			$this->url_reference = 'page='.$this->text_id;
-			return;
 		}
-		if(strlen($id) > 1) {
-			$this->text_id = (string)$id;
-			$this->get_page_information();
-		}
-		return;
+		$this->get_page_information();
+		return true;
 	}
+
 	/**
 	 * If a page exists, collect all information about it from the database.
 	 * @global object $db Database connection object
+	 * @global object $debug Debug object
 	 * @return void
 	 */
 	public function get_page_information() {
 		global $db;
+		global $debug;
 
 		// Article Page
 		if (isset($_GET['showarticle'])) {
+			$debug->add_trace('Loading single article only',false,'get_page_information()');
 			$this->id = 0;
 			$this->text_id = NULL;
 			$this->showtitle = false;
@@ -160,41 +159,33 @@ class page {
 			return;
 		}
 
-		if ($this->id != 0 && strlen($this->text_id) == 0) {
+		if ($this->id > 0 && strlen($this->text_id) == 0) {
+			$debug->add_trace('Using numeric ID to get page information',false,'get_page_information()');
 			$page_query = 'SELECT * FROM ' . PAGE_TABLE . ' WHERE
 				id = '.$this->id.' LIMIT 1';
-			$page_handle = $db->sql_query($page_query);
-			if ($db->error[$page_handle] == 1) {
-				return;
-			}
-			if ($db->sql_num_rows($page_handle) != 1) {
-				return;
-			}
-			$page = $db->sql_fetch_assoc($page_handle);
-			$this->text_id = $page['text_id'];
-			$this->showtitle = ($page['show_title'] == 1) ? true : false;
-			$this->blocksleft = $page['blocks_left'];
-			$this->blocksright = $page['blocks_right'];
-			$this->exists = 1;
 		} elseif (strlen($this->text_id) > 0) {
+			$debug->add_trace('Using text ID to get page information',false,'get_page_information()');
 			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
 				WHERE text_id = \''.$this->text_id.'\' LIMIT 1';
-			$page_handle = $db->sql_query($page_query);
-			if ($db->error[$page_handle] === 1) {
-				return;
-			}
-			if ($db->sql_num_rows($page_handle) != 1) {
-				return;
-			}
-			$page = $db->sql_fetch_assoc($page_handle);
-			$this->id = $page['id'];
-			$this->showtitle = ($page['show_title'] == 1) ? true : false;
-			$this->blocksleft = $page['blocks_left'];
-			$this->blocksright = $page['blocks_right'];
-			$this->exists = 1;
 		} else {
 			return;
 		}
+		$page_handle = $db->sql_query($page_query);
+		if ($db->error[$page_handle] == 1) {
+			$debug->add_trace('Error looking up page information',true,'get_page_information()');
+			return;
+		}
+		if ($db->sql_num_rows($page_handle) != 1) {
+			$debug->add_trace('Page is not listed in database',true,'get_page_information()');
+			return;
+		}
+		$page = $db->sql_fetch_assoc($page_handle);
+		$this->id = $page['id'];
+		$this->text_id = $page['text_id'];
+		$this->showtitle = ($page['show_title'] == 1) ? true : false;
+		$this->blocksleft = $page['blocks_left'];
+		$this->blocksright = $page['blocks_right'];
+		$this->exists = 1;
 		$this->meta_description = $page['meta_desc'];
 		if (strlen($this->text_id) == 0) {
 			$this->url_reference = 'id='.$this->id;
@@ -213,12 +204,14 @@ class page {
 		$page_type_query = 'SELECT * FROM ' . PAGE_TYPE_TABLE . '
 			WHERE id = '.$page['type'].' LIMIT 1';
 		$page_type_handle = $db->sql_query($page_type_query);
-		if(!$page_type_handle) {
+		if($db->error[$page_type_handle] === 1) {
+			$debug->add_trace('Failed to look up page type',true,'page_get_information()');
 			return;
 		}
 		$page_type = $db->sql_fetch_assoc($page_type_handle);
 		if($db->sql_num_rows($page_type_handle) == 0) {
 			$this->exists = 0;
+			$debug->add_trace('Page type does not exist',true,'page_get_information()');
 			return;
 		}
 		$this->type = $page_type['filename'];
@@ -227,6 +220,7 @@ class page {
 			if(!$this->content) {
 				$this->exists = 0;
 				$this->notification = '<strong>Error: </strong>System file not found.<br />';
+				$debug->add_trace('Including '.$this->type.' returned false',true,'get_page_information()');
 			}
 		}
 		return;
