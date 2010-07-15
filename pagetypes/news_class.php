@@ -22,7 +22,7 @@ class news_item {
 
     }
     function __toString() {
-        return $this->article;
+        return (string)$this->article;
     }
     function __get($name) {
         return $this->$name;

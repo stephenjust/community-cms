@@ -160,7 +160,7 @@ class template {
 
 	function __toString() {
 		if (isset($this->template)) {
-			$this->return = $this->template;
+			$this->return = (string)$this->template;
 		} else {
 			$this->return = 'Template file not loaded.';
 		}

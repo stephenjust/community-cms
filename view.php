@@ -54,8 +54,8 @@ $template_page->replace_variable('article_url_onpage','article_url_onpage($a);')
 $template_page->replace_variable('article_url_ownpage','article_url_ownpage($a);');
 $template_page->replace_variable('article_url_nopage','article_url_nopage($a);');
 $template_page->replace_variable('gallery_embed','gallery_embed($a);');
-unset($article);
 echo $template_page;
+unset($article);
 unset($template_page);
 
 // Close database connections and clean up loose ends.
