@@ -107,6 +107,8 @@ $page->display_header();
 $page->display_content();
 display_page($_GET['view']);
 if (DEBUG === 1) {
+	$db->print_query_stats();
+	$db->print_queries();
 	$debug->display_traces();
 }
 $page->display_footer();

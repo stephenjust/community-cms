@@ -61,6 +61,7 @@ function clean_up() {
 
 /**
  * Get configuration value from the database
+ * @global array $config_cache Configuration cache
  * @global object $db Database connection object
  * @param string $config_name Name of configuration value to look up
  * @return mixed Configuration value, or NULL if failure 
@@ -76,23 +77,35 @@ function get_config($config_name) {
 
 	$config_name = addslashes($config_name);
 
+	global $config_cache;
 	global $db;
 
-	$query = "SELECT * FROM `".CONFIG_TABLE."`
-		WHERE `config_name` = '$config_name' LIMIT 1";
-	$handle = $db->sql_query($query);
-	if ($db->error[$handle] === 1) {
+	if (!isset($config_cache)) {
+		$config_cache = array();
+		$query = 'SELECT `config_name`, `config_value`
+			FROM `'.CONFIG_TABLE.'`';
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle] === 1) {
+			return NULL;
+		}
+		$num_config = $db->sql_num_rows($handle);
+		if ($num_config == 0) {
+			return NULL;
+		}
+		for ($i = 1; $i <= $num_config; $i++) {
+			$config = $db->sql_fetch_assoc($handle);
+			$config_cache[$config['config_name']] = $config['config_value'];
+		}
+	}
+	if (!isset($config_cache[$config_name])) {
 		return NULL;
 	}
-	if ($db->sql_num_rows($handle) != 1) {
-		return NULL;
-	}
-	$result = $db->sql_fetch_assoc($handle);
-	return stripslashes($result['config_value']);
+	return stripslashes($config_cache[$config_name]);
 }
 
 /**
  * Set a configuration value
+ * @global array $config_cache Configuration cache
  * @global object $db Database connection object
  * @param string $config_name Name of configuration value to set
  * @param string $config_value
@@ -116,6 +129,7 @@ function set_config($config_name,$config_value) {
 	$config_name = addslashes($config_name);
 	$config_value = addslashes($config_value);
 
+	global $config_cache;
 	global $db;
 
 	// Check if value already exists in database
@@ -134,6 +148,11 @@ function set_config($config_name,$config_value) {
 	if ($db->error[$set_handle] === 1) {
 		return false;
 	}
+
+	// Update cache - first, make sure the cache exists
+	get_config($config_name);
+	$config_cache[$config_name] = $config_value;
+
 	return true;
 }
 

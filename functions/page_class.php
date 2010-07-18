@@ -161,15 +161,18 @@ class page {
 
 		if ($this->id > 0 && strlen($this->text_id) == 0) {
 			$debug->add_trace('Using numeric ID to get page information',false,'get_page_information()');
-			$page_query = 'SELECT * FROM ' . PAGE_TABLE . ' WHERE
-				id = '.$this->id.' LIMIT 1';
+			$page_query_id = '`page`.`id` = '.$this->id;
 		} elseif (strlen($this->text_id) > 0) {
 			$debug->add_trace('Using text ID to get page information',false,'get_page_information()');
-			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
-				WHERE text_id = \''.$this->text_id.'\' LIMIT 1';
+			$page_query_id = '`page`.`text_id` = \''.$this->text_id.'\'';
 		} else {
 			return;
 		}
+		$page_query = 'SELECT `page`.*, `pt`.`filename`
+			FROM `'.PAGE_TABLE.'` `page`, `'.PAGE_TYPE_TABLE.'` `pt`
+			WHERE '.$page_query_id.'
+			AND `page`.`type` = `pt`.`id`
+			LIMIT 1';
 		$page_handle = $db->sql_query($page_query);
 		if ($db->error[$page_handle] == 1) {
 			$debug->add_trace('Error looking up page information',true,'get_page_information()');
@@ -187,6 +190,7 @@ class page {
 		$this->blocksright = $page['blocks_right'];
 		$this->exists = 1;
 		$this->meta_description = $page['meta_desc'];
+		$this->type = $page['filename'];
 		if (strlen($this->text_id) == 0) {
 			$this->url_reference = 'id='.$this->id;
 		} else {
@@ -201,20 +205,6 @@ class page {
 			$this->url_reference = 'page='.$this->text_id;
 		}
 		$this->title = stripslashes($page['title']);
-		$page_type_query = 'SELECT * FROM ' . PAGE_TYPE_TABLE . '
-			WHERE id = '.$page['type'].' LIMIT 1';
-		$page_type_handle = $db->sql_query($page_type_query);
-		if($db->error[$page_type_handle] === 1) {
-			$debug->add_trace('Failed to look up page type',true,'page_get_information()');
-			return;
-		}
-		$page_type = $db->sql_fetch_assoc($page_type_handle);
-		if($db->sql_num_rows($page_type_handle) == 0) {
-			$this->exists = 0;
-			$debug->add_trace('Page type does not exist',true,'page_get_information()');
-			return;
-		}
-		$this->type = $page_type['filename'];
 		if(!isset($this->content)) {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
 			if(!$this->content) {
