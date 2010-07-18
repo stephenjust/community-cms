@@ -17,6 +17,7 @@ if (!defined('SECURITY')) {
 
 class acl {
 	public $permission_list = array();
+	private $acl_cache = array();
 
 	/**
 	 * check_permission - Read from the ACL and check if user is allowed to complete action
@@ -54,19 +55,33 @@ class acl {
 
 		if ($true_if_all == true) {
 			foreach ($group_array AS $cur_group) {
+				// Check cache
+				if (isset($this->acl_cache[$cur_group][$this->permission_list['all']['id']])) {
+					if ($this->acl_cache[$cur_group][$this->permission_list['all']['id']] === true) {
+						return $this->acl_cache[$cur_group][$this->permission_list['all']['id']];
+					} else {
+						break;
+					}
+				}
+
 				// Check if group has the dangerous 'all' property
 				$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
-					WHERE `acl_id` = \''.$this->permission_list['all']['id'].'\'
+					WHERE `acl_id` = '.$this->permission_list['all']['id'].'
 					AND `group` = '.$cur_group;
 				$acl_all_handle = $db->sql_query($acl_all_query);
 				if ($db->error[$acl_all_handle] === 1) {
 					return false;
-				} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
+				}
+				if ($db->sql_num_rows($acl_all_handle) === 1) {
 					$acl_all_result = $db->sql_fetch_assoc($acl_all_handle);
 					if ($acl_all_result['value'] == 1) {
+						$this->acl_cache[$cur_group][$this->permission_list['all']['id']] = true;
 						return true;
+					} else {
+						$this->acl_cache[$cur_group][$this->permission_list['all']['id']] = false;
 					}
 				} else {
+					$this->acl_cache[$cur_group][$this->permission_list['all']['id']] = false;
 					unset($acl_all_result);
 					unset($acl_all_query);
 					unset($acl_all_handle);
@@ -75,26 +90,33 @@ class acl {
 			}
 		}
 		foreach ($group_array AS $cur_group) {
+			// Check cache
+			if (isset($this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']])) {
+				return $this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']];
+			}
+
 			// Check if user or group has the requested property
 			if (!isset($this->permission_list[$acl_key])) {
 				return false;
 			}
 			$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
-				WHERE `acl_id` = \''.$this->permission_list[$acl_key]['id'].'\'
+				WHERE `acl_id` = '.$this->permission_list[$acl_key]['id'].'
 				AND `group` = '.$cur_group;
 			$acl_all_handle = $db->sql_query($acl_all_query);
 			if ($db->error[$acl_all_handle] === 1) {
 				return false;
-			} elseif ($db->sql_num_rows($acl_all_handle) === 1) {
+			}
+			if ($db->sql_num_rows($acl_all_handle) === 1) {
 				$result = $db->sql_fetch_assoc($acl_all_handle);
 				if ($result['value'] == 1) {
+					$this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']] = true;
 					return true;
 				}
-			} else {
-				unset($acl_all_query);
-				unset($acl_all_handle);
-				unset($cur_group);
 			}
+			$this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']] = false;
+			unset($cur_group);
+			unset($acl_all_query);
+			unset($acl_all_handle);
 		}
 		return false;
 	}
@@ -135,6 +157,9 @@ class acl {
 			return false;
 		}
 
+		// Update cache
+		$this->acl_cache[$group][$this->permission_list[$acl_key]['id']] = (bool)$value;
+
 		// Make sure that you did not remove the permission necessary to change permissions
 		if (!$this->check_permission('set_permissions')) {
 			$debug->add_trace('Removed vital permission \''.$acl_key.'.\' Reverting.',true,'set_permission()');
@@ -149,6 +174,8 @@ class acl {
 			}
 			echo 'You cannot remove the permission \''.$acl_key.'\' because doing
 				so will prevent you from making further changes.<br />';
+			// Update cache
+			$this->acl_cache[$group][$this->permission_list[$acl_key]['id']] = true;
 		}
 
 		return true;
