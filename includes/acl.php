@@ -3,7 +3,7 @@
  * Community CMS
  * $Id$
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -90,15 +90,17 @@ class acl {
 			}
 		}
 		foreach ($group_array AS $cur_group) {
+			// Check if permission exists
+			if (!isset($this->permission_list[$acl_key])) {
+				return false;
+			}
+
 			// Check cache
 			if (isset($this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']])) {
 				return $this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']];
 			}
 
-			// Check if user or group has the requested property
-			if (!isset($this->permission_list[$acl_key])) {
-				return false;
-			}
+			// Check if user group has the requested property
 			$acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
 				WHERE `acl_id` = '.$this->permission_list[$acl_key]['id'].'
 				AND `group` = '.$cur_group;

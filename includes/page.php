@@ -176,7 +176,7 @@ function page_list($parent = 0, $visible_only = false) {
 		$result = $db->sql_fetch_assoc($handle);
 
 		$page_list[$i] = $result;
-		$page_list[$i]['has_children'] = page_has_children($page_list[$i]['id']);
+		$page_list[$i]['has_children'] = page_has_children($page_list[$i]['id'],$visible_only);
 	}
 	return $page_list;
 }

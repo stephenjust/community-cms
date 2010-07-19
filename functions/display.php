@@ -39,12 +39,20 @@ function display_page($view="") {
 	$right_blocks_content = NULL;
 
 	// Include javascript
-	$template_page->js_include = '<script language="javascript" type="text/javascript"
+	$js_include = '<script language="javascript" type="text/javascript"
 		src="./scripts/jquery.js"></script>
 		<script language="javascript" type="text/javascript"
 		src="./scripts/ajax.js"></script>
 		<script language="javascript" type="text/javascript"
 		src="./scripts/cms_fe.js"></script>';
+	if ($page->type == 'tabs.php') {
+		$js_include .= '<script language="javascript" type="text/javascript"
+		src="./scripts/jquery-ui.js"></script>
+		<script language="javascript" type="text/javascript"
+		src="./scripts/jquery-fe.js"></script>';
+	}
+	$template_page->js_include = $js_include;
+	unset($js_include);
 
 	// Replace <!-- $CSS_INCLUDE$ --> marker
 	$template_page->css_include =

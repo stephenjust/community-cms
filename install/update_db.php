@@ -293,6 +293,9 @@ switch ($db_version) {
 			(\'user_delete\',\'Delete User\',\'Allow a user to delete other users\',0),
 			(\'pagegroupedit-1\',\'Edit Page Group \\\'Default Group\\\'\',\'Allow user to edit pages in the group \\\'Default Group\\\'\',0)';
 
+		$query[] = 'INSERT INTO `'.PAGE_TYPE_TABLE.'` (id, name, description, author, filename) VALUES
+			(5, \'Tabs\', \'A page with tabs that display sub-pages to the current page\', \'stephenjust\', \'tabs.php\')';
+
 		// Get old news configuration
 		$old_nconfig_query = 'SELECT * FROM `'.$CONFIG['db_prefix'].'news_settings`';
 		$old_nconfig_handle = $db->sql_query($old_nconfig_query);
