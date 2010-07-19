@@ -1,7 +1,6 @@
 <?php
 /**
  * Community CMS
- * $Id$
  *
  * @copyright Copyright (C) 2010 Stephen Just
  * @author stephenjust@users.sourceforge.net

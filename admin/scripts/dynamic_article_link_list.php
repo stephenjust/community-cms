@@ -1,7 +1,6 @@
 <?php
 /**
  * Community CMS
- * $Id: dynamic_file_list.php 567 2010-01-26 04:38:52Z stephenjust $
  *
  * @copyright Copyright (C) 2007-2009 Stephen Just
  * @author stephenjust@users.sourceforge.net

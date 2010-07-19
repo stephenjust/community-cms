@@ -1,7 +1,6 @@
 <?php
 /**
  * Community CMS
- * $Id: log_view.php 444 2009-11-07 22:57:23Z stephenjust $
  *
  * @copyright Copyright (C) 2007-2009 Stephen Just
  * @author stephenjust@users.sourceforge.net

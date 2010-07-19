@@ -1,7 +1,6 @@
 <?php
 /**
  * Community CMS
- * $Id: calendar.php 533 2009-12-25 05:49:37Z stephenjust $
  *
  * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
