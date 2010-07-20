@@ -37,7 +37,7 @@ function update_dynamic_article_link_list() {
 	loadHTML(urlBaseDALL + "?page=" + encodeURI(page),dynamiclistdiv);
 }
 </script>
-	<script type="text/javascript" src="../../../../admin/scripts/ajax.js"></script>
+	<script type="text/javascript" src="../../../../scripts/ajax.js"></script>
 </head>
 <body id="comcmslink" style="display: none;">
 	<form onsubmit="ComCMSLinkDialog.insert();return false;" action="#">
