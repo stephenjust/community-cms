@@ -33,101 +33,52 @@ function display_page($view="") {
 
 	// Initialize variables
 	$page_message = NULL;
-	$admin_include = NULL;
 	$left_blocks_content = NULL;
 	$right_blocks_content = NULL;
 
-	// Include javascript
-	$js_include = '<script language="javascript" type="text/javascript"
-		src="./scripts/jquery.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./scripts/ajax.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./scripts/cms_fe.js"></script>';
-	if ($page->type == 'tabs.php') {
-		$js_include .= '<script language="javascript" type="text/javascript"
-		src="./scripts/jquery-ui.js"></script>
-		<script language="javascript" type="text/javascript"
-		src="./scripts/jquery-fe.js"></script>';
-	}
-	$template_page->js_include = $js_include;
-	unset($js_include);
-
-	// Replace <!-- $CSS_INCLUDE$ --> marker
-	$template_page->css_include =
-		'<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />'."\n".
-		'<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'print.css" media="print" />';
 	$image_path = $template_page->path.'images/';
-
-	$template_page->print_header = get_config('site_name');
 	$template_page->page_path = page_path($page->id);
 
-	// Check to make sure the page actually exists
-	global $page_not_found;
-	if ($page_not_found == 1) {
-		$page->title = 'Page Not Found - '.get_config('site_name');
+	// Display the page title if the configuration says to
+	if ($page->showtitle === true) {
+		$template_page->body_title = '<h1>'.$page->page_title.'</h1>';
+		// Remove marker comments
+		$template_page->body_title_start = NULL;
+		$template_page->body_title_end = NULL;
 	} else {
-		// Begin operations that only take place if the page really exists
+		// Remove comments referring to 'body_title'
+		$template_page->replace_range('body_title',NULL);
+	}
 
-		// Initialize session variable if unset.
-		if (!isset($_SESSION['type'])) {
-			$_SESSION['type'] = 0;
+	// Get page messages
+	$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
+		WHERE `page_id` = '.$page->id.'
+		ORDER BY `start_date` ASC';
+	$page_message_handle = $db->sql_query($page_message_query);
+	$i = 1;
+	if ($db->error[$page_message_handle] === 0) { // Don't run the loop if the query failed
+		while ($db->sql_num_rows($page_message_handle) >= $i) {
+			$page_message_content = $db->sql_fetch_assoc($page_message_handle);
+			$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
+			$i++;
 		}
+	}
 
-		// Display the page title if the configuration says to
-		if ($page->showtitle === true) {
-			$template_page->body_title = '<h1>'.$page->title.'</h1>';
-			// Remove marker comments
-			$template_page->body_title_start = NULL;
-			$template_page->body_title_end = NULL;
-		} else {
-			// Remove comments referring to 'body_title'
-			$template_page->replace_range('body_title',NULL);
-		}
+	// Prepare for and search for content blocks
+	// Left side
+	$left_blocks = explode(',',$page->blocksleft);
+	for ($bk = 1; $bk <= count($left_blocks); $bk++) {
+		$left_blocks_content .= get_block($left_blocks[$bk - 1]);
+	}
+	// Right side
+	$right_blocks = explode(',',$page->blocksright);
+	for ($bk = 1; $bk <= count($right_blocks); $bk++) {
+		$right_blocks_content .= get_block($right_blocks[$bk - 1]);
+	}
 
-		// Get meta info if available
-		$meta_desc = $page->meta_description;
-		$meta_wrapper[1] = '<meta name="description" content="';
-		$meta_wrapper[2] = '" />';
-		if (strlen($meta_desc) > 1) {
-			$template_page->meta_desc = $meta_wrapper[1].$meta_desc.$meta_wrapper[2];
-		} else {
-			$template_page->meta_desc = NULL;
-		}
-
-		// Get page messages
-		$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
-			WHERE `page_id` = '.$page->id.'
-			ORDER BY `start_date` ASC';
-		$page_message_handle = $db->sql_query($page_message_query);
-		$i = 1;
-		if ($db->error[$page_message_handle] === 0) { // Don't run the loop if the query failed
-			while ($db->sql_num_rows($page_message_handle) >= $i) {
-				$page_message_content = $db->sql_fetch_assoc($page_message_handle);
-				$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
-				$i++;
-			}
-		}
-
-		// Prepare for and search for content blocks
-		// Left side
-		$left_blocks = explode(',',$page->blocksleft);
-		for ($bk = 1; $bk <= count($left_blocks); $bk++) {
-			$left_blocks_content .= get_block($left_blocks[$bk - 1]);
-		}
-		// Right side
-		$right_blocks = explode(',',$page->blocksright);
-		for ($bk = 1; $bk <= count($right_blocks); $bk++) {
-			$right_blocks_content .= get_block($right_blocks[$bk - 1]);
-		}
-
-		// Certain pages may set $special_title (such as calendar)
-		global $special_title;
-
-		// Add a space below page messages (if any exist)
-		if ($page_message != NULL) {
-			$page_message .= '<br /><br />'."\n";
-		}
+	// Add a space below page messages (if any exist)
+	if ($page_message != NULL) {
+		$page_message .= '<br /><br />'."\n";
 	}
 
 	// Grab list of queries that caused an error for debugging
@@ -144,7 +95,6 @@ function display_page($view="") {
 	$template_page->footer = get_config('footer').$query_debug;
 	$template_page->nav_bar = display_nav_bar();
 	$template_page->nav_login = display_login_box();
-	$template_page->admin_include = $admin_include;
 	$template_page->page_id = $page->id;
 	$template_page->page_ref = $page->url_reference;
 	$content = $page->get_page_content();
@@ -162,8 +112,6 @@ function display_page($view="") {
 	if(strlen($page->notification) > 0) {
 		$page->notification = '<div class="notification">'.$page->notification.'</div>';
 	}
-	$page->title .= ' - '.$special_title.get_config('site_name');
-	$template_page->page_title = $page->title;
 	$template_page->notification = $page->notification;
 	echo $template_page;
 	unset($template_page);

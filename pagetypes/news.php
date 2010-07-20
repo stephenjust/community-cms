@@ -57,9 +57,10 @@ function get_article_list($page,$start = 1) {
 	return $article_list;
 }
 
-global $page;
+global $acl;
 global $db;
 global $debug;
+global $page;
 $return = NULL;
 
 // Handle first article offset value

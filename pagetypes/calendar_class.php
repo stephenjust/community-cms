@@ -95,7 +95,6 @@ class calendar_event {
         if($event_info['starttime'] == $event_info['endtime']) {
             $event_start = mktime(0,0,0,$event_info['month'],$event_info['day'],$event_info['year']);
             $event_time = 'All day, '.date('l, F j Y',$event_start);
-            unset($event_start);
         } else {
             $event_stime = explode(':',$event_info['starttime']);
             $event_etime = explode(':',$event_info['endtime']);
@@ -103,11 +102,10 @@ class calendar_event {
             $event_end = mktime($event_etime[0],$event_etime[1],0,$event_info['month'],$event_info['day'],$event_info['year']);
             $event_time = date(get_config('time_format').' -',$event_start).
 					date(' '.get_config('time_format'),$event_end)."<br />".date(' l, F j Y',$event_start);
-            unset($event_stime);
-            unset($event_etime);
-            unset($event_start);
-            unset($event_end);
+            unset($event_stime,$event_etime,$event_end);
         }
+		$month_text = date('F',$event_start);
+		unset($event_start);
         $template_event = new template;
         $template_event->load_file('calendar_event');
         $template_event->event_heading = stripslashes($event_info['header']);
@@ -130,8 +128,8 @@ class calendar_event {
             "'>Back to day view</a><br />";
         $this->event_text .= $template_event;
         unset($template_event);
-        global $special_title;
-        $special_title = stripslashes($event_info['header']).' - ';
+        $page->title .= ' - '.stripslashes($event_info['header']).' - '
+				.$month_text.' '.$event_info['day'].', '.$event_info['year'];
         unset($event);
         return;
     }

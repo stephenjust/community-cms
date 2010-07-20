@@ -11,18 +11,20 @@ if (@SECURITY != 1) {
 }
 global $page;
 global $page_content_info;
+global $view;
+
 $day = (isset($_GET['d']) && $_GET['d'] >= 1 && $_GET['d'] <= 31) ? (int)$_GET['d'] : date('d');
 $month = (isset($_GET['m']) && $_GET['m'] >= 0 && $_GET['m'] <= 13) ? (int)$_GET['m'] : date('n');
 $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$_GET['y'] : date('Y');
 include(ROOT . 'pagetypes/calendar_class.php');
 include(ROOT . 'functions/calendar.php');
-if (!isset($_GET['view'])) {
-	$_GET['view'] = get_config('calendar_defualt_view');
+if ($view == NULL) {
+	$view = get_config('calendar_defualt_view');
 }
-if ($_GET['view'] != 'month' && $_GET['view'] != 'day' && $_GET['view'] != 'event') {
-	$_GET['view'] = get_config('calendar_default_view');
+if ($view != 'month' && $view != 'day' && $view != 'event') {
+	$view = get_config('calendar_default_view');
 }
-switch ($_GET['view']) {
+switch ($view) {
 	// MONTH VIEW
 	case "month":
 		$month_cal = new calendar($month,$year);
@@ -33,8 +35,7 @@ switch ($_GET['view']) {
 		$template_month->load_file('calendar_month');
 
 		// Add month and year to page title
-		global $special_title;
-		$special_title = date('F Y',$month_cal->first_day_ts).' - ';
+		$page->title .= ' - '.date('F Y',$month_cal->first_day_ts);
 
 		// Replace template placeholders that should not be altered
 		// beyond this point
@@ -222,9 +223,8 @@ switch ($_GET['view']) {
 		unset($day_events_query);
 		unset($day_events_handle);
 		unset($day_events);
-		global $special_title;
 		$month_text = date('F',$event_start);
-		$special_title = $month_text.' '.$day.', '.$year.' - ';
+		$page->title .= ' - '.$month_text.' '.$day.', '.$year;
 		break;
 }
 return $page_content;

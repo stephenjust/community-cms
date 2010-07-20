@@ -27,10 +27,6 @@ require('./include.php');
 initialize();
 
 include(ROOT.'pagetypes/news_class.php');
-// Initialize some variables to keep PHP from complaining.
-if(!isset($_GET['view'])) {
-    $_GET['view'] = NULL;
-}
 
 if(!isset($_GET['article_id'])) {
 	header('HTTP/1.0 404 Not Found');
@@ -46,7 +42,6 @@ $article = new news_item;
 $article->set_article_id($article_id);
 $article->template = 'article_page';
 $article->get_article();
-$last_article_date = $article->date;
 $template_page = new template;
 $template_page->template = $article;
 $template_page->replace_variable('article_url_onpage','article_url_onpage($a);');

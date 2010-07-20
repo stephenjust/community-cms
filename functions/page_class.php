@@ -41,10 +41,15 @@ class page {
 	 */
 	public $url_reference = NULL;
 	/**
-	 * Text to display at the top of a page.
-	 * @var string Text
+	 * Text to display in the page's title bar
+	 * @var string text
 	 */
 	public $title = NULL;
+	/**
+	 * Page title in database
+	 * @var string text
+	 */
+	public $page_title = NULL;
 	/**
 	 * True if title is to be displayed on page.
 	 * @var boolean
@@ -153,6 +158,7 @@ class page {
 				$this->exists = 0;
 				return;
 			}
+			$this->title .= $article->article_title;
 			$this->exists = 1;
 			$this->content = $article->article;
 			return;
@@ -204,6 +210,7 @@ class page {
 			$this->url_reference = 'page='.$this->text_id;
 		}
 		$this->title = stripslashes($page['title']);
+		$this->page_title = $this->title;
 		if(!isset($this->content)) {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
 			if(!$this->content) {
@@ -224,14 +231,58 @@ class page {
 				could not be found.<br />';
 			return;
 		} else {
-			if (!isset($_GET['view'])) {
-				$_GET['view'] = NULL;
-			}
 			return $this->content;
 		}
 	}
+
+	/**
+	 * display_header - Print the page header
+	 */
 	public function display_header() {
-		// FIXME: Stub
+		$template = new template;
+		$template->load_file('header');
+
+		// Include javascript
+		$js_include = '<script language="javascript" type="text/javascript"
+			src="./scripts/jquery.js"></script>
+			<script language="javascript" type="text/javascript"
+			src="./scripts/ajax.js"></script>
+			<script language="javascript" type="text/javascript"
+			src="./scripts/cms_fe.js"></script>';
+		if ($this->type == 'tabs.php') {
+			$js_include .= '<script language="javascript" type="text/javascript"
+			src="./scripts/jquery-ui.js"></script>
+			<script language="javascript" type="text/javascript"
+			src="./scripts/jquery-fe.js"></script>';
+		}
+		$template->js_include = $js_include;
+		unset($js_include);
+
+		// Include StyleSheets
+		$template->css_include =
+			'<link rel="StyleSheet" type="text/css" href="'.$template->path.'style.css" />'."\n".
+			'<link rel="StyleSheet" type="text/css" href="'.$template->path.'print.css" media="print" />';
+
+		$template->admin_include = NULL;
+		$template->print_header = get_config('site_name');
+
+		// Print Meta Description if available
+		$meta_desc = $this->meta_description;
+		$meta_wrapper[1] = '<meta name="description" content="';
+		$meta_wrapper[2] = '" />';
+		if (strlen($meta_desc) > 1) {
+			$template->meta_desc = $meta_wrapper[1].$meta_desc.$meta_wrapper[2];
+		} else {
+			$template->meta_desc = NULL;
+		}
+
+		if ($this->exists == 0) {
+			$this->title .= 'Page not found';
+		}
+		$this->title .= ' - '.get_config('site_name');
+		$template->page_title = $this->title;
+		echo $template;
+		unset($template);
 	}
 	public function display_content() {
 		// FIXME: Stub

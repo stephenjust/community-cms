@@ -62,6 +62,7 @@ INSERT INTO `<!-- $DB_PREFIX$ -->config` (`config_name`, `config_value`) VALUES
 ('calendar_default_view','month'),
 ('calendar_month_show_cat_icons','1'),
 ('calendar_month_show_stime','1'),
+('calendar_month_time_sep',' '),
 ('calendar_save_locations','1'),
 ('comment','Downloaded from SourceForge.net'),
 ('contacts_display_mode','card'),

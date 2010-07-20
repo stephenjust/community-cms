@@ -27,10 +27,6 @@ if (DEBUG == 1) {
 }
 initialize();
 
-// Initialize some variables to keep PHP from complaining.
-if (!isset($_GET['view'])) {
-	$_GET['view'] = NULL;
-}
 checkuser(1);
 // Delete message
 if (!isset($_GET['del'])) {
@@ -51,6 +47,8 @@ if ($_GET['del'] != "") {
 
 $page = new page;
 $page->id = 0;
+$page->title .= 'Messages';
+$page->display_header();
 
 // Get message list
 $message_list_query = 'SELECT * FROM ' . MESSAGE_TABLE . '

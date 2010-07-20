@@ -8,17 +8,17 @@
  */
 
 class template {
-	public $template;
+	public $template = "";
 	public $template_name;
 	public $path;
 	public $return;
 	public function __set($name,$value) {
-		if ($name == 'template' || $name == 'path') {
+		if ($name == 'template' || $name == 'path' || $name == 'return') {
 			$this->$name = $value;
 		} elseif (isset($this->template) && isset($this->path)) {
 			$this->template = str_replace('<!-- $'.mb_convert_case($name, MB_CASE_UPPER, "UTF-8").'$ -->',$value,$this->template);
 		} else {
-			echo 'Template file not loaded yet.';
+			echo 'Template file not loaded yet when trying to set \''.$name.'\'.';
 		}
 	}
 
@@ -158,12 +158,11 @@ class template {
 	}
 
 	function __toString() {
-		if (isset($this->template)) {
-			$this->return = (string)$this->template;
-		} else {
-			$this->return = 'Template file not loaded.';
+		if (isset($this->path)) {
+			$this->image_path = $this->path.'images/';
 		}
-		return $this->return;
+		$return = (string)$this->template;
+		return $return;
 	}
 }
 

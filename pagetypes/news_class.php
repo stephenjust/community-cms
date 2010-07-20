@@ -9,6 +9,7 @@
 
 class news_item {
     public $article;
+	public $article_title;
     public $date;
     public $template;
     function __construct() {
@@ -133,6 +134,7 @@ class news_item {
 		}
 
 		$article_title = stripslashes($article['name']);
+		$this->article_title = $article_title;
 		if ($article['publish'] == 0) {
 			$article_title .= ' <span class="news_not_published_label">NOT PUBLISHED</span>';
 		}

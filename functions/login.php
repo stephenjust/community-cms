@@ -93,6 +93,7 @@ function checkuser($mustbeloggedin = 0) {
 			WHERE username = \''.$_SESSION['user'].'\'
 			AND password = \''.$_SESSION['pass'].'\'
 			AND type = \''.$_SESSION['type'].'\'
+			AND lastlogin = \''.addslashes($_SESSION['last_login']).'\'
 			AND realname = \''.$_SESSION['name'].'\'';
 		$access = $db->sql_query($query);
 		$num_rows = $db->sql_num_rows($access);

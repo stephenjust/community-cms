@@ -42,8 +42,33 @@ if (DEBUG === 1) {
 
 initialize();
 
-// Initialize some variables to keep PHP from complaining.
+// Perform login/logout operation
+$login = (isset($_GET['login'])) ? $_GET['login'] : NULL;
+$_POST['user'] = (isset($_POST['user'])) ? $_POST['user'] : NULL;
+$_POST['passwd'] = (isset($_POST['passwd'])) ? $_POST['passwd'] : NULL;
+if ($login == 1) {
+	login($_POST['user'],$_POST['passwd']);
+} elseif ($login == 2) {
+	logout();
+}
+unset($_POST['user']);
+unset($_POST['passwd']);
+
+// Validate session
+checkuser();
+
+// Check if site is active
+if (get_config('site_active') == 0) {
+	err_page(12);
+}
+
+// Initialize some variables to keep PHP from complaining
+$view = (isset($_GET['view'])) ? $_GET['view'] : NULL;
+unset($_GET['view']);
+
+// Figure out which page to fetch from the provided variables
 if (!isset($_GET['id']) && !isset($_GET['page'])) {
+	// No page provided - go to home page
 	$page_id = get_config('home');
 	$page_text_id = NULL;
 } else {
@@ -55,34 +80,13 @@ if (!isset($_GET['id']) && !isset($_GET['page'])) {
 		$page_text_id = NULL;
 	}
 }
-if (!isset($_GET['view'])) {
-	$_GET['view'] = NULL;
-}
-if (!isset($_GET['login'])) {
-	$_GET['login'] = NULL;
-}
-// Run login checks.
-$_POST['user'] = (!isset($_POST['user'])) ? NULL : $_POST['user'];
-$_POST['passwd'] = (!isset($_POST['passwd'])) ? NULL : $_POST['passwd'];
-if ($_GET['login'] != 1) {
-	$_POST['user'] = NULL;
-	$_POST['passwd'] = NULL;
-}
-if ($_GET['login'] == 1) {
-	login($_POST['user'],$_POST['passwd']);
-} elseif ($_GET['login'] == 2) {
-	logout();
-}
-checkuser();
-if (get_config('site_active') == 0) {
-	err_page(12);
-}
+unset($_GET['page'],$_GET['id']);
 
 // Load page information.
 $page = new page;
 if (isset($_POST['vote']) && isset($_POST['vote_poll'])) {
-	$question_id = $_POST['vote_poll'];
-	$answer_id = $_POST['vote'];
+	$question_id = (int)$_POST['vote_poll'];
+	$answer_id = (int)$_POST['vote'];
 	$user_ip = $_SERVER['REMOTE_ADDR'];
 	poll_vote($question_id,$answer_id,$user_ip);
 }
@@ -98,7 +102,7 @@ if (file_exists('./install')) {
 // Display the page.
 $page->display_header();
 $page->display_content();
-display_page($_GET['view']);
+display_page($view);
 if (DEBUG === 1) {
 	$db->print_query_stats();
 	$db->print_queries();
