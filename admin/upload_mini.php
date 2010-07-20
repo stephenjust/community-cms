@@ -15,12 +15,11 @@ include(ROOT.'functions/admin.php');
 include(ROOT.'functions/error.php');
 initialize();
 checkuser_admin();
-$content = '<html>
-<head>
-<title>Upload File</title>
-<link type="text/css" href="./templates/default/style.css" rel="StyleSheet" />
-</head>
-<body>';
+$template = new template;
+$template->load_admin_file('dialog');
+$template->root = ROOT;
+$template->dialog_title = 'Upload File';
+$content = NULL;
 // Check if the form has been submitted.
 if(isset($_GET['upload'])) {
 	if (isset($_POST['thumbs'])) {
@@ -39,7 +38,7 @@ if (isset($_GET['dir'])) {
 } else {
 	$content .= file_upload_box(1);
 }
-$content .= '</body></html>';
-echo $content;
+$template->dialog_body = $content;
+echo $template;
 clean_up();
 ?>

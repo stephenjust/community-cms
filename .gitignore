@@ -4,3 +4,4 @@
 # Exclude all contents of /files/ except /files/newsicons
 /files/
 !/files/newsicons/
+!/files/newsletters/

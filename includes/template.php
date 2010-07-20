@@ -39,7 +39,7 @@ class template {
 	 * load_admin_file - Loads a template file from the admin template
 	 */
 	public function load_admin_file($file = 'index') {
-		$path = './admin/';
+		$path = ROOT.'admin/';
 		$file .= '.html';
 		if ($this->load_template($path,$file)) {
 			return true;
@@ -55,7 +55,7 @@ class template {
 			WHERE id = '.get_config('site_template').' LIMIT 1';
 		$template_handle = $db->sql_query($template_query);
 		try {
-			if (!$template_handle || $db->sql_num_rows($template_handle) == 0) {
+			if ($db->error[$template_handle] === 1 || $db->sql_num_rows($template_handle) == 0) {
 				throw new Exception('Failed to load template file.');
 			} else {
 				$template = $db->sql_fetch_assoc($template_handle);
