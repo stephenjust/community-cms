@@ -310,6 +310,7 @@ switch ($db_version) {
 		// Move news config into global config table
 		$query[] = 'INSERT INTO `'.CONFIG_TABLE.'` (\'config_name\',\'config_value\')
 			VALUES
+			(\'contacts_display_mode\',\'card\'),
 			(\'news_num_articles\',\''.$old_nconfig['num_articles'].'\'),
 			(\'news_default_date_setting\',\''.$old_nconfig['default_date_setting'].'\'),
 			(\'news_default_publish_value\',\'0\'),

@@ -340,6 +340,18 @@ span.contact_heading {
 	font-style: italic;
 	color: #AAAAAA;
 }
+table.contacts_compact {
+	border: 0px;
+	width: 100%;
+}
+table.contacts_compact td {
+	padding: 5px;
+	vertical-align: top;
+}
+table.contacts_compact a {
+	color: #000000;
+	text-decoration: none;
+}
 
 /*
 NEWS BLOCK

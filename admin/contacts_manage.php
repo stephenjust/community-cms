@@ -106,7 +106,7 @@ switch ($_GET['action']) {
 		
 		// Verify email address
 		if ($email != "") {
-			if (!preg_match('^/[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
+			if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
 				$content .= 'Invalid E-Mail address.<br />'."\n";
 				break;
 			}
@@ -236,7 +236,7 @@ switch ($_GET['action']) {
 
 		// Verify email address
 		if ($email != "") {
-			if (!eregi('^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$',$email)) {
+			if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
 				$content .= 'Invalid E-Mail address.<br />'."\n";
 				break;
 			}
@@ -276,6 +276,16 @@ switch ($_GET['action']) {
 		}
 		$content .= 'Successfully edited contact.<br />'."\n";
 		log_action('Edited contact \''.$name.'\'');
+		break;
+
+// ----------------------------------------------------------------------------
+	case 'settings_save':
+		$display_mode = addslashes($_POST['display_mode']);
+		if (set_config('contacts_display_mode',$display_mode)) {
+			$content .= 'Saved settings.<br />';
+		} else {
+			$content .= '<span class="errormessage">Failed to save settings.</span><br />';
+		}
 		break;
 }
 
@@ -324,6 +334,18 @@ $new_form->add_submit('submit','Submit');
 
 $tab_content['create'] = $new_form;
 $tab_layout->add_tab('Create Contact',$tab_content['create']);
+
+// ----------------------------------------------------------------------------
+
+$settings_form = new form;
+$settings_form->set_method('post');
+$settings_form->set_target('admin.php?module=contacts_manage&amp;action=settings_save');
+$settings_form->add_select('display_mode','Display Mode',
+		array('card','compact'),
+		array('Business Card','Compact'),
+		get_config('contacts_display_mode'));
+$settings_form->add_submit('submit','Submit');
+$tab_layout->add_tab('Settings',$settings_form);
 
 $content .= $tab_layout;
 

@@ -13,7 +13,6 @@ global $db;
 global $page;
 $content = NULL;
 $current_contact = NULL;
-$j = 1;
 $contact_list_query = 'SELECT * FROM `' . CONTACTS_TABLE . '`
 	ORDER BY `name` ASC';
 $contact_list_handle = $db->sql_query($contact_list_query);
@@ -55,34 +54,41 @@ if($_GET['action'] == 'send') {
 }
 if ($contact_list_num_rows == 0) {
 	$content .= 'There are no contacts.';
-} else {
-	while ($contact_list_num_rows >= $j) {
+	return $content;
+}
+if (get_config('contacts_display_mode') == 'compact') {
+	$content .= '<table class="contacts_compact">'."\n";
+}
+for ($j = 1; $contact_list_num_rows >= $j; $j++) {
+	$contact_info = $db->sql_fetch_assoc($contact_list_handle);
+
+	// Prepare contact information
+	if ($contact_info['user_id'] != 0) {
+		$realname = '<a href="index.php?'.$page->url_reference.'&message='.$contact_info['user_id'].'">'.stripslashes($contact_info['name']).'</a>';
+	} else {
+		$realname = stripslashes($contact_info['name']);
+	}
+	$contact_title = stripslashes($contact_info['title']);
+	if ($contact_info['email_hide'] == 1) {
+		$contact_email = 'Hidden';
+	} else {
+		$contact_email = $contact_info['email'];
+	}
+	if ($contact_info['phone_hide'] == 1) {
+		$contact_telephone = 'Hidden';
+	} else {
+		$contact_telephone = format_tel($contact_info['phone']);
+	}
+	if ($contact_info['address_hide'] == 1) {
+		$contact_address = 'Hidden';
+	} else {
+		$contact_address = $contact_info['address'];
+	}
+	if (get_config('contacts_display_mode') == 'card') {
 		$template_contact = new template;
 		$template_contact->load_file('contactlist');
-		$contact_info = $db->sql_fetch_assoc($contact_list_handle);
-		$contact_email = NULL;
-		if ($contact_info['user_id'] != 0) {
-			$realname = '<a href="index.php?'.$page->url_reference.'&message='.$contact_info['user_id'].'">'.stripslashes($contact_info['name']).'</a>';
-		} else {
-			$realname = stripslashes($contact_info['name']);
-		}
-		if ($contact_info['email_hide'] == 1) {
-			$contact_email = 'Hidden';
-		} else {
-			$contact_email = $contact_info['email'];
-		}
-		if ($contact_info['phone_hide'] == 1) {
-			$contact_telephone = 'Hidden';
-		} else {
-			$contact_telephone = format_tel($contact_info['phone']);
-		}
-		if ($contact_info['address_hide'] == 1) {
-			$contact_address = 'Hidden';
-		} else {
-			$contact_address = $contact_info['address'];
-		}
 		$template_contact->contact_name = $realname;
-		$template_contact->contact_title = stripslashes($contact_info['title']);
+		$template_contact->contact_title = $contact_title;
 		$template_contact->contact_email = stripslashes($contact_email);
 		$template_contact->contact_telephone = stripslashes($contact_telephone);
 		$template_contact->contact_address = stripslashes($contact_address);
@@ -112,8 +118,16 @@ if ($contact_list_num_rows == 0) {
 		}
 		$content .= $template_contact;
 		unset($template_contact);
-		$j++;
 	}
+	if (get_config('contacts_display_mode') == 'compact') {
+		$content .= "\t<tr>\n";
+		$content .= "\t\t<td>$realname<br />$contact_title</td>\n";
+		$content .= "\t\t<td>Email: $contact_email<br />Phone: $contact_telephone<br />Address: $contact_address<br /></td>\n";
+		$content .= "\t</tr>\n";
+	}
+}
+if (get_config('contacts_display_mode') == 'compact') {
+	$content .= '</table>';
 }
 return $content;
 ?>
