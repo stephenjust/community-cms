@@ -49,6 +49,11 @@ function initialize($mode = NULL) {
 		err_page(1001); // Database connection error
 	}
 
+	// Check for up-to-date database
+	if(get_config('db_version') != $required_db_version) {
+		err_page(10); // Wrong DB Version
+	}
+
 	session_name(get_config('cookie_name'));
 	session_start();
 	return;
@@ -63,7 +68,7 @@ function clean_up() {
  * @global array $config_cache Configuration cache
  * @global object $db Database connection object
  * @param string $config_name Name of configuration value to look up
- * @return mixed Configuration value, or NULL if failure 
+ * @return mixed Configuration value, or NULL if failure
  */
 function get_config($config_name) {
 	// Validate parameters
@@ -242,35 +247,35 @@ function csv2array($string) {
  * @return string
  */
 function str_replace_count($search,$replace,$subject,$times) {
-    $subject_original = $subject;
-    $len = strlen($search);
-    $pos = 0;
-    for ($i = 1; $i <= $times; $i++) {
-        $pos = strpos($subject,$search,$pos);
-        if($pos !== false) {
-            $subject = substr($subject_original,0,$pos);
-            $subject .= $replace;
-            $subject .= substr($subject_original, $pos + $len);
-            $subject_original = $subject;
-        } else {
-            break;
-        }
-    }
-    return($subject);
+	$subject_original = $subject;
+	$len = strlen($search);
+	$pos = 0;
+	for ($i = 1; $i <= $times; $i++) {
+		$pos = strpos($subject,$search,$pos);
+		if($pos !== false) {
+			$subject = substr($subject_original,0,$pos);
+			$subject .= $replace;
+			$subject .= substr($subject_original, $pos + $len);
+			$subject_original = $subject;
+		} else {
+			break;
+		}
+	}
+	return($subject);
 }
 
 function validate_int($value) {
-    // FIXME: Stub
-    return $value;
+	// FIXME: Stub
+	return $value;
 }
 
 function validate_string($value) {
-    // FIXME: Stub
-    return $value;
+	// FIXME: Stub
+	return $value;
 }
 
 function validate_array($value) {
-    // FIXME: Stub
-    return $value;
+	// FIXME: Stub
+	return $value;
 }
 ?>

@@ -11,7 +11,6 @@
 define('SECURITY',1);
 define('ROOT','./');
 
-$required_db_version = 0.05;
 // Load error handling code
 require_once('./functions/error.php');
 // Load database configuration
@@ -42,11 +41,6 @@ if (DEBUG === 1) {
 }
 
 initialize();
-
-// Check for up-to-date database
-if(get_config('db_version') != $required_db_version) {
-	err_page(10); // Wrong DB Version
-}
 
 // Initialize some variables to keep PHP from complaining.
 if (!isset($_GET['id']) && !isset($_GET['page'])) {

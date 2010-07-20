@@ -15,6 +15,7 @@ if (!defined('SECURITY')) {
 }
 
 define('COMCMS_VERSION', 'SVN');
+define('DATABASE_VERSION', 0.05);
 define('DEBUG', 1);
 
 // DATE - TIME
