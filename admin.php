@@ -60,7 +60,6 @@ function display_admin() {
 	global $acl;
 	$template_page = new template;
 	$template_page->load_admin_file();
-	$page_title = 'Community CMS Administration';
 
 	// Don't cache compressed TinyMCE when debugging
 	if (DEBUG === 1) {
@@ -173,7 +172,6 @@ function display_admin() {
 
 	$template_page->nav_bar = '<div id="menu">'.admin_nav().'</div>';
 	$template_page->nav_login = display_login_box();
-	$template_page->page_title = $page_title;
 	$css_include = '<link rel="StyleSheet" type="text/css" href="'.$template_page->path.'style.css" />';
 	$template_page->css_include = $css_include;
 	$template_page->image_path = $image_path;
