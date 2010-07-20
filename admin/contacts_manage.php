@@ -106,7 +106,7 @@ switch ($_GET['action']) {
 		
 		// Verify email address
 		if ($email != "") {
-			if (!eregi('^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$',$email)) {
+			if (!preg_match('^/[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
 				$content .= 'Invalid E-Mail address.<br />'."\n";
 				break;
 			}

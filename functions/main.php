@@ -267,6 +267,37 @@ function str_replace_count($search,$replace,$subject,$times) {
 	return($subject);
 }
 
+/**
+ * format_tel - Format North American phone numbers
+ * @param integer $phone_number Phone number with no punctuation
+ * @return string Phone number to display
+ */
+function format_tel($phone_number) {
+	if (!is_numeric($phone_number)) {
+		return $phone_number;
+	}
+
+	$format = get_config('tel_format');
+	if (strlen($phone_number) == 11) {
+		$phone_number = preg_replace('/^1/','',$phone_number);
+	}
+	if (strlen($phone_number) != 10) {
+		return $phone_number;
+	}
+	switch ($format) {
+		case '(###) ###-####':
+			return '('.substr($phone_number,0,3).') '.substr($phone_number,3,3).'-'.substr($phone_number,6,4);
+		case '###-###-####':
+			return substr($phone_number,0,3).'-'.substr($phone_number,3,3).'-'.substr($phone_number,6,4);
+		case '###.###.####':
+			return substr($phone_number,0,3).'.'.substr($phone_number,3,3).'.'.substr($phone_number,6,4);
+		case '###-####':
+			return substr($phone_number,3,3).'-'.substr($phone_number,6,4);
+		default:
+			return $phone_number;
+	}
+}
+
 function validate_int($value) {
 	// FIXME: Stub
 	return $value;

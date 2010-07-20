@@ -74,15 +74,7 @@ if ($contact_list_num_rows == 0) {
 		if ($contact_info['phone_hide'] == 1) {
 			$contact_telephone = 'Hidden';
 		} else {
-			$contact_telephone = $contact_info['phone'];
-			// Format phone number
-			if (strlen($contact_telephone) == 11) {
-				$contact_telephone = preg_replace("/(1{1})([0-9]{3})([0-9]{3})([0-9]{4})/", "$1-$2-$3-$4", $contact_telephone);
-			} elseif (strlen($contact_telephone) == 10) {
-				$contact_telephone = preg_replace("/([0-9]{3})([0-9]{3})([0-9]{4})/", "$1-$2-$3", $contact_telephone);
-			} elseif (strlen($contact_telephone) == 7) {
-				$contact_telephone = preg_replace("/([0-9]{3})([0-9]{4})/", "$1-$2", $contact_telephone);
-			}
+			$contact_telephone = format_tel($contact_info['phone']);
 		}
 		if ($contact_info['address_hide'] == 1) {
 			$contact_address = 'Hidden';

@@ -25,6 +25,7 @@ if ($_GET['action'] == 'save') {
 	$cookie_name = addslashes($_POST['cookie_name']);
 	$cookie_path = addslashes($_POST['cookie_path']);
 	$time_format = addslashes($_POST['time_format']);
+	$tel_format = addslashes($_POST['tel_format']);
 	$footer = addslashes($_POST['footer']);
 	if (set_config('site_name',$site_name) &&
 		set_config('site_url',$site_url) &&
@@ -34,6 +35,7 @@ if ($_GET['action'] == 'save') {
 		set_config('cookie_name',$cookie_name) &&
 		set_config('cookie_path',$cookie_path) &&
 		set_config('time_format',$time_format) &&
+		set_config('tel_format',$tel_format) &&
 		set_config('footer',$footer))
 	{
 		$content .= 'Successfully edited site information.<br />'."\n";
@@ -59,7 +61,17 @@ $form->add_select('time_format','Time Format',
 		array('g:i a','g:i A','h:i a','h:i A','G:i','H:i'),
 		array('4:05 am','4:05 AM','04:05 am','04:05 AM','4:05','04:05'),
 		get_config('time_format'));
-$form->add_textarea('footer','Footer Text',get_config('footer'));
+$form->add_select('tel_format','Telephone Number Format',
+		array('(###) ###-####',
+			'###-###-####',
+			'###.###.####',
+			'###-####'),
+		array('(555) 555-1234',
+			'555-555-1234',
+			'555.555.1234',
+			'555-1234'),
+		get_config('tel_format'));
+$form->add_textarea('footer','Footer Text',stripslashes(get_config('footer')));
 $form->add_textbox('cookie_name','Cookie Name',get_config('cookie_name'));
 $form->add_textbox('cookie_path','Cookie Path',get_config('cookie_path'));
 $form->add_checkbox('active','Site Active',get_config('site_active'));

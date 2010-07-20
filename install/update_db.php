@@ -314,7 +314,8 @@ switch ($db_version) {
 			(\'news_default_date_setting\',\''.$old_nconfig['default_date_setting'].'\'),
 			(\'news_default_publish_value\',\'0\'),
 			(\'news_show_author\',\''.$old_nconfig['show_author'].'\'),
-			(\'news_show_edit_time\',\''.$old_nconfig['show_edit_time'].'\')';
+			(\'news_show_edit_time\',\''.$old_nconfig['show_edit_time'].'\'),
+			(\'tel_format\',\'(###) ###-####\')';
 		$query[] = 'DROP TABLE `'.$CONFIG['db_prefix'].'news_settings`';
 		execute_queries($query);
 		$query = array();
