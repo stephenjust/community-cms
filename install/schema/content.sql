@@ -53,9 +53,9 @@ INSERT INTO `<!-- $DB_PREFIX$ -->acl_keys` (`acl_name`,`acl_longname`,`acl_descr
 ('user_create','Create User','Allow a user to create new users',0),
 ('user_delete','Delete User','Allow a user to delete other users',0),
 ('group_create','Create User Groups','Allow a user to create a new user group',0);;
-INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`, `label`, `colour`, `description`) VALUES
-(0, 'Default Category', 'red', ''),
-(1, 'Other', 'yellow', '');;
+INSERT INTO `<!-- $DB_PREFIX$ -->calendar_categories` (`label`, `colour`, `description`) VALUES
+('Default Category', 'red', ''),
+('Other', 'yellow', '');;
 INSERT INTO `<!-- $DB_PREFIX$ -->config` (`config_name`, `config_value`) VALUES
 ('admin_email','<!-- $ADMIN_EMAIL$ -->'),
 ('calendar_month_day_format','1'),
@@ -92,7 +92,7 @@ INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (id, name, description, author, file
 (1, 'News', 'A simple news posting system that acts as the main content distribution system for Community CMS', 'stephenjust', 'news.php'),
 (2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by timestamp. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
 (3, 'Calendar', 'A complex timestamp management system supporting a full month view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
-(4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php')
+(4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php'),
 (5, 'Tabs', 'A page with tabs that display sub-pages to the current page', 'stephenjust', 'tabs.php');;
 INSERT INTO `<!-- $DB_PREFIX$ -->templates` (`id`, `path`, `name`, `description`, `author`) VALUES
 (1, 'templates/default/', 'Community CMS Default Template', 'Default template.', 'Stephen J');;

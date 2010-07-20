@@ -49,9 +49,12 @@ function initialize($mode = NULL) {
 		err_page(1001); // Database connection error
 	}
 
-	// Check for up-to-date database
-	if(get_config('db_version') != $required_db_version) {
-		err_page(10); // Wrong DB Version
+	// Don't do this when installing - we have no DB version set yet
+	if ($mode != 'install') {
+		// Check for up-to-date database
+		if (get_config('db_version') != DATABASE_VERSION) {
+			err_page(10); // Wrong DB Version
+		}
 	}
 
 	session_name(get_config('cookie_name'));

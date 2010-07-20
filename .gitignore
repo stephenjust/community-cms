@@ -1,0 +1,6 @@
+# Exclude /config.php
+/config.php
+
+# Exclude all contents of /files/ except /files/newsicons
+/files/
+!/files/newsicons/

@@ -12,10 +12,10 @@ define('SECURITY',1);
 $error = 0;
 
 $content = '<h1>Step 6: Save Settings and Populate Database</h1>';
-$config_file = '../config.php';
-require_once($config_file);
+require_once(ROOT . 'config.php');
+require_once(ROOT . 'functions/error.php');
 include_once(ROOT . 'include.php');
-initialize();
+initialize('install');
 $content .= 'Loading database contents file... ';
 $schema_file = './schema/content.sql';
 @$handle = fopen($schema_file, "r");

@@ -14,6 +14,12 @@ function setDefaultPort() {
 	if (dbengine == 'PostgreSQL' && dbport == '3306') {
 		dbportfield.value = '5432';
 	}
+	if (dbengine == 'MySQL' && dbport == '') {
+		dbportfield.value = '3306';
+	}
+	if (dbengine == 'PostgreSQL' && dport == '') {
+		dbportfield.value = '5432';
+	}
 }
 function testSettings() {
 	var db_engine_field = document.getElementById('db_engine');

@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
 	`colour` text NOT NULL,
 	`description` text NOT NULL,
 	PRIMARY KEY  (`cat_id`)
-) ENGINE=MyISAM CHARACTER SET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_sources` (
 	`id` int(11) NOT NULL auto_increment,
