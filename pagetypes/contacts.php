@@ -56,10 +56,24 @@ if ($contact_list_num_rows == 0) {
 	$content .= 'There are no contacts.';
 	return $content;
 }
-if (get_config('contacts_display_mode') == 'compact') {
-	$content .= '<table class="contacts_compact">'."\n";
+$contact_template = new template;
+switch (get_config('contacts_display_mode')) {
+	default:
+		$contact_template->load_file('contactlist');
+		break;
+	case 'compact':
+		$contact_template->load_file('contactlist-compact');
+		break;
 }
-for ($j = 1; $contact_list_num_rows >= $j; $j++) {
+$contact_template_body = $contact_template->split('contact_entry_start');
+$contact_template_body->contact_entry_start = NULL;
+$content .= (string)$contact_template;
+unset($contact_template);
+
+$contact_template_foot = $contact_template_body->split('contact_entry_end');
+$contact_template_foot->contact_entry_end = NULL;
+
+for ($i = 1; $contact_list_num_rows >= $i; $i++) {
 	$contact_info = $db->sql_fetch_assoc($contact_list_handle);
 
 	// Prepare contact information
@@ -69,65 +83,57 @@ for ($j = 1; $contact_list_num_rows >= $j; $j++) {
 		$realname = stripslashes($contact_info['name']);
 	}
 	$contact_title = stripslashes($contact_info['title']);
-	if ($contact_info['email_hide'] == 1) {
-		$contact_email = 'Hidden';
+	if (strlen($contact_info['email']) == 0) {
+		$contact_email = NULL;
 	} else {
 		$contact_email = $contact_info['email'];
 	}
-	if ($contact_info['phone_hide'] == 1) {
-		$contact_telephone = 'Hidden';
+	if ($contact_info['phone'] == NULL) {
+		$contact_telephone = NULL;
 	} else {
 		$contact_telephone = format_tel($contact_info['phone']);
 	}
-	if ($contact_info['address_hide'] == 1) {
-		$contact_address = 'Hidden';
+	if (strlen($contact_info['address']) == 0) {
+		$contact_address = NULL;
 	} else {
 		$contact_address = $contact_info['address'];
 	}
-	if (get_config('contacts_display_mode') == 'card') {
-		$template_contact = new template;
-		$template_contact->load_file('contactlist');
-		$template_contact->contact_name = $realname;
-		$template_contact->contact_title = $contact_title;
-		$template_contact->contact_email = stripslashes($contact_email);
-		$template_contact->contact_telephone = stripslashes($contact_telephone);
-		$template_contact->contact_address = stripslashes($contact_address);
-		if ($contact_email == 'Hidden') {
-			$template_contact->replace_range('contact_email','');
-		} else {
-			$template_contact->contact_email_start = '';
-			$template_contact->contact_email_end = '';
-		}
-		if ($contact_telephone == 'Hidden') {
-			$template_contact->replace_range('contact_telephone','');
-		} else {
-			$template_contact->contact_telephone_start = '';
-			$template_contact->contact_telephone_end = '';
-		}
-		if ($contact_address == 'Hidden') {
-			$template_contact->replace_range('contact_address','');
-		} else {
-			$template_contact->contact_address_start = '';
-			$template_contact->contact_address_end = '';
-		}
-		if ($contact_info['title'] == '' || $contact_info['title'] == NULL) {
-			$template_contact->replace_range('contact_title','');
-		} else {
-			$template_contact->contact_title_start = '';
-			$template_contact->contact_title_end = '';
-		}
-		$content .= $template_contact;
-		unset($template_contact);
+
+	$template_contact = clone $contact_template_body;
+	$template_contact->contact_name = $realname;
+	$template_contact->contact_title = $contact_title;
+	$template_contact->contact_email = stripslashes($contact_email);
+	$template_contact->contact_telephone = stripslashes($contact_telephone);
+	$template_contact->contact_address = stripslashes($contact_address);
+	if ($contact_email == NULL) {
+		$template_contact->replace_range('contact_email','');
+	} else {
+		$template_contact->contact_email_start = '';
+		$template_contact->contact_email_end = '';
 	}
-	if (get_config('contacts_display_mode') == 'compact') {
-		$content .= "\t<tr>\n";
-		$content .= "\t\t<td>$realname<br />$contact_title</td>\n";
-		$content .= "\t\t<td>Email: $contact_email<br />Phone: $contact_telephone<br />Address: $contact_address<br /></td>\n";
-		$content .= "\t</tr>\n";
+	if ($contact_telephone == NULL) {
+		$template_contact->replace_range('contact_telephone','');
+	} else {
+		$template_contact->contact_telephone_start = '';
+		$template_contact->contact_telephone_end = '';
 	}
+	if ($contact_address == NULL) {
+		$template_contact->replace_range('contact_address','');
+	} else {
+		$template_contact->contact_address_start = '';
+		$template_contact->contact_address_end = '';
+	}
+	if ($contact_info['title'] == '' || $contact_info['title'] == NULL) {
+		$template_contact->replace_range('contact_title','');
+	} else {
+		$template_contact->contact_title_start = '';
+		$template_contact->contact_title_end = '';
+	}
+	$content .= (string)$template_contact;
+	unset($template_contact);
 }
-if (get_config('contacts_display_mode') == 'compact') {
-	$content .= '</table>';
-}
+$content .= (string)$contact_template_foot;
+unset($contact_template_foot);
+
 return $content;
 ?>

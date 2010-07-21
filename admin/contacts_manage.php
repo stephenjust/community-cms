@@ -52,6 +52,10 @@ switch ($_GET['action']) {
 
 		break;
 	case 'delete':
+		if (!$acl->check_permission('contact_delete')) {
+			$content .= '<span class="errormessage">You do not have the necessary permissions to delete a contact.</span><br />'."\n";
+			break;
+		}
 		if (!is_numeric($_GET['id'])) {
 			$content .= 'Invalid contact ID.<br />'."\n";
 			break;
@@ -91,17 +95,17 @@ switch ($_GET['action']) {
 		$phone = $_POST['phone'];
 		$address = addslashes($_POST['address']);
 		$email = addslashes($_POST['email']);
-		$phone_hide = (isset($_POST['phone_hide'])) ? 1 : 0;
-		$address_hide = (isset($_POST['address_hide'])) ? 1 : 0;
-		$email_hide = (isset($_POST['email_hide'])) ? 1 : 0;
 
 		// Format phone number for storage
 		if ($phone != "") {
-			$phone = str_replace(array('-','(',')',' ','.'),NULL,$phone);
+			// Remove special characters that may be used in a phone number
+			$phone = str_replace(array('-','(',')',' ','.','+'),NULL,$phone);
 			if (!is_numeric($phone)) {
 				$content .= 'Invalid telephone number.<br />'."\n";
 				break;
 			}
+		} else {
+			$phone = 'NULL';
 		}
 		
 		// Verify email address
@@ -136,9 +140,9 @@ switch ($_GET['action']) {
 		// Create contact
 		$new_contact_query = 'INSERT INTO `'.CONTACTS_TABLE.'`
 			(`name`,`user_id`,`title`,`phone`,`email`,
-			`address`,`phone_hide`,`email_hide`,`address_hide`)
-			VALUES (\''.$name.'\','.$uid.',\''.$title.'\','.$phone.',\''.$email.'\',
-			\''.$address.'\','.$phone_hide.','.$email_hide.','.$address_hide.')';
+			`address`)
+			VALUES (\''.$name.'\','.$uid.',\''.$title.'\',
+			'.$phone.',\''.$email.'\',\''.$address.'\')';
 		$new_contact_handle = $db->sql_query($new_contact_query);
 		if ($db->error[$new_contact_handle] === 1) {
 			$content .= 'Failed to create contact.<br />'."\n";
@@ -194,15 +198,12 @@ switch ($_GET['action']) {
 		$edit_form = new form;
 		$edit_form->set_method('post');
 		$edit_form->set_target('admin.php?module=contacts_manage&amp;action=editsave&amp;id='.$id);
-		$edit_form->add_textbox('name','Name',$contact['name']);
-		$edit_form->add_textbox('username','Username (optional)',$uname['username']);
-		$edit_form->add_textbox('title','Title',$contact['title']);
-		$edit_form->add_textbox('phone','Telephone',$contact['phone']);
-		$edit_form->add_textbox('address','Address',$contact['address']);
-		$edit_form->add_textbox('email','E-Mail',$contact['email']);
-		$edit_form->add_checkbox('phone_hide','Hide Telephone',$contact['phone_hide']);
-		$edit_form->add_checkbox('address_hide','Hide Address',$contact['address_hide']);
-		$edit_form->add_checkbox('email_hide','Hide E-Mail',$contact['email_hide']);
+		$edit_form->add_textbox('name','Name',stripslashes($contact['name']));
+		$edit_form->add_textbox('username','Username (optional)',stripslashes($uname['username']));
+		$edit_form->add_textbox('title','Title',stripslashes($contact['title']));
+		$edit_form->add_textbox('phone','Telephone',format_tel($contact['phone']));
+		$edit_form->add_textbox('address','Address',stripslashes($contact['address']));
+		$edit_form->add_textbox('email','E-Mail',stripslashes($contact['email']));
 		$edit_form->add_submit('submit','Submit');
 
 		$tab_content['edit'] = $edit_form;
@@ -221,21 +222,21 @@ switch ($_GET['action']) {
 		$phone = $_POST['phone'];
 		$address = addslashes($_POST['address']);
 		$email = addslashes($_POST['email']);
-		$phone_hide = (isset($_POST['phone_hide'])) ? 1 : 0;
-		$address_hide = (isset($_POST['address_hide'])) ? 1 : 0;
-		$email_hide = (isset($_POST['email_hide'])) ? 1 : 0;
 
 		// Format phone number for storage
-		if ($phone != "") {
-			$phone = str_replace(array('-','(',')',' ','.'),NULL,$phone);
+		if ($phone != '') {
+			// Remove special characters
+			$phone = str_replace(array('-','(',')',' ','.','+'),NULL,$phone);
 			if (!is_numeric($phone)) {
 				$content .= 'Invalid telephone number.<br />'."\n";
 				break;
 			}
+		} else {
+			$phone = 'NULL';
 		}
 
 		// Verify email address
-		if ($email != "") {
+		if ($email != '') {
 			if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
 				$content .= 'Invalid E-Mail address.<br />'."\n";
 				break;
@@ -266,16 +267,15 @@ switch ($_GET['action']) {
 		// Create contact
 		$new_contact_query = 'UPDATE `'.CONTACTS_TABLE.'`
 			SET `name`=\''.$name.'\',`user_id`='.$uid.',`title`=\''.$title.'\',
-			`phone`='.$phone.',`email`=\''.$email.'\',`address`=\''.$address.'\',
-			`phone_hide`='.$phone_hide.',`email_hide`='.$email_hide.',
-			`address_hide`='.$address_hide.' WHERE `id` = '.(int)$_GET['id'];
+			`phone`='.$phone.',`email`=\''.$email.'\',`address`=\''.$address.'\'
+			WHERE `id` = '.(int)$_GET['id'];
 		$new_contact_handle = $db->sql_query($new_contact_query);
 		if ($db->error[$new_contact_handle] === 1) {
 			$content .= 'Failed to edit contact.<br />'."\n";
 			break;
 		}
 		$content .= 'Successfully edited contact.<br />'."\n";
-		log_action('Edited contact \''.$name.'\'');
+		log_action('Edited contact \''.stripslashes($name).'\'');
 		break;
 
 // ----------------------------------------------------------------------------
@@ -327,9 +327,6 @@ $new_form->add_textbox('title','Title');
 $new_form->add_textbox('phone','Telephone');
 $new_form->add_textbox('address','Address');
 $new_form->add_textbox('email','E-Mail');
-$new_form->add_checkbox('phone_hide','Hide Telephone');
-$new_form->add_checkbox('address_hide','Hide Address');
-$new_form->add_checkbox('email_hide','Hide E-Mail');
 $new_form->add_submit('submit','Submit');
 
 $tab_content['create'] = $new_form;
