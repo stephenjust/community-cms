@@ -98,12 +98,9 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->contacts" (
 	"id" INT NOT NULL default nextval('<!-- $DB_PREFIX$ -->contacts_id_seq') ,
 	"user_id" INT NOT NULL ,
 	"name" TEXT NOT NULL ,
-	"phone" CHAR( 11 ) NOT NULL ,
+	"phone" CHAR( 11 ) NULL default NULL ,
 	"address" TEXT NOT NULL ,
 	"email" TEXT NOT NULL ,
-	"phone_hide" BOOL NOT NULL ,
-	"address_hide" BOOL NOT NULL ,
-	"email_hide" BOOL NOT NULL ,
 	"title" TEXT NOT NULL,
 	PRIMARY KEY ("id")
 );

@@ -307,6 +307,12 @@ switch ($db_version) {
 		}
 		$old_nconfig = $db->sql_fetch_assoc($old_nconfig_handle);
 
+		// Remove obselete fields in contacts table
+		$query[] = 'ALTER TABLE `'.CONTACTS_TABLE.'` DROP `phone_hide`,
+			DROP `address_hide`,
+			DROP `email_hide`,
+			CHANGE `phone` `phone` CHAR( 11 ) NULL DEFAULT NULL';
+
 		// Move news config into global config table
 		$query[] = 'INSERT INTO `'.CONFIG_TABLE.'` (\'config_name\',\'config_value\')
 			VALUES
