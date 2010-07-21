@@ -81,18 +81,10 @@ function display_page($view="") {
 		$page_message .= '<br /><br />'."\n";
 	}
 
-	// Grab list of queries that caused an error for debugging
-	if(DEBUG === 1) {
-		$query_debug = $db->print_error_query();
-	} else {
-		$query_debug = NULL;
-	}
-
 	// Replace markers
 	$template_page->page_message = $page_message;
 	$template_page->left_content = $left_blocks_content;
 	$template_page->right_content = $right_blocks_content;
-	$template_page->footer = get_config('footer').$query_debug;
 	$template_page->nav_bar = display_nav_bar();
 	$template_page->nav_login = display_login_box();
 	$template_page->page_id = $page->id;

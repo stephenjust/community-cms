@@ -73,21 +73,6 @@ class page {
 	public $blocksleft = NULL;
 	public $blocksright = NULL;
 	/**
-	 * Stores the page header
-	 * @var string
-	 */
-	private $header;
-	/**
-	 * Stores the main page body
-	 * @var string
-	 */
-	private $body;
-	/**
-	 * Stores the page footer
-	 * @var string
-	 */
-	private $footer;
-	/**
 	 * Page meta-description for search engines
 	 * @var string
 	 */
@@ -259,9 +244,14 @@ class page {
 		unset($js_include);
 
 		// Include StyleSheets
-		$template->css_include =
+		$css_include =
 			'<link rel="StyleSheet" type="text/css" href="'.$template->path.'style.css" />'."\n".
-			'<link rel="StyleSheet" type="text/css" href="'.$template->path.'print.css" media="print" />';
+			'<link rel="StyleSheet" type="text/css" href="'.$template->path.'print.css" media="print" />'."\n";
+		if (DEBUG === 1) {
+			$css_include .= '<link rel="StyleSheet" type="text/css" href="'.$template->path.'debug.css" />'."\n";
+		}
+		$template->css_include = $css_include;
+		unset($css_include);
 
 		$template->admin_include = NULL;
 		$template->print_header = get_config('site_name');
@@ -288,7 +278,23 @@ class page {
 		// FIXME: Stub
 	}
 	public function display_footer() {
-		// FIXME: Stub
+		$template = new template;
+		$template->load_file('footer');
+		$template->footer = get_config('footer');
+		echo $template;
+		unset($template);
+	}
+	public function display_debug() {
+		global $db;
+		global $debug;
+
+		$template = new template;
+		$template->load_file('debug');
+		$template->debug_queries = $db->print_queries();
+		$template->debug_query_stats = $db->print_query_stats();
+		$template->debug_log = $debug->display_traces();
+		echo $template;
+		unset($template);
 	}
 }
 ?>

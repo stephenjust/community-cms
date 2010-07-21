@@ -104,9 +104,7 @@ $page->display_header();
 $page->display_content();
 display_page($view);
 if (DEBUG === 1) {
-	$db->print_query_stats();
-	$db->print_queries();
-	$debug->display_traces();
+	$page->display_debug();
 }
 $page->display_footer();
 

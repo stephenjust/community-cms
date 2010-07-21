@@ -39,29 +39,21 @@ class db {
 	var $query_text = array();
     var $error = array();
 
-	function print_error_query() {
-		$return = '<br /><div>';
-		for ($i = 1; $i <= count($this->error); $i++) {
-			if($this->error[$i] == 1) {
-				$return .= '<span style="color: #CC0000; font-size: small;">[Query '.$i.'] '.
-					$this->query_text[$i].'<br />'.$this->_print_error_query($i).'</span><br />'."\n";
-			}
-		}
-		$return .= '</div>'."\n";
-		return $return;
-	}
-
 	function print_query_stats() {
-		$return = '<br /><div>';
-		$return .= 'Number of queries: '.($this->query_count - 1).'<br />';
-		$return .= '</div>';
-		echo $return;
+		return '<p>Number of queries: '.($this->query_count - 1).'</p>';
 	}
 
 	function print_queries() {
-		echo '<div><textarea cols="100" rows="10">';
-		print_r($this->query_text);
-		echo '</textarea></div><br />';
+		$queries = $this->query_text;
+		$return = NULL;
+		foreach($queries AS $querynum => $query) {
+			if ($this->error[$querynum] === 1) {
+				$return .= '<p><span style="color: #CC0000;">'.$query.'</span></p>'."\n";
+			} else {
+				$return .= '<p>'.$query.'</p>'."\n";
+			}
+		}
+		return $return;
 	}
 }
 

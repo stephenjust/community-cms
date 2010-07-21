@@ -45,20 +45,18 @@ class debug {
 	}
 
 	public function display_traces() {
-		$stack = '<div id="debug_info">'."\n";
-		$stack .= "\t".'<h1>Debug Information:</h1>'."\n";
+		$stack = NULL;
 		if (count($this->debug_stack) === 0) {
 			$stack .= "\t".'No errors have occured<br />'."\n";
 		}
 		for ($i = 0; $i < count($this->debug_stack); $i++) {
 			if ($this->debug_stack[$i]['error'] == true) {
-				$stack .= "\t".'<span style="color: #CC0000;">Error: \''.$this->debug_stack[$i]['message'].'\' reported by \''.$this->debug_stack[$i]['function'].'\'</span><br />'."\n";
+				$stack .= "\t".'<p><span style="color: #CC0000;">Error: \''.$this->debug_stack[$i]['message'].'\' reported by \''.$this->debug_stack[$i]['function'].'\'</span></p>'."\n";
 			} else {
-				$stack .= "\t'".$this->debug_stack[$i]['message'].'\' reported by \''.$this->debug_stack[$i]['function'].'\'<br />'."\n";
+				$stack .= "\t<p>'".$this->debug_stack[$i]['message'].'\' reported by \''.$this->debug_stack[$i]['function'].'\'</p>'."\n";
 			}
 		}
-		$stack .= '</div>'."\n";
-		print $stack;
+		return $stack;
 	}
 }
 ?>

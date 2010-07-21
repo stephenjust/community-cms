@@ -188,19 +188,11 @@ function display_admin() {
 	}
 	$template_page_bottom->content = $content;
 	$template_page_bottom->image_path = $image_path;
-	if (DEBUG === 1) {
-		$query_debug = $db->print_error_query();
-	} else {
-		$query_debug = NULL;
-	}
-	$template_page_bottom->footer = 'Powered by Community CMS'.$query_debug;
+	$template_page_bottom->footer = 'Powered by Community CMS';
 	echo $template_page_bottom;
 	unset($template_page_bottom);
 }
 
 display_admin($content);
-if (DEBUG === 1) {
-	$debug->display_traces();
-}
 clean_up();
 ?>
