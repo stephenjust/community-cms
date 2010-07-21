@@ -281,6 +281,14 @@ function format_tel($phone_number) {
 	if (strlen($phone_number) == 11) {
 		$phone_number = preg_replace('/^1/','',$phone_number);
 	}
+	if (strlen($phone_number) == 7) {
+		switch ($format) {
+			case '###.###.####':
+				return substr($phone_number,0,3).'.'.substr($phone_number,3,4);
+			default:
+				return substr($phone_number,0,3).'-'.substr($phone_number,3,4);
+		}
+	}
 	if (strlen($phone_number) != 10) {
 		return $phone_number;
 	}
@@ -291,8 +299,6 @@ function format_tel($phone_number) {
 			return substr($phone_number,0,3).'-'.substr($phone_number,3,3).'-'.substr($phone_number,6,4);
 		case '###.###.####':
 			return substr($phone_number,0,3).'.'.substr($phone_number,3,3).'.'.substr($phone_number,6,4);
-		case '###-####':
-			return substr($phone_number,3,3).'-'.substr($phone_number,6,4);
 		default:
 			return $phone_number;
 	}

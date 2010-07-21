@@ -64,12 +64,10 @@ $form->add_select('time_format','Time Format',
 $form->add_select('tel_format','Telephone Number Format',
 		array('(###) ###-####',
 			'###-###-####',
-			'###.###.####',
-			'###-####'),
+			'###.###.####'),
 		array('(555) 555-1234',
 			'555-555-1234',
-			'555.555.1234',
-			'555-1234'),
+			'555.555.1234'),
 		get_config('tel_format'));
 $form->add_textarea('footer','Footer Text',stripslashes(get_config('footer')));
 $form->add_textbox('cookie_name','Cookie Name',get_config('cookie_name'));
