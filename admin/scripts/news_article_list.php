@@ -31,7 +31,7 @@ if (!isset($_GET['page'])) {
 
 // Get article list
 if (!is_numeric($page_id)) {
-    $article_list_query = 'SELECT * FROM `' . NEWS_TABLE . '` ORDER BY `id` DESC';
+    $article_list_query = 'SELECT * FROM `'.NEWS_TABLE.'` ORDER BY `id` DESC';
 } else {
     $article_list_query = 'SELECT * FROM `' . NEWS_TABLE . '`
 		WHERE `page` = '.$page_id.' ORDER BY `priority` DESC, `id` DESC';
@@ -50,6 +50,30 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 	}
 	$current_row[] = $article_title;
 	unset($article_title);
+
+	// If the view is "All Pages", we can't easily see what page each article
+	// is on, so we'll fetch the title of the page each article is on.
+	if (!is_numeric($page_id)) {
+		if($article_list['page'] == 0) {
+			$current_row[] = 'No Page';
+		} else {
+			// Get page title
+			$article_page_query = 'SELECT `page`.`title` FROM 
+				`'.PAGE_TABLE.'` `page`, `'.NEWS_TABLE.'` `news`
+				WHERE `news`.`id` = '.$article_list['id'].'
+				AND `news`.`page` = `page`.`id`';
+			$article_page_handle = $db->sql_query($article_page_query);
+			if ($db->error[$article_page_handle] === 1) {
+				$current_row[] = '<span class="errormessage">Error</span>';
+			} elseif ($db->sql_num_rows($article_page_handle) == 0) {
+				$current_row[] = 'Unknown Page';
+			} else {
+				$article_page = $db->sql_fetch_assoc($article_page_handle);
+				$current_row[] = stripslashes($article_page['title']);
+			}
+		}
+	}
+
 	if ($acl->check_permission('news_delete')) {
 		$current_row[] = '<a href="?module=news&amp;action=delete&amp;id='
 			.$article_list['id'].'&amp;page='.$page_id.'">'
@@ -73,6 +97,12 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 } // FOR
 
 $label_array = array('','ID','Title');
+
+// Add "Page" column when in "All Pages" view
+if (!is_numeric($page_id)) {
+	$label_array[] = 'Page';
+}
+
 if ($acl->check_permission('news_delete')) {
 	$label_array[] = 'Delete';
 }
