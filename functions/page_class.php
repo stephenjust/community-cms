@@ -229,16 +229,16 @@ class page {
 
 		// Include javascript
 		$js_include = '<script language="javascript" type="text/javascript"
-			src="./scripts/jquery.js"></script>
+			src="'.ROOT.'scripts/jquery.js"></script>
 			<script language="javascript" type="text/javascript"
-			src="./scripts/ajax.js"></script>
+			src="'.ROOT.'scripts/ajax.js"></script>
 			<script language="javascript" type="text/javascript"
-			src="./scripts/cms_fe.js"></script>';
+			src="'.ROOT.'scripts/cms_fe.js"></script>';
 		if ($this->type == 'tabs.php') {
 			$js_include .= '<script language="javascript" type="text/javascript"
-			src="./scripts/jquery-ui.js"></script>
+			src="'.ROOT.'scripts/jquery-ui.js"></script>
 			<script language="javascript" type="text/javascript"
-			src="./scripts/jquery-fe.js"></script>';
+			src="'.ROOT.'scripts/jquery-fe.js"></script>';
 		}
 		$template->js_include = $js_include;
 		unset($js_include);
@@ -273,6 +273,12 @@ class page {
 		$template->page_title = $this->title;
 		echo $template;
 		unset($template);
+	}
+	public function display_nav_menu() {
+		$template = new template;
+		$template->load_file('nav_bar');
+		$template->nav_bar = display_nav_bar();
+		$template->nav_login = display_login_box();
 	}
 	public function display_content() {
 		// FIXME: Stub

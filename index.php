@@ -101,6 +101,7 @@ if (file_exists('./install')) {
 
 // Display the page.
 $page->display_header();
+$page->display_nav_menu();
 $page->display_content();
 display_page($view);
 if (DEBUG === 1) {

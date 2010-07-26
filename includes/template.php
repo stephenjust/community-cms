@@ -26,7 +26,7 @@ class template {
 	 * load_file - Loads a template file from the current frontend template
 	 */
 	public function load_file($file = 'index') {
-		$path = './';
+		$path = ROOT;
 		$file .= '.html';
 		if ($this->load_template($path,$file)) {
 			return true;
