@@ -100,15 +100,26 @@ class template {
 		}
 	}
 
+	/**
+	 * get_range - Returns the content between two markers in a template file
+	 * @global object $debug
+	 * @param string $field Marker name
+	 * @return mixed Content string, or false on failure
+	 */
 	function get_range($field) {
+		global $debug;
+
 		$start_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_START$ -->';
 		$end_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_END$ -->';
 		$start = strpos($this->template,$start_string);
 		$end = strpos($this->template,$end_string);
-		if ($start && $end) {
+		// Start may be 0, so we need to check with ===
+		if ($start !== false && $end !== false) {
 			$length = $end - $start - strlen($start_string);
 			return substr($this->template,$start + strlen($start_string),$length);
 		}
+		$debug->add_trace('Could not find start or end of range '.$field,true,'template->get_range()');
+		return false;
 	}
 
 	function replace_variable($variable,$replacement) {
@@ -155,6 +166,26 @@ class template {
 		$new_template->template = '<!-- $'.mb_convert_case($split_marker, MB_CASE_UPPER, "UTF-8").'$ -->'.$new_temp;
 		unset($new_temp);
 		return $new_template;
+	}
+
+	/**
+	 * split_range - Returns a new template containing the contents of a certain range
+	 * @param string $range Name of start and end markers
+	 * @return template New template
+	 */
+	public function split_range($range) {
+		global $debug;
+
+		$content = $this->get_range($range);
+		if ($content === false) {
+			$debug->add_trace('Failed to get segment of template',true,'template->split_range()');
+			return false;
+		}
+		$return = new template;
+		$return->path = $this->path;
+		$return->template = $content;
+		$this->replace_range($range,NULL);
+		return $return;
 	}
 
 	function __toString() {
