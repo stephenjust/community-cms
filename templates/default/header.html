@@ -6,50 +6,6 @@
 <!-- $ADMIN_INCLUDE$ -->
 <!-- $JS_INCLUDE$ -->
 <!-- $CSS_INCLUDE$ -->
-<style type="text/css">
-body {
-	margin: 0px;
-	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
-}
-#header {
-	background-color: #3187b4; /* If image is not loaded yet */
-	background: url('<!-- $IMAGE_PATH$ -->header.png'); /* Covers solid background */
-	height:100px;
-	text-align: center;
-}
-#left {
-	float: left;
-	width: 200px;
-	background-color: #FFF;
-	min-height: 350px; /* for modern browsers */
-	height: auto !important; /* for modern browsers */
-	height: 350px; /* for IE5.x and IE6 */
-}
-#right {
-	float: right;
-	width: 200px;
-	background-color: #FFF;
-	background: url('<!-- $IMAGE_PATH$ -->rightcontentborder.png') no-repeat;
-	min-height: 350px;
-	height: auto !important;
-	height: 350px;
-}
-#center {
-	margin-left: 205px;
-	margin-right: 205px;
-	margin-top: 5px;
-	background-color: #FFF;
-	min-height: 350px; /* for modern browsers */
-	height: auto !important; /* for modern browsers */
-	height: 350px; /* for IE5.x and IE6 */
-}
-#footer {
-	clear: both;
-	background-color: #FFF;
-	height: 55px;
-	text-align: center;
-}
-</style>
 <!-- $META_DESC$ -->
 </head>
 <body>
@@ -57,3 +13,4 @@ body {
 		<a href="index.php"><img src="<!-- $IMAGE_PATH$ -->logo.png" alt="Header" class="logo" /></a>
 	</div>
 	<div id="print_header"><!-- $PRINT_HEADER$ --></div>
+	<div id="body">

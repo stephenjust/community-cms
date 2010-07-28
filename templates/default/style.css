@@ -1,6 +1,57 @@
 body {
 	font-family: Tahoma, sans-serif;
 	font-size: medium;
+	margin: 0px;
+}
+#header {
+	background-color: #3187b4; /* If image is not loaded yet */
+	background: url('./images/header.png'); /* Covers solid background */
+	height:100px;
+	text-align: center;
+}
+#body {
+	background: #FFFFFF;
+	clear: both;
+	color: #000000;
+	float: left;
+	height: auto !important;
+	height: 350px;
+	min-height: 350px;
+	padding: 0px;
+	margin: 0px;
+}
+#footer {
+	clear: both;
+	background-color: #FFF;
+	height: 55px;
+	text-align: center;
+}
+#left {
+	clear: left;
+	float: left;
+	width: 200px;
+	background-color: #FFF;
+	height: auto !important; /* for modern browsers */
+	height: 350px; /* for IE5.x and IE6 */
+}
+#right {
+	clear: right;
+	float: right;
+	width: 200px;
+	background-color: #FFF;
+	background: url('./images/rightcontentborder.png') no-repeat;
+	min-height: 350px;
+	height: auto !important;
+	height: 350px;
+}
+#center {
+	margin-left: 205px;
+	margin-right: 205px;
+	margin-top: 5px;
+	background-color: #FFF;
+	min-height: 350px; /* for modern browsers */
+	height: auto !important; /* for modern browsers */
+	height: 350px; /* for IE5.x and IE6 */
 }
 #print_header {
 	display: none;
