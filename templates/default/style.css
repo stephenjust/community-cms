@@ -344,6 +344,9 @@ div.news_edit_bar {
 	float: right;
 	min-height: 1px;
 	min-width: 1px;
+	position: absolute;
+	right: 3px;
+	top: 3px;
 	vertical-align: middle;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
