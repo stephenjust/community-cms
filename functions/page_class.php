@@ -61,10 +61,10 @@ class page {
 	 */
 	public $type = 'news';
 	/**
-	 * Stores the full content of the page before it is parsed.
-	 * @var string Content of page
+	 * Only print content when displaying page
+	 * @var boolean 
 	 */
-	private $fullcontent;
+	public $content_only = false;
 	/**
 	 * Stores the content of the body
 	 * @var string
@@ -220,6 +220,16 @@ class page {
 		}
 	}
 
+	public function display_page() {
+		// Read template.xml for current template to figure out which order
+		// to spit out content
+
+		// If $this->content_only === true, only print the part of the template
+		// with type="content"
+
+		// FIXME: Stub
+	}
+
 	/**
 	 * display_header - Print the page header
 	 */
@@ -274,11 +284,105 @@ class page {
 		echo $template;
 		unset($template);
 	}
-	public function display_nav_menu() {
+
+	/**
+	 * nav_menu - Returns HTML for navigation menu
+	 * @global object $db Database object
+	 * @global object $debug Debugging object
+	 * @return string HTML for menu
+	 */
+	private function nav_menu() {
+		global $db;
+		global $debug;
+
+		// Prepare menu and submenu templates
 		$template = new template;
-		$template->load_file('nav_bar');
-		$template->nav_bar = display_nav_bar();
+		if (!$template->load_file('nav_bar')) {
+			return false;
+		}
+		$menu_template = $template->split_range('nav_menu');
+		$submenu_template = $template->split_range('nav_submenu');
+		unset($template);
+
+		// Handle main menu
+		// Split template into components
+		$menu_template->nav_menu_id = 'nav-menu';
+		$menu_item_template = $menu_template->split_range('menu_item');
+		$cmenu_item_template = $menu_template->split_range('current_menu_item');
+		$menus_item_template = $menu_template->split_range('menu_item_with_child');
+		$cmenus_item_template = $menu_template->split_range('current_menu_item_with_child');
+
+		$nav_menu = page_list(0,true);
+
+		$menu = NULL;
+		foreach ($nav_menu AS $nav_menu_item) {
+			$haschild = 0;
+			if ($nav_menu_item['has_children'] == true && $this->id == $nav_menu_item['id']) {
+				$item_template = clone $cmenus_item_template;
+				$haschild = 1;
+			} elseif ($nav_menu_item['has_children'] == true) {
+				$item_template = clone $menus_item_template;
+				$haschild = 1;
+			} elseif ($this->id == $nav_menu_item['id']) {
+				$item_template = clone $cmenu_item_template;
+			} else {
+				$item_template = clone $menu_item_template;
+			}
+			if ($nav_menu_item['type'] == 0) {
+				$link = explode('<LINK>',$nav_menu_item['title']); // Check if menu entry is a link
+				$link_path = $link[1];
+				$link_name = stripslashes($link[0]);
+				unset($link);
+			} else {
+				if(strlen($nav_menu_item['text_id']) > 0) {
+					$link_path = "index.php?page=".$nav_menu_item['text_id'];
+				} else {
+					$link_path = "index.php?id=".$nav_menu_item['id'];
+				}
+				$link_name = stripslashes($nav_menu_item['title']);
+			}
+			$item_template->menu_item_url = $link_path;
+			$item_template->menu_item_label = $link_name;
+			$item_template->menu_item_id = 'menuitem_'.$nav_menu_item['id'];
+			// Generate hidden child div
+			if ($haschild == 1) {
+				$item_template->child_placeholder = display_child_menu($nav_menu_item['id']);
+			} else {
+				$item_template->child_placeholder = NULL;
+			}
+			$menu .= (string)$item_template;
+			unset($item_template);
+		} // FOR
+		$menu_template->menu_placeholder = $menu;
+		return $menu_template;
+	}
+	public function display_left() {
+		$template = new template;
+		$template->load_file('left');
+		$template->nav_bar = $this->nav_menu();
 		$template->nav_login = display_login_box();
+
+		// Prepare blocks
+		$left_blocks_content = NULL;
+		$left_blocks = explode(',',$this->blocksleft);
+		for ($bk = 1; $bk <= count($left_blocks); $bk++) {
+			$left_blocks_content .= get_block($left_blocks[$bk - 1]);
+		}
+		$template->left_content = $left_blocks_content;
+		echo $template;
+	}
+	public function display_right() {
+		$template = new template;
+		$template->load_file('right');
+
+		// Prepare blocks
+		$right_blocks_content = NULL;
+		$right_blocks = explode(',',$this->blocksright);
+		for ($bk = 1; $bk <= count($right_blocks); $bk++) {
+			$right_blocks_content .= get_block($right_blocks[$bk - 1]);
+		}
+		$template->right_content = $right_blocks_content;
+		echo $template;
 	}
 	public function display_content() {
 		// FIXME: Stub

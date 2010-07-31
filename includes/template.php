@@ -189,8 +189,13 @@ class template {
 	}
 
 	function __toString() {
+		// Replace things that should be replaced at all times
 		if (isset($this->path)) {
 			$this->image_path = $this->path.'images/';
+			$this->replace_variable('article_url_onpage','article_url_onpage($a);');
+			$this->replace_variable('article_url_ownpage','article_url_ownpage($a);');
+			$this->replace_variable('article_url_nopage','article_url_nopage($a);');
+			$this->replace_variable('gallery_embed','gallery_embed($a);');
 		}
 		$return = (string)$this->template;
 		return $return;

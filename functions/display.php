@@ -64,18 +64,6 @@ function display_page($view="") {
 		}
 	}
 
-	// Prepare for and search for content blocks
-	// Left side
-	$left_blocks = explode(',',$page->blocksleft);
-	for ($bk = 1; $bk <= count($left_blocks); $bk++) {
-		$left_blocks_content .= get_block($left_blocks[$bk - 1]);
-	}
-	// Right side
-	$right_blocks = explode(',',$page->blocksright);
-	for ($bk = 1; $bk <= count($right_blocks); $bk++) {
-		$right_blocks_content .= get_block($right_blocks[$bk - 1]);
-	}
-
 	// Add a space below page messages (if any exist)
 	if ($page_message != NULL) {
 		$page_message .= '<br /><br />'."\n";
@@ -83,18 +71,9 @@ function display_page($view="") {
 
 	// Replace markers
 	$template_page->page_message = $page_message;
-	$template_page->left_content = $left_blocks_content;
-	$template_page->right_content = $right_blocks_content;
-	$template_page->nav_bar = display_nav_bar();
-	$template_page->nav_login = display_login_box();
 	$template_page->page_id = $page->id;
 	$template_page->page_ref = $page->url_reference;
 	$content = $page->get_page_content();
-	$template_page->image_path = $image_path;
-	$template_page->replace_variable('article_url_onpage','article_url_onpage($a);');
-	$template_page->replace_variable('article_url_ownpage','article_url_ownpage($a);');
-	$template_page->replace_variable('article_url_nopage','article_url_nopage($a);');
-	$template_page->replace_variable('gallery_embed','gallery_embed($a);');
 
 	// Split template here so we can send some of the page now
 	// (probably shouldn't do this because we've already loaded the content,
@@ -110,68 +89,9 @@ function display_page($view="") {
 	$template_page_bottom->content = $content;
 	$template_page_bottom->page_id = $page->id;
 	$template_page_bottom->page_ref = $page->url_reference;
-	$template_page_bottom->image_path = $image_path;
-	$template_page_bottom->replace_variable('article_url_onpage','article_url_onpage($a);');
-	$template_page_bottom->replace_variable('article_url_ownpage','article_url_ownpage($a);');
-	$template_page_bottom->replace_variable('article_url_nopage','article_url_nopage($a);');
-	$template_page_bottom->replace_variable('gallery_embed','gallery_embed($a);');
 	echo $template_page_bottom;
 	unset($template_page_bottom);
 	return;
-}
-
-/**
- * display_nav_bar - Display a list of links to other pages on the web site
- * @global object $page
- * @global object $db
- * @param int $mode Type of page to display (1 means visible pages, 0 means
- * hidden pages)
- * @return string
- */
-function display_nav_bar() {
-	global $page;
-	global $db;
-	$nav_menu = page_list(0,true);
-	$return = NULL;
-	$return .= '<ul id="nav-menu">';
-	for ($i = 0; count($nav_menu) > $i; $i++) {
-		$haschild = 0;
-		$extra_text = NULL;
-		if ($nav_menu[$i]['has_children'] == true) {
-			$link_class = 'menuitem_haschild';
-			$extra_text = '<div class="childarrow"></div>';
-			if ($page->id == $nav_menu[$i]['id']) {
-				$link_class = 'menuitem_haschild_current';
-			}
-			$haschild = 1;
-		} elseif ($page->id == $nav_menu[$i]['id']) {
-			$link_class = 'menuitem_current';
-		} else {
-			$link_class = 'menuitem';
-		}
-		if ($nav_menu[$i]['type'] == 0) {
-			$link = explode('<LINK>',$nav_menu[$i]['title']); // Check if menu entry is a link
-			$link_path = $link[1];
-			$link_name = stripslashes($link[0]);
-			unset($link);
-		} else {
-			if(strlen($nav_menu[$i]['text_id']) > 0) {
-				$link_path = "index.php?page=".$nav_menu[$i]['text_id'];
-			} else {
-				$link_path = "index.php?id=".$nav_menu[$i]['id'];
-			}
-			$link_name = stripslashes($nav_menu[$i]['title']);
-		} // IF is link
-		$return .= '<li class="'.$link_class.'" id="menuitem_'.$nav_menu[$i]['id'].'">'."\n";
-		// Generate hidden child div
-		if ($haschild == 1) {
-			$return .= display_child_menu($nav_menu[$i]['id']);
-		}
-		$return .= '<a href="'.$link_path.'">'.$link_name.'</a>'.$extra_text;
-		$return .= '</li>'."\n";
-	} // FOR
-	$return .= '</ul>';
-	return $return;
 }
 
 function display_child_menu($parent) {
