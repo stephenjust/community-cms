@@ -102,9 +102,8 @@ if (file_exists('./install')) {
 // Display the page.
 $page->display_header();
 $page->display_left();
-$page->display_content();
 $page->display_right();
-display_page($view);
+$page->display_content();
 if (DEBUG === 1) {
 	$page->display_debug();
 }

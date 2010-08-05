@@ -1,5 +1,7 @@
 /* COMMUNITY CMS DEBUG STYLES */
 #debug_info {
+	clear: left;
+	float: left;
 	padding: 5px;
 }
 #debug_info > h1 {
