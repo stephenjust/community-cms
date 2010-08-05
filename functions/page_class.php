@@ -384,8 +384,64 @@ class page {
 		$template->right_content = $right_blocks_content;
 		echo $template;
 	}
+
 	public function display_content() {
-		// FIXME: Stub
+		global $db;
+
+		$template = new template;
+		$template->load_file('content');
+		$template->page_path = page_path($this->id);
+
+		// Display the page title if the configuration says to
+		if ($this->showtitle === true) {
+			$template->body_title = $this->page_title;
+			// Remove marker comments
+			$template->body_title_start = NULL;
+			$template->body_title_end = NULL;
+		} else {
+			// Remove comments referring to 'body_title'
+			$template->replace_range('body_title',NULL);
+		}
+
+		// Display page notifications
+		if (strlen($this->notification) > 0) {
+			$template->notification = $this->notification;
+			$template->notification_start = NULL;
+			$template->notification_end = NULL;
+		} else {
+			$template->replace_range('notification',NULL);
+		}
+
+		// Get page messages
+		$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
+			WHERE `page_id` = '.$this->id.'
+			ORDER BY `start_date` ASC';
+		$page_message_handle = $db->sql_query($page_message_query);
+		$page_message = NULL;
+		if ($db->error[$page_message_handle] === 0) { // Don't run the loop if the query failed
+			for ($i = 1; $db->sql_num_rows($page_message_handle) >= $i; $i++) {
+				$page_message_content = $db->sql_fetch_assoc($page_message_handle);
+				$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
+			}
+		}
+		// Display page messages
+		if (strlen($page_message > 0)) {
+			$template->page_message = $page_message;
+			$template->page_message_start = NULL;
+			$template->page_message_end = NULL;
+		} else {
+			$template->replace_range('page_message',NULL);
+		}
+
+		$template->content = $this->get_page_content();
+
+		// This must be done after $template->content is set because the
+		// following could be used within the content.
+		$template->page_id = $this->id;
+		$template->page_ref = $this->url_reference;
+
+		echo $template;
+		unset($template);
 	}
 	public function display_footer() {
 		$template = new template;

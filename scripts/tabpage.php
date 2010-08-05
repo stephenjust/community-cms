@@ -6,32 +6,67 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
-
-if (!isset($_GET['id'])) {
-	die('Page not found.');
-}
-if (!is_numeric($_GET['id'])) {
-	die('Invalid ID');
-}
-$page_id = (int)$_GET['id'];
-
-define('ROOT','../');
+// The not-so-secure security check.
 define('SECURITY',1);
+define('ROOT','../');
 
-include(ROOT.'config.php');
-include(ROOT.'include.php');
+// Load error handling code
+require(ROOT.'functions/error.php');
+// Load database configuration
+require(ROOT.'config.php');
+
+if (!isset($CONFIG['db_engine'])) {
+	err_page(15);
+}
+
+// Check if site is disabled.
+if (@$CONFIG['disabled'] == 1 || @ $CONFIG['not_installed'] == 1) {
+	err_page(11);
+}
+
+// Once the database connections are made, include all other necessary files.
+require(ROOT.'include.php');
 
 initialize();
-$page_query = 'SELECT `page`.*, `pt`.`filename`
-	FROM `'.PAGE_TABLE.'` `page`, `'.PAGE_TYPE_TABLE.'` `pt`
-	WHERE `page`.`id` = '.$page_id.'
-	AND `page`.`type` = `pt`.`id`
-	LIMIT 1';
-$page_handle = $db->sql_query($page_query);
-$result = $db->sql_fetch_assoc($page_handle);
-$page = new page;
-$page->set_page($page_id);
-echo $page->content;
-clean_up();
 
+// Validate session
+checkuser();
+
+// Check if site is active
+if (get_config('site_active') == 0) {
+	err_page(12);
+}
+
+// Initialize some variables to keep PHP from complaining
+$view = (isset($_GET['view'])) ? $_GET['view'] : NULL;
+unset($_GET['view']);
+
+// Figure out which page to fetch from the provided variables
+if (!isset($_GET['id']) && !isset($_GET['page'])) {
+	// No page provided - go to home page
+	$page_id = get_config('home');
+	$page_text_id = NULL;
+} else {
+	if (isset($_GET['page'])) {
+		$page_id = NULL;
+		$page_text_id = addslashes($_GET['page']);
+	} else {
+		$page_id = (int)$_GET['id'];
+		$page_text_id = NULL;
+	}
+}
+unset($_GET['page'],$_GET['id']);
+
+// Load page information.
+$page = new page;
+if ($page_id == NULL && $page_text_id != NULL) {
+	$page->set_page($page_text_id,false);
+} else {
+	$page->set_page($page_id);
+}
+
+// Display the page.
+$page->display_content();
+
+clean_up();
 ?>

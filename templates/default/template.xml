@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE blocklist SYSTEM "../../docs/template.dtd">
+<template name="Community CMS Default" author="Stephen Just">
+	<layout>
+		<file name="header" type="header"></file>
+		<file name="content" type="content"></file>
+		<file name="left" type="left_bar">
+			<file name="nav_bar" type="nav_bar"></file>
+			<file name="user_bar" type="user_bar"></file>
+		</file>
+		<file name="right" type="right_bar"></file>
+		<file name="debug" type="debug"></file>
+		<file name="footer" type="footer"></file>
+	</layout>
+</template>
