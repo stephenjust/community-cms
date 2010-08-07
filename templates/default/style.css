@@ -195,6 +195,17 @@ a:visited {
 
 /* TABS */
 /* ------------------------------------------------------------------------- */
+#fe_tabs {
+	clear: none;
+	float: left;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+}
+#fe_tabs #center {
+	margin: 0px;
+	padding: 0px;
+}
 .ui-widget {
 	font-family: Tahoma, Verdana, Arial, sans-serif;
 	font-size: medium;
@@ -204,6 +215,7 @@ a:visited {
 .ui-widget-header {
 	border: 1px solid #e78f08;
 	background: #EEEEEE;
+	clear: none;
 	font-size: large;
 	font-weight: bold;
 }
@@ -243,6 +255,7 @@ a:visited {
 	cursor: pointer;
 } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
 .ui-tabs .ui-tabs-panel {
+	clear: none;
 	padding: 0.3em 0em;
 	display: block;
 	border-width: 0;
