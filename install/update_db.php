@@ -3,6 +3,7 @@ define('SECURITY',1);
 define('ROOT','../');
 require('../config.php');
 require('../include.php');
+require('./files/obselete_tables.php');
 initialize();
 echo "<html>\n<head>\n<title>Community CMS Database Update</title>\n</head><body>";
 $query = array();
@@ -16,45 +17,45 @@ switch ($db_version) {
 // QUERY ARRAY (VERSION 0.01 -> 0.02)
 // ----------------------------------------------------------------------------
 	case 0.01:
-		$query[] = 'DROP TABLE IF EXISTS '.$CONFIG['db_prefix'].'admin_pages';
-		$query[] = 'DROP TABLE IF EXISTS '.$CONFIG['db_prefix'].'permissions';
-		$query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'pages ADD `text_id` TEXT NULL AFTER `id`';
-		$query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'pages ADD `meta_desc` TEXT NULL AFTER `title`';
-		$query[] = 'CREATE TABLE IF NOT EXISTS '.$CONFIG['db_prefix'].'user_groups (
+		$query[] = 'DROP TABLE IF EXISTS '.ADMIN_PAGE_TABLE;
+		$query[] = 'DROP TABLE IF EXISTS '.PERMISSION_TABLE;
+		$query[] = 'ALTER TABLE '.PAGE_TABLE.' ADD `text_id` TEXT NULL AFTER `id`';
+		$query[] = 'ALTER TABLE '.PAGE_TABLE.' ADD `meta_desc` TEXT NULL AFTER `title`';
+		$query[] = 'CREATE TABLE IF NOT EXISTS '.USER_GROUPS_TABLE.' (
 			`id` int(5) NOT NULL auto_increment,
 			`name` text NOT NULL,
 			`label_format` text NOT NULL,
 			PRIMARY KEY (`id`)
 		 ) ENGINE=MyISAM CHARACTER SET=utf8';
-		$query[] = 'INSERT INTO '.$CONFIG['db_prefix'].'user_groups
+		$query[] = 'INSERT INTO '.USER_GROUPS_TABLE.'
 		 (`name`,`label_format`) VALUES
 		 ("Administrator","font-weight: bold; color: #009900;")';
-		$query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'users ADD `groups` TEXT NULL AFTER `password`';
-		$query[] = 'UPDATE '.$CONFIG['db_prefix'].'users SET `groups` = "1" WHERE `id` = 1 LIMIT 1';
-		$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'news_settings` (
+		$query[] = 'ALTER TABLE '.USER_TABLE.' ADD `groups` TEXT NULL AFTER `password`';
+		$query[] = 'UPDATE '.USER_TABLE.' SET `groups` = "1" WHERE `id` = 1 LIMIT 1';
+		$query[] = 'CREATE TABLE IF NOT EXISTS `'.NEWS_SETTINGS_TABLE.'` (
 			`default_date_setting` INT(3) NOT NULL ,
 			`show_author` INT(3) NOT NULL ,
 			`show_edit_time` INT(3) NOT NULL ,
 			`num_articles` INT(3) NOT NULL
 		) ENGINE = MYISAM CHARACTER SET=utf8';
-		$query[] = 'ALTER TABLE `'.$CONFIG['db_prefix'].'pages`
+		$query[] = 'ALTER TABLE `'.PAGE_TABLE.'`
 			ADD `hidden` INT(1) NOT NULL AFTER `blocks_right`';
-		$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'calendar_settings` (
+		$query[] = 'CREATE TABLE IF NOT EXISTS `'.CALENDAR_SETTINGS_TABLE.'` (
 			`default_view` TEXT NOT NULL ,
 			`month_show_stime` BOOL NOT NULL DEFAULT \'1\',
 			`month_show_cat_icons` BOOL NOT NULL DEFAULT \'1\',
 			`month_day_format` INT NOT NULL DEFAULT \'1\'
 		) ENGINE=MYISAM CHARACTER SET=utf8';
-		$query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'calendar_settings` (`default_view`, `month_show_stime`, `month_show_cat_icons`, `month_day_format`) VALUES
+		$query[] = 'INSERT INTO `'.CALENDAR_SETTINGS_TABLE.'` (`default_view`, `month_show_stime`, `month_show_cat_icons`, `month_day_format`) VALUES
 			(\'month\',1,1,1)';
-		$query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'news_settings`
+		$query[] = 'INSERT INTO `'.NEWS_SETTINGS_TABLE.'`
 			(`default_date_setting` ,`show_author` ,`show_edit_time` ,`num_articles`) VALUES
 			(\'1\', \'1\', \'1\', \'10\')';
-		$query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'config ADD `admin_email` TEXT NULL AFTER `url`';
-		$query[] = 'ALTER TABLE '.$CONFIG['db_prefix'].'config ADD `time_format` TEXT NULL AFTER `comment`';
-		$query[] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `time_format` = \'h:i A\'';
+		$query[] = 'ALTER TABLE '.CONFIG_TABLE.' ADD `admin_email` TEXT NULL AFTER `url`';
+		$query[] = 'ALTER TABLE '.CONFIG_TABLE.' ADD `time_format` TEXT NULL AFTER `comment`';
+		$query[] = 'UPDATE '.CONFIG_TABLE.' SET `time_format` = \'h:i A\'';
 
-		$query[] = 'CREATE TABLE `'.$CONFIG['db_prefix'].'contacts` (
+		$query[] = 'CREATE TABLE `'.CONTACTS_TABLE.'` (
 			`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 			`user_id` INT NOT NULL ,
 			`name` TEXT NOT NULL ,
@@ -68,26 +69,26 @@ switch ($db_version) {
 		) ENGINE=MYISAM CHARACTER SET=utf8';
 
 		// ACL
-		$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'acl` (
+		$query[] = 'CREATE TABLE IF NOT EXISTS `'.ACL_TABLE.'` (
 			`acl_record_id` INT NOT NULL auto_increment PRIMARY KEY,
 			`acl_id` TEXT NOT NULL,
 			`group` INT NOT NULL,
 			`value` INT(1) NOT NULL DEFAULT 0
 		) ENGINE=MYISAM CHARACTER SET=utf8';
-		$query[] = 'CREATE TABLE IF NOT EXISTS `'.$CONFIG['db_prefix'].'acl_keys` (
+		$query[] = 'CREATE TABLE IF NOT EXISTS `'.ACL_KEYS_TABLE.'` (
 			`acl_id` INT NOT NULL auto_increment PRIMARY KEY,
 			`acl_name` TEXT NOT NULL,
 			`acl_longname` TEXT NOT NULL,
 			`acl_description` TEXT NOT NULL,
 			`acl_value_default` INT(1) NOT NULL DEFAULT 0
 		) ENGINE=MYISAM CHARACTER SET=utf8';
-		$query[] = 'INSERT INTO `'.$CONFIG['db_prefix'].'acl` (`acl_id`, `group`, `value`) VALUES
+		$query[] = 'INSERT INTO `'.ACL_TABLE.'` (`acl_id`, `group`, `value`) VALUES
 		(1, 1, 1)';
-		$query [] = 'INSERT INTO `'.$CONFIG['db_prefix'].'acl_keys` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`) VALUES
+		$query [] = 'INSERT INTO `'.ACL_KEYS_TABLE.'` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`) VALUES
 		(\'all\',\'All Permissions\',\'Grant this permission to allow all actions within the CMS\',0),
 		(\'show_fe_errors\',\'Show Front-End Errors\',\'Allow a user to view error messages in the CMS front-end that would normally be hidden from users\',0)';
 
-		$query[] = 'UPDATE '.$CONFIG['db_prefix'].'config SET `db_version` = 0.02';
+		$query[] = 'UPDATE '.CONFIG_TABLE.' SET `db_version` = 0.02';
 		execute_queries($query);
 		$query = array();
 		$db_version = 0.02;
@@ -107,7 +108,7 @@ switch ($db_version) {
 		$old_config = $db->sql_fetch_assoc($old_config_handle);
 
 		// Get old calendar configuration
-		$old_calconfig_query = 'SELECT * FROM `'.$CONFIG['db_prefix'].'calendar_settings`';
+		$old_calconfig_query = 'SELECT * FROM `'.CALENDAR_SETTINGS_TABLE.'`';
 		$old_calconfig_handle = $db->sql_query($old_calconfig_query);
 		if ($db->error[$old_calconfig_handle] === 1) {
 			die ('A database error occured. Please retry the upgrade.');
@@ -120,7 +121,7 @@ switch ($db_version) {
 		switch ($db->dbms) {
 			case 'mysqli':
 				$query[] = 'DROP TABLE IF EXISTS `'.CONFIG_TABLE.'`';
-				$query[] = 'DROP TABLE IF EXISTS `'.$CONFIG['db_prefix'].'calendar_settings`';
+				$query[] = 'DROP TABLE IF EXISTS `'.CALENDAR_SETTINGS_TABLE.'`';
 				$query[] = 'CREATE TABLE IF NOT EXISTS `'.CONFIG_TABLE.'` (
 						`config_name` varchar(255) NOT NULL,
 						`config_value` varchar(255) NOT NULL,
@@ -133,7 +134,7 @@ switch ($db_version) {
 				break;
 			case 'postgresql':
 				$query[] = 'DROP TABLE "'.CONFIG_TABLE.'"';
-				$query[] = 'DROP TABLE `'.$CONFIG['db_prefix'].'calendar_settings`';
+				$query[] = 'DROP TABLE `'.CALENDAR_SETTINGS_TABLE.'`';
 				$query[] = 'CREATE TABLE "'.CONFIG_TABLE.'" (
 						"config_name" varchar(255) NOT NULL,
 						"config_value" varchar(255) NOT NULL,
@@ -297,7 +298,7 @@ switch ($db_version) {
 			(5, \'Tabs\', \'A page with tabs that display sub-pages to the current page\', \'stephenjust\', \'tabs.php\')';
 
 		// Get old news configuration
-		$old_nconfig_query = 'SELECT * FROM `'.$CONFIG['db_prefix'].'news_settings`';
+		$old_nconfig_query = 'SELECT * FROM `'.NEWS_SETTINGS_TABLE.'`';
 		$old_nconfig_handle = $db->sql_query($old_nconfig_query);
 		if ($db->error[$old_nconfig_handle] === 1) {
 			die ('A database error occured. Please retry the upgrade.');
@@ -323,8 +324,9 @@ switch ($db_version) {
 			(\'news_show_author\',\''.$old_nconfig['show_author'].'\'),
 			(\'news_show_edit_time\',\''.$old_nconfig['show_edit_time'].'\'),
 			(\'tel_format\',\'(###) ###-####\')';
-		$query[] = 'DROP TABLE `'.$CONFIG['db_prefix'].'news_settings`';
+		$query[] = 'DROP TABLE `'.NEWS_SETTINGS_TABLE.'`';
 		execute_queries($query);
+		set_config('db_version','0.05');
 		$query = array();
 		$db_version = 0.05;
 		echo 'The database has been updated to version 0.05<br />'."\n";
