@@ -5,3 +5,6 @@
 /files/
 !/files/newsicons/
 !/files/newsletters/
+
+# Exclude TinyMCE cache files
+/scripts/tiny_mce/tiny_mce_*.gz
