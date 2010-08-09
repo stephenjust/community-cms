@@ -425,7 +425,7 @@ class page {
 			}
 		}
 		// Display page messages
-		if (strlen($page_message > 0)) {
+		if (strlen($page_message) > 0) {
 			$template->page_message = $page_message;
 			$template->page_message_start = NULL;
 			$template->page_message_end = NULL;
