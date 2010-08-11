@@ -24,6 +24,7 @@ if ($_GET['action'] == 'save') {
 	$admin_email = addslashes(strip_tags($_POST['admin_email']));
 	$cookie_name = addslashes($_POST['cookie_name']);
 	$cookie_path = addslashes($_POST['cookie_path']);
+	$password_expire = addslashes($_POST['password_expire']);
 	$time_format = addslashes($_POST['time_format']);
 	$tel_format = addslashes($_POST['tel_format']);
 	$footer = addslashes($_POST['footer']);
@@ -34,6 +35,7 @@ if ($_GET['action'] == 'save') {
 		set_config('site_active',checkbox($_POST['active'])) &&
 		set_config('cookie_name',$cookie_name) &&
 		set_config('cookie_path',$cookie_path) &&
+		set_config('password_expire',$password_expire) &&
 		set_config('time_format',$time_format) &&
 		set_config('tel_format',$tel_format) &&
 		set_config('footer',$footer))
@@ -69,6 +71,10 @@ $form->add_select('tel_format','Telephone Number Format',
 			'555-555-1234',
 			'555.555.1234'),
 		get_config('tel_format'));
+$form->add_select('password_expire','Password Expire Time',
+		array('0','1209600','2592000','7776000','15552000','31104000'),
+		array('No Expiration','2 Weeks','1 Month','3 Months','6 Months','1 Year'),
+		get_config('password_expire'));
 $form->add_textarea('footer','Footer Text',stripslashes(get_config('footer')));
 $form->add_textbox('cookie_name','Cookie Name',get_config('cookie_name'));
 $form->add_textbox('cookie_path','Cookie Path',get_config('cookie_path'));

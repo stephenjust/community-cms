@@ -234,6 +234,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`type` int(2) NOT NULL default '1',
 	`username` text NOT NULL,
 	`password` text NOT NULL,
+	`password_date` int NOT NULL default '0',
 	`realname` text NOT NULL,
 	`title` text NULL,
 	`groups` text NULL,

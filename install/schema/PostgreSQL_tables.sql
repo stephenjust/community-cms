@@ -332,6 +332,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->users" (
 	"type" integer NOT NULL default '1',
 	"username" text NOT NULL,
 	"password" text NOT NULL,
+	"password_date" integer NOT NULL default '0',
 	"realname" text NOT NULL,
 	"title" text NULL,
 	"groups" text NULL,

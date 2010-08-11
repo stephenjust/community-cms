@@ -19,7 +19,7 @@ function login($user,$passwd) {
 	if($user == "" || $passwd == "") {
 		err_page(3001);
 	} else {
-		$query = 'SELECT id,username,password,realname,type,groups
+		$query = 'SELECT id,username,password,password_date,realname,type,groups
 			FROM ' . USER_TABLE . ' WHERE username = \''.$user.'\'
 			AND password = \''.md5($passwd).'\'';
 		$access = $db->sql_query($query);
@@ -33,6 +33,31 @@ function login($user,$passwd) {
 			session_set_cookie_params(84000000,get_config('cookie_path'));
 			session_name(get_config('cookie_name'));
 			session_start();
+
+			// Handle upgrade situations where a user may not have a time of last
+			// password change set.
+			if ($result['password_date'] == 0) {
+				$update_password_date_query = 'UPDATE `'.USER_TABLE.'`
+					SET `password_date` = '.time().' WHERE `id` = '.$result['id'];
+				$update_password_date_handle = $db->sql_query($update_password_date_query);
+				if ($db->error[$update_password_date_handle] === 1) {
+					die('Failed to set password creation date to today.');
+				}
+				$result['password_date'] = time();
+			}
+
+			// Check to see if password is expired
+			// If 'password_expire' is 0, then password expiration is disabled
+			if (get_config('password_expire') != 0) {
+				$curtime = time();
+				$expiretime = $result['password_date'] + get_config('password_expire');
+				if ($curtime > $expiretime) {
+					// FIXME: If password is expired, display change password form
+					//        (Password change form does not yet exist)
+					$debug->add_trace('Password is expired',true,'login()');
+				}
+			}
+
 			$_SESSION['userid'] = $result['id'];
 			$_SESSION['user'] = $user;
 			$_SESSION['pass'] = md5($passwd);

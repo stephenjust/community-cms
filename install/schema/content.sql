@@ -77,6 +77,7 @@ INSERT INTO `<!-- $DB_PREFIX$ -->config` (`config_name`, `config_value`) VALUES
 ('news_num_articles','10'),
 ('news_show_author','1'),
 ('news_show_edit_time','0'),
+('password_expire','0'),
 ('site_active','1'),
 ('site_name','<!-- $SITE_NAME$ -->'),
 ('site_template','1'),

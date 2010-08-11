@@ -221,6 +221,7 @@ switch ($db_version) {
 					`url` TEXT NOT NULL,
 					PRIMARY KEY (`id`)
 					) ENGINE=MyISAM CHARACTER SET=utf8 ;';
+				$query[] = 'ALTER TABLE `'.USER_TABLE.'` ADD `password_date` INT NOT NULL DEFAULT \'0\' AFTER `password`';
 				break;
 			case 'postgresql':
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` integer NOT NULL DEFAULT \'1\' AFTER `menu`';
@@ -241,6 +242,7 @@ switch ($db_version) {
 					PRIMARY KEY ("id")
 					)';
 				$query[] = 'SELECT setval(\''.CALENDAR_SOURCES_TABLE.'_id_seq\', (SELECT max("id") FROM "'.CALENDAR_SOURCES_TABLE.'"))';
+				$query[] = 'ALTER TABLE `'.USER_TABLE.'` ADD `password_date` integer NOT NULL DEFAULT \'0\' AFTER `password`';
 				break;
 		}
 		$query[] = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
@@ -314,7 +316,7 @@ switch ($db_version) {
 			DROP `email_hide`,
 			CHANGE `phone` `phone` CHAR( 11 ) NULL DEFAULT NULL';
 
-		// Move news config into global config table
+		// Move news config into global config table (and add new config values)
 		$query[] = 'INSERT INTO `'.CONFIG_TABLE.'` (\'config_name\',\'config_value\')
 			VALUES
 			(\'contacts_display_mode\',\'card\'),
@@ -323,6 +325,7 @@ switch ($db_version) {
 			(\'news_default_publish_value\',\'0\'),
 			(\'news_show_author\',\''.$old_nconfig['show_author'].'\'),
 			(\'news_show_edit_time\',\''.$old_nconfig['show_edit_time'].'\'),
+			(\'password_expire\',\'0\'),
 			(\'tel_format\',\'(###) ###-####\')';
 		$query[] = 'DROP TABLE `'.NEWS_SETTINGS_TABLE.'`';
 		execute_queries($query);
