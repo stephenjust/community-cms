@@ -33,8 +33,9 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 	if ($_GET['edit'] != "") {
 		if ($_POST['edit_old_pass'] != "" && md5($_POST['edit_old_pass']) == $current_data['password']) {
 			if ($_POST['edit_pass'] == $_POST['edit_pass_conf'] && strlen($_POST['edit_pass']) >= 8) {
-				$change_password_query = 'UPDATE ' . USER_TABLE . '
-					SET password = \''.md5($_POST['edit_pass']).'\' WHERE id = '.(int)$_GET['edit'];
+				$change_password_query = 'UPDATE `'.USER_TABLE.'`
+					SET `password` = \''.md5($_POST['edit_pass']).'\',
+					`password_date` = '.time().' WHERE `id` = '.(int)$_GET['edit'];
 				$change_password_handle = $db->sql_query($change_password_query);
 				if ($db->error[$change_password_handle] === 1) {
 					$content .= 'Failed to change password.<br />';

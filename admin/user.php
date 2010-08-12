@@ -108,10 +108,11 @@ switch ($_GET['action']) {
 		if ($error == true) {
 			break;
 		}
+		$time = time();
 		$create_user_query = 'INSERT INTO ' . USER_TABLE . "
-			(`type`,`username`,`password`,`realname`,`title`,`groups`,
+			(`type`,`username`,`password`,`password_date`,`realname`,`title`,`groups`,
 			`phone`,`email`,`address`) VALUES
-			(2,'$username','".md5($pass)."','$real_name',
+			(2,'$username','".md5($pass)."',$time,'$real_name',
 			'$title','$groups','$telephone','$email','$address')";
 		$create_user = $db->sql_query($create_user_query);
 		if ($db->error[$create_user] === 1) {
