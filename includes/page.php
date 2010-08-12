@@ -48,7 +48,7 @@ function page_get_info($id,$fields = array('*')) {
 		return false;
 	}
 	if ($db->sql_num_rows($page_info_handle) != 1) {
-		$debug->add_trace('Page not found',true,'page_get_info');
+		$debug->add_trace('Page \''.$id.'\' not found',true,'page_get_info');
 		return false;
 	}
 	$page_info = $db->sql_fetch_assoc($page_info_handle);
@@ -377,6 +377,13 @@ function page_level($id) {
 }
 
 function page_path($id) {
+	global $page;
+
+	// Don't execute this for special pages
+	if ($page->type == 'special.php') {
+		return false;
+	}
+
 	if (!is_numeric($id) || is_array($id)) {
 		return false;
 	}

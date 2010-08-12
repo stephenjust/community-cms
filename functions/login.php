@@ -52,11 +52,14 @@ function login($user,$passwd) {
 				$curtime = time();
 				$expiretime = $result['password_date'] + get_config('password_expire');
 				if ($curtime > $expiretime) {
-					// FIXME: If password is expired, display change password form
-					//        (Password change form does not yet exist)
+					$_GET['page'] = NULL;
+					$_GET['id'] = 'change_password';
 					$debug->add_trace('Password is expired',true,'login()');
+					$_SESSION['expired'] = true;
+					return false;
 				}
 			}
+			$_SESSION['expired'] = false;
 
 			$_SESSION['userid'] = $result['id'];
 			$_SESSION['user'] = $user;
@@ -94,6 +97,7 @@ function logout() {
 	unset($_SESSION['type']);
 	unset($_SESSION['groups']);
 	unset($_SESSION['lastlogin']);
+	unset($_SESSION['expired']);
 	session_destroy();
 	$debug->add_trace('Logged out user',false,'logout');
 }

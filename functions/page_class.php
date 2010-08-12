@@ -59,7 +59,7 @@ class page {
 	 * Page type
 	 * @var string Page type
 	 */
-	public $type = 'news';
+	public $type = 'news.php';
 	/**
 	 * Only print content when displaying page
 	 * @var boolean 
@@ -100,12 +100,19 @@ class page {
 	/**
 	 * set_page - Set the current page by whatever identifier is provided
 	 * @param mixed $reference Numeric ID or String
-	 * @param boolean $is_id If $reference is a numeric ID, true; else a text ID
+	 * @param boolean $is_id If $reference is a numeric ID or special page, true; else a text ID
 	 * @return boolean Success
 	 */
 	public function set_page($reference, $is_id = true) {
 		if ($is_id == true) {
 			if (!is_numeric($reference)) {
+				// Handle special page types
+				if ($reference == 'change_password') {
+					$this->text_id = $reference;
+					$this->url_reference = 'id=change_password';
+					$this->get_special_page();
+					return true;
+				}
 				return false;
 			}
 			$this->id = (int)$reference;
@@ -205,6 +212,25 @@ class page {
 			}
 		}
 		return;
+	}
+
+	private function get_special_page() {
+		global $debug;
+
+		$this->type = 'special.php';
+		$this->showtitle = false;
+		$this->blocksleft = NULL;
+		$this->blocksright = NULL;
+		$this->exists = 1;
+		$this->meta_description = NULL;
+		if(!isset($this->content)) {
+			$this->content = include(ROOT.'pagetypes/'.$this->type);
+			if(!$this->content) {
+				$this->exists = 0;
+				$this->notification = '<strong>Error: </strong>System file not found.<br />';
+				$debug->add_trace('Including '.$this->type.' returned false',true,'get_special_page()');
+			}
+		}
 	}
 
 	public function get_page_content() {
@@ -360,7 +386,13 @@ class page {
 		$template = new template;
 		$template->load_file('left');
 		$template->nav_bar = $this->nav_menu();
-		$template->nav_login = display_login_box();
+
+		// Don't allow login on change password page. It can cause issues.
+		if ($this->id != 'change_password') {
+			$template->nav_login = display_login_box();
+		} else {
+			$template->nav_login = NULL;
+		}
 
 		// Prepare blocks
 		$left_blocks_content = NULL;
@@ -412,18 +444,22 @@ class page {
 			$template->replace_range('notification',NULL);
 		}
 
-		// Get page messages
-		$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
-			WHERE `page_id` = '.$this->id.'
-			ORDER BY `start_date` ASC';
-		$page_message_handle = $db->sql_query($page_message_query);
+		// Skip page message fetch on special pages
 		$page_message = NULL;
-		if ($db->error[$page_message_handle] === 0) { // Don't run the loop if the query failed
-			for ($i = 1; $db->sql_num_rows($page_message_handle) >= $i; $i++) {
-				$page_message_content = $db->sql_fetch_assoc($page_message_handle);
-				$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
+		if ($this->type != 'special.php') {
+			// Get page messages
+			$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
+				WHERE `page_id` = '.$this->id.'
+				ORDER BY `start_date` ASC';
+			$page_message_handle = $db->sql_query($page_message_query);
+			if ($db->error[$page_message_handle] === 0) { // Don't run the loop if the query failed
+				for ($i = 1; $db->sql_num_rows($page_message_handle) >= $i; $i++) {
+					$page_message_content = $db->sql_fetch_assoc($page_message_handle);
+					$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
+				}
 			}
 		}
+
 		// Display page messages
 		if (strlen($page_message) > 0) {
 			$template->page_message = $page_message;

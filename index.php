@@ -76,7 +76,8 @@ if (!isset($_GET['id']) && !isset($_GET['page'])) {
 		$page_id = NULL;
 		$page_text_id = addslashes($_GET['page']);
 	} else {
-		$page_id = (int)$_GET['id'];
+		// Don't cast (int) on $page_id because it could be a special page (text)
+		$page_id = $_GET['id'];
 		$page_text_id = NULL;
 	}
 }
