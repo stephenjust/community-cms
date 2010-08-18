@@ -498,6 +498,10 @@ table.calendar {
 table.calendar th {
 	color: #FFFFFF;
 }
+table.calendar tr.day_headings > th {
+	font-size: 0.95em;
+	font-weight: normal;
+}
 table.calendar td {
 	background: #FFFFFF;
 	border: 1px solid #CCCCCC;

@@ -45,6 +45,9 @@ input.button_cal_back_month, input.button_cal_back_year, input.button_cal_today,
 input.button_cal_next_month, input.button_cal_next_year {
 	display: none;
 }
+table.calendar_nav {
+	display: none;
+}
 table.calendar {
 	background: #FFFFFF;
 	color: #000000 !important;
