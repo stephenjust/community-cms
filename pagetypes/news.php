@@ -63,6 +63,21 @@ global $debug;
 global $page;
 $return = NULL;
 
+// (Un)publish articles on request
+if ($acl->check_permission('news_publish')) {
+	require_once(ROOT . 'functions/news.php');
+	require_once(ROOT . 'functions/admin.php');
+	if (isset($_GET['publish']) || isset($_GET['unpublish'])) {
+		if (isset($_GET['publish'])) {
+			$publish = (int)$_GET['publish'];
+			news_publish($publish,true);
+		} elseif (isset($_GET['unpublish'])) {
+			$publish = (int)$_GET['unpublish'];
+			news_publish($publish,false);
+		}
+	}
+}
+
 // Handle first article offset value
 if(!isset($_GET['start']) || $_GET['start'] == "" || (int)$_GET['start'] < 1) {
 	$_GET['start'] = 1;

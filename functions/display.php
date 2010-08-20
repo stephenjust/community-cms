@@ -138,6 +138,28 @@ function news_edit_bar($article_id) {
 		$return .= '<a href="admin.php?module=news&amp;action=edit&amp;id='.$article_id.'">
 			<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" /></a>';
 	}
+	if ($acl->check_permission('news_publish')) {
+
+		$publish_status_query = 'SELECT `publish` FROM `'.NEWS_TABLE.'`
+			WHERE `id` = '.$article_id.' LIMIT 1';
+		$publish_status_handle = $db->sql_query($publish_status_query);
+		if ($db->error[$publish_status_handle] !== 1) {
+			if ($db->sql_num_rows($publish_status_handle) == 1) {
+				$publish_status = $db->sql_fetch_assoc($publish_status_handle);
+				$query_string = $_SERVER['QUERY_STRING'];
+				$query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', NULL, $query_string);
+				if ($publish_status['publish'] == '1') {
+					// Currently published
+					$return .= '<a href="index.php?'.$query_string.'&amp;unpublish='.$article_id.'">
+						<img src="<!-- $IMAGE_PATH$ -->unpublish.png" alt="Unpublish" /></a>';
+				} else {
+					// Currently unpublished
+					$return .= '<a href="index.php?'.$query_string.'&amp;publish='.$article_id.'">
+						<img src="<!-- $IMAGE_PATH$ -->publish.png" alt="Publish" /></a>';
+				}
+			}
+		}
+	}
 
 	return $return;
 }
