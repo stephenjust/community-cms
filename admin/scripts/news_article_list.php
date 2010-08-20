@@ -87,9 +87,11 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 	}
 	if ($acl->check_permission('news_publish')) {
 		if ($article_list['publish'] == 1) {
-			$current_row[] = '<a href="?module=news&amp;action=unpublish&amp;id='.$article_list['id'].'&amp;page='.$page_id.'">Unpublish</a>';
+			$current_row[] = '<a href="?module=news&amp;action=unpublish&amp;id='.$article_list['id'].'&amp;page='.$page_id.'">
+				<img src="./admin/templates/default/images/unpublish.png" alt="Unpublish" width="16px" height="16px" border="0px" /></a>';
 		} else {
-			$current_row[] = '<a href="?module=news&amp;action=publish&amp;id='.$article_list['id'].'&amp;page='.$page_id.'">Publish</a>';
+			$current_row[] = '<a href="?module=news&amp;action=publish&amp;id='.$article_list['id'].'&amp;page='.$page_id.'">
+				<img src="./admin/templates/default/images/publish.png" alt="Publish" width="16px" height="16px" border="0px" /></a>';
 		}
 	}
 	$current_row[] = '<input type="text" size="3" maxlength="11" name="pri-'.$article_list['id'].'" value="'.$article_list['priority'].'" />';
