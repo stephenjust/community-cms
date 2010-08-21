@@ -16,6 +16,12 @@ if (!$acl->check_permission('adm_calendar_locations')) {
 	return true;
 }
 
+// This module does not work with PostgreSQL
+if ($db->dbms == 'postgresql') {
+	$content = '<span class="errormessage">The locations feature does not work with the PostgreSQL database engine</span>'."\n";
+	return true;
+}
+
 $content = NULL;
 
 include (ROOT.'functions/calendar.php');
@@ -75,7 +81,8 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 $tab_layout = new tabs;
-$tab_content['manage'] = '<form method="post" action="?module=calendar_locations&action=new">
+$tab_content['manage'] = NULL;
+$tab_content['manage'] .= '<form method="post" action="?module=calendar_locations&action=new">
 New Location: <input type="text" name="location" /><input type="submit" value="Create" /></form>';
 $tab_content['manage'] .= '<form method="post" action="?module=calendar_locations&action=delete">
 <table class="admintable">
