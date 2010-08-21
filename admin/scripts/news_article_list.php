@@ -8,6 +8,9 @@
  */
 define('ADMIN',1);
 define('SECURITY',1);
+/**
+ * @ignore
+ */
 define('ROOT','../../');
 
 include (ROOT . 'config.php');

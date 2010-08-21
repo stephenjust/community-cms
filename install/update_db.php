@@ -1,6 +1,11 @@
 <?php
+/**#@+
+ * @ignore
+ */
 define('SECURITY',1);
 define('ROOT','../');
+/**#@-*/
+
 require('../config.php');
 require('../include.php');
 require('./files/obselete_tables.php');

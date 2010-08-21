@@ -7,8 +7,13 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.install
  */
+/**#@+
+ * @ignore
+ */
 define('ROOT','../');
 define('SECURITY',1);
+/**#@-*/
+
 $error = 0;
 
 $content = '<h1>Step 4: Save Database Configuration</h1>';

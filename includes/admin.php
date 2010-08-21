@@ -7,6 +7,11 @@
  * @package CommunityCMS.admin
  */
 
+/**
+ * Replace placeholders in admin templates
+ * @param object $template Template object
+ * @return string
+ */
 function adm_display_replace_placeholders($template) {
 	if (!is_object($template)) {
 		return false;

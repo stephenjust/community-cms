@@ -14,9 +14,17 @@ if (!defined('SECURITY')) {
 	exit;
 }
 
+/**
+ * Class for managing user permissions within the CMS
+ * @package CommunityCMS.main
+ */
 class acl {
+	/**#@+
+	 * @var array
+	 */
 	public $permission_list = array();
 	private $acl_cache = array();
+	/**#@-*/
 
 	/**
 	 * check_permission - Read from the ACL and check if user is allowed to complete action
@@ -121,7 +129,16 @@ class acl {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * set_permission - Set permissions for a certain group
+	 * @global object $db
+	 * @global object $debug
+	 * @param string $acl_key
+	 * @param integer $value
+	 * @param integer $group
+	 * @return boolean Success
+	 */
 	public function set_permission($acl_key, $value, $group) {
 		global $db;
 		global $debug;

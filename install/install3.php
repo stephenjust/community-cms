@@ -8,8 +8,12 @@
  * @package CommunityCMS.install
  */
 
+/**#@+
+ * @ignore
+ */
 define('SECURITY',1);
 define('ROOT','../');
+/**#@-*/
 
 // Set config values
 switch ($_POST['db_engine']) {

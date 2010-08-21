@@ -8,11 +8,8 @@
  */
 
 /**
- * generate a page
- *
- * TODO: This class does ...
- *
- * @author stephen
+ * Generates a page
+ * @package CommunityCMS.main
  */
 class page {
 	/**

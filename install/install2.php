@@ -8,6 +8,9 @@
  * @package CommunityCMS.install
  */
 
+/**
+ * @ignore
+ */
 define('SECURITY',1);
 include('../config.php');
 if (isset($CONFIG['db_user'])) {

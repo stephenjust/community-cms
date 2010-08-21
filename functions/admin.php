@@ -14,11 +14,9 @@ if (@SECURITY != 1) {
 /**
  * admin_nav - Generate the navigation bar for administration pages
  * @global object $acl Access Control List class
- * @global object $db Database class
  * @return string Menu HTML
  */
 function admin_nav() {
-	global $db;
 	global $acl;
 
 	// Read menu XML file
@@ -84,6 +82,7 @@ function admin_nav() {
  */
 function log_action($message) {
 	global $db;
+
 	$message_error = NULL;
 	$date = date('Y-m-d H:i:s');
 	$user = $_SESSION['userid'];

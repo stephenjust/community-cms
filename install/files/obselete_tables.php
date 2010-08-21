@@ -7,9 +7,12 @@
  * @package CommunityCMS.install
  */
 
-// Table names that are no longer in constants.php
+/**#@+
+ * Table name that is obselete
+ */
 define('ADMIN_PAGE_TABLE', $CONFIG['db_prefix'] . 'admin_pages');
 define('CALENDAR_SETTINGS_TABLE', $CONFIG['db_prefix'] . 'calendar_settings');
 define('NEWS_SETTINGS_TABLE', $CONFIG['db_prefix'] . 'news_settings');
 define('PERMISSION_TABLE', $CONFIG['db_prefix'] . 'permissions');
+/**#@-*/
 ?>

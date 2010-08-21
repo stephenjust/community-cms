@@ -8,8 +8,12 @@
  */
 header('Content-type: text/html; charset=utf-8');
 // The not-so-secure security check.
+/**#@+
+ * @ignore
+ */
 define('SECURITY',1);
 define('ROOT','./');
+/**#@-*/
 // Load error handling code
 require_once ('./functions/error.php');
 // Load database configuration

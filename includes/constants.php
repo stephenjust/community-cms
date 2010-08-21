@@ -16,17 +16,28 @@ if (!defined('SECURITY')) {
 
 define('COMCMS_VERSION', 'SVN');
 define('DATABASE_VERSION', 0.05);
+
+/**
+ * Enable debugging
+ *
+ * Set to '1' to enable, set to '0' to disable
+ */
 define('DEBUG', 1);
 
-// DATE - TIME
+/**#@+
+ * Date/time constant
+ */
 define('DATE_TIME', date('Y-m-d H:i:s'));
 define('DATE', date('Y-m-d'));
 define('TIME_24_SEC', date('H:i:s'));
 define('TIME_24', date('H:i'));
 define('TIME_12_SEC', date('h:i:sa'));
 define('TIME_12', date('h:ia'));
+/**#@-*/
 
-// DATABASE TABLES
+/**#@+
+ * Database Tables
+ */
 define('ACL_TABLE', $CONFIG['db_prefix'] . 'acl');
 define('ACL_KEYS_TABLE', $CONFIG['db_prefix'] . 'acl_keys');
 define('BLOCK_TABLE', $CONFIG['db_prefix'] . 'blocks');
@@ -56,5 +67,6 @@ define('SESSION_TABLE', $CONFIG['db_prefix'] . 'sessions');
 define('TEMPLATE_TABLE', $CONFIG['db_prefix'] . 'templates');
 define('USER_TABLE', $CONFIG['db_prefix'] . 'users');
 define('USER_GROUPS_TABLE', $CONFIG['db_prefix'] . 'user_groups');
+/**#@-*/
 
 ?>
