@@ -17,7 +17,7 @@ function setDefaultPort() {
 	if (dbengine == 'MySQL' && dbport == '') {
 		dbportfield.value = '3306';
 	}
-	if (dbengine == 'PostgreSQL' && dport == '') {
+	if (dbengine == 'PostgreSQL' && dbport == '') {
 		dbportfield.value = '5432';
 	}
 }

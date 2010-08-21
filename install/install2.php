@@ -43,8 +43,17 @@ $content = '<h1>Step 2: Configure the Database</h1>'."\n";
 $content .= '<form method="post" action="index.php?page=3">'."\n";
 $content .= '<table id="db_settings">'."\n";
 // ----------------------------------------------------------------------------
-$content .= '<tr><td>Database Engine</td><td><select name="db_engine" id="db_engine" onChange="setDefaultPort();">
-	<option name="mysqli">MySQL</option><option name="pgsql">PostgreSQL</option></select></td></tr>';
+$content .= '<tr><td>Database Engine</td><td><select name="db_engine" id="db_engine" onChange="setDefaultPort();">';
+// Check for DB types
+// MySQLi
+if (function_exists('mysqli_connect')) {
+	$content .= '<option name="mysqli">MySQL</option>';
+}
+// PostgreSQL
+if (function_exists('pg_connect')) {
+	$content .= '<option name="pgsql">PostgreSQL</option>';
+}
+$content .= '</select></td></tr>';
 $content .= '<tr><td>Database Server</td><td><input type="text" name="db_host" id="db_host" value="localhost" /></td></tr>';
 $content .= '<tr><td>Database Server Port</td><td><input type="text" name="db_port" id="db_port" value="'.$port.'" /></td></tr>';
 $content .= '<script type="text/javascript" language="JavaScript">setDefaultPort();</script>'."\n";

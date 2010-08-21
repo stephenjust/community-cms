@@ -19,14 +19,15 @@ $error = 0;
 $content .= '<tr>'."\n".'<td>';
 $content .= 'config.php';
 $content .= '</td><td>';
-if (!file_exists('../config.php')) {
-	$content .= 'Does Not Exist';
-	$error = 1;
-} elseif (!is_writable('../config.php')) {
-	$content .= 'Not Writable';
-	$error = 1;
+touch('../config.php');
+if (file_exists('../config.php')) {
+	if (is_writable('../config.php')) {
+		$content .= '<span class="req_good">Writable</span>';
+	} else {
+		$content .= '<span class="req_bad">Not Writable</span>';
+	}
 } else {
-	$content .= 'Writable';
+	$content .= '<span class="req_bad">Does Not Exist</span>';
 }
 $content .= '</td></tr>'."\n";
 
@@ -35,13 +36,13 @@ $content .= '<tr>'."\n".'<td>';
 $content .= 'files/';
 $content .= '</td><td>';
 if (!file_exists('../files')) {
-	$content .= 'Does Not Exist';
+	$content .= '<span class="req_bad">Does Not Exist</span>';
 	$error = 1;
 } elseif (!is_writable('../files')) {
-	$content .= 'Not Writable';
+	$content .= '<span class="req_bad">Not Writable</span>';
 	$error = 1;
 } else {
-	$content .= 'Writable';
+	$content .= '<span class="req_good">Writable</span>';
 }
 $content .= '</td></tr>'."\n";
 
@@ -51,34 +52,97 @@ $content .= '<tr>'."\n".'<td>';
 $content .= 'templates/';
 $content .= '</td><td>';
 if (!file_exists('../templates')) {
-	$content .= 'Does Not Exist';
+	$content .= '<span class="req_bad">Does Not Exist</span>';
 	$error = 1;
 } elseif (!is_writable('../templates')) {
-	$content .= 'Not Writable';
+	$content .= '<span class="req_bad">Not Writable</span>';
 	$error = 1;
 } else {
-	$content .= 'Writable';
+	$content .= '<span class="req_good">Writable</span>';
 }
 $content .= '</td></tr>'."\n";
 
-// Check for PEAR
-$pear_found = @ include('PEAR.php');
-$content .= '<tr><td>PEAR Library</td><td>';
-if ($pear_found) {
-	$content .= 'Found';
-} else {
-	$content .= 'Not Found';
+// Separator
+$content .= '<tr><td colspan="2">&nbsp;</td></tr>'."\n";
+
+// Config Header
+$content .= '<tr><th>Configuration</th><th>Status</th></tr>'."\n";
+
+// Register globals
+$content .= '<tr><td>register_globals</td><td>';
+if (ini_get('register_globals')) {
+	$content .= '<span class="req_bad">Enabled</span>';
 	$error = 1;
+} else {
+	$content .= '<span class="req_good">Disabled</span>';
+}
+
+// Separator
+$content .= '<tr><td colspan="2">&nbsp;</td></tr>'."\n";
+
+// Databases Header
+$content .= '<tr><th>Database</th><th>Status</th></tr>'."\n";
+$content .= '<tr><td colspan="2"><div style="font-size: small; text-align: center;">Requires one of the following:</div></td></tr>'."\n";
+$db = 0;
+
+// MySQLi
+$content .= '<tr><td>MySQLi</td><td>';
+if (function_exists('mysqli_connect')) {
+	$content .= '<span class="req_good">Found</span>';
+	$db = 1;
+} else {
+	$content .= '<span class="req_bad">Not Found</span>';
 }
 $content .= '</td></tr>'."\n";
+
+// PostgreSQL
+$content .= '<tr><td>PostgreSQL</td><td>';
+if (function_exists('pg_connect')) {
+	$content .= '<span class="req_good">Found</span>';
+	$db = 1;
+} else {
+	$content .= '<span class="req_bad">Not Found</span>';
+}
+$content .= '</td></tr>'."\n";
+
+if ($db == 0) {
+	$error = 1;
+}
+
+// Separator
+$content .= '<tr><td colspan="2">&nbsp;</td></tr>'."\n";
+
+// Libraries Header
+$content .= '<tr><th>Library</th><th>Status</th></tr>'."\n";
+
+// Check for GD
+$gd_found = function_exists('imageCreateTrueColor');
+$content .= '<tr><td>GD Image Library</td><td>';
+if ($gd_found) {
+	$content .= '<span class="req_good">Found</span>';
+} else {
+	$content .= '<span class="req_false">Not Found</span>';
+	$error = 1;
+}
+
+//// Check for PEAR
+//$pear_found = @ include('PEAR.php');
+//$content .= '<tr><td>PEAR Library</td><td>';
+//if ($pear_found) {
+//	$content .= '<span class="req_good">Found</span>';
+//} else {
+//	$content .= '<span class="req_bad">Not Found</span>';
+//	$error = 1;
+//}
+//$content .= '</td></tr>'."\n";
 
 // Check for XMLReader Class
 $xmlreader_found = @ new xmlreader;
 $content .= '<tr><td>XMLReader</td><td>';
 if (is_object($xmlreader_found)) {
-	$content .= 'Found';
+	$content .= '<span class="req_good">Found</span>';
 } else {
-	$content .= 'Not Found';
+	$content .= '<span class="req_bad">Not Found</span>';
 	$error = 1;
 }
 
