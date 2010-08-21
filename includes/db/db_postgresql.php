@@ -33,14 +33,13 @@ class db_postgresql extends db {
 		return $v['client'].' (postgresql)';
 	}
 	function sql_query($query) {
+		// Remove comments
+		$query = preg_replace('/\-\-.+\n/',NULL,$query);
 		// Replace any backtick that is not escaped
-		$query = preg_replace('(?<!\\)`','"',$query);
+		$query = preg_replace('/(?<!\\\\)`/','"',$query);
 		$this->query[$this->query_count] = pg_query($this->connect,$query);
 		if (!$this->query[$this->query_count]) {
 			$this->error[$this->query_count] = 1;
-			if (DEBUG == 1) {
-				echo $query.'<br />';
-			}
 		} else {
 			$this->error[$this->query_count] = 0;
 		}

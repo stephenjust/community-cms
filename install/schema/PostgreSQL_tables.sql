@@ -94,6 +94,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->config" (
 -- ----------------------------------------------------------------------------
 -- comcms_contacts
 -- ----------------------------------------------------------------------------
+CREATE SEQUENCE "<!-- $DB_PREFIX$ -->contacts_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->contacts" (
 	"id" INT NOT NULL default nextval('<!-- $DB_PREFIX$ -->contacts_id_seq') ,
 	"user_id" INT NOT NULL ,
@@ -123,13 +124,13 @@ SELECT setval('<!-- $DB_PREFIX$ -->files_id_seq', (SELECT max("id") FROM "<!-- $
 -- comcms_galleries
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->galleries_id_seq";
-CREATE TABLE "<!-- $DB_PREFIX$ -->galleries" {
+CREATE TABLE "<!-- $DB_PREFIX$ -->galleries" (
 	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->galleries_id_seq'),
 	"title" text NOT NULL,
 	"description" text NOT NULL,
 	"image_dir" text NOT NULL,
 	PRIMARY KEY ("id")
-};
+);
 SELECT setval('<!-- $DB_PREFIX$ -->galleries_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->galleries"));
 
 -- ----------------------------------------------------------------------------
@@ -221,7 +222,7 @@ SELECT setval('<!-- $DB_PREFIX$ -->pages_id_seq', (SELECT max("id") FROM "<!-- $
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->page_groups_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->page_groups" (
-	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->page_groups_id_seq') PRIMARY KEY,
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->page_groups_id_seq'),
 	"label" text NOT NULL,
 	PRIMARY KEY("id")
 );

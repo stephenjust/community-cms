@@ -6,7 +6,8 @@ if (@SECURITY != 1) {
 include(ROOT.'functions/files_class.php');
 
 // Include PEAR class required for tar file extraction
-require(ROOT.'includes/Tar.php');
+// FIXME: Do we need this?
+//require(ROOT.'includes/Tar.php');
 
 // ----------------------------------------------------------------------------
 

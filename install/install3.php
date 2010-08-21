@@ -70,7 +70,7 @@ if ($db->error[$db_version_handle] === 1 && !get_config('db_version')) {
 	for ($i = 0; $i < count($query); $i++) {
 		$query_handle[$i] = $db->sql_query($query[$i]);
 		if($db->error[$query_handle[$i]] === 1) {
-			$content .= 'Query <tt>'.$query[$i].'</tt> failed to execute.<br />'."\n";
+			$content .= 'Query <tt>'.$db->query_text[$i].'</tt> failed to execute.<br />'."\n";
 			$error = 1;
 		}
 	} // FOR

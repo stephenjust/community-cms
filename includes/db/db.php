@@ -32,12 +32,14 @@ class db {
      * Stores number of executed queries
      */
     var $query_count = 1;
-    /**
+    /**#@+
      * Stores an array of all executed queries
+	 * @var array
      */
     var $query = array();
 	var $query_text = array();
     var $error = array();
+	/**#@-*/
 
 	function print_query_stats() {
 		return '<p>Number of queries: '.($this->query_count - 1).'</p>';
