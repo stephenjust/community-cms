@@ -7,10 +7,7 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.install
  */
-$nav_bar = "<div align='center'><span style='color: #CCCC00;'>Check file
-    permissions</span><hr />\n<span style='color: #CC0000;'>Configure settings
-    </span><hr />\n<span style='color: #CC0000;'>Download/save config file</span></div>\n";
-// TODO: Check for required libraries: GD / ImageMagick, MySQLi, MySQL, PHP5, etc.
+// TODO: Check for versions: PHP, MySQL, PostgreSQL etc.
 $content = '<h1>Step 1: Check File Permissions</h1>'."\n";
 $content .= '<table id="file_permissions"><tr><th>File/Folder</th><th>Status</th></tr>'."\n";
 $error = 0;

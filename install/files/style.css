@@ -28,6 +28,28 @@
 	font-family: sans-serif;
 }
 
+div.license_header {
+	background: #CCCCCC;
+	font-family: sans-serif;
+	font-size: 1.2em;
+	font-weight: bold;
+	padding: 2px;
+}
+div.license_applicable {
+	background: #CCCCCC;
+	font-family: sans-serif;
+	font-style: italic;
+	padding: 2px;
+}
+div.license_body {
+	background: #EEEEEE;
+	padding: 2px;
+}
+div.license_body textarea {
+	height: 400px;
+	width: 100%;
+}
+
 #file_permissions, table {
 	background: #FFFFFF;
 	border: 1px solid #000000;

@@ -2,12 +2,17 @@
 /**
  * Community CMS Installer
  *
- *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @version SVN
  * @package CommunityCMS.install
  */
+
+/**
+ * @ignore
+ */
+define('ROOT','../');
+
 $template_path = './files/';
 $template_file = $template_path."index.html";
 $handle = fopen($template_file, "r");
@@ -15,30 +20,33 @@ $template = fread($handle, filesize($template_file));
 fclose($handle);
 $css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
 $image_path = $template_path.'images/';
-if(!isset($_GET['page'])) {
-	$_GET['page'] = 0;
+if (!isset($_GET['page'])) {
+	$_GET['page'] = '0';
 }
-switch($_GET['page']) {
+switch ($_GET['page']) {
 	default:
-		include ('./whatsnew.php');
+		include('./whatsnew.php');
 		break;
-	case 1:
-		include ('./install.php');
+	case 'license':
+		include('./license.php');
 		break;
-	case 2:
-		include ('./install2.php');
+	case '1':
+		include('./install.php');
 		break;
-	case 3:
-		include ('./install3.php');
+	case '2':
+		include('./install2.php');
 		break;
-	case 4:
-		include ('./install4.php');
+	case '3':
+		include('./install3.php');
 		break;
-	case 5:
-		include ('./install5.php');
+	case '4':
+		include('./install4.php');
 		break;
-	case 6:
-		include ('./install6.php');
+	case '5':
+		include('./install5.php');
+		break;
+	case '6':
+		include('./install6.php');
 		break;
 }
 $template = str_replace('<!-- $PAGE_TITLE$ -->','Community CMS Installer',$template);
