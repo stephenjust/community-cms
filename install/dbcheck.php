@@ -7,8 +7,12 @@
  * @package CommunityCMS.install
  */
 
+/**#@+
+ * @ignore
+ */
 define('SECURITY',1);
 define('ROOT','../');
+/**#@-*/
 
 $db_engine = $_GET['e'];
 switch ($db_engine) {
