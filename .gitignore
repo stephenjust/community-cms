@@ -1,10 +1,10 @@
 # Exclude /config.php
-/config.php
+/communitycms/config.php
 
 # Exclude all contents of /files/ except /files/newsicons
-/files/
-!/files/newsicons/
-!/files/newsletters/
+/communitycms/files/
+!/communitycms/files/newsicons/
+!/communitycms/files/newsletters/
 
 # Exclude TinyMCE cache files
-/scripts/tiny_mce/tiny_mce_*.gz
+/communitycms/scripts/tiny_mce/tiny_mce_*.gz
