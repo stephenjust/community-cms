@@ -13,6 +13,8 @@
  */
 define('ROOT','../');
 
+require_once('./files/functions.php');
+
 $template_path = './files/';
 $template_file = $template_path."index.html";
 $handle = fopen($template_file, "r");

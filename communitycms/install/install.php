@@ -84,7 +84,7 @@ $db = 0;
 
 // MySQLi
 $content .= '<tr><td>MySQLi</td><td>';
-if (function_exists('mysqli_connect')) {
+if (check_library('mysqli')) {
 	$content .= '<span class="req_good">Found</span>';
 	$db = 1;
 } else {
@@ -94,7 +94,7 @@ $content .= '</td></tr>'."\n";
 
 // PostgreSQL
 $content .= '<tr><td>PostgreSQL</td><td>';
-if (function_exists('pg_connect')) {
+if (check_library('postgresql')) {
 	$content .= '<span class="req_good">Found</span>';
 	$db = 1;
 } else {
@@ -113,14 +113,14 @@ $content .= '<tr><td colspan="2">&nbsp;</td></tr>'."\n";
 $content .= '<tr><th>Library</th><th>Status</th></tr>'."\n";
 
 // Check for GD
-$gd_found = function_exists('imageCreateTrueColor');
 $content .= '<tr><td>GD Image Library</td><td>';
-if ($gd_found) {
+if (check_library('gd')) {
 	$content .= '<span class="req_good">Found</span>';
 } else {
 	$content .= '<span class="req_false">Not Found</span>';
 	$error = 1;
 }
+$content .= '</td></tr>'."\n";
 
 //// Check for PEAR
 //$pear_found = @ include('PEAR.php');
@@ -142,6 +142,7 @@ if (is_object($xmlreader_found)) {
 	$content .= '<span class="req_bad">Not Found</span>';
 	$error = 1;
 }
+$content .= '</td></tr>'."\n";
 
 $content .= '</table>'."\n";
 if ($error == 0) {
