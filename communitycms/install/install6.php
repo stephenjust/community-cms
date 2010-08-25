@@ -42,9 +42,9 @@ $query = str_replace('<!-- $SITE_NAME$ -->',$sitename,$query);
 $query = str_replace('<!-- $ADMIN_USER$ -->',$user,$query);
 $query = str_replace('<!-- $ADMIN_PWD$ -->',$pass_hash,$query);
 $query = str_replace('<!-- $ADMIN_EMAIL$ -->',$email,$query);
-// Display schema for the curious user, or advanced user.
-$content .= '<br />'."\n".'<textarea cols="80" rows="20">'.$query.'</textarea><br />'."\n";
 $content .= 'DONE.<br />';
+// Display schema for the curious user, or advanced user.
+$content .= '<br />'."\n".'<textarea rows="20" style="width: 100%;">'.$query.'</textarea><br />'."\n";
 $content .= 'Adding content to the database... ';
 $query = explode(';;',$query);
 $content .= count($query) . ' queries to execute... ';
@@ -56,9 +56,22 @@ for ($i = 0; $i < count($query); $i++) {
 	}
 } // FOR
 if ($error == 0) {
-	$content .= 'Community CMS is now successfully installed. Please delete the
-		<tt>install</tt> directory to complete the installation. To continue to
-		your new web site, click <a href="../index.php">here</a>.';
+	$content .= 'DONE.<br />';
+}
+
+// Create permissions
+$content .= 'Creating permission records... ';
+if (update_permission_records()) {
+	$content .= 'DONE.<br />';
+} else {
+	$content .= 'Failed.<br />';
+	$error = 1;
+}
+
+if ($error == 0) {
+	$content .= '<br /><br />Community CMS is now successfully installed. Please delete the
+		<tt>install</tt> directory to complete the installation.<br /><br />';
+	$content .= '<form method="get" action="../index.php"><input type="submit" value="Go to Site" /></form>';
 } else {
 	$content .= 'An error has occured.';
 }
