@@ -67,6 +67,17 @@ function check_library($library) {
  */
 function config_file_write($engine,$host,$port,$database_name,
 		$database_user,$password,$table_prefix) {
+	// Validate parameters
+	if (!is_numeric($port)) {
+		return false;
+	}
+	$port = (int)$port;
+	$engine = addslashes($engine);
+	$host = addslashes($host);
+	$database_name = addslashes($database_name);
+	$database_user = addslashes($database_user);
+	$password = addslashes($password);
+	$table_prefix = addslashes($table_prefix);
 
 	$config_file = ROOT.'config.php';
 
