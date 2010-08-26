@@ -2,8 +2,7 @@
 /**
  * Community CMS Installer
  *
- *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.install
  */

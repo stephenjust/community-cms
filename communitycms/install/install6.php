@@ -2,8 +2,7 @@
 /**
  * Community CMS Installer
  *
- *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.install
  */
@@ -77,47 +76,4 @@ if ($error == 0) {
 }
 
 clean_up();
-//
-//		$sitename = addslashes($_POST['sitename']);
-//		$admin_user = addslashes(mysql_real_escape_string($_POST['admin_username'],$connect));
-//		$admin_pwd = addslashes(mysql_real_escape_string($_POST['admin_pwd'],$connect));
-//		$admin_pwd_conf = addslashes(mysql_real_escape_string($_POST['admin_pwd_conf'],$connect));
-//		if ($admin_pwd != $admin_pwd_conf) {
-//			$error = 1;
-//			$content .= 'Your Administrator passwords did not match.<br />';
-//		}
-//		$query = str_replace('<!-- $DB_PREFIX$ -->',$dbprefix,$query);
-//		$query = str_replace('<!-- $SITE_NAME$ -->',$sitename,$query);
-//		$query = str_replace('<!-- $ADMIN_USER$ -->',$admin_user,$query);
-//		$query = str_replace('<!-- $ADMIN_PWD$ -->',md5($admin_pwd),$query);
-//		$query = explode(';;',$query);
-//		for ($i = 0; $i < count($query); $i++) {
-//			if(!mysql_query($query[$i],$connect)) {
-//				$content .= 'Query '.$query[$i].' failed to execute.<br />'.mysql_error($connect).'<br />';
-//				$error = 1;
-//				}
-//			} // FOR
-//		$config_file = '../config.php';
-//		$handle = fopen($config_file, "w");
-//		if(!$handle) {
-//			$content .= 'Failed to open configuration file for writing.<br />';
-//			$error = 1;
-//			}
-//
-//
-//		$config_write = fwrite($handle,$config);
-//		if(!$config_write) {
-//			$content .= 'Failed to write to config.php. Is it writeable?';
-//			$error = 1;
-//			}
-//		fclose($handle);
-//		if($error != 1) {
-//		$content .= 'Install Successful.<br />Please delete the install folder once you are able to confirm that the system is fully functional.
-//<br />
-//To log in, use either the username and password you provided, or login as an unprivileged user with the username \'user\' and the password \'password\'. <a href="../index.php">Continue to Site</a>';
-//		}
-//	}
-//	if($error == 1) {
-//		$content .= 'Install failed.';
-//		}
 ?>
