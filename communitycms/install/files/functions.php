@@ -121,6 +121,20 @@ END;
 	}
 }
 
+/**
+ * Update ACL_KEYS_TABLE to reflect the currently adopted permission settings
+ *
+ * Using the array contained within this function definition, the function will
+ * scan the database for permission key records. If they do not exist in the
+ * database, the function will create them. If they do exist, but are out of
+ * date, the function will update them. If there are records that exist, but are
+ * not found in the array of permissions, they will be deleted, as well as any
+ * references to that permission. The deletion skips over any functions that
+ * may have been created dynamically (currently only 'pagegroupedit-*').
+ *
+ * @global object $db Database connection object
+ * @return boolean Success
+ */
 function update_permission_records() {
 	global $db;
 
@@ -189,11 +203,30 @@ function update_permission_records() {
 		return false;
 	}
 
+	// This needs to be set now, because we may decrease the count with each
+	// iteration to the for loop. If this was placed in the for loop, the
+	// nested for loop would only be able to see half of the entries, as there
+	// would be array items with indexes above the count value, and they
+	// would be ignored erroneously.
+	$permission_count = count($permission);
+
 	// Compare existing permissions to permission list above
 	for ($i = 1; $i < $db->sql_num_rows($list_handle); $i++) {
 		$list = $db->sql_fetch_assoc($list_handle);
+
+		// Initialize check to see if the permission key still exists at all
+		$still_exists = false;
+
 		// Scan through each permission record for changes
-		for ($j = 0; $j < count($permission); $j++) {
+		for ($j = 0; $j < $permission_count; $j++) {
+			// If the entry has already been found, skip this
+			if ($still_exists === true) {
+				continue;
+			}
+			if (!isset($permission[$j])) {
+				continue;
+			}
+
 			// Check if the permission already exists
 			if ($list['acl_name'] == $permission[$j][0]) {
 				// Check if all of its parameters are the same
@@ -213,6 +246,28 @@ function update_permission_records() {
 					}
 				}
 				unset($permission[$j]);
+				// Mark the permission as still existing
+				$still_exists = true;
+			}
+		}
+		// Delete the permission record if it does not exist anymore
+		if ($still_exists === false) {
+			// Don't delete dynamically created permissions
+			if (preg_match('/^pagegroupedit\-/i',$list['acl_name'])) {
+				continue;
+			}
+
+			$delete_acl_records_query = 'DELETE FROM `'.ACL_TABLE.'`
+				WHERE `acl_id` = '.$list['acl_id'];
+			$delete_acl_records = $db->sql_query($delete_acl_records_query);
+			if ($db->error[$delete_acl_records] === 1) {
+				return false;
+			}
+			$delete_acl_key_query = 'DELETE FROM `'.ACL_KEYS_TABLE.'`
+				WHERE `acl_id` = '.$list['acl_id'];
+			$delete_acl_key = $db->sql_query($delete_acl_key_query);
+			if ($db->error[$delete_acl_key] === 1) {
+				return false;
 			}
 		}
 	}
