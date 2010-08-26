@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -15,6 +15,7 @@
  * to a command, and it will return the HTML for a form.
  *
  * @author stephen
+ * @package CommunityCMS.main
  */
 class form {
 	function __construct() {

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Community CMS
+ *
+ * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.main
+ */
 // Security Check
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
@@ -11,7 +18,13 @@ include(ROOT.'functions/files_class.php');
 
 // ----------------------------------------------------------------------------
 
-// Load template file
+/**
+ * Load template file
+ * @deprecated
+ * @global object $db Database object
+ * @param string $filename Name of template file
+ * @return array Template file ['contents'] and ['template_path']
+ */
 function load_template_file($filename = 'index.html') {
 	global $db; // Needed for db query
 	$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '

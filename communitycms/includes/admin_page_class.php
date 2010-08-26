@@ -7,6 +7,11 @@
  * @package CommunityCMS.admin
  */
 
+/**
+ * Assist in generating admin pages
+ *
+ * @package CommunityCMS.admin
+ */
 class admin_page extends page {
 	/**
 	 * Module

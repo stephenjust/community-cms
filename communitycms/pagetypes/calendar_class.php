@@ -7,9 +7,10 @@
  */
 
 /**
- * Description of calendar_class
+ * Contains information about a month-long calendar
  *
- * @author stephen
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.main
  */
 class calendar {
 	public $year = 2000;
@@ -49,7 +50,12 @@ class calendar {
 	}
 }
 
-
+/**
+ * Handles the generation of an event-listing page
+ *
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.main
+ */
 class calendar_event {
     public $event_id;
     public $event_text;

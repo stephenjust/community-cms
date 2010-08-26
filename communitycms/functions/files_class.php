@@ -1,8 +1,16 @@
 <?php
 /**
- * Description of files_class
+ * Community CMS
+ *
+ * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.main
+ */
+/**
+ * Generates a file list
  *
  * @author stephen
+ * @package CommunityCMS.main
  */
 class file_list {
     public $folder;
