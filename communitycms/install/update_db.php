@@ -9,6 +9,7 @@ define('ROOT','../');
 require('../config.php');
 require('../include.php');
 require('./files/obselete_tables.php');
+require('./files/functions.php');
 initialize();
 echo "<html>\n<head>\n<title>Community CMS Database Update</title>\n</head><body>";
 $query = array();
@@ -89,9 +90,6 @@ switch ($db_version) {
 		) ENGINE=MYISAM CHARACTER SET=utf8';
 		$query[] = 'INSERT INTO `'.ACL_TABLE.'` (`acl_id`, `group`, `value`) VALUES
 		(1, 1, 1)';
-		$query [] = 'INSERT INTO `'.ACL_KEYS_TABLE.'` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`) VALUES
-		(\'all\',\'All Permissions\',\'Grant this permission to allow all actions within the CMS\',0),
-		(\'show_fe_errors\',\'Show Front-End Errors\',\'Allow a user to view error messages in the CMS front-end that would normally be hidden from users\',0)';
 
 		$query[] = 'UPDATE '.CONFIG_TABLE.' SET `db_version` = 0.02';
 		execute_queries($query);
@@ -252,54 +250,6 @@ switch ($db_version) {
 		}
 		$query[] = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
 			VALUES (\'Default Group\')';
-		$query[] = 'INSERT INTO `'.ACL_KEYS_TABLE.'` (`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`)
-			VALUES (\'adm_page\',\'Admin Page Module\',\'Allow a user to access the page manager module\',0),
-			(\'admin_access\',\'Admin Access\',\'Allow a user to access the administrative section of the CMS\',0),
-			(\'set_permissions\',\'Set Permissions\',\'Allow a user to modify the permission settings for user groups\',0),
-			(\'adm_help\',\'Admin Help Module\',\'Allow a user to access the help module\',0),
-			(\'adm_feedback\',\'Admin Feedback Module\',\'Allow a user to access the admin feedback module\',0),
-			(\'adm_site_config\',\'Site Configuration\',\'Allow a user to modify the CMS configuration\',0),
-			(\'adm_filemanager\',\'File Manager\',\'Allow a user to access the file manager module\',0),
-			(\'adm_gallery_manager\',\'Gallery Manager\',\'Allow a user to access the gallery manager module\',0),
-			(\'adm_gallery_settings\',\'Gallery Settings\',\'Allow a user to configure image galleries\',0),
-			(\'adm_news\',\'News Module\',\'Allow a user to access the news article module\',0),
-			(\'adm_news_settings\',\'News Settings\',\'Allow a user to configure news settings\',0),
-			(\'adm_newsletter\',\'Newsletter Module\',\'Allow a user to access the newsletter module\',0),
-			(\'adm_block_manager\',\'Block Module\',\'Allow a user to access the block manager module\',0),
-			(\'adm_contacts_manage\',\'Contacts Module\',\'Allow a user to access the contacts manager module\',0),
-			(\'adm_page\',\'Page Module\',\'Allow a user to access the page manager module\',0),
-			(\'adm_page_message\',\'Page Message Module\',\'Allow a user to access the page message module\',0),
-			(\'adm_page_message_edit\',\'Edit Page Messages\',\'Allow a user to edit page messages\',0),
-			(\'adm_page_message_new\',\'New Page Messages\',\'Allow a user to create new page messages\',0),
-			(\'adm_poll_manager\',\'Poll Manager Module\',\'Allow a user to access the poll manager module\',0),
-			(\'adm_poll_new\',\'Create Poll\',\'Allow a user to create a new poll\',0),
-			(\'adm_poll_results\',\'Poll Results\',\'Allow a user to see the results of polls\',0),
-			(\'adm_user\',\'User Module\',\'Allow a user to access the user manager module\',0),
-			(\'adm_user_edit\',\'Edit User Module\',\'Allow a user to access the edit user module\',0),
-			(\'adm_user_groups\',\'User Groups Module\',\'Allow a user to access the user groups module\',0),
-			(\'adm_log_view\',\'View Logs\',\'Allow a user to access the admin activity logs\',0),
-			(\'adm_config_view\',\'View Configuration\',\'Allow a user to view all of the CMS configuration values\',0),
-			(\'block_create\',\'Create Blocks\',\'Allow a user to create new blocks\',0),
-			(\'block_delete\',\'Delete Blocks\',\'Allow a user to delete blocks\',0),
-			(\'calendar_settings\',\'Calendar Settings\',\'Allow a user to modify calendar settings\',0),
-			(\'file_create_folder\',\'Create Folders\',\'Allow a user to create new folders\',0),
-			(\'file_upload\',\'Upload Files\',\'Allow a user to upload files\',0),
-			(\'log_clear\',\'Clear Logs\',\'Allow a user to clear all log messages\',0),
-			(\'log_post_custom_message\',\'Post Custom Log Messages\',\'Allow a user to post custom log messages\',0),
-			(\'news_create\',\'Create Articles\',\'Allow a user to create new news articles\',0),
-			(\'news_delete\',\'Delete Articles\',\'Allow a user to delete news articles\',0),
-			(\'news_edit\',\'Edit Articles\',\'Allow a user to edit news articles\',0),
-			(\'news_fe_manage\',\'Manage News from Front-End\',\'Allow a user to manage news articles from the front-end\',0),
-			(\'news_fe_show_unpublished\',\'Show Unpublished News on Site\',\'Allow a user to see unpublished articles from the site front-end\',0),
-			(\'news_publish\',\'Publish/Unpublish Articles\',\'Allow a user to publish or unpublish news articles\',0),
-			(\'newsletter_create\',\'Create Newsletter\',\'Allow a user to create a new newsletter\',0),
-			(\'newsletter_delete\',\'Delete Newsletter\',\'Allow a user to delete a newsletter\',0),
-			(\'page_set_home\',\'Change Default Page\',\'Allow a user to change the default CMS page\',0),
-			(\'page_order\',\'Change Page Order\',\'Allow a user to rearrange pages on the CMS menu\',0),
-			(\'group_create\',\'Create User Groups\',\'Allow a user to create a new user group\',0),
-			(\'user_create\',\'Create User\',\'Allow a user to create new users\',0),
-			(\'user_delete\',\'Delete User\',\'Allow a user to delete other users\',0),
-			(\'pagegroupedit-1\',\'Edit Page Group \\\'Default Group\\\'\',\'Allow user to edit pages in the group \\\'Default Group\\\'\',0)';
 
 		$query[] = 'INSERT INTO `'.PAGE_TYPE_TABLE.'` (id, name, description, author, filename) VALUES
 			(5, \'Tabs\', \'A page with tabs that display sub-pages to the current page\', \'stephenjust\', \'tabs.php\')';
@@ -359,13 +309,20 @@ function execute_queries($query) {
 		$handle = $db->sql_query($query[$i]);
 		echo '<div class="query">';
 		echo htmlentities($query[$i]);
-		if(!$handle) {
+		if($db->error[$handle] === 1) {
 			echo ' <span style="color: #CC0000; font-weight: bold;">FAILED</span><br />';
 			$error = 1;
 		} else {
 			echo ' <span style="color: #00CC00; font-weight: bold;">SUCCESS</span><br />';
 		}
-		echo '</div>';
+		echo '</div><br />';
+	}
+	echo 'Updating permission keys... ';
+	if (update_permission_records()) {
+		echo '<span style="color: #00CC00">SUCCESS</span><br />';
+	} else {
+		echo '<span stype="color: #CC0000">FAILED</span><br />';
+		$error = 1;
 	}
 }
 

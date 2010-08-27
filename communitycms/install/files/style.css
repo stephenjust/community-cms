@@ -11,7 +11,7 @@
 #main > h1 {
 	border-bottom: 1px solid #CCCCCC;
 	color: #333344;
-	font-family: Arial,Verdana,sans-serif;
+	font-family: Tahoma,Verdana,Arial,sans-serif;
 	margin: 5px;
 }
 #main > h2 {
@@ -68,6 +68,39 @@ span.req_bad {
 	color: #CC0000;
 	font-family: sans-serif;
 	font-weight: bold;
+}
+
+table.container {
+	background: transparent;
+	border: 0px;
+	padding: 2px;
+	margin: 0px;
+	width: 100%;
+}
+table.container td {
+	background: #FFFFFF;
+	border: 1px solid #000000;
+	vertical-align: top;
+}
+table.container h1 {
+	font-family: Tahoma,Verdana,Arial,sans-serif;
+	font-size: 1.7em;
+	border-bottom: 1px #EEEEEE solid;
+	margin: 5px;
+}
+table.container p {
+	font-family: Tahoma,Verdana,Arial,sans-serif;
+	font-size: 1.0em;
+	margin: 5px;
+}
+table.content {
+	background: #FFFFFF;
+	border: 0px;
+	color: #000000;
+	height: 100%;
+}
+table.content td {
+	border: 0px;
 }
 
 a {

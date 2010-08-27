@@ -46,6 +46,27 @@ function check_library($library) {
 			} else {
 				return false;
 			}
+			break;
+
+		case 'xmlreader':
+			if (class_exists('XMLReader')) {
+				return true;
+			} else {
+				return false;
+			}
+			break;
+
+		case 'pear':
+			// Don't actually print the file
+			ob_start();
+			if (readfile('PEAR.php',true)) {
+				ob_end_clean();
+				return true;
+			} else {
+				ob_end_clean();
+				return false;
+			}
+			break;
 	}
 }
 
