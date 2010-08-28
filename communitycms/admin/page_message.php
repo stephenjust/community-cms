@@ -85,15 +85,17 @@ $i = 1;
 while ($i <= $db->sql_num_rows($page_query_handle)) {
 	$page = $db->sql_fetch_assoc($page_query_handle);
 	if (!isset($_POST['page']) && !isset($_GET['page'])) {
-		$_POST['page'] = get_config('home');
+		$page_id = get_config('home');
 	} elseif (!isset($_POST['page']) && isset($_GET['page'])) {
-		$_POST['page'] = $_GET['page'];
+		$page_id = (int)$_GET['page'];
 		unset($_GET['page']);
+	} else {
+		$page_id = (int)$_POST['page'];
+		unset($_POST['page']);
 	}
-	$_POST['page'] = (int)$_POST['page'];
 
 	if (!preg_match('/<LINK>/',$page['title'])) {
-		if ($page['id'] == $_POST['page']) {
+		if ($page['id'] == $page_id) {
 			$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
 		} else {
 			$tab_content['manage'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
@@ -105,7 +107,7 @@ $tab_content['manage'] .= '</select><input type="submit" value="Change Page" /><
 <tr><th width="350">Content:</th><th colspan="2"></th></tr>';
 // Get page message list in the order defined in the database. First is 0.
 $page_message_query = 'SELECT * FROM '.PAGE_MESSAGE_TABLE.'
-	WHERE page_id = '.addslashes($_POST['page']);
+	WHERE page_id = '.$page_id;
 $page_message_handle = $db->sql_query($page_message_query);
 $i = 1;
 if ($db->sql_num_rows($page_message_handle) == 0) {
@@ -115,14 +117,14 @@ while ($i <= $db->sql_num_rows($page_message_handle)) {
 	$page_message = $db->sql_fetch_assoc($page_message_handle);
 	$tab_content['manage'] .= '<tr>
 		<td class="adm_page_list_item">'.truncate(strip_tags(stripslashes($page_message['text']),'<br>'),75).'</td>
-		<td><a href="?module=page_message&action=delete&id='.$page_message['message_id'].'&amp;page='.$_POST['page'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+		<td><a href="?module=page_message&action=delete&id='.$page_message['message_id'].'&amp;page='.$page_id.'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 		<td><a href="?module=page_message_edit&id='.$page_message['message_id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 		</tr>';
 	$i++;
 }
 if ($acl->check_permission('page_message_new')) {
 	$tab_content['manage'] .= '<tr><td colspan="3">
-		<form method="post" action="?module=page_message_new&amp;page='.(int)$_POST['page'].'">
+		<form method="post" action="?module=page_message_new&amp;page='.$page_id.'">
 		<input type="submit" value="New Page Message" />
 		</form></td></tr>';
 }
