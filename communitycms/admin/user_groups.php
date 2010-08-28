@@ -95,7 +95,8 @@ function permission_list($group = 0) {
 	// Page Messages
 	$perm_list = array('adm_page_message',
 		'adm_page_message_edit',
-		'adm_page_message_new');
+		'page_message_new',
+		'page_message_delete');
 	$return .= permission_list_table($permission_list,$group,'Page Messages',$perm_list);
 
 	// Polls

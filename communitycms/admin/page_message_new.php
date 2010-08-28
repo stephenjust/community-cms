@@ -11,7 +11,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_page_message_new')) {
+if (!$acl->check_permission('page_message_new')) {
 	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
 	return true;
 }

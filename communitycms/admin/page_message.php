@@ -30,7 +30,7 @@ function delete_page_message($id) {
 	global $debug;
 
 	// Run pre-execution checks
-	if (!$acl->check_permission('pagemessage_delete')) {
+	if (!$acl->check_permission('page_message_delete')) {
 		$debug->add_trace('User lacks necessary permissions to delete pagemessage',true,'delete_page_message()');
 		return false;
 	}
