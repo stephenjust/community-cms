@@ -75,6 +75,17 @@ if ($_GET['action'] == 'delete') {
 
 // ----------------------------------------------------------------------------
 
+// Get current page ID
+if (!isset($_POST['page']) && !isset($_GET['page'])) {
+	$page_id = get_config('home');
+} elseif (!isset($_POST['page']) && isset($_GET['page'])) {
+	$page_id = (int)$_GET['page'];
+	unset($_GET['page']);
+} else {
+	$page_id = (int)$_POST['page'];
+	unset($_POST['page']);
+}
+
 $tab_layout = new tabs;
 $tab_content['manage'] = NULL;
 $tab_content['manage'] .= '<table class="admintable">
@@ -84,16 +95,6 @@ $page_query_handle = $db->sql_query($page_query);
 $i = 1;
 while ($i <= $db->sql_num_rows($page_query_handle)) {
 	$page = $db->sql_fetch_assoc($page_query_handle);
-	if (!isset($_POST['page']) && !isset($_GET['page'])) {
-		$page_id = get_config('home');
-	} elseif (!isset($_POST['page']) && isset($_GET['page'])) {
-		$page_id = (int)$_GET['page'];
-		unset($_GET['page']);
-	} else {
-		$page_id = (int)$_POST['page'];
-		unset($_POST['page']);
-	}
-
 	if (!preg_match('/<LINK>/',$page['title'])) {
 		if ($page['id'] == $page_id) {
 			$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
