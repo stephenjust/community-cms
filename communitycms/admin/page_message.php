@@ -16,28 +16,60 @@ if (!$acl->check_permission('adm_page_message')) {
 	return true;
 }
 
-$content = NULL;
-if ($_GET['action'] == 'delete') {
+/**
+ * Deletes a page message entry
+ * @global acl $acl Permission object
+ * @global db $db Database object
+ * @global debug $debug Debug object
+ * @param integer $id Page message ID
+ * @return boolean Success
+ */
+function delete_page_message($id) {
+	global $acl;
+	global $db;
+	global $debug;
+
+	// Run pre-execution checks
+	if (!$acl->check_permission('pagemessage_delete')) {
+		$debug->add_trace('User lacks necessary permissions to delete pagemessage',true,'delete_page_message()');
+		return false;
+	}
+	if (!is_numeric($id)) {
+		$debug->add_trace('Invalid parameter type',true,'delete_page_message()');
+		return false;
+	}
+	$id = (int)$id;
+
 	$read_message_query = 'SELECT m.message_id,m.page_id,p.title,p.id
 		FROM ' . PAGE_MESSAGE_TABLE . ' m, ' . PAGE_TABLE . ' p
-		WHERE m.message_id = '.(int)$_GET['id'].' AND m.page_id = p.id
+		WHERE m.message_id = '.$id.' AND m.page_id = p.id
 		LIMIT 1';
 	$read_message_handle = $db->sql_query($read_message_query);
 	if ($db->error[$read_message_handle] === 1) {
-		$content .= 'Failed to read message information.<br />';
+		$debug->add_trace('Failed to read message',true,'delete_page_message()');
+		return false;
 	}
-	if ($db->sql_num_rows($read_message_handle) == 1) {
-		$delete_message_query = 'DELETE FROM ' . PAGE_MESSAGE_TABLE . '
-			WHERE message_id = '.(int)$_GET['id'].' LIMIT 1';
-		$delete_message = $db->sql_query($delete_message_query);
-		if ($db->error[$delete_message] === 1) {
-			$content .= 'Failed to delete message.<br />';
-		} else {
-			$read_message = $db->sql_fetch_assoc($read_message_handle);
-			$content .= 'Successfully deleted page message. '.log_action('Deleted page message on page \''.stripslashes($read_message['title']).'\'');
-		}
+	if ($db->sql_num_rows($read_message_handle) != 1) {
+		$debug->add_trace('Page message does not exist',true,'delete_page_message()');
+		return false;
+	}
+	$delete_message_query = 'DELETE FROM ' . PAGE_MESSAGE_TABLE . '
+		WHERE message_id = '.(int)$_GET['id'].' LIMIT 1';
+	$delete_message = $db->sql_query($delete_message_query);
+	if ($db->error[$delete_message] === 1) {
+		return false;
+	}
+	$read_message = $db->sql_fetch_assoc($read_message_handle);
+	log_action('Deleted page message on page \''.stripslashes($read_message['title']).'\'');
+	return true;
+}
+
+$content = NULL;
+if ($_GET['action'] == 'delete') {
+	if (delete_page_message($_GET['id'])) {
+		$content .= 'Successfully deleted page message.<br />';
 	} else {
-		$content .= 'Could not find the page message you asked to delete.<br />';
+		$content .= '<span class="errormessage">Failed to delete page message.</span><br />';
 	}
 }
 
@@ -52,9 +84,14 @@ $page_query_handle = $db->sql_query($page_query);
 $i = 1;
 while ($i <= $db->sql_num_rows($page_query_handle)) {
 	$page = $db->sql_fetch_assoc($page_query_handle);
-	if (!isset($_POST['page'])) {
+	if (!isset($_POST['page']) && !isset($_GET['page'])) {
 		$_POST['page'] = get_config('home');
+	} elseif (!isset($_POST['page']) && isset($_GET['page'])) {
+		$_POST['page'] = $_GET['page'];
+		unset($_GET['page']);
 	}
+	$_POST['page'] = (int)$_POST['page'];
+
 	if (!preg_match('/<LINK>/',$page['title'])) {
 		if ($page['id'] == $_POST['page']) {
 			$tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
@@ -78,7 +115,7 @@ while ($i <= $db->sql_num_rows($page_message_handle)) {
 	$page_message = $db->sql_fetch_assoc($page_message_handle);
 	$tab_content['manage'] .= '<tr>
 		<td class="adm_page_list_item">'.truncate(strip_tags(stripslashes($page_message['text']),'<br>'),75).'</td>
-		<td><a href="?module=page_message&action=delete&id='.$page_message['message_id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+		<td><a href="?module=page_message&action=delete&id='.$page_message['message_id'].'&amp;page='.$_POST['page'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 		<td><a href="?module=page_message_edit&id='.$page_message['message_id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
 		</tr>';
 	$i++;
