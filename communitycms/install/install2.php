@@ -2,8 +2,7 @@
 /**
  * Community CMS Installer
  *
- *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2008-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.install
  */
@@ -23,7 +22,7 @@ $host = (isset($CONFIG['db_host'])) ? $CONFIG['db_host'] : 'localhost';
 // JavaScript will take care of the initial value, so leave blank
 $port = (isset($CONFIG['db_host_port'])) ? $CONFIG['db_host_port'] : NULL;
 
-$content = '<h1>Step 2: Configure the Database</h1>'."\n";
+$content = '<h1>Step 2: Configure Database</h1>'."\n";
 $content .= '<form method="post" action="index.php?page=3">'."\n";
 $content .= '<table id="db_settings">'."\n";
 // ----------------------------------------------------------------------------
