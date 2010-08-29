@@ -325,7 +325,7 @@ function execute_queries($query) {
 		echo '</div><br />';
 	}
 	echo 'Updating permission keys... ';
-	if (update_permission_records()) {
+	if (update_permission_records() !== false) {
 		echo '<span style="color: #00CC00">SUCCESS</span><br />';
 	} else {
 		echo '<span stype="color: #CC0000">FAILED</span><br />';

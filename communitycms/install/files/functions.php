@@ -163,7 +163,7 @@ END;
  * may have been created dynamically (currently only 'pagegroupedit-*').
  *
  * @global object $db Database connection object
- * @return boolean Success
+ * @return integer Number of changed entries, or false on failure
  */
 function update_permission_records() {
 	global $db;
@@ -225,6 +225,8 @@ function update_permission_records() {
 	$permission[] = array('user_delete','Delete User','Allow a user to delete other users',0);
 	$permission[] = array('group_create','Create User Groups','Allow a user to create a new user group',0);
 
+	$changed_permissions = 0;
+
 	// Get list of current permissions
 	$list_query = 'SELECT `acl_id`,`acl_name`,`acl_longname`,
 		`acl_description`,`acl_value_default`
@@ -275,6 +277,7 @@ function update_permission_records() {
 					if ($db->error[$update_query] === 1) {
 						return false;
 					}
+					$changed_permissions++;
 				}
 				unset($permission[$j]);
 				// Mark the permission as still existing
@@ -300,6 +303,7 @@ function update_permission_records() {
 			if ($db->error[$delete_acl_key] === 1) {
 				return false;
 			}
+			$changed_permissions++;
 		}
 	}
 	// Create permissions that still don't exist
@@ -315,7 +319,9 @@ function update_permission_records() {
 		if ($db->error[$create_handle] === 1) {
 			return false;
 		}
+		$changed_permissions++;
 	}
-	return true;
+	// Return number of changed permissions
+	return $changed_permissions;
 }
 ?>
