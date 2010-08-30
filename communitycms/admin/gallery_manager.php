@@ -129,11 +129,60 @@ function gallery_photo_manager($gallery_id) {
 			<form method="post" action="?module=gallery_manager&amp;action=edit&amp;id='.$gallery_info['id'].'&amp;edit=del">
 			<input type="hidden" name="file_id" value="'.$gallery_images[$i]['file_id'].'" />
 			<input type="hidden" name="file_name" value="'.$gallery_images[$i]['file'].'" />
-			<input type="submit" value="Remove Image" /></form>
-			</td></tr>';
+			<input type="submit" value="Remove Image" />
+			</td></tr></form>';
 	}
 	$image_manager .= '</table>';
 	return $image_manager;
+}
+
+/**
+ * Edit the caption for a gallery image
+ * @global object $db Database connection object
+ * @global object $debug Debugger object
+ * @param integer $gallery_id
+ * @param integer $file_id
+ * @param string $file_name
+ * @param string $caption
+ * @return boolean Success 
+ */
+function gallery_image_caption_edit($gallery_id,$file_id,$file_name,$caption) {
+	global $db;
+	global $debug;
+
+	// Validate parameters
+	if (!is_numeric($gallery_id)) {
+		$debug->add_trace('Invalid gallery ID',true,'gallery_image_caption_edit()');
+		return false;
+	}
+	if (!is_numeric($file_id) && strlen($file_id) != 0) {
+		$debug->add_trace('Invalid file ID',true,'gallery_image_caption_edit()');
+		return false;
+	}
+	$caption = addslashes($caption);
+
+	// Different queries depending whether there is an existing description
+	// or not
+	if ($file_id == '') {
+		// Description does not exist
+		$query = 'INSERT INTO `'.GALLERY_IMAGE_TABLE.'`
+			(`gallery_id`,`file`,`caption`) VALUES
+			('.$gallery_id.',\''.$file_name.'\',\''.$caption.'\')';
+	} else {
+		// Description does exist
+		$query = 'UPDATE `'.GALLERY_IMAGE_TABLE.'`
+			SET `caption` = \''.$caption.'\'
+			WHERE `id` = '.$file_id;
+	}
+
+	// Execute query
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1) {
+		$debug->add_trace('Failed to edit image caption',true,'gallery_image_caption_edit()');
+		return false;
+	}
+	log_action('Changed image caption for \''.$file_name.'\'');
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -176,47 +225,49 @@ switch ($_GET['action']) {
 		$gal_id = $db->sql_fetch_assoc($gal_id_handle);
 		$_GET['id'] = $gal_id['id'];
 		$_GET['action'] = 'edit';
+
 	case 'edit':
+		// Set gallery id for future use
 		if (isset($_GET['id']) && !isset($_POST['gallery'])) {
 			$_POST['gallery'] = $_GET['id'];
+			unset($_GET['id']);
 		}
 		if (!isset($_POST['gallery'])) {
-			$debug->add_trace('No gallery selected.',true,'gallery_manager.php');
+			$content .= '<span class="errormessage">No gallery selected.</span><br />'."\n";
 			break;
 		}
-		$gallery_info = gallery_info($_POST['gallery']);
+		if (!is_numeric($_POST['gallery'])) {
+			$content .= '<span class="errormessage">Invalidly formatted gallery ID.</span><br />'."\n";
+			break;
+		}
+		$gallery_id = (int)$_POST['gallery'];
+		unset($_POST['gallery']);
 
-		// Edit description
+		// Get gallery information
+		$gallery_info = gallery_info($gallery_id);
+
+		// Save edits to image descriptions
 		if (isset($_GET['edit'])) {
 			if ($_GET['edit'] == 'desc' && isset($_POST['file_id']) && isset($_POST['file_name'])) {
-				if ($_POST['file_id'] == '') {
-					$description_query = 'INSERT INTO `'.GALLERY_IMAGE_TABLE.'`
-						(`gallery_id`,`file`,`caption`) VALUES
-						('.(int)$_GET['id'].',\''.$_POST['file_name'].'\',\''.addslashes($_POST['desc']).'\')';
+				if (gallery_image_caption_edit($gallery_id,
+						$_POST['file_id'], $_POST['file_name'], $_POST['desc'])) {
+					$content .= 'Successfully edited image caption.<br />'."\n";
 				} else {
-					$description_query = 'UPDATE `'.GALLERY_IMAGE_TABLE.'`
-						SET `caption` = \''.addslashes($_POST['desc']).'\'
-						WHERE `id` = '.(int)$_POST['file_id'];
-				}
-				$description_handle = $db->sql_query($description_query);
-				if ($db->error[$description_handle] === 1) {
-					$content .= 'Failed to edit image caption.';
-				} else {
-					$content .= 'Successfully edited image caption.';
-					log_action('Changed image caption for \''.$_POST['file_name'].'\'');
+					$content .= '<span class="errormessage">Failed to edit image caption.</span><br />'."\n";
 				}
 			} elseif ($_GET['edit'] == 'del' && isset($_POST['file_id']) && isset($_POST['file_name'])) {
+				// Delete image caption if it exists
 				if ($_POST['file_id'] != '') {
 					$description_query = 'DELETE FROM `'.GALLERY_IMAGE_TABLE.'`
 						WHERE `id` = '.(int)$_POST['file_id'];
 					$description_handle = $db->sql_query($description_query);
 					if ($db->error[$description_handle] === 1) {
-						$content .= 'Failed to delete image caption.<br />'."\n";
+						$content .= '<span class="errormessage">Failed to delete image caption.</span><br />'."\n";
 					} else {
 						$content .= 'Successfully deleted image caption.<br />'."\n";
 					}
 				}
-				$gallery_info = gallery_info((int)$_GET['id']);
+				// Delete image
 				$image_dir = ROOT.'files/'.$gallery_info['image_dir'].'/';
 				$thumb_dir = $image_dir.'thumbs/';
 				if (file_exists($image_dir.$_POST['file_name']) && file_exists($thumb_dir.$_POST['file_name'])) {
@@ -226,18 +277,22 @@ switch ($_GET['action']) {
 						$content .= 'Successfully deleted image.<br />'."\n";
 						log_action('Deleted image from gallery \''.$_POST['file_name'].'\'');
 					} else {
-						$content .= 'Failed to delete image.<br />'."\n";
+						$content .= '<span class="errormessage">Failed to delete image.</span><br />'."\n";
 					}
 				}
 			}
 		}
+
+		// Show gallery manager
+		$gallery_reference = '$GALLERY_EMBED-'.$gallery_info['id'].'$';
 		$tab_content['edit'] = '<span style="font-size: large; font-weight: bold;">'.$gallery_info['title'].'</span><br />'."\n";
 		$tab_content['edit'] .= 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
-		$tab_content['edit'] .= '<input type="text" value="$GALLERY_EMBED-'.$gallery_info['id'].'$" /><br />'."\n";
+		$tab_content['edit'] .= '<input type="text" value="'.$gallery_reference.'" /><br />'."\n";
 		$tab_content['edit'] .= gallery_photo_manager($gallery_info['id']);
 		$tab_content['edit'] .= gallery_upload_box($gallery_info['id'],$gallery_info['image_dir']);
 		$tab_layout->add_tab('Edit Gallery',$tab_content['edit']);
 		break;
+
 	case 'delete':
 		if (!isset($_GET['id'])) {
 			$content .= 'No gallery selected.<br />'."\n";
@@ -249,6 +304,7 @@ switch ($_GET['action']) {
 			$content .= 'Failed to delete gallery.<br />'."\n";
 		}
 		break;
+
 	default:
 		break;
 }
