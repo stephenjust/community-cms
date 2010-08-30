@@ -61,9 +61,17 @@ class db_postgresql extends db {
 	function sql_escape_string($string) {
 		return pg_escape_string($this->connect, $string);
 	}
-	function sql_insert_id() {
-		// Fixme: find pgsql equivilant of this
-		return false;
+	function sql_insert_id($table,$field) {
+		$query = 'SELECT currval("'.$table.'_'.$field.'_seq")';
+		$handle = $this->sql_query($query);
+		if ($this->error[$handle] === 1) {
+			return false;
+		}
+		if ($this->sql_num_rows($handle) != 1) {
+			return false;
+		}
+		$result = $db->sql_fetch_assoc($handle);
+		return $result[0];
 	}
 
 	function sql_prepare($name,$query) {

@@ -57,8 +57,17 @@ class db_mysqli extends db {
 	function sql_escape_string($string) {
 		return mysqli_real_escape_string($this->connect,$string);
 	}
-	function sql_insert_id($query) {
-		return mysqli_insert_id($this->connect);
+	function sql_insert_id($table,$field) {
+		$query = 'SELECT MAX(`'.$field.'`) AS `id` FROM `'.$table.'`';
+		$handle = $this->sql_query($query);
+		if ($this->error[$handle] === 1) {
+			return false;
+		}
+		if ($this->sql_num_rows($handle) != 1) {
+			return false;
+		}
+		$result = $this->sql_fetch_assoc($handle);
+		return $result['id'];
 	}
 
 	function sql_prepare($name,$query) {
