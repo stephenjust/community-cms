@@ -396,7 +396,7 @@ function replace_file_special_chars($filename) {
 		return false;
 	}
 
-	$filename = str_replace(array('\'','"','?','+','@','#','$','!',' '),'_',$filename);
+	$filename = str_replace(array('\'','"','?','+','@','#','$','!','^',' '),'_',$filename);
 	return $filename;
 }
 
