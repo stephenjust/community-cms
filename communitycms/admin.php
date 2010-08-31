@@ -52,7 +52,6 @@ if (!isset($_GET['ui'])) {
 // Run login checks.
 checkuser_admin();
 require(ROOT.'functions/admin.php');
-require(ROOT.'includes/admin.php');
 require(ROOT.'includes/admin_page_class.php');
 
 $admin_page = new admin_page($module);
@@ -63,6 +62,7 @@ function display_admin() {
 	global $db;
 	global $acl;
 	global $module;
+	global $log;
 
 	$template_page = new template;
 	$template_page->load_admin_file();
