@@ -73,7 +73,8 @@ switch ($page->id) {
 			$content .= '<tr><td>Old Password:</td><td><input type="password" name="cp_oldpass" /></td></tr>';
 			$content .= '<tr><td>New Password:</td><td><input type="password" name="cp_newpass" /></td></tr>';
 			$content .= '<tr><td>New Password (Confirm):</td><td><input type="password" name="cp_confpass" /></td></tr>';
-			$content .= '<tr><td></td><td><input type="submit" value="Change Password" /></td></tr>';
+			$content .= '<tr><td></td><td><input type="submit" value="Change Password" />&nbsp;
+				<a href="index.php">Cancel</a></td></tr>';
 			$content .= '</table></form>'."\n";
 		}
 		break;
