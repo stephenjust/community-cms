@@ -18,6 +18,7 @@ require('../include.php');
 require('./files/obselete_tables.php');
 require('./files/functions.php');
 initialize();
+global $log;
 echo "<html>\n<head>\n<title>Community CMS Database Update</title>\n</head><body>";
 $query = array();
 $error = 0;
@@ -339,9 +340,8 @@ if($error == 1) {
 		manually.';
 } else {
 	echo 'Update successful. <a href="../index.php">View Site</a>';
-	include('../functions/admin.php');
 	set_config('db_version',$db_version);
-	log_action('Upgraded Community CMS');
+	$log->new_message('Upgraded Community CMS',LOG_LEVEL_INSTALL);
 }
 clean_up();
 echo "</body>\n</html>\n";

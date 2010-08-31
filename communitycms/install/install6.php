@@ -10,7 +10,6 @@
 /**#@+
  * @ignore
  */
-define('ROOT','../');
 define('SECURITY',1);
 /**#@-*/
 
@@ -74,6 +73,7 @@ if ($error == 0) {
 } else {
 	$content .= 'An error has occured.';
 }
+$log->new_message('Installed Community CMS',LOG_LEVEL_INSTALL);
 
 clean_up();
 ?>

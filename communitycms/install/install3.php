@@ -11,7 +11,6 @@
  * @ignore
  */
 define('SECURITY',1);
-define('ROOT','../');
 /**#@-*/
 
 // Set config values

@@ -9,7 +9,6 @@
 /**#@+
  * @ignore
  */
-define('ROOT','../');
 define('SECURITY',1);
 /**#@-*/
 
@@ -30,7 +29,6 @@ if (config_file_write($_POST['engine'],
 	$content .= 'Failed to write to config.php. Is it writeable?';
 	return true;
 }
-fclose($handle);
 
 $content .= '<form method="post" action="index.php?page=5"><input type="submit" value="Next" /></form>';
 ?>
