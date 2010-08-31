@@ -29,22 +29,15 @@ if ($_GET['action'] == 'new_log') {
 // ----------------------------------------------------------------------------
 
 $tab_layout = new tabs;
-// Display log messages
 $tab_content['activity'] = NULL;
-$log_message_query = 'SELECT `log`.`date`,`log`.`action`,
-	`u`.`realname`,`log`.`ip_addr`
-	FROM ' . LOG_TABLE . ' log, ' . USER_TABLE . ' u
-	WHERE log.user_id = u.id ORDER BY log.date DESC LIMIT 5';
-$log_message_handle = $db->sql_query($log_message_query);
-if ($db->error[$log_message_handle] === 1) {
-	$tab_content['activity'] .= 'Failed to read log messages.<br />'."\n";
+// Display log messages
+$messages = $log->get_last_message(5);
+if (!$messages) {
+	$tab_content['activity'] = '<span class="errormessage">Failed to read log messages.</span><br />'."\n";
 }
 $table_values = array();
-for ($i = 1; $i <= $db->sql_num_rows($log_message_handle); $i++) {
-	$next_row = $db->sql_fetch_row($log_message_handle);
-	// Convert IP address from long to proper IP address
-	$next_row[3] = long2ip($next_row[3]);
-	$table_values[] = $next_row;
+for ($i = 0; $i < count($messages); $i++) {
+	$table_values[] = array($messages[$i]['date'],$messages[$i]['action'],$messages[$i]['user_name'],$messages[$i]['ip_addr']);
 }
 $tab_content['activity'] .= create_table(array('Date','Action','User','IP'),
 		$table_values);
