@@ -23,6 +23,7 @@ require(ROOT . 'functions/login.php');
 require(ROOT . 'functions/article.php');
 require(ROOT . 'includes/page.php');
 require(ROOT . 'includes/gallery.php');
+require(ROOT . 'includes/log_class.php');
 if(!include_once(ROOT.'functions/page_class.php')) {
     err_page(2001);
 }

@@ -36,6 +36,15 @@ define('TIME_12', date('h:ia'));
 /**#@-*/
 
 /**#@+
+ * Log message levels (for Log class)
+ */
+define('LOG_LEVEL_ADMIN',1);
+define('LOG_LEVEL_USER',2);
+define('LOG_LEVEL_ANON',3);
+define('LOG_LEVEL_INSTALL',4);
+/**#@-*/
+
+/**#@+
  * Database Tables
  */
 define('ACL_TABLE', $CONFIG['db_prefix'] . 'acl');

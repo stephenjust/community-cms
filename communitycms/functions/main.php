@@ -37,12 +37,16 @@ function initialize($mode = NULL) {
 	global $db;
 	global $debug;
 	global $acl;
+	global $log;
 
 	require_once(ROOT . 'includes/debug.php');
 	$debug = new debug;
 
 	require_once(ROOT . 'includes/acl.php');
 	$acl = new acl;
+
+	require_once(ROOT . 'includes/log_class.php');
+	$log = new Log;
 
 	$db->sql_connect();
 	if (!$db->connect) {

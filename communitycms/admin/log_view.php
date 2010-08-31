@@ -22,17 +22,14 @@ if (!$acl->check_permission('adm_log_view')) {
 switch ($_GET['action']) {
 	case 'delete':
 		if (!$acl->check_permission('log_clear')) {
-			$content .= 'You are not authorized to clear the log.<br />';
+			$content .= '<span class="errormessage">You are not authorized to clear the log.</span><br />'."\n";
 			break;
 		}
-		$delete_query = 'TRUNCATE TABLE `' . LOG_TABLE . '`';
-		$delete_handle = $db->sql_query($delete_query);
-		if ($db->error[$delete_handle] === 1) {
-			$content .= 'Failed to clear log messages.<br />';
-			break;
+		if ($log->clear()) {
+			$content .= 'Cleared log messages.<br />'."\n";
+		} else {
+			$content .= '<span class="errormessage">Failed to clear log messages.</span><br />'."\n";
 		}
-		$content .= 'Cleared log messages.<br />'."\n";
-		log_action('Cleared log messages.');
 		break;
 	case 'viewall':
 		$view_all = true;
