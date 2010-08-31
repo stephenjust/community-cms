@@ -82,7 +82,7 @@ class Log {
 
 		$query = 'SELECT `user_id`,`action`,`date`,`ip_addr`
 			FROM `'.LOG_TABLE.'`
-			ORDER BY `id` DESC
+			ORDER BY `log_id` DESC
 			LIMIT '.$count;
 		$handle = $db->sql_query($query);
 		if ($db->error[$handle] === 1) {
@@ -96,8 +96,46 @@ class Log {
 			$log_messages[] = $message;
 		}
 
-		// TODO: Convert User ID's to names
-		return $message;
+		// Convert User IDs to names and convert IPs to octets
+		$uid_cache = array();
+		for ($i = 0; $i < count($log_messages); $i++) {
+			// Convert IP Address
+			$log_messages[$i]['ip_addr'] = long2ip($log_messages[$i]['ip_addr']);
+
+			// Get user names
+			if ($log_messages[$i]['user_id'] == 0) {
+				$log_messages[$i]['user_name'] = 'Anonymous User';
+				continue;
+			}
+			if ($log_messages[$i]['user_id'] == -1) {
+				$log_messages[$i]['user_name'] = 'Installer';
+				continue;
+			}
+			// Check cache so we don't repeat queries where unnecessary
+			if (key_exists($log_messages[$i]['user_id'], $uid_cache)) {
+				$log_messages[$i]['user_name'] = $uid_cache[$log_messages[$i]['user_id']];
+				continue;
+			}
+
+			// UID hasn't been seen before so look it up
+			$user_query = 'SELECT `realname` FROM `'.USER_TABLE.'`
+				WHERE `id` = '.$log_messages[$i]['user_id'];
+			$user_handle = $db->sql_query($user_query);
+			if ($db->error[$user_handle] === 1) {
+				$log_messages[$i]['user_name'] = 'User '.$log_messages[$i]['user_id'];
+				$uid_cache[$log_messages[$i]['user_id']] = 'User '.$log_messages[$i]['user_id'];
+				continue;
+			}
+			if ($db->sql_num_rows($user_handle) == 0) {
+				$log_messages[$i]['user_name'] = 'User '.$log_messages[$i]['user_id'];
+				$uid_cache[$log_messages[$i]['user_id']] = 'User '.$log_messages[$i]['user_id'];
+				continue;
+			}
+			$user_result = $db->sql_fetch_assoc($user_handle);
+			$log_messages[$i]['user_name'] = $user_result['realname'];
+			$uid_cache[$log_messages[$i]['user_id']] = $user_result['realname'];
+		}
+		return $log_messages;
 	}
 }
 ?>
