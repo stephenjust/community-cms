@@ -89,7 +89,9 @@ function permission_list($group = 0) {
 	// Pages
 	$perm_list = array('adm_page',
 		'page_set_home',
-		'page_order');
+		'page_order',
+		'page_delete',
+		'page_group_create');
 	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
 
 	// Page Messages
