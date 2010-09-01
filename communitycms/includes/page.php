@@ -288,11 +288,14 @@ function page_clean_order($parent = 0) {
 		// Reorder pages
 		for ($i = 0; $i < $page_list_rows; $i++) {
 			$page_list = $db->sql_fetch_assoc($page_list_handle);
-			$move_page_query = 'UPDATE ' . PAGE_TABLE . '
-				SET list = '.$i.' WHERE id = '.$page_list['id'];
-			$move_page = $db->sql_query($move_page_query);
-			if ($db->error[$move_page] === 1) {
-				$content = 'Failed to optimize page order.<br />';
+			// Only reorder if necessary
+			if ($page_list['list'] != $i) {
+				$move_page_query = 'UPDATE ' . PAGE_TABLE . '
+					SET list = '.$i.' WHERE id = '.$page_list['id'];
+				$move_page = $db->sql_query($move_page_query);
+				if ($db->error[$move_page] === 1) {
+					$content = 'Failed to optimize page order.<br />';
+				}
 			}
 			$subpages[] = $page_list['id'];
 		}
