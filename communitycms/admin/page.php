@@ -160,21 +160,10 @@ switch ($_GET['action']) {
 		if (!isset($_POST['page_group_name'])) {
 			$content .= 'Invalid page group name.<br />'."\n";
 		}
-		if (strlen($_POST['page_group_name']) == 0) {
-			$content .= 'Page group name must not be left blank.<br />'."\n";
-		}
-		$new_page_group = addslashes($_POST['page_group_name']);
-		$new_page_group_query = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
-			VALUES (\''.$new_page_group.'\')';
-		$new_page_group_handle = $db->sql_query($new_page_group_query);
-		if ($db->error[$new_page_group_handle] === 1) {
-			$content .= 'Failed to create new page group.<br />'."\n";
+		if (page_add_group($_POST['page_group_name'])) {
+			$content = 'Successfully created new page group.<br />'."\n";
 		} else {
-			$acl->create_key('pagegroupedit-'.$db->sql_insert_id($new_page_group_handle),
-					'Edit Page Group \''.stripslashes($new_page_group).'\'',
-					'Allow user to edit pages in the group \''.$new_page_group.'\'',0);
-			$content .= 'Created new page group.<br />'."\n";
-			log_action('Created page group \''.stripslashes($new_page_group).'\'');
+			$content .= '<span class="errormessage">Failed to create page group.</span><br />'."\n";
 		}
 		break; // case 'new_page_group'
 

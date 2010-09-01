@@ -60,6 +60,48 @@ function page_add() {
 }
 
 /**
+ * Create a new page group
+ * @global object $acl Permission object
+ * @global object $db Database object
+ * @global object $debug Debugging object
+ * @global object $log Logger object
+ * @param string $group_name Name of new group
+ * @return boolean Success
+ */
+function page_add_group($group_name) {
+	global $acl;
+	global $db;
+	global $debug;
+	global $log;
+
+	if (!$acl->check_permission('page_group_create')) {
+		return false;
+	}
+	if (strlen($group_name) == 0) {
+		return false;
+	}
+	$group_name = addslashes($group_name);
+
+	// Create group
+	$query = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
+		VALUES (\''.$group_name.'\')';
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1) {
+		return false;
+	}
+
+	// Create permission key
+	if (!$acl->create_key('pagegroupedit-'.$db->sql_insert_id(PAGE_GROUP_TABLE,'id'),
+			'Edit Page Group \''.stripslashes($group_name).'\'',
+			'Allow user to edit pages in the group \''.stripslashes($group_name).'\'',0)) {
+		$debug->add_trace('Failed to create new permission value',true,'page_add_group()');
+		return false;
+	}
+	$log->new_message('Created page group \''.stripslashes($group_name).'\'');
+	return true;
+}
+
+/**
  * page_delete - Delete a page entry from the database
  * @global object $acl Permissions object
  * @global object $db Database connection object

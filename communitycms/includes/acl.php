@@ -273,6 +273,7 @@ class acl {
 		if ($db->error[$new_key_handle] === 1) {
 			return false;
 		}
+		return true;
 	}
 }
 
