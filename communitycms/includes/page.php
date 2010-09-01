@@ -294,7 +294,7 @@ function page_clean_order($parent = 0) {
 					SET list = '.$i.' WHERE id = '.$page_list['id'];
 				$move_page = $db->sql_query($move_page_query);
 				if ($db->error[$move_page] === 1) {
-					$content = 'Failed to optimize page order.<br />';
+					return false;
 				}
 			}
 			$subpages[] = $page_list['id'];
