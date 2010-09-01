@@ -19,7 +19,7 @@ if ($_GET['action'] == 'new_log') {
 	} else {
 		$log_message = strip_tags($_POST['message']);
 		if (strlen($log_message) > 5) {
-			log_action($log_message);
+			$log->new_message($log_message);
 		} else {
 			$content .= 'The log message you entered was too short.<br />';
 		}
