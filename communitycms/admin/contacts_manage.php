@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2009-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -45,6 +45,50 @@ function contact_list($page = '*') {
 	return $contacts;
 }
 
+/**
+ * Delete a contact entry from the database
+ * @global object $acl Permission object
+ * @global object $db Database object
+ * @global object $log Logger object
+ * @param integer $id Contact ID
+ * @return boolean Success
+ */
+function delete_contact($id) {
+	global $acl;
+	global $db;
+	global $log;
+
+	if (!$acl->check_permission('contact_delete')) {
+		return false;
+	}
+	if (!is_numeric($id)) {
+		return false;
+	}
+	$id = (int)$id;
+
+	$get_info_query = 'SELECT * FROM `'.CONTACTS_TABLE.'` WHERE
+		`id` = '.$id.' LIMIT 1';
+	$get_contact_info_handle = $db->sql_query($get_info_query);
+	if ($db->error[$get_contact_info_handle] === 1) {
+		return false;
+	}
+	if ($db->sql_num_rows($get_contact_info_handle) != 1) {
+		return false;
+	} else {
+		$contact_info = $db->sql_fetch_assoc($get_contact_info_handle);
+		unset($get_info_query);
+		unset($get_contact_info_handle);
+	}
+	$delete_query = 'DELETE FROM `' . CONTACTS_TABLE . '`
+		WHERE `id` = '.$id;
+	$delete_contact = $db->sql_query($delete_query);
+	if ($db->error[$delete_contact] === 1) {
+		return false;
+	}
+	$log->new_message('Deleted contact \''.stripslashes($contact_info['name']).'\'');
+	return true;
+}
+
 // ----------------------------------------------------------------------------
 
 switch ($_GET['action']) {
@@ -56,33 +100,10 @@ switch ($_GET['action']) {
 			$content .= '<span class="errormessage">You do not have the necessary permissions to delete a contact.</span><br />'."\n";
 			break;
 		}
-		if (!is_numeric($_GET['id'])) {
-			$content .= 'Invalid contact ID.<br />'."\n";
-			break;
-		}
-		$get_contact_info_query = 'SELECT * FROM `'.CONTACTS_TABLE.'` WHERE
-			`id` = '.$_GET['id'].' LIMIT 1';
-		$get_contact_info_handle = $db->sql_query($get_contact_info_query);
-		if ($db->error[$get_contact_info_handle] === 1) {
-			$content .= 'Failed to check if contact exists.<br />'."\n";
-			break;
-		}
-		if ($db->sql_num_rows($get_contact_info_handle) != 1) {
-			$content .= 'The contact you are trying to delete does not exist.<br />'."\n";
-			break;
+		if (delete_contact($_GET['id'])) {
+			$content .= 'Successfully deleted contact.<br />';
 		} else {
-			$contact_info = $db->sql_fetch_assoc($get_contact_info_handle);
-			unset($get_contact_info_query);
-			unset($get_contact_info_handle);
-		}
-		$delete_contact_query = 'DELETE FROM `' . CONTACTS_TABLE . '`
-			WHERE `id` = '.(int)$_GET['id'];
-		$delete_contact = $db->sql_query($delete_contact_query);
-		if ($db->error[$delete_contact] === 1) {
-			$content .= 'Failed to delete contact.<br />'."\n";
-		} else {
-			$content .= 'Successfully deleted contact.<br />'.log_action('Deleted contact \''.stripslashes($contact_info['name']).'\'');
-			unset($contact_info);
+			$content .= '<span class="errormessage">Failed to delete contact.</span><br />'."\n";
 		}
 		break;
 
