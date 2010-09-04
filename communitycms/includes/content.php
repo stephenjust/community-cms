@@ -9,6 +9,9 @@
 
 /**
  * content - Container class for all content items
+ * 
+ * @todo Use this class
+ * @package CommunityCMS.main
  */
 class content {
 	/**

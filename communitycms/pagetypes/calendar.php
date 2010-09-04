@@ -1,7 +1,7 @@
 <?php
 /**
  * Community CMS
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -16,8 +16,12 @@ global $view;
 $day = (isset($_GET['d']) && $_GET['d'] >= 1 && $_GET['d'] <= 31) ? (int)$_GET['d'] : date('d');
 $month = (isset($_GET['m']) && $_GET['m'] >= 0 && $_GET['m'] <= 13) ? (int)$_GET['m'] : date('n');
 $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$_GET['y'] : date('Y');
+/**#@+
+ * Include necessary functions to complete tasks in this file
+ */
 include(ROOT . 'pagetypes/calendar_class.php');
 include(ROOT . 'functions/calendar.php');
+/**#@-*/
 if ($view == NULL) {
 	$view = get_config('calendar_defualt_view');
 }

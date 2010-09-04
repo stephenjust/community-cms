@@ -21,6 +21,13 @@ $tab_layout = new tabs;
 
 // ----------------------------------------------------------------------------
 
+/**
+ * Get contact list
+ * @global object $db Database object
+ * @global object $debug Debugging object
+ * @param integer $page Page ID
+ * @return array Contact information (or false on failure)
+ */
 function contact_list($page = '*') {
 	global $db;
 	global $debug;
@@ -58,6 +65,7 @@ function delete_contact($id) {
 	global $db;
 	global $log;
 
+	// Pre-execution checks
 	if (!$acl->check_permission('contact_delete')) {
 		return false;
 	}
@@ -66,6 +74,7 @@ function delete_contact($id) {
 	}
 	$id = (int)$id;
 
+	// Get info for log message
 	$get_info_query = 'SELECT * FROM `'.CONTACTS_TABLE.'` WHERE
 		`id` = '.$id.' LIMIT 1';
 	$get_contact_info_handle = $db->sql_query($get_info_query);
@@ -79,6 +88,7 @@ function delete_contact($id) {
 		unset($get_info_query);
 		unset($get_contact_info_handle);
 	}
+	// Delete record
 	$delete_query = 'DELETE FROM `' . CONTACTS_TABLE . '`
 		WHERE `id` = '.$id;
 	$delete_contact = $db->sql_query($delete_query);

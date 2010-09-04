@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2009-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -16,5 +16,8 @@ if (!isset($_GET['page'])) {
 } else {
 	$page = addslashes($_GET['page']);
 }
+/**
+ * Include the current help file
+ */
 $content .= include(ROOT.'admin/help_pages/'.$page.'.php');
 ?>

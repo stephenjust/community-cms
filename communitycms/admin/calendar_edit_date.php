@@ -17,6 +17,9 @@ if (!$acl->check_permission('adm_calendar_edit_date')) {
 }
 
 global $debug;
+/**
+ * Include functions necessary for calendar operations
+ */
 include('./functions/calendar.php');
 
 $content = NULL;

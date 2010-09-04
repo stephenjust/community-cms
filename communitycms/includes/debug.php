@@ -2,11 +2,17 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2009-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
 
+/**
+ * Class to provide common trace functions throughout the CMS for debugging
+ * where the cause of an issue may not be apparent
+ *
+ * @package CommunityCMS.main
+ */
 class debug {
 	public $debug_stack = array();
 	public $error_count = 0;
@@ -44,6 +50,10 @@ class debug {
 		return true;
 	}
 
+	/**
+	 * Return a list of traces formatted in HTML
+	 * @return string List of traces
+	 */
 	public function display_traces() {
 		$stack = NULL;
 		if (count($this->debug_stack) === 0) {

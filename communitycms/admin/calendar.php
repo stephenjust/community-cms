@@ -19,6 +19,9 @@ if (!$acl->check_permission('adm_calendar')) {
 $content = NULL;
 global $debug;
 
+/**
+ * Include functions necessary for calendar operations
+ */
 include (ROOT.'functions/calendar.php');
 
 // ----------------------------------------------------------------------------
