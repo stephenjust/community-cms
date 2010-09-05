@@ -11,65 +11,59 @@ ob_start();
 ?>
 <h1>What's New?</h1>
 <ul><li><a href="index.php?page=license">Install</a></li></ul>
-<h2>New in Version 0.6</h2>
+<h2>New in Version 0.7</h2>
 <h3>Features</h3>
 <ul>
 	<li>Admin</li>
 	<ul>
-		<li>Slick new administrative interface design</li>
-		<li>Simplified, reorganized, and unified administration modules</li>
+		<li>Most modules can now switch datasets without reloading the page</li>
+		<li>Calendar module displays start time and end time on summary page</li>
+		<li>Added module to view all configuration values throughout the CMS</li>
+		<li>Automatically resize images for newsicons or galleries</li>
+		<li>Updated TinyMCE version</li>
 	</ul>
-	<li>Pages</li>
+	<li>Image Galleries</li>
 	<ul>
-		<li>The new Text-ID feature allows you to keep web addresses readable</li>
-		<li>You can keep pages from appearing on the menu by hiding them.</li>
+		<li>Added support for the SimpleViewer image gallery software</li>
+		<li>Added a built-in javascript-based gallery (unstable)</li>
 	</ul>
 	<li>News</li>
 	<ul>
-		<li>Module settings allow you to alter the default settings for your new news articles, and to change other news-related settings</li>
-		<li>Multiple news items can be moved, copied, or deleted at once</li>
-	</ul>
-	<li>Calendar</li>
-	<ul>
-		<li>A more colourful design for your visitors</li>
-		<li>A date selector allows you to easily set the date for your event entries</li>
-		<li>The new time parser allows you to enter times of day in almost any common format</li>
-	</ul>
-	<li>Newsletters</li>
-	<ul>
-		<li>Your current entries can now be edited</li>
+		<li>Added ability to post news articles that are not visible to users (unpublished)</li>
+		<li>Added quick links from the front-end to edit or (un)publish a news article</li>
 	</ul>
 	<li>Contacts</li>
 	<ul>
-		<li>Contact entries can now be created and edited independant of users</li>
+		<li>Added multiple styles of contact lists</li>
+		<li>Added configuration value to keep phone number display consistent</li>
 	</ul>
-	<li>Users</li>
+	<li>Permissions</li>
 	<ul>
-		<li>The new User Groups feature allows you to categorize all of your users into groupings of different privelege levels</li>
+		<li>Added a more complete set of permissions</li>
 	</ul>
-	<li>Files</li>
+	<li>Installer</li>
 	<ul>
-		<li>It is now really easy to link to a file using TinyMCE</li>
-		<li>Using the file manager's edit button, you can assign a label to your files</li>
-		<li>Using the file manager's delete button, you can now delete files</li>
+		<li>Added license(s) to installer for the user to read</li>
+		<li>Code vastly improved and separated into functions to keep results from install and upgrade consistent</li>
 	</ul>
-	<li>Feedback can now be provided to the developers through a built-in form</li>
-	<li>Community CMS can now install on a PostgreSQL database</li>
-	<li>Installer can now change default admin username and password</li>
+	<li>Added password expiration feature</li>
+	<li>Added ability for users to change their passwords without access to admin</li>
+	<li>Added a hierarchal menu system</li>
+	<li>Added CSS for print media</li>
 </ul>
 <h3>Under the Hood Changes</h3>
 <ul>
-	<li>Added a debug mode</li>
-	<li>Added ability to use custom database tables by editing includes/constants.php</li>
-	<li>Moved a great amount of functionality into classes and functions</li>
-	<li>Separated the database processing layer from the rest of the code</li>
+	<li>Configuration is now stored in a table that is easier to expand</li>
+	<li>Removed proprietary data files and replaced them with XML</li>
+	<li>Many operations are now stored in functions</li>
+	<li>Improved caching in several instances that greatly decreases the number of redundant SQL queries</li>
 </ul>
 <h3>Bug Fixes</h3>
 <ul>
-	<li>Calendar entries are now listed on the calendar in order of their start time</li>
-	<li>Fixed bug which made it impossible to change a user's password</li>
-	<li>Fixed pagination bug</li>
-	<li>Fixed several SQL Injection vulnerabilities</li>
+	<li>Escape problematic characters in file names when uploading files</li>
+	<li>Regex functions should now be case-sensitive where necessary</li>
+	<li>Removed remaining uses of ereg() and eregi()</li>
+	<li>Fix some cases where permissions were not honored</li>
 </ul>
 <form method="post" action="index.php?page=license">
 	<input type="submit" value="Install" />
