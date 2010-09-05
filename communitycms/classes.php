@@ -11,6 +11,11 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 require(ROOT.'functions/form_class.php');
+/**
+ * Class for content blocks
+ *
+ * @package CommunityCMS.main
+ */
 class block {
 	public $block_id;
 	public $type;
@@ -61,6 +66,11 @@ class block {
 
 // ----------------------------------------------------------------------------
 
+/**
+ * Class to generate jQuery tabs
+ *
+ * @package CommunityCMS.main
+ */
 class tabs {
 	public $num_tabs;
 	private $tab_list;

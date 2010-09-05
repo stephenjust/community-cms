@@ -7,8 +7,12 @@
  * @package CommunityCMS.main
  */
 
+/**#@+
+ * @ignore
+ */
 define('SECURITY',1);
 define('ROOT','../');
+/**#@-*/
 
 if (!isset($_GET['id'])) {
 	header("HTTP/1.0 404 Not Found");

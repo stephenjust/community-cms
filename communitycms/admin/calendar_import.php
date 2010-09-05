@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2009-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -10,6 +10,9 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
+/**
+ * Include funtions necessary to perform operations on this page
+ */
 include (ROOT.'functions/calendar.php');
 
 if (!$acl->check_permission('adm_calendar_import')) {

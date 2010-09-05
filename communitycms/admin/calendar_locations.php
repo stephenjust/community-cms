@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2009-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -24,6 +24,9 @@ if ($db->dbms == 'postgresql') {
 
 $content = NULL;
 
+/**
+ * Include functions necessary to perform operations on this page
+ */
 include (ROOT.'functions/calendar.php');
 
 // ----------------------------------------------------------------------------

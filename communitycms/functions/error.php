@@ -11,7 +11,11 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
-
+/**
+ * Display an error message
+ * @param string $message Error message
+ * @return string HTML for message
+ */
 function errormesg($message = "An error has occured.") {
 	$message = '<div class="errormessage">'.$message.'</div>';
 	return $message;

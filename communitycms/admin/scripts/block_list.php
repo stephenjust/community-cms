@@ -13,11 +13,12 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0"); // HTTP
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache"); // HTTP/1.0
 
-/**
+/**#@+
  * @ignore
  */
 define('SECURITY',1);
 define('ROOT','../../');
+/**#@-*/
 include(ROOT.'config.php');
 include(ROOT.'include.php');
 $referer = $_SERVER['HTTP_REFERER'];

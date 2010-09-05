@@ -12,8 +12,13 @@ header("Content-type: text/plain");
 if (!isset($_GET['query'])) {
 	exit;
 }
+/**#@+
+ * @ignore
+ */
 define('ROOT','../../');
 define('SECURITY',1);
+/**#@-*/
+
 include('../../config.php');
 include('../../include.php');
 

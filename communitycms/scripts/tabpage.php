@@ -6,9 +6,12 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
-// The not-so-secure security check.
+/**#@+
+ * @ignore
+ */
 define('SECURITY',1);
 define('ROOT','../');
+/**#@-*/
 
 // Load error handling code
 require(ROOT.'functions/error.php');
