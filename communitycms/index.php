@@ -42,12 +42,14 @@ if (DEBUG === 1) {
 
 initialize();
 
+global $user;
+
 // Perform login/logout operation
 $login = (isset($_GET['login'])) ? $_GET['login'] : NULL;
 $_POST['user'] = (isset($_POST['user'])) ? $_POST['user'] : NULL;
 $_POST['passwd'] = (isset($_POST['passwd'])) ? $_POST['passwd'] : NULL;
 if ($login == 1) {
-	login($_POST['user'],$_POST['passwd']);
+	$user->login($_POST['user'],$_POST['passwd']);
 } elseif ($login == 2) {
 	logout();
 }
@@ -97,7 +99,7 @@ if ($page_id == NULL && $page_text_id != NULL) {
 	$page->set_page($page_id);
 }
 if (file_exists('./install')) {
-	$debug->add_trace('The ./install directory still exists',true,'index.php');
+	$debug->add_trace('The ./install directory still exists',true);
 }
 
 // Display the page.
