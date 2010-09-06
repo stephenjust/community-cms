@@ -52,7 +52,11 @@ if ($_GET['del'] != "") {
 $page = new page;
 $page->id = 0;
 $page->title .= 'Messages';
+$page->type = 'special.php';
+$page->exists = 1;
 $page->display_header();
+$page->display_left();
+$page->display_right();
 
 // Get message list
 $message_list_query = 'SELECT * FROM ' . MESSAGE_TABLE . '
@@ -68,10 +72,10 @@ $message_list_file_handle = fopen($message_list_template_file_path, "r");
 $message_list_template_file = fread($message_list_file_handle, filesize($message_list_template_file_path));
 fclose($message_list_file_handle);
 $i = 1;
-if($message_num_rows == 0) {
+if ($message_num_rows == 0) {
 	$content .= 'No messages to be displayed.';
-	}
-while($message_num_rows >= $i) {
+}
+while ($message_num_rows >= $i) {
 	$message = $db->sql_fetch_assoc($message_list_handle);
 	$current_message = $message_list_template_file;
 	$current_message = str_replace('<!-- $MESSAGE_BODY$ -->',stripslashes($message['message']),$current_message);
@@ -79,25 +83,14 @@ while($message_num_rows >= $i) {
 	$content .= $current_message;
 	$current_message = NULL;
 	$i++;
-	}
-// Display page
-$template_file = $template_path."index.html";
-$handle = fopen($template_file, "r");
-$template = fread($handle, filesize($template_file));
-fclose($handle);
-$page_title = 'Messages';
-$css_include = "<link rel='StyleSheet' type='text/css' href='".$template_path."style.css' />";
-$image_path = $template_path.'images/';
-$nav_bar = display_nav_bar();
-$nav_login = display_login_box();
-$template = str_replace('<!-- $PAGE_TITLE$ -->',stripslashes($page_title),$template);
-$template = str_replace('<!-- $CSS_INCLUDE$ -->',$css_include,$template);
-$template = str_replace('<!-- $NAV_BAR$ -->',$nav_bar,$template);
-$template = str_replace('<!-- $NAV_LOGIN$ -->',$nav_login,$template);
-$template = str_replace('<!-- $CONTENT$ -->',$content,$template);
-$template = str_replace('<!-- $IMAGE_PATH$ -->',$image_path,$template);
-$template = str_replace('<!-- $FOOTER$ -->',get_config('footer'),$template);
-echo $template;
+}
+$page->content = $content;
+
+$page->display_content();
+if (DEBUG === 1) {
+	$page->display_debug();
+}
+$page->display_footer();
 
 // Close database connections and clean up loose ends.
 clean_up();
