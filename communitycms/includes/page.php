@@ -20,18 +20,18 @@ function page_get_info($id,$fields = array('*')) {
 	global $debug;
 	// Validate parameters
 	if (!is_numeric($id)) {
-		$debug->add_trace('ID is not an integer',true,'page_get_info');
+		$debug->add_trace('ID is not an integer',true);
 		return false;
 	}
 	if(!is_array($fields)) {
-		$debug->add_trace('Field list is not an array',true,'page_get_info');
+		$debug->add_trace('Field list is not an array',true);
 		return false;
 	}
 	// Add backticks to field names and ensure that there are no spaces in field names
 	$field_count = count($fields);
 	for ($i = 0; $i < $field_count; $i++) {
 		if (preg_match('/ /',$fields[$i])) {
-			$debug->add_trace('Removed field "'.$fields[$i].'"',false,'page_get_info');
+			$debug->add_trace('Removed field "'.$fields[$i].'"',false);
 			unset($fields[$i]);
 			continue;
 		}
@@ -44,11 +44,11 @@ function page_get_info($id,$fields = array('*')) {
 		WHERE `id` = '.$id.' LIMIT 1';
 	$page_info_handle = $db->sql_query($page_info_query);
 	if ($db->error[$page_info_handle] === 1) {
-		$debug->add_trace('Failure to read page information',true,'page_get_info');
+		$debug->add_trace('Failure to read page information',true);
 		return false;
 	}
 	if ($db->sql_num_rows($page_info_handle) != 1) {
-		$debug->add_trace('Page \''.$id.'\' not found',true,'page_get_info');
+		$debug->add_trace('Page \''.$id.'\' not found',true);
 		return false;
 	}
 	$page_info = $db->sql_fetch_assoc($page_info_handle);
@@ -94,7 +94,7 @@ function page_add_group($group_name) {
 	if (!$acl->create_key('pagegroupedit-'.$db->sql_insert_id(PAGE_GROUP_TABLE,'id'),
 			'Edit Page Group \''.stripslashes($group_name).'\'',
 			'Allow user to edit pages in the group \''.stripslashes($group_name).'\'',0)) {
-		$debug->add_trace('Failed to create new permission value',true,'page_add_group()');
+		$debug->add_trace('Failed to create new permission value',true);
 		return false;
 	}
 	$log->new_message('Created page group \''.stripslashes($group_name).'\'');
@@ -115,12 +115,12 @@ function page_delete($id) {
 	global $debug;
 	// Check for permission to execute
 	if (!$acl->check_permission('page_delete')) {
-		$debug->add_trace('Lacking permission to remove pages',true,'page_delete');
+		$debug->add_trace('Lacking permission to remove pages',true);
 		return false;
 	}
 	// Validate parameters
 	if (!is_int($id)) {
-		$debug->add_trace('ID is not an integer',true,'page_delete');
+		$debug->add_trace('ID is not an integer',true);
 		return false;
 	}
 
@@ -128,7 +128,7 @@ function page_delete($id) {
 
 	$page_info = page_get_info($id,array('title'));
 	if (!$page_info) {
-		$debug->add_trace('Failed to retrieve page info',true,'page_delete');
+		$debug->add_trace('Failed to retrieve page info',true);
 		return false;
 	}
 
@@ -137,11 +137,11 @@ function page_delete($id) {
 		WHERE `id` = '.$id;
 	$delete_handle = $db->sql_query($delete_query);
 	if ($db->error[$delete_handle] === 1) {
-		$debug->add_trace('Failure to delete page',true,'page_delete');
+		$debug->add_trace('Failure to delete page',true);
 		return false;
 	}
 	if ($db->sql_affected_rows($delete_handle) < 1) {
-		$debug->add_trace('Delete query did not delete any entries',true,'page_delete');
+		$debug->add_trace('Delete query did not delete any entries',true);
 		return false;
 	}
 	log_action('Deleted page \''.stripslashes($page_info['title']).'\'');
@@ -154,23 +154,23 @@ function page_hide($id) {
 	global $debug;
 	// Check for permission to execute
 	if (!$acl->check_permission('page_hide')) {
-		$debug->add_trace('Lacking permission to hide pages',true,'page_hide');
+		$debug->add_trace('Lacking permission to hide pages',true);
 		return false;
 	}
 	// Validate parameters
 	if (!is_int($id)) {
-		$debug->add_trace('ID is not an integer',true,'page_hide');
+		$debug->add_trace('ID is not an integer',true);
 		return false;
 	}
 	// Check if page exists
 	$page_info = get_page_info($id,array('title','hidden'));
 	if (!$page_info) {
-		$debug->add_trace('Failed to retrieve page info',true,'page_hide');
+		$debug->add_trace('Failed to retrieve page info',true);
 		return false;
 	}
 	// Check if page is already hidden
 	if ($page_info['hidden'] == 1) {
-		$debug->add_trace('Page is already hidden',true,'page_hide');
+		$debug->add_trace('Page is already hidden',true);
 		return false;
 	}
 	// FIXME: Stub/incomplete
@@ -456,7 +456,7 @@ function page_editable($page_id) {
 
 	// Validate input
 	if (!is_numeric($page_id)) {
-		$debug->add_trace('Invalid page ID',true,'page_editable()');
+		$debug->add_trace('Invalid page ID',true);
 		return false;
 	}
 	$page_id = (int)$page_id;

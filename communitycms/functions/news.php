@@ -40,7 +40,7 @@ function delete_article($article) {
 
 		// Check data type
 		if (!is_numeric($current)) {
-			$debug->add_trace('Given non-numeric input',false,'delete_article');
+			$debug->add_trace('Given non-numeric input',false);
 			unset($current);
 			continue;
 		}
@@ -51,11 +51,11 @@ function delete_article($article) {
 			`news`.`id` = '.$current.' LIMIT 1';
 		$info_handle = $db->sql_query($info_query);
 		if ($db->error[$info_handle] === 1) {
-			$debug->add_trace('Query failed',true,'delete_article');
+			$debug->add_trace('Query failed',true);
 			return false;
 		}
 		if ($db->sql_num_rows($info_handle) === 0) {
-			$debug->add_trace('Article not found',true,'delete_article');
+			$debug->add_trace('Article not found',true);
 			return false;
 		}
 		$info = $db->sql_fetch_assoc($info_handle);
@@ -95,7 +95,7 @@ function move_article($article,$new_location) {
 	unset($article);
 
 	if (!is_numeric($new_location)) {
-		$debug->add_trace('Given non-numeric input for new location',true,'move_article');
+		$debug->add_trace('Given non-numeric input for new location',true);
 	}
 
 	for ($i = 0; $i < count($id); $i++) {
@@ -103,7 +103,7 @@ function move_article($article,$new_location) {
 
 		// Check data type
 		if (!is_numeric($current)) {
-			$debug->add_trace('Given non-numeric input',true,'move_article');
+			$debug->add_trace('Given non-numeric input',true);
 			unset($current);
 			continue;
 		}
@@ -114,11 +114,11 @@ function move_article($article,$new_location) {
 			`news`.`id` = '.$current.' LIMIT 1';
 		$info_handle = $db->sql_query($info_query);
 		if ($db->error[$info_handle] === 1) {
-			$debug->add_trace('Query failed',true,'move_article');
+			$debug->add_trace('Query failed',true);
 			return false;
 		}
 		if ($db->sql_num_rows($info_handle) === 0) {
-			$debug->add_trace('Article not found',true,'move_article');
+			$debug->add_trace('Article not found',true);
 			return false;
 		}
 		$info = $db->sql_fetch_assoc($info_handle);
@@ -159,7 +159,7 @@ function copy_article($article,$new_location) {
 	unset($article);
 
 	if (!is_numeric($new_location)) {
-		$debug->add_trace('Given non-numeric input for new location',true,'copy_article');
+		$debug->add_trace('Given non-numeric input for new location',true);
 	}
 
 	for ($i = 0; $i < count($id); $i++) {
@@ -167,7 +167,7 @@ function copy_article($article,$new_location) {
 
 		// Check data type
 		if (!is_numeric($current)) {
-			$debug->add_trace('Given non-numeric input',true,'copy_article');
+			$debug->add_trace('Given non-numeric input',true);
 			unset($current);
 			continue;
 		}
@@ -178,11 +178,11 @@ function copy_article($article,$new_location) {
 			`id` = '.$current.' LIMIT 1';
 		$info_handle = $db->sql_query($info_query);
 		if ($db->error[$info_handle] === 1) {
-			$debug->add_trace('Query failed',true,'copy_article');
+			$debug->add_trace('Query failed',true);
 			return false;
 		}
 		if ($db->sql_num_rows($info_handle) === 0) {
-			$debug->add_trace('Article not found',true,'copy_article');
+			$debug->add_trace('Article not found',true);
 			return false;
 		}
 		$info = $db->sql_fetch_assoc($info_handle);
@@ -243,18 +243,18 @@ function news_publish($article_id,$publish = true) {
 
 	// Validate parameters
 	if (!is_numeric($article_id)) {
-		$debug->add_trace('Article ID is not numeric',true,'news_publish()');
+		$debug->add_trace('Article ID is not numeric',true);
 		return false;
 	}
 	if (!is_bool($publish)) {
-		$debug->add_trace('Publishing state is not a boolean',true,'news_publish()');
+		$debug->add_trace('Publishing state is not a boolean',true);
 		return false;
 	}
 	$article_id = (int)$article_id;
 
 	// Check for permission
 	if (!$acl->check_permission('news_publish')) {
-		$debug->add_trace('Insufficient permissions',true,'news_publish()');
+		$debug->add_trace('Insufficient permissions',true);
 		return false;
 	}
 

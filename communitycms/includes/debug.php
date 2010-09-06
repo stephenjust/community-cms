@@ -21,26 +21,30 @@ class debug {
 	 * add_trace - Use this to add entries to the debug error stack
 	 * @param string $message Debug message
 	 * @param boolean $error True if this is an error trace
-	 * @param string $function_name Name of the function adding the trace
 	 * @return boolean Success
 	 */
-	public function add_trace($message,$error,$function_name) {
+	public function add_trace($message,$error,$function_name = NULL) {
 		// Prevent infinite loops
 		if (count($this->error_count) > 100) {
 			return false;
 		}
 		// Check variables
 		if (!is_bool($error)) {
-			$this->add_trace('Malformed success indicator',true,'debug->add_trace');
+			$this->add_trace('Malformed success indicator',true);
 			return false;
 		}
 		if (!is_string($message)) {
-			$this->add_trace('Malformed debug message',true,'debug->add_trace');
+			$this->add_trace('Malformed debug message',true);
 			return false;
 		}
-		if (!is_string($function_name)) {
-			$this->add_trace('Malformed function name',true,'debug->add_trace');
-			return false;
+		$bt = debug_backtrace();
+		if (!isset($bt[1])) {
+			$function_name = $bt[0]['file'];
+		} else {
+			$function_name = $bt[1]['function'];
+			if (isset($bt[1]['class'])) {
+				$function_name = $bt[1]['class'].'->'.$function_name;
+			}
 		}
 		// Add information to stack
 		$this->debug_stack[] = array('message' => $message, 'function' => $function_name, 'error' => $error);

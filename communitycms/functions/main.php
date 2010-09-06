@@ -38,6 +38,7 @@ function initialize($mode = NULL) {
 	global $debug;
 	global $acl;
 	global $log;
+	global $user;
 
 	require_once(ROOT . 'includes/debug.php');
 	$debug = new debug;
@@ -47,6 +48,9 @@ function initialize($mode = NULL) {
 
 	require_once(ROOT . 'includes/log_class.php');
 	$log = new Log;
+
+	require_once(ROOT . 'includes/user_class.php');
+	$user = new user;
 
 	$db->sql_connect();
 	if (!$db->connect) {
@@ -199,11 +203,11 @@ function array2csv($array) {
 	global $debug;
 	if (count($array) == 0) {
 		if (is_object($debug))
-			$debug->add_trace('Array provided is empty',true,'array2csv');
+			$debug->add_trace('Array provided is empty',true);
 		return '';
 	}
 	if (is_object($debug))
-		$debug->add_trace('Array provided has '.count($array).' entries',false,'array2csv');
+		$debug->add_trace('Array provided has '.count($array).' entries',false);
 	$string = NULL;
 	$array_count = count($array);
 	for ($i = 0; $i < $array_count; $i++) {
@@ -217,7 +221,7 @@ function array2csv($array) {
 			$string .= $array[$i];
 		} else {
 			if (is_object($debug))
-				$debug->add_trace('Empty array element found',false,'array2csv');
+				$debug->add_trace('Empty array element found',false);
 		}
 		if ($i != $array_count - 1) {
 			$string .= ',';

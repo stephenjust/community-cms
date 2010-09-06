@@ -25,13 +25,13 @@ function set_home_page($id) {
 	global $debug;
 
 	if (!$acl->check_permission('page_set_home')) {
-		$debug->add_trace('Need permission \'page_set_home\' to perform this action',true,'set_home_page()');
+		$debug->add_trace('Need permission \'page_set_home\' to perform this action',true);
 		return false;
 	}
 
 	// Validate variables
 	if (!is_numeric($id)) {
-		$debug->add_trace('Page ID is not numeric',true,'set_home_page()');
+		$debug->add_trace('Page ID is not numeric',true);
 		return false;
 	}
 	$id = (int)$id;
@@ -40,12 +40,12 @@ function set_home_page($id) {
 		WHERE `id` = $id LIMIT 1";
 	$check_handle = $db->sql_query($check_query);
 	if ($db->error[$check_handle] === 1) {
-		$debug->add_trace('Failed to read page table',true,'set_home_page()');
+		$debug->add_trace('Failed to read page table',true);
 		return false;
 	}
 	if ($db->sql_num_rows($check_handle) == 1) {
 		if(!set_config('home',$id)) {
-			$debug->add_trace('Failed to set config value',true,'set_home_page()');
+			$debug->add_trace('Failed to set config value',true);
 			return false;
 		} else {
 			$check_page = $db->sql_fetch_assoc($check_handle);
@@ -53,7 +53,7 @@ function set_home_page($id) {
 			return true;
 		}
 	} else {
-		$debug->add_trace('Page ID provided does not belong to an existing page',true,'set_home_page()');
+		$debug->add_trace('Page ID provided does not belong to an existing page',true);
 		return false;
 	}
 }
@@ -206,7 +206,7 @@ switch ($_GET['action']) {
 			}
 		}
 		$content .= 'Removed permission to access this group from '.$db->sql_num_rows($get_permission_handle).' users.<br />'."\n";
-		$debug->add_trace('Removed permissions from group \'pagegroupedit-'.(int)$_GET['id'].'\'',false,'page.php');
+		$debug->add_trace('Removed permissions from group \'pagegroupedit-'.(int)$_GET['id'].'\'',false);
 
 		// Remove permission key
 		$del_acl_key_query = 'DELETE FROM `'.ACL_KEYS_TABLE.'` WHERE
@@ -355,7 +355,7 @@ if ($_GET['action'] == 'edit') {
 			ORDER BY `id` ASC';
 		$page_group_handle = $db->sql_query($page_group_query);
 		if ($db->error[$page_group_handle] === 1) {
-			$debug->add_trace('Failed to read page group table',true,'admin/page.php');
+			$debug->add_trace('Failed to read page group table',true);
 			$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
 		} else {
 			$page_group = '<select name="page_group">';
@@ -517,7 +517,7 @@ $page_group_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
 	ORDER BY `id` ASC';
 $page_group_handle = $db->sql_query($page_group_query);
 if ($db->error[$page_group_handle] === 1) {
-	$debug->add_trace('Failed to read page group table',true,'admin/page.php');
+	$debug->add_trace('Failed to read page group table',true);
 	$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
 } else {
 	$page_group = '<select name="page_group">';

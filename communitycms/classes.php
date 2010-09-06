@@ -43,7 +43,7 @@ class block {
 		$block_attribute_handle = $db->sql_query($block_attribute_query);
 		$block = $db->sql_fetch_assoc($block_attribute_handle);
 		$this->type = $block['type'];
-		$debug->add_trace('Block type is '.$this->type,false,'get_block_information()');
+		$debug->add_trace('Block type is '.$this->type,false);
 		$block_attribute_temp = $block['attributes'];
 		if (strlen($block_attribute_temp) > 0) {
 			$block_attribute_temp = explode(",",$block_attribute_temp);
@@ -54,7 +54,7 @@ class block {
 		for ($i = 0; $i < $block_attribute_count; $i++) {
 			$attribute_temp = explode('=',$block_attribute_temp[$i]);
 			$this->attribute[$attribute_temp[0]] = $attribute_temp[1];
-			$debug->add_trace('Block '.$this->block_id.' has attribute '.$attribute_temp[0].' = '.$attribute_temp[1],false,'get_block_information()');
+			$debug->add_trace('Block '.$this->block_id.' has attribute '.$attribute_temp[0].' = '.$attribute_temp[1],false);
 		}
 		return;
 	}

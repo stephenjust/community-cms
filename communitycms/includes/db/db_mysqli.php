@@ -74,17 +74,17 @@ class db_mysqli extends db {
 		global $debug;
 		// Validate parameters
 		if (!is_string($name)) {
-			$debug->add_trace('$name is not a string',true,'sql_prepare (mysqli)');
+			$debug->add_trace('$name is not a string',true);
 			return false;
 		}
 		if (!is_string($query)) {
-			$debug->add_trace('$query is not a string',true,'sql_prepare (mysqli)');
+			$debug->add_trace('$query is not a string',true);
 			return false;
 		}
 		$prepare_query = 'PREPARE `'.$name.'` FROM "'.$query.'"';
 		$prepare_handle = $this->sql_query($prepare_query);
 		if (!$this->error[$prepare_handle] === 1) {
-			$debug->add_trace('Failed to create prepared statement',true,'sql_prepare (pgsql)');
+			$debug->add_trace('Failed to create prepared statement',true);
 			return false;
 		}
 		return true;
@@ -93,19 +93,19 @@ class db_mysqli extends db {
 		global $debug;
 		// Validate parameters
 		if (!is_string($name)) {
-			$debug->add_trace('$name is not a string',true,'sql_prepare_exec (mysqli)');
+			$debug->add_trace('$name is not a string',true);
 			return false;
 		}
 		if (!is_array($variables)) {
-			$debug->add_trace('$variables is not an array',true,'sql_prepare_exec (mysqli)');
+			$debug->add_trace('$variables is not an array',true);
 			return false;
 		}
 		if (!is_array($datatypes)) {
-			$debug->add_trace('$datatypes is not an array',true,'sql_prepare_exec (mysqli)');
+			$debug->add_trace('$datatypes is not an array',true);
 			return false;
 		}
 		if (count($variables) !== count($datatypes)) {
-			$debug->add_trace('Length of $variables and $datatypes are not equal',true,'sql_prepare_exec (mysqli)');
+			$debug->add_trace('Length of $variables and $datatypes are not equal',true);
 			return false;
 		}
 		// Add quotation marks to strings
@@ -119,7 +119,7 @@ class db_mysqli extends db {
 		$exec_query = 'EXECUTE `'.$name.'` USING "'.$variables_string.'"';
 		$exec_handle = $this->sql_query($exec_query);
 		if ($this->error[$exec_handle] === 1) {
-			$debug->add_trace('Failed to execute prepared statement',true,'sql_prepare_exec (mysqli)');
+			$debug->add_trace('Failed to execute prepared statement',true);
 			return false;
 		}
 		return true;
@@ -127,13 +127,13 @@ class db_mysqli extends db {
 	function sql_prepare_close($name) {
 		global $debug;
 		if (!is_string($name)) {
-			$debug->add_trace('$name is not a string',true,'sql_prepare_close (mysqli)');
+			$debug->add_trace('$name is not a string',true);
 			return false;
 		}
 		$prepare_close_query = 'DEALLOCATE PREPARE `'.$name.'`';
 		$prepare_close_handle = $this->sql_query($prepare_close_query);
 		if ($this->error[$prepare_close_handle] === 1) {
-			$debug->add_trace('Failed to deallocate prepared statement',true,'sql_prepare_close (mysqli)');
+			$debug->add_trace('Failed to deallocate prepared statement',true);
 			return false;
 		}
 		return true;

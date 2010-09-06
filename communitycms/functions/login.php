@@ -54,7 +54,7 @@ function login($user,$passwd) {
 				if ($curtime > $expiretime) {
 					$_GET['page'] = NULL;
 					$_GET['id'] = 'change_password';
-					$debug->add_trace('Password is expired',true,'login()');
+					$debug->add_trace('Password is expired',true);
 					$_SESSION['expired'] = true;
 					return false;
 				}
@@ -75,9 +75,9 @@ function login($user,$passwd) {
 				WHERE id = '.$_SESSION['userid'];
 			$set_logintime_handle = $db->sql_query($set_logintime_query);
 			if ($db->error[$set_logintime_handle]) {
-				$debug->add_trace('Failed to set log-in time',true,'login');
+				$debug->add_trace('Failed to set log-in time',true);
 			}
-			$debug->add_trace('Logged in user',false,'login');
+			$debug->add_trace('Logged in user',false);
 			if(!$set_logintime_handle) {
 				logout();
 			}
@@ -99,7 +99,7 @@ function logout() {
 	unset($_SESSION['lastlogin']);
 	unset($_SESSION['expired']);
 	session_destroy();
-	$debug->add_trace('Logged out user',false,'logout');
+	$debug->add_trace('Logged out user',false);
 }
 /**
  * checkuser - Return true if the user is logged in. If you must be logged in,
@@ -127,7 +127,7 @@ function checkuser($mustbeloggedin = 0) {
 		$access = $db->sql_query($query);
 		$num_rows = $db->sql_num_rows($access);
 		if($num_rows != 1) {
-			$debug->add_trace('No user exists with those login credentials',true,'checkuser');
+			$debug->add_trace('No user exists with those login credentials',true);
 			logout();
 			err_page(3002);
 			return false;
@@ -136,7 +136,7 @@ function checkuser($mustbeloggedin = 0) {
 		if(!defined('USERINFO')) {
 			define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);
 		}
-		$debug->add_trace('Checking for login status succeeded',false,'checkuser');
+		$debug->add_trace('Checking for login status succeeded',false);
 		return true;
 	}
 	if($mustbeloggedin == 1) {

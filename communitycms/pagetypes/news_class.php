@@ -127,7 +127,7 @@ class news_item {
 				$template_article->edit_bar = news_edit_bar($article['id']);
 			} else {
 				$template_article->replace_range('edit_bar',NULL);
-				$debug->add_trace('Article edit bar is empty',false,'get_article()');
+				$debug->add_trace('Article edit bar is empty',false);
 			}
 		} else {
 			$template_article->replace_range('edit_bar',NULL);

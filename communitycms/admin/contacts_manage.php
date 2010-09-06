@@ -33,14 +33,14 @@ function contact_list($page = '*') {
 	global $debug;
 	// Check parameters
 	if (!is_numeric($page) && $page != '*') {
-		$debug->add_trace('Invalid parameter',true,'contact_list');
+		$debug->add_trace('Invalid parameter',true);
 		return false;
 	}
 	$query_page = ($page != '*') ? ' WHERE `page` = '.$page : NULL;
 	$contact_list_query = 'SELECT * FROM `'.CONTACTS_TABLE.'`'.$query_page;
 	$contact_list_handle = $db->sql_query($contact_list_query);
 	if ($db->error[$contact_list_handle] === 1) {
-		$debug->add_trace('SQL error: failed to read contact list',true,'contact_list');
+		$debug->add_trace('SQL error: failed to read contact list',true);
 		return false;
 	}
 	$num_contacts = $db->sql_num_rows($contact_list_handle);

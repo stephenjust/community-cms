@@ -136,7 +136,7 @@ class page {
 
 		// Article Page
 		if (isset($_GET['showarticle'])) {
-			$debug->add_trace('Loading single article only',false,'get_page_information()');
+			$debug->add_trace('Loading single article only',false);
 			$this->id = 0;
 			$this->text_id = NULL;
 			$this->showtitle = false;
@@ -154,10 +154,10 @@ class page {
 		}
 
 		if ($this->id > 0 && strlen($this->text_id) == 0) {
-			$debug->add_trace('Using numeric ID to get page information',false,'get_page_information()');
+			$debug->add_trace('Using numeric ID to get page information',false);
 			$page_query_id = '`page`.`id` = '.$this->id;
 		} elseif (strlen($this->text_id) > 0) {
-			$debug->add_trace('Using text ID to get page information',false,'get_page_information()');
+			$debug->add_trace('Using text ID to get page information',false);
 			$page_query_id = '`page`.`text_id` = \''.$this->text_id.'\'';
 		} else {
 			return;
@@ -169,11 +169,11 @@ class page {
 			LIMIT 1';
 		$page_handle = $db->sql_query($page_query);
 		if ($db->error[$page_handle] == 1) {
-			$debug->add_trace('Error looking up page information',true,'get_page_information()');
+			$debug->add_trace('Error looking up page information',true);
 			return;
 		}
 		if ($db->sql_num_rows($page_handle) != 1) {
-			$debug->add_trace('Page is not listed in database',true,'get_page_information()');
+			$debug->add_trace('Page is not listed in database',true);
 			return;
 		}
 		$page = $db->sql_fetch_assoc($page_handle);
@@ -205,7 +205,7 @@ class page {
 			if(!$this->content) {
 				$this->exists = 0;
 				$this->notification = '<strong>Error: </strong>System file not found.<br />';
-				$debug->add_trace('Including '.$this->type.' returned false',true,'get_page_information()');
+				$debug->add_trace('Including '.$this->type.' returned false',true);
 			}
 		}
 		return;
@@ -225,7 +225,7 @@ class page {
 			if(!$this->content) {
 				$this->exists = 0;
 				$this->notification = '<strong>Error: </strong>System file not found.<br />';
-				$debug->add_trace('Including '.$this->type.' returned false',true,'get_special_page()');
+				$debug->add_trace('Including '.$this->type.' returned false',true);
 			}
 		}
 	}

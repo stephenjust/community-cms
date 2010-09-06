@@ -43,11 +43,11 @@ function delete_gallery($gallery) {
 		`id` = '.$id.' LIMIT 1';
 	$info_handle = $db->sql_query($info_query);
 	if ($db->error[$info_handle] === 1) {
-		$debug->add_trace('Query failed',true,'delete_gallery');
+		$debug->add_trace('Query failed',true);
 		return false;
 	}
 	if ($db->sql_num_rows($info_handle) === 0) {
-		$debug->add_trace('Article not found',true,'delete_gallery');
+		$debug->add_trace('Article not found',true);
 		return false;
 	}
 	$info = $db->sql_fetch_assoc($info_handle);
@@ -77,7 +77,7 @@ function gallery_upload_box($gallery_id,$gallery_dir) {
 	global $debug;
 
 	if (!is_numeric($gallery_id)) {
-		$debug->add_trace('Gallery ID not numeric',true,'gallery_upload_box()');
+		$debug->add_trace('Gallery ID not numeric',true);
 		return false;
 	}
 	if (!file_exists(ROOT.'files/'.$gallery_dir)) {
@@ -100,11 +100,11 @@ function gallery_photo_manager($gallery_id) {
 
 	$gallery_info = gallery_info($gallery_id);
 	if (!file_exists(ROOT.'files/'.$gallery_info['image_dir'])) {
-		$debug->add_trace('Gallery folder does not exist',true,'gallery_photo_manager()');
+		$debug->add_trace('Gallery folder does not exist',true);
 		return false;
 	}
 	if (!file_exists(ROOT.'files/'.$gallery_info['image_dir'].'/thumbs')) {
-		$debug->add_trace('Gallery thumbnail dir does not exist',true,'gallery_photo_manager()');
+		$debug->add_trace('Gallery thumbnail dir does not exist',true);
 		return false;
 	}
 
@@ -152,11 +152,11 @@ function gallery_image_caption_edit($gallery_id,$file_id,$file_name,$caption) {
 
 	// Validate parameters
 	if (!is_numeric($gallery_id)) {
-		$debug->add_trace('Invalid gallery ID',true,'gallery_image_caption_edit()');
+		$debug->add_trace('Invalid gallery ID',true);
 		return false;
 	}
 	if (!is_numeric($file_id) && strlen($file_id) != 0) {
-		$debug->add_trace('Invalid file ID',true,'gallery_image_caption_edit()');
+		$debug->add_trace('Invalid file ID',true);
 		return false;
 	}
 	$caption = addslashes($caption);
@@ -178,7 +178,7 @@ function gallery_image_caption_edit($gallery_id,$file_id,$file_name,$caption) {
 	// Execute query
 	$handle = $db->sql_query($query);
 	if ($db->error[$handle] === 1) {
-		$debug->add_trace('Failed to edit image caption',true,'gallery_image_caption_edit()');
+		$debug->add_trace('Failed to edit image caption',true);
 		return false;
 	}
 	log_action('Changed image caption for \''.$file_name.'\'');
@@ -332,7 +332,7 @@ switch (get_config('gallery_app')) {
 		// Check if 'example' folder still exists
 		$example_file = ROOT.$gallery_dir.'/examples/simpleviewer.swf';
 		if (file_exists($example_file)) {
-			$debug->add_trace('The SimpleViewer example folder still exists',false,'gallery_manager.php');
+			$debug->add_trace('The SimpleViewer example folder still exists',false);
 		}
 		// Continue with same procedure as 'built-in'...
 

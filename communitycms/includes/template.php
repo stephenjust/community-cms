@@ -118,7 +118,7 @@ class template {
 			$length = $end - $start - strlen($start_string);
 			return substr($this->template,$start + strlen($start_string),$length);
 		}
-		$debug->add_trace('Could not find start or end of range '.$field,true,'template->get_range()');
+		$debug->add_trace('Could not find start or end of range '.$field,true);
 		return false;
 	}
 
@@ -178,7 +178,7 @@ class template {
 
 		$content = $this->get_range($range);
 		if ($content === false) {
-			$debug->add_trace('Failed to get segment of template',true,'template->split_range()');
+			$debug->add_trace('Failed to get segment of template',true);
 			return false;
 		}
 		$return = new template;

@@ -31,11 +31,11 @@ function delete_page_message($id) {
 
 	// Run pre-execution checks
 	if (!$acl->check_permission('page_message_delete')) {
-		$debug->add_trace('User lacks necessary permissions to delete pagemessage',true,'delete_page_message()');
+		$debug->add_trace('User lacks necessary permissions to delete pagemessage',true);
 		return false;
 	}
 	if (!is_numeric($id)) {
-		$debug->add_trace('Invalid parameter type',true,'delete_page_message()');
+		$debug->add_trace('Invalid parameter type',true);
 		return false;
 	}
 	$id = (int)$id;
@@ -46,11 +46,11 @@ function delete_page_message($id) {
 		LIMIT 1';
 	$read_message_handle = $db->sql_query($read_message_query);
 	if ($db->error[$read_message_handle] === 1) {
-		$debug->add_trace('Failed to read message',true,'delete_page_message()');
+		$debug->add_trace('Failed to read message',true);
 		return false;
 	}
 	if ($db->sql_num_rows($read_message_handle) != 1) {
-		$debug->add_trace('Page message does not exist',true,'delete_page_message()');
+		$debug->add_trace('Page message does not exist',true);
 		return false;
 	}
 	$delete_message_query = 'DELETE FROM ' . PAGE_MESSAGE_TABLE . '

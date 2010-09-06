@@ -57,7 +57,7 @@ class acl {
 
 		// See if permission exists
 		if (!isset($this->permission_list[$acl_key])) {
-			$debug->add_trace('Permission \''.$acl_key.'\' does not exist',true,'acl->check_permission()');
+			$debug->add_trace('Permission \''.$acl_key.'\' does not exist',true);
 		}
 
 		if ($true_if_all == true) {
@@ -145,7 +145,7 @@ class acl {
 
 		$value = (int)$value;
 		if (!array_key_exists($acl_key,$this->permission_list)) {
-			$debug->add_trace('The key \''.$acl_key.'\' does not exist.',true,'set_permission()');
+			$debug->add_trace('The key \''.$acl_key.'\' does not exist.',true);
 			return false;
 		}
 		if (!$this->check_permission('set_permissions')) {
@@ -164,7 +164,7 @@ class acl {
 			$set_permission_query = 'UPDATE `' . ACL_TABLE . '`
 				SET `value` = '.$value.'
 				WHERE `acl_record_id` = '.$check_if_exists['acl_record_id'];
-			$debug->add_trace('Set permission \''.$acl_key.'\' for group '.$group.' to '.$value,false,'set_permission()');
+			$debug->add_trace('Set permission \''.$acl_key.'\' for group '.$group.' to '.$value,false);
 		} else {
 			$set_permission_query = 'INSERT INTO `' . ACL_TABLE . '`
 				(`acl_id`,`group`,`value`)
@@ -180,7 +180,7 @@ class acl {
 
 		// Make sure that you did not remove the permission necessary to change permissions
 		if (!$this->check_permission('set_permissions')) {
-			$debug->add_trace('Removed vital permission \''.$acl_key.'.\' Reverting.',true,'set_permission()');
+			$debug->add_trace('Removed vital permission \''.$acl_key.'.\' Reverting.',true);
 			$revert_permission_query = 'UPDATE `' . ACL_TABLE . '`
 				SET `value` = 1
 				WHERE `acl_record_id` = '.$check_if_exists['acl_record_id'];
@@ -239,19 +239,19 @@ class acl {
 		global $debug;
 		// Validate parameters
 		if (!is_string($name)) {
-			$debug->add_trace('$name is not a string',true,'create_key');
+			$debug->add_trace('$name is not a string',true);
 			return false;
 		}
 		if (!is_string($longname)) {
-			$debug->add_trace('$longname is not a string',true,'create_key');
+			$debug->add_trace('$longname is not a string',true);
 			return false;
 		}
 		if (!is_string($description)) {
-			$debug->add_trace('$description is not a string',true,'create_key');
+			$debug->add_trace('$description is not a string',true);
 			return false;
 		}
 		if (!is_int($default_value)) {
-			$debug->add_trace('$default_value is not an integer',true,'create_key');
+			$debug->add_trace('$default_value is not an integer',true);
 			return false;
 		}
 		// Check if key already exists
@@ -259,7 +259,7 @@ class acl {
 			$this->permission_list = $this->get_acl_key_names();
 		}
 		if (isset($this->permission_list[$name])) {
-			$debug->add_trace('The ACL key '.$name.' already exists',true,'create_key');
+			$debug->add_trace('The ACL key '.$name.' already exists',true);
 			return false;
 		}
 		// Make sure that you read permission list on next permission check

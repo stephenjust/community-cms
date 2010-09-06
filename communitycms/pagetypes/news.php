@@ -20,12 +20,12 @@ function get_article_list($page,$start = 1) {
 	global $debug;
 
 	if (!isset($page)) {
-		$debug->add_trace('No page ID provided',true,'get_article_list()');
+		$debug->add_trace('No page ID provided',true);
 		return array();
 	}
 	if (!is_numeric($start)) {
 		$start = 1;
-		$debug->add_trace('Non-numeric offset - reverting to 1',true,'get_article_list()');
+		$debug->add_trace('Non-numeric offset - reverting to 1',true);
 	}
 	$start = (int)($start - 1);
 	$page = (int)$page;
@@ -89,7 +89,7 @@ if (isset($_GET['article'])) {
 	// We want to display the given article on the page
 	// Make sure a valid article ID is passed
 	if (!is_numeric($_GET['article']) || strlen($_GET['article']) == 0) {
-		$debug->add_trace('Article ID not numeric',true,'news.php');
+		$debug->add_trace('Article ID not numeric',true);
 		header("HTTP/1.0 404 Not Found");
 		$page->notification = 'The requested article does not exist.<br />'."\n";
 		$page->title = 'Article not found';
@@ -111,7 +111,7 @@ if (isset($_GET['article'])) {
 	}
 	$article_page_handle = $db->sql_query($article_page_query);
 	if ($db->error[$article_page_handle] === 1) {
-		$debug->add_trace('Failed to look up article\'s page in the database',true,'news.php');
+		$debug->add_trace('Failed to look up article\'s page in the database',true);
 		header("HTTP/1.0 404 Not Found");
 		$page->notification = 'An error occurred when trying to retrieve the requested article.<br />'."\n";
 		$page->title = 'Error';
@@ -119,7 +119,7 @@ if (isset($_GET['article'])) {
 		return $return.' ';
 	}
 	if ($db->sql_num_rows($article_page_handle) != 1) {
-		$debug->add_trace('Article does not exist',true,'news.php');
+		$debug->add_trace('Article does not exist',true);
 		header("HTTP/1.0 404 Not Found");
 		$page->notification = 'The requested article does not exist.<br />'."\n";
 		$page->title = 'Article not found';
@@ -139,7 +139,7 @@ if (isset($_GET['article'])) {
 			}
 		}
 		if ($start >= 1000) {
-			$debug->add_trace('Gave up looking for article',true,'news.php');
+			$debug->add_trace('Gave up looking for article',true);
 			header("HTTP/1.0 404 Not Found");
 			$page->notification = 'The requested article could not be found.<br />'."\n";
 			$page->title = 'Article not found';
@@ -176,7 +176,7 @@ $news_id_query = 'SELECT `id` FROM `' . NEWS_TABLE .'`
 	ORDER BY `date`,`id` DESC';
 $news_id_handle = $db->sql_query($news_id_query);
 if ($db->error[$news_id_handle] === 1) {
-	$debug->add_trace('Failed to read array of content IDs from database',true,'news.php');
+	$debug->add_trace('Failed to read array of content IDs from database',true);
 	$return .= 'Failed to retreive information necessary for pagination.<br />';
 }
 $content_id_array = array();

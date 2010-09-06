@@ -24,18 +24,18 @@ function delete_category($id) {
 	global $debug;
 	// Validate parameters
 	if (!is_numeric($id)) {
-		$debug->add_trace('Invalid ID given',true,'delete_category()');
+		$debug->add_trace('Invalid ID given',true);
 		return false;
 	}
 
 	$check_if_last_query = 'SELECT * FROM `'.CALENDAR_CATEGORY_TABLE.'` LIMIT 2';
 	$check_if_last_handle = $db->sql_query($check_if_last_query);
 	if ($db->error[$check_if_last_handle] === 1) {
-		$debug->add_trace('Failed to check if you are trying to delete the last category',false,'delete_category()');
+		$debug->add_trace('Failed to check if you are trying to delete the last category',false);
 		return false;
 	}
 	if ($db->sql_num_rows($check_if_last_handle) == 1) {
-		$debug->add_trace('Cannot delete last entry',true,'delete_category()');
+		$debug->add_trace('Cannot delete last entry',true);
 		return false;
 	}
 
@@ -43,7 +43,7 @@ function delete_category($id) {
 		WHERE `cat_id` = '.$id.' LIMIT 1';
 	$check_category_handle = $db->sql_query($check_category_query);
 	if ($db->error[$check_category_handle] === 1) {
-		$debug->add_trace('Failed to read category information. Does it exist?',false,'delete_category()');
+		$debug->add_trace('Failed to read category information. Does it exist?',false);
 		return false;
 	}
 	if ($db->sql_num_rows($check_category_handle) == 1) {
@@ -51,7 +51,7 @@ function delete_category($id) {
 			WHERE `cat_id` = '.$id;
 		$delete_category = $db->sql_query($delete_category_query);
 		if ($db->error[$delete_category] === 1) {
-			$debug->add_trace('Failed to perform delete operation',true,'delete_category()');
+			$debug->add_trace('Failed to perform delete operation',true);
 			return false;
 		} else {
 			$check_category = $db->sql_fetch_assoc($check_category_handle);
@@ -77,7 +77,7 @@ function delete_date($id) {
 	global $debug;
 	// Validate parameters
 	if (!is_numeric($id)) {
-		$debug->add_trace('Invalid ID given',true,'delete_date()');
+		$debug->add_trace('Invalid ID given',true);
 		return false;
 	}
 
@@ -85,7 +85,7 @@ function delete_date($id) {
 		WHERE `id` = '.$id;
 	$read_date_info_handle = $db->sql_query($read_date_info_query);
 	if ($db->error[$read_date_info_handle] === 1) {
-		$debug->add_trace('Failed to read date information. Does it exist?',false,'delete_date()');
+		$debug->add_trace('Failed to read date information. Does it exist?',false);
 		return false;
 	} else {
 		$del_query = 'DELETE FROM ' . CALENDAR_TABLE . '
@@ -119,7 +119,7 @@ function monthcal_get_date($day,$month,$year,$template) {
 	unset($dates_query);
 
 	if ($db->error[$dates_handle] === 1) {
-		$debug->add_trace('Failed to read date information',true,'monthcal_get_date');
+		$debug->add_trace('Failed to read date information',true);
 		return 'Error';
 	}
 	if ($db->sql_num_rows($dates_handle) > 0) {
