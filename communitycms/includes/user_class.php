@@ -13,6 +13,57 @@
  * @package CommunityCMS.main
  */
 class user {
+	public $logged_in = false;
+
+	/**
+	 * Check user's login status
+	 * @global object $db Database connection object
+	 * @global object $debug Debug object
+	 * @return void
+	 */
+	function __construct() {
+		global $db;
+		global $debug;
+		// Check if any session variables are not set
+		if (!isset($_SESSION['expired']) ||
+				!isset($_SESSION['userid']) ||
+				!isset($_SESSION['user']) ||
+				!isset($_SESSION['pass']) ||
+				!isset($_SESSION['name']) ||
+				!isset($_SESSION['type']) ||
+				!isset($_SESSION['groups']) ||
+				!isset($_SESSION['last_login'])) {
+			// One or more of the session variables was not set, so clear all
+			// of the session variables to make sure that the session remains
+			// clean
+			$this->logout();
+			$debug->add_trace('Forcing logout due to incomplete set of session vars',false);
+			return;
+		}
+		// Validate session if complete set of variables is available
+		$query = 'SELECT `id`,`username`,`password`,`realname`,`type`
+			FROM `'.USER_TABLE.'`
+			WHERE `username` = \''.$_SESSION['user'].'\'
+			AND `password` = \''.$_SESSION['pass'].'\'
+			AND `type` = \''.$_SESSION['type'].'\'
+			AND `lastlogin` = \''.addslashes($_SESSION['last_login']).'\'
+			AND `realname` = \''.$_SESSION['name'].'\'';
+		$access = $db->sql_query($query);
+		$num_rows = $db->sql_num_rows($access);
+		if($num_rows != 1) {
+			$debug->add_trace('No user exists with those login credentials',true);
+			$this->logout();
+			err_page(3002);
+			return false;
+		}
+		$userinfo = $db->sql_fetch_assoc($access);
+		if(!defined('USERINFO')) {
+			define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);
+		}
+		$this->logged_in = true;
+		$debug->add_trace('Verified logged-in state',false);
+	}
+
 	/**
 	 * Check given login information and log in a user
 	 * @global object $db Database connection object
@@ -51,7 +102,7 @@ class user {
 		$num_rows = $db->sql_num_rows($access);
 		$result = $db->sql_fetch_assoc($access);
 		if($num_rows != 1) {
-			logout();
+			$this->logout();
 			err_page(3003);
 		} else {
 			session_destroy();
@@ -101,12 +152,31 @@ class user {
 			$set_logintime_handle = $db->sql_query($set_logintime_query);
 			if ($db->error[$set_logintime_handle]) {
 				$debug->add_trace('Failed to set log-in time',true);
+				$this->logout();
 			}
 			$debug->add_trace('Logged in user',false);
-			if(!$set_logintime_handle) {
-				logout();
-			}
+			$this->logged_in = true;
 		}
+	}
+
+	/**
+	 * Destroy all session information
+	 * @global object $debug Debug class
+	 */
+	function logout() {
+		global $debug;
+		unset($_SESSION['userid']);
+		unset($_SESSION['user']);
+		unset($_SESSION['pass']);
+		unset($_SESSION['name']);
+		unset($_SESSION['type']);
+		unset($_SESSION['groups']);
+		unset($_SESSION['lastlogin']);
+		unset($_SESSION['expired']);
+		session_destroy();
+		$debug->add_trace('Logged out user',false);
+		session_start();
+		$this->logged_in = false;
 	}
 }
 ?>

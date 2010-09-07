@@ -86,7 +86,8 @@ function display_child_menu($parent) {
 function display_login_box() {
 	global $db;
 	global $acl;
-	if (!checkuser()) {
+	global $user;
+	if (!$user->logged_in) {
 		$template_loginbox = new template;
 		$template_loginbox->load_file('login');
 		$template_loginbox->login_username = '<input type="text" name="user" id="login_user" />';

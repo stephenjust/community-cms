@@ -49,9 +49,6 @@ function initialize($mode = NULL) {
 	require_once(ROOT . 'includes/log_class.php');
 	$log = new Log;
 
-	require_once(ROOT . 'includes/user_class.php');
-	$user = new user;
-
 	$db->sql_connect();
 	if (!$db->connect) {
 		err_page(1001); // Database connection error
@@ -67,6 +64,13 @@ function initialize($mode = NULL) {
 
 	session_name(get_config('cookie_name'));
 	session_start();
+
+	// We need to initialize this class after the session is started
+	// Don't do this during install because there are no users yet
+	if ($mode != 'install') {
+		require_once(ROOT . 'includes/user_class.php');
+		$user = new user;
+	}
 	return;
 }
 function clean_up() {

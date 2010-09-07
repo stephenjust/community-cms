@@ -18,7 +18,9 @@ include(ROOT.'include.php');
 include(ROOT.'functions/admin.php');
 include(ROOT.'functions/error.php');
 initialize();
-checkuser_admin();
+if (!$acl->check_permission('admin_access')) {
+	die('You don\'t have the necessary permissions to use this page');
+}
 $template = new template;
 $template->load_admin_file('dialog');
 $template->root = ROOT;

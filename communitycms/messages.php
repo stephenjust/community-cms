@@ -31,7 +31,11 @@ if (DEBUG == 1) {
 }
 initialize();
 
-checkuser(1);
+global $user;
+if (!$user->logged_in) {
+	err_page(3004);
+}
+
 // Delete message
 if (!isset($_GET['del'])) {
 	$_GET['del'] = "";

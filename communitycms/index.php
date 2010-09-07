@@ -51,13 +51,10 @@ $_POST['passwd'] = (isset($_POST['passwd'])) ? $_POST['passwd'] : NULL;
 if ($login == 1) {
 	$user->login($_POST['user'],$_POST['passwd']);
 } elseif ($login == 2) {
-	logout();
+	$user->logout();
 }
 unset($_POST['user']);
 unset($_POST['passwd']);
-
-// Validate session
-checkuser();
 
 // Check if site is active
 if (get_config('site_active') == 0) {

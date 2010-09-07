@@ -20,7 +20,7 @@ include (ROOT . 'functions/admin.php');
 
 initialize('ajax');
 
-if (!$acl->check_permission('adm_newsletter') || !checkuser_admin()) {
+if (!$acl->check_permission('adm_newsletter') || !$acl->check_permission('admin_access')) {
 	die ('You do not have the necessary permissions to access this page.');
 }
 if (!isset($_GET['page'])) {

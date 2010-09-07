@@ -32,9 +32,6 @@ require(ROOT.'include.php');
 
 initialize();
 
-// Validate session
-checkuser();
-
 // Check if site is active
 if (get_config('site_active') == 0) {
 	err_page(12);

@@ -16,6 +16,7 @@ if (!defined('SECURITY')) {
 
 global $db;
 global $page;
+global $user;
 $content = NULL;
 
 if (!isset($_GET['action'])) {
@@ -65,7 +66,7 @@ switch ($page->id) {
 			if (isset($_SESSION['expired']) && $_SESSION['expired'] == true) {
 				$page->notification .= 'You must change your password because it has expired.';
 			}
-			logout();
+			$user->logout();
 			$content .= '<h1>Change Password</h1>'."\n";
 			$content .= '<form method="post" action="?id=change_password&amp;action=save">'."\n";
 			$content .= '<table style="border: 0px;">';

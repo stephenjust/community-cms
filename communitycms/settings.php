@@ -32,7 +32,6 @@ if (!include_once('./include.php')) {
 }
 
 initialize();
-checkuser();
 
 if (get_config('site_active') == 0) {
 	err_page(12);
