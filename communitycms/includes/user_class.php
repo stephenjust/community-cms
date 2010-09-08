@@ -36,8 +36,8 @@ class user {
 			// One or more of the session variables was not set, so clear all
 			// of the session variables to make sure that the session remains
 			// clean
-			$this->logout();
 			$debug->add_trace('Forcing logout due to incomplete set of session vars',false);
+			$this->logout();
 			return;
 		}
 		// Validate session if complete set of variables is available
