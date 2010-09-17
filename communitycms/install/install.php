@@ -75,6 +75,17 @@ if (ini_get('register_globals')) {
 } else {
 	$content .= '<span class="req_good">Disabled</span>';
 }
+$content .= '</td></tr>';
+
+// Magic Quotes
+$content .= '<tr><td>magic_quotes_gpc</td><td>';
+if (get_magic_quotes_gpc()) {
+	$content .= '<span class="req_bad">Enabled</span>';
+	$error = 1;
+} else {
+	$content .= '<span class="req_good">Disabled</span>';
+}
+$content .= '</td></tr>';
 
 // Separator
 $content .= '<tr><td colspan="2">&nbsp;</td></tr>'."\n";
