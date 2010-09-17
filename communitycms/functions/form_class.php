@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2008-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -235,7 +235,7 @@ class form {
 	 */
 	function add_date($name, $label, $format = 'MDY', $value = array(), $props = NULL) {
 		$form_var = NULL;
-		if (!ereg('^[DMY]+$',$format)) {
+		if (!preg_match('/^[DMY]+$/i',$format)) {
 			return;
 		}
 		$num_fields = strlen($format);
