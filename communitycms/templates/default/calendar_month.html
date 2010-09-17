@@ -5,29 +5,19 @@
 		<table border="0px" class="calendar_nav">
 			<tr>
 				<td>
-					<form method='post' action='?<!-- $PAGE_REF$ -->&amp;view=month&amp;m=<!-- $CURRENT_MONTH$ -->&amp;y=<!-- $PREV_YEAR$ -->'>
-						<input type='submit' value='&lt;&lt;' style="width: 40px;" class='button_cal_back_year' />
-					</form>
+					<a href="?<!-- $PAGE_REF$ -->&amp;view=month&amp;m=<!-- $CURRENT_MONTH$ -->&amp;y=<!-- $PREV_YEAR$ -->">&lt;&lt;</a>
 				</td>
 				<td>
-					<form method='post' action='?<!-- $PAGE_REF$ -->&amp;view=month&amp;m=<!-- $PREV_MONTH$ -->&amp;y=<!-- $CURRENT_YEAR$ -->'>
-						<input type='submit' value='&lt;' style="width: 30px;" class='button_cal_back_month' />
-					</form>
+					<a href="?<!-- $PAGE_REF$ -->&amp;view=month&amp;m=<!-- $PREV_MONTH$ -->&amp;y=<!-- $CURRENT_YEAR$ -->">&lt;</a>
 				</td>
 				<td>
-					<form method='post' action='?<!-- $PAGE_REF$ -->&amp;view=month'>
-						<input type='submit' value='Today' style="width: 55px;" class='button_cal_today' />
-					</form>
+					<a href="?<!-- $PAGE_REF$ -->&amp;view=month">Today</a>
 				</td>
 				<td>
-					<form method='post' action='?<!-- $PAGE_REF$ -->&amp;view=month&amp;m=<!-- $NEXT_MONTH$ -->&amp;y=<!-- $CURRENT_YEAR$ -->'>
-						<input type='submit' value='&gt;' style="width: 30px;" class='button_cal_next_month' />
-					</form>
+					<a href="?<!-- $PAGE_REF$ -->&amp;view=month&amp;m=<!-- $NEXT_MONTH$ -->&amp;y=<!-- $CURRENT_YEAR$ -->">&gt;</a>
 				</td>
 				<td>
-					<form method='post' action='?<!-- $PAGE_REF$ -->&amp;view=month&amp;m=<!-- $CURRENT_MONTH$ -->&amp;y=<!-- $NEXT_YEAR$ -->'>
-						<input type='submit' value='&gt;&gt;' style="width: 40px;" class='button_cal_next_year' />
-					</form>
+					<a href="?<!-- $PAGE_REF$ -->&amp;view=month&amp;m=<!-- $CURRENT_MONTH$ -->&amp;y=<!-- $NEXT_YEAR$ -->">&gt;&gt;</a>
 				</td>
 			</tr>
 		</table>

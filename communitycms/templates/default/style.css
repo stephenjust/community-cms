@@ -497,6 +497,7 @@ table.calendar {
 }
 table.calendar th {
 	color: #FFFFFF;
+	text-shadow: 0px 1px 2px #333333;
 }
 table.calendar tr.day_headings > th {
 	font-size: 0.95em;
@@ -564,7 +565,26 @@ table.calendar_nav td {
 	background: none;
 	height: auto;
 	width: auto;
-	padding: 0px;
+	padding: 2px;
+}
+table.calendar_nav td a {
+	background: #DEDEDE;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	color: #000000;
+	font-size: small;
+	font-weight: normal;
+	padding: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-decoration: none;
+	text-shadow: none;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+table.calendar_nav td a:hover {
+	background: #CCEEFF;
+	border: 1px solid #003366;
 }
 input.button_cal_back_month {
 	width: 33px;
