@@ -18,6 +18,9 @@ if (!$acl->check_permission('adm_site_config')) {
 }
 
 if ($_GET['action'] == 'save') {
+	// We don't really need to escape any of this because the set_config()
+	// function already does that. This will just cause issues from double-
+	// escaping. Only not escaping footer for now.
 	$site_name = addslashes(strip_tags($_POST['site_name']));
 	$site_desc = addslashes(strip_tags($_POST['site_desc']));
 	$site_url = addslashes(strip_tags($_POST['site_url']));
@@ -27,7 +30,6 @@ if ($_GET['action'] == 'save') {
 	$password_expire = addslashes($_POST['password_expire']);
 	$time_format = addslashes($_POST['time_format']);
 	$tel_format = addslashes($_POST['tel_format']);
-	$footer = addslashes($_POST['footer']);
 	if (set_config('site_name',$site_name) &&
 		set_config('site_url',$site_url) &&
 		set_config('admin_email',$admin_email) &&
@@ -38,7 +40,7 @@ if ($_GET['action'] == 'save') {
 		set_config('password_expire',$password_expire) &&
 		set_config('time_format',$time_format) &&
 		set_config('tel_format',$tel_format) &&
-		set_config('footer',$footer))
+		set_config('footer',$_POST['footer']))
 	{
 		$content .= 'Successfully edited site information.<br />'."\n";
 		log_action('Updated site information.');
