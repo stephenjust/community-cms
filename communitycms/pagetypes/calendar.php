@@ -71,6 +71,19 @@ switch ($view) {
 
 // ----------------------------------------------------------------------------
 
+		// Load all events for the current month
+		$cal_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . ' date,
+			' . CALENDAR_CATEGORY_TABLE . ' cat
+			WHERE date.month = \''.$month_cal->month.'\' AND date.year = \''.$month_cal->year.'\'
+			AND date.category = cat.cat_id
+			ORDER BY `date`.`day` ASC, `date`.`starttime` ASC';
+		$cal_info_handle = $db->sql_query($cal_info_query);
+		if ($db->error[$cal_info_handle] === 1) {
+			$content .= 'Failed to read dates from database.<br />';
+		}
+		$num_events = $db->sql_num_rows($cal_info_handle);
+		$current_event_count = 1;
+
 		// Start drawing the calendar
 		$counter_dow = 0; // Day of week in loop, 0=Sunday, 1=Monday...6=Saturday
 		$all_weeks = NULL;
@@ -92,43 +105,57 @@ switch ($view) {
 			} else {
 				$current_day->template = $template_day;
 			}
-//			$current_week_days .= monthcal_get_date($counter_day,$month_cal->month,$month_cal->year,$current_day);
-			$day_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . ' date,
-				' . CALENDAR_CATEGORY_TABLE . ' cat
-				WHERE date.month = \''.$month_cal->month.'\' AND date.year = \''.$month_cal->year.'\'
-				AND date.day = \''.$counter_day.'\' AND date.category =
-				cat.cat_id ORDER BY `starttime` ASC';
-			$day_info_handle = $db->sql_query($day_info_query);
-			if ($db->error[$day_info_handle] === 1) {
-				$content .= 'Failed to read dates from database.<br />';
-			}
-			if ($db->sql_num_rows($day_info_handle) > 0) {
-				$current_day->day_number = '<a href="?'.$page->url_reference
-					.'&amp;view=day&amp;m='.$month_cal->month.'&amp;y='.$month_cal->year.'&amp;d='
-					.$counter_day.'" class="day_number">'.$counter_day.'</a>';
-			} else {
+			$dates = NULL;
+
+			// If there's no events left to check, make sure the day numbers
+			// are filled in
+			if ($current_event_count > $num_events) {
 				$current_day->day_number = $counter_day;
 			}
-			$dates = NULL;
-			for ($i = 1; $i <= $db->sql_num_rows($day_info_handle); $i++) {
-				$day_info = $db->sql_fetch_assoc($day_info_handle);
-				if($day_info['colour'] == '') {
-					$day_info['colour'] = 'red';
+
+			// Only look for new events while there are still unchecked rows
+			while ($current_event_count <= $num_events) {
+				// If $cal_info_result isn't set, then we've used the
+				// last entry already
+				if (!isset($cal_info_result)) {
+					$cal_info_result = $db->sql_fetch_assoc($cal_info_handle);
 				}
+				if ($cal_info_result['day'] == $counter_day) {
+					// There's at least one event on this day
+					$current_day->day_number = '<a href="?'.$page->url_reference
+						.'&amp;view=day&amp;m='.$month_cal->month.'&amp;y='.$month_cal->year.'&amp;d='
+						.$counter_day.'" class="day_number">'.$counter_day.'</a>';
+				} else {
+					// Either no more dates on this day or none at all. Exit.
+					$current_day->day_number = $counter_day;
+					break;
+				}
+
+				// Give broken categories a default colour of red
+				if ($cal_info_result['colour'] == '') {
+					$cal_info_result['colour'] = 'red';
+				}
+
+				// Create the link to the event page
 				$dates .= '<a href="?'.$page->url_reference.'&amp;view=event&amp;'
-					.'a='.$day_info['id'].'" class="calendar_event">';
+					.'a='.$cal_info_result['id'].'" class="calendar_event">';
+				// Show icon if configured to do so
 				if (get_config('calendar_month_show_cat_icons') == 1) {
-					$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'
-					.' width="10px" height="10px" alt="'.stripslashes($day_info['label']).'" border="0px" /> ';
+					$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$cal_info_result['colour'].'.png"'
+					.' width="10px" height="10px" alt="'.stripslashes($cal_info_result['label']).'" border="0px" /> ';
 				}
+				// Show event start time if configured to do so
 				if (get_config('calendar_month_show_stime') == 1
-						&& $day_info['starttime'] != $day_info['endtime']) {
-					$stime_tmp = explode(':',$day_info['starttime']);
+						&& $cal_info_result['starttime'] != $cal_info_result['endtime']) {
+					$stime_tmp = explode(':',$cal_info_result['starttime']);
 					$stime_tmp = mktime($stime_tmp[0],$stime_tmp[1]);
 					$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$stime_tmp).'</span>'.get_config('calendar_month_time_sep');
 				}
-				$dates .= stripslashes($day_info['header']).'</a><br />'."\n";
+				$dates .= stripslashes($cal_info_result['header']).'</a><br />'."\n";
+				$current_event_count++;
+				unset($cal_info_result);
 			}
+
 			$current_day->day_events = $dates;
 			$current_week_days .= $current_day->template;
 			$counter_dow++;
