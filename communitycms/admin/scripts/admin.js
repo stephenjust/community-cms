@@ -110,4 +110,10 @@ function update_file_list(dir) {
 
 	loadHTML(urlBase + "?directory=" + encodeURI(dir),listdiv);
 }
+
+function confirm_delete(target) {
+	if (confirm("Really delete this item?")) {
+		window.location = target;
+	}
+}
 -->

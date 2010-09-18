@@ -79,8 +79,9 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 	}
 
 	if ($acl->check_permission('news_delete')) {
-		$current_row[] = '<a href="?module=news&amp;action=delete&amp;id='
-			.$article_list['id'].'&amp;page='.$page_id.'">'
+		$current_row[] = '<a href="javascript:confirm_delete(\'?'
+			.'module=news&amp;action=delete&amp;id='
+			.$article_list['id'].'&amp;page='.$page_id.'\')">'
 			.'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
 			.'height="16px" border="0px" /></a>';
 	}

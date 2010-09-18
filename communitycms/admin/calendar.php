@@ -291,7 +291,7 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 		<td><a href="admin.php?module=calendar_edit_date&amp;id='.$cal['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
 		height="16px" border="0px" /></a></td>
-		<td><a href="admin.php?module=calendar&amp;action=delete&amp;date_del='.$cal['id'].'&amp;month='.$cal['month'].'&amp;year='.$cal['year'].'">
+		<td><a href="javascript:confirm_delete(\'admin.php?module=calendar&amp;action=delete&amp;date_del='.$cal['id'].'&amp;month='.$cal['month'].'&amp;year='.$cal['year'].'\')">
 		<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px"
 		height="16px" border="0px" /></a></td></tr>';
 	if ($rowcount == 1) {

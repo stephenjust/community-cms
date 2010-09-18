@@ -53,8 +53,9 @@ for ($i = 1; $i <= $nl_list_rows; $i++) {
 	$current_row[] = $months[$nl_list['month']-1];
 	$current_row[] = $nl_list['year'];
 	if ($acl->check_permission('newsletter_delete')) {
-		$current_row[] = '<a href="?module=newsletter&amp;action=delete&amp;id='
-			.$nl_list['id'].'&amp;page='.$page_id.'">'
+		$current_row[] = '<a href="javascript:confirm_delete(\'?module=newsletter'
+			.'&amp;action=delete&amp;id='
+			.$nl_list['id'].'&amp;page='.$page_id.'\')">'
 			.'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
 			.'height="16px" border="0px" /></a>';
 	}
