@@ -482,10 +482,7 @@ div.events_upcoming_block table.events {
 	width: 100%;
 }
 
-/*
-CALENDAR
-*/
-
+/* CALENDAR */
 table.calendar {
 	background-color: #4499CC;
 	-moz-border-radius: 4px;
@@ -579,28 +576,13 @@ table.calendar_nav td a {
 	padding-left: 5px;
 	padding-right: 5px;
 	text-decoration: none;
-	text-shadow: none;
+	text-shadow: 0px -1px 0px #FFFFFF;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 }
 table.calendar_nav td a:hover {
 	background: #CCEEFF;
 	border: 1px solid #003366;
-}
-input.button_cal_back_month {
-	width: 33px;
-}
-input.button_cal_back_year {
-	width: 44px;
-}
-input.button_cal_today {
-	width: 58px;
-}
-input.button_cal_next_month {
-	width: 33px;
-}
-input.button_cal_next_year {
-	width: 44px;
 }
 
 span.newsletter_year {
