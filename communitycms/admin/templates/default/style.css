@@ -296,6 +296,11 @@ div.admin_image_list_item img {
 	color:#3399FF;
 }
 
+/* jQuery UI Styles */
+.ui-tabs-nav {
+	text-shadow: 1px 3px 3px #CCCCCC;
+}
+
 /*
  * Styles used only on help pages
  */
