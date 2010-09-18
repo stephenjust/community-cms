@@ -194,7 +194,6 @@ a:visited {
 }
 
 /* TABS */
-/* ------------------------------------------------------------------------- */
 #fe_tabs {
 	clear: none;
 	float: left;
@@ -285,7 +284,6 @@ a:visited {
 /* end clearfix */
 
 /* EDITOR STYLES */
-/* ------------------------------------------------------------------------- */
 table.black-border {
 	background-color: #FFFFFF;
 	border: 1px solid #000000 !important;
@@ -312,7 +310,6 @@ p.no-spacing {
 }
 
 /* NEWS */
-/* ------------------------------------------------------------------------- */
 div.news_item_container {
     position: relative;
     background: url('./images/news_topleft.png') no-repeat;
@@ -382,9 +379,7 @@ span.news_not_published_label {
 	-webkit-border-radius: 2px;
 }
 
-/*
-CONTACTS
-*/
+/* CONTACTS */
 span.contact_name {
 	font-size: 1.5em;
 	font-family: Cambria,
@@ -422,9 +417,7 @@ table.contacts_compact a {
 	text-decoration: none;
 }
 
-/*
-NEWS BLOCK
-*/
+/* NEWS BLOCK */
 div.news_block {
 	padding: 3px;
 }
@@ -448,9 +441,7 @@ div.news_block table.news_block_container {
 	width: 100%;
 }
 
-/*
-POLL BLOCK
-*/
+/* POLL BLOCK */
 div.minipoll_block {
 	padding: 3px;
 }
@@ -459,9 +450,7 @@ span.minipoll_question {
 	font-size: large;
 }
 
-/*
-UPCOMING EVENTS BLOCK
-*/
+/* UPCOMING EVENTS BLOCK */
 div.events_upcoming_block {
 	padding: 3px;
 }
@@ -591,9 +580,7 @@ span.newsletter_year {
 	font-style: italic;
 }
 
-/*
-IMAGE GALLERY (BUILT-IN)
-*/
+/* IMAGE GALLERY (BUILT-IN) */
 div.image_gallery {
 	display: block;
 	border: 0px;
