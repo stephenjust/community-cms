@@ -144,6 +144,7 @@ class page {
 			$article = new news_item;
 			$article->set_article_id((int)$_GET['showarticle']);
 			if (!$article->get_article()) {
+				header("HTTP/1.0 404 Not Found");
 				$this->exists = 0;
 				return;
 			}
@@ -169,10 +170,12 @@ class page {
 			LIMIT 1';
 		$page_handle = $db->sql_query($page_query);
 		if ($db->error[$page_handle] == 1) {
+			header("HTTP/1.0 404 Not Found");
 			$debug->add_trace('Error looking up page information',true);
 			return;
 		}
 		if ($db->sql_num_rows($page_handle) != 1) {
+			header("HTTP/1.0 404 Not Found");
 			$debug->add_trace('Page is not listed in database',true);
 			return;
 		}
@@ -203,6 +206,7 @@ class page {
 		if(!isset($this->content)) {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
 			if(!$this->content) {
+				header("HTTP/1.0 404 Not Found");
 				$this->exists = 0;
 				$this->notification = '<strong>Error: </strong>System file not found.<br />';
 				$debug->add_trace('Including '.$this->type.' returned false',true);
@@ -233,7 +237,6 @@ class page {
 	public function get_page_content() {
 		global $db;
 		if ($this->exists == 0) {
-			header("HTTP/1.0 404 Not Found");
 			$this->title .= 'Page Not Found';
 			$this->notification .= '<strong>Error: </strong>The requested page
 				could not be found.<br />';
