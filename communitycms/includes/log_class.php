@@ -8,6 +8,13 @@
  */
 
 class Log {
+	/**
+	 * Add a log message to the database
+	 * @global db $db Database connection object
+	 * @param string $message Log message
+	 * @param integer $level User level (use constants LOG_LEVEL_*)
+	 * @return boolean Success
+	 */
 	public function new_message($message, $level = LOG_LEVEL_ADMIN) {
 		global $db;
 
@@ -55,6 +62,12 @@ class Log {
 		return true;
 	}
 
+	/**
+	 * Clear all log messages
+	 * @global acl $acl Permissions object
+	 * @global db $db Database connection object
+	 * @return boolean Success
+	 */
 	public function clear() {
 		global $acl;
 		global $db;
@@ -73,6 +86,12 @@ class Log {
 		return true;
 	}
 
+	/**
+	 * Fetch an array of the last n log messages
+	 * @global db $db Database connection object
+	 * @param integer $count Number of log messages to fetch
+	 * @return array Log messages (false if failure)
+	 */
 	public function get_last_message($count = 1) {
 		global $db;
 

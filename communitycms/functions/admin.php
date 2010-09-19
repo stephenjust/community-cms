@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -13,7 +13,7 @@ if (@SECURITY != 1) {
 
 /**
  * admin_nav - Generate the navigation bar for administration pages
- * @global object $acl Access Control List class
+ * @global acl $acl Access Control List class
  * @return string Menu HTML
  */
 function admin_nav() {
@@ -76,12 +76,15 @@ function admin_nav() {
 
 /**
  * log_action - Add a message to the administration log
- * @global object $db Database class
+ * @deprecated
+ * @global db $db Database class
+ * @global debug $debug Debug object
  * @param string $message Message to add to database (not escaped)
  * @return string Error message, if any
  */
 function log_action($message) {
 	global $db;
+	global $debug;
 
 	$message_error = NULL;
 	$date = date('Y-m-d H:i:s');
@@ -102,12 +105,13 @@ function log_action($message) {
 	if ($db->error[$log_handle] === 1) {
 		$message_error = $db->_print_error_query($log_handle);
 	}
+	$debug->add_trace('Deprecated use of log_action',true);
 	return $message_error;
 }
 
 /**
  * create_table - Generate styled tables for the admin interface
- * @global object $debug Debug Object
+ * @global debug $debug Debug Object
  * @param array $columns Array of column headings
  * @param array $values 2D array of values [row][column]
  * @return string HTML for table or NULL
