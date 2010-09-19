@@ -54,14 +54,14 @@ if ($_GET['action'] == 'save') {
 		$content .= 'Failed to find the page which you are trying to add a message to.<br />';
 	}
 } else {
-	if (!isset($_GET['page']) || $_GET['page'] == '') {
-		$_GET['page'] = 1;
+	if (!isset($_POST['page']) || $_POST['page'] == '') {
+		$_POST['page'] = 1;
 	}
 	$content = NULL;
 	$form = new form;
 	$form->set_target('admin.php?module=page_message_new&amp;action=save');
 	$form->set_method('post');
-	$form->add_hidden('page_id',(int)$_GET['page']);
+	$form->add_hidden('page_id',(int)$_POST['page']);
 	$form->add_textarea('text','Content',NULL,'rows="30"');
 	$form->add_date('start','Start Date','MDY',NULL,"disabled");
 	$form->add_date('end','End Date','MDY',NULL,"disabled");

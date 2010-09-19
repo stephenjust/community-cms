@@ -111,6 +111,19 @@ function update_file_list(dir) {
 	loadHTML(urlBase + "?directory=" + encodeURI(dir),listdiv);
 }
 
+function update_page_message_list(page) {
+	var urlBase = './admin/scripts/page_message_list.php';
+	var listdiv = document.getElementById('adm_page_message_list');
+	var pagelist = document.getElementById('adm_page_message_page_list');
+	listdiv.innerHTML = 'Loading...';
+
+	if (page == '-') {
+		page = pagelist.value;
+	}
+
+	loadHTML(urlBase + "?page=" + encodeURI(page),listdiv);
+}
+
 function confirm_delete(target) {
 	if (confirm("Really delete this item?")) {
 		window.location = target;
