@@ -57,6 +57,50 @@ class db {
 		}
 		return $return;
 	}
+
+	/**#@+
+	 * Stub functions defined by child classes
+	 */
+    function sql_connect() {
+		return false;
+    }
+	function sql_server_info() {
+		return false;
+	}
+	function sql_query($query) {
+		return false;
+	}
+	function sql_num_rows($query) {
+		return false;
+	}
+	function sql_affected_rows($query) {
+		return false;
+	}
+	function sql_fetch_assoc($query) {
+		return false;
+	}
+	function sql_fetch_row($query) {
+		return false;
+	}
+	function sql_escape_string($string) {
+		return false;
+	}
+	function sql_insert_id($table,$field) {
+		return false;
+	}
+	function sql_prepare($name,$query) {
+		return false;
+	}
+	function sql_prepare_exec($name,$variables,$datatypes) {
+		return false;
+	}
+	function sql_prepare_close($name) {
+		return false;
+	}
+    function sql_close() {
+        return false;
+    }
+	/**#@-*/
 }
 
 require(ROOT.'includes/db/db_'.$CONFIG['db_engine'].'.php');
