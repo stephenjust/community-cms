@@ -7,6 +7,11 @@
  * @package CommunityCMS.main
  */
 
+/**
+ * News item object
+ *
+ * @package CommunityCMS.main
+ */
 class news_item {
     public $article;
 	public $article_title;

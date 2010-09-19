@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2010 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -16,6 +16,14 @@ if (!$acl->check_permission('adm_newsletter')) {
 	return true;
 }
 
+/**
+ * Delete newsletter entry from the database
+ * @global acl $acl Permission object
+ * @global db $db Database connection object
+ * @global debug $debug Debugger object
+ * @param integer $id Newsletter ID
+ * @return boolean Success
+ */
 function delete_newsletter($id) {
 	global $acl;
 	global $db;
@@ -51,10 +59,9 @@ function delete_newsletter($id) {
 	$delete_article = $db->sql_query($delete_article_query);
 	if($db->error[$delete_article]) {
 		return false;
-	} else {
-		log_action('Deleted newsletter \''.stripslashes($newsletter_info['label']).'\'');
-		return true;
 	}
+	log_action('Deleted newsletter \''.stripslashes($newsletter_info['label']).'\'');
+	return true;
 }
 
 $content = NULL;
