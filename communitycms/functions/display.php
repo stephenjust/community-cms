@@ -79,7 +79,7 @@ function display_child_menu($parent) {
 
 /**
  * display_login_box - Generate and return content of login box area
- * @global object $db
+ * @global db $db
  * @global object $acl
  * @return string
  */
@@ -119,7 +119,7 @@ function display_login_box() {
 /**
  * news_edit_bar - Display quick-edit buttons for news articles
  * @global object $acl
- * @global object $db
+ * @global db $db
  * @param integer $article_id
  * @return string
  */

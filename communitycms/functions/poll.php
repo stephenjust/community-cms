@@ -41,7 +41,7 @@ function poll_vote($question,$response,$ip) {
 
 /**
  * poll_get_results - Fetch an array of poll results
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param int $poll_id Poll ID (as in database)
  * @return array Array of poll information (including results)
  */

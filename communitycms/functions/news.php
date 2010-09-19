@@ -13,8 +13,8 @@ if (@SECURITY != 1) {
 /**
  * delete_article - Deletes one or more news articles
  * @global object $acl
- * @global object $db
- * @global object $debug
+ * @global db $db
+ * @global debug $debug
  * @param mixed $article
  * @return boolean
  */

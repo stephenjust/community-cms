@@ -9,8 +9,8 @@
 
 /**
  * page_get_info - Get requested fields for a page entry in the database
- * @global object $db Database connection object
- * @global object $debug Debug object
+ * @global db $db Database connection object
+ * @global debug $debug Debug object
  * @param int $id Page ID
  * @param array $fields Database fields to get, default is all
  * @return mixed Returns false on failure, associative array of row on success
@@ -62,8 +62,8 @@ function page_add() {
 /**
  * Create a new page group
  * @global object $acl Permission object
- * @global object $db Database object
- * @global object $debug Debugging object
+ * @global db $db Database object
+ * @global debug $debug Debugging object
  * @global object $log Logger object
  * @param string $group_name Name of new group
  * @return boolean Success
@@ -104,8 +104,8 @@ function page_add_group($group_name) {
 /**
  * page_delete - Delete a page entry from the database
  * @global object $acl Permissions object
- * @global object $db Database connection object
- * @global object $debug Debug object
+ * @global db $db Database connection object
+ * @global debug $debug Debug object
  * @param int $id ID of page to delete
  * @return boolean Success
  */
@@ -183,7 +183,7 @@ function page_unhide() {
 
 /**
  * Generate a page list at a certain level in the page structure
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param integer $parent Parent item of (sub)menu
  * @param boolean $visible_only Only list pages that will appear on menu
  * @return mixed False on fail, array of pages on success
@@ -224,7 +224,7 @@ function page_list($parent = 0, $visible_only = false) {
 
 /**
  * Test if there are any children to the given page
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param integer $id Page ID of page to test
  * @param boolean $visible_children_only Only consider items that will appear in the menu
  * @return boolean
@@ -256,7 +256,7 @@ function page_has_children($id, $visible_children_only = false) {
 
 /**
  * Clean the list values for the pages in the database
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param integer $parent Parent of pages to reorder (0 for root)
  * @return boolean
  */
@@ -311,7 +311,7 @@ function page_clean_order($parent = 0) {
 /**
  * Move a page up the list in the site structure
  * @global object $acl Permission object
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param integer $id Page ID to move up
  * @return boolean
  */
@@ -357,7 +357,7 @@ function page_move_up($id) {
 /**
  * Move a page down the list in the site structure
  * @global object $acl Permissions object
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param integer $id Page ID to move down
  * @return boolean
  */
@@ -476,7 +476,7 @@ function page_editable($page_id) {
 
 /**
  * page_group_news - Get the page group that a news article belongs to
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param integer $article_id News article ID
  * @return mixed False (on fail) or a page group ID
  */

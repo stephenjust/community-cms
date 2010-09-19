@@ -14,8 +14,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 /**
  * set_home_page - Change the default CMS page
  * @global object $acl Permission object
- * @global object $db Database connection object
- * @global object $debug Debugger object
+ * @global db $db Database connection object
+ * @global debug $debug Debugger object
  * @param integer $id Page ID to set as the default page
  * @return boolean Success
  */

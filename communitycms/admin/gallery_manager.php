@@ -22,8 +22,8 @@ if (!$acl->check_permission('adm_gallery_manager')) {
 
 /**
  * delete_gallery - Deletes a photo gallery
- * @global object $db
- * @global object $debug
+ * @global db $db
+ * @global debug $debug
  * @param integer $gallery
  * @return boolean
  */
@@ -138,8 +138,8 @@ function gallery_photo_manager($gallery_id) {
 
 /**
  * Edit the caption for a gallery image
- * @global object $db Database connection object
- * @global object $debug Debugger object
+ * @global db $db Database connection object
+ * @global debug $debug Debugger object
  * @param integer $gallery_id
  * @param integer $file_id
  * @param string $file_name

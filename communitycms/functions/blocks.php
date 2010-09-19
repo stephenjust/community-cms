@@ -13,7 +13,7 @@ if (@SECURITY != 1) {
 
 /**
  * get_block - Get contents of a block
- * @global object $db
+ * @global db $db
  * @param int $block_id ID of block to display
  * @return string
  */
@@ -41,8 +41,8 @@ function get_block($block_id = NULL) {
 /**
  * delete_block - Delete a block
  * @global object $acl Permission object
- * @global object $db Database connection object
- * @global object $debug Debug object
+ * @global db $db Database connection object
+ * @global debug $debug Debug object
  * @param integer $id Block ID
  * @return string Response message
  */

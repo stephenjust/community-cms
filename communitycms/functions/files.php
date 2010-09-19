@@ -21,7 +21,7 @@ include(ROOT.'functions/files_class.php');
 /**
  * Load template file
  * @deprecated
- * @global object $db Database object
+ * @global db $db Database object
  * @param string $filename Name of template file
  * @return array Template file ['contents'] and ['template_path']
  */
@@ -364,7 +364,7 @@ function dynamic_file_list($directory = '',$root = ROOT) {
 
 /**
  * get_file_info - Look up file information in the database
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param string $file Path to file
  * @return array
  */
@@ -404,7 +404,7 @@ function replace_file_special_chars($filename) {
 
 /**
  * Resize an image
- * @global object $debug Debug object
+ * @global debug $debug Debug object
  * @param string $original Path to original file
  * @param string $thumb_path Path to new file; if NULL, put it in /thumbs/ subdir
  * @param integer $min_w Minimum thumbnail width; cannot be 0

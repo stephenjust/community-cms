@@ -16,8 +16,8 @@ if (@SECURITY != 1) {
  * Initializes many required variables
  *
  * @global object $acl
- * @global object $db
- * @global object $debug
+ * @global db $db
+ * @global debug $debug
  */
 function initialize($mode = NULL) {
 	// Report all PHP errors
@@ -81,7 +81,7 @@ function clean_up() {
 /**
  * Get configuration value from the database
  * @global array $config_cache Configuration cache
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param string $config_name Name of configuration value to look up
  * @return mixed Configuration value, or NULL if failure
  */
@@ -125,7 +125,7 @@ function get_config($config_name) {
 /**
  * Set a configuration value
  * @global array $config_cache Configuration cache
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param string $config_name Name of configuration value to set
  * @param string $config_value
  * @return boolean True if success, false if error
@@ -199,7 +199,7 @@ function truncate($text,$numb) {
 
 /**
  * array2csv - Convert an array to a list of comma separated values
- * @global object $debug Debug object
+ * @global debug $debug Debug object
  * @param array $array Array of values that will appear in the result string
  * @return string Comma separated list of values
  */

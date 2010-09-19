@@ -26,7 +26,7 @@ function article_url_nopage($id) {
 
 /**
  * Generate a URL to a news article (on-page format)
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @param int $id Article ID
  * @return string URL
  */

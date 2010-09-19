@@ -31,8 +31,8 @@ class acl {
 	 * @param string $acl_key Name of property in Access Control List
 	 * @param int $group Group to check (current user's group if not set)
 	 * @param boolean $true_if_all Automatically return true if the group has 'All Permissions' set
-	 * @global object $db Database connection object
-	 * @global object $debug Debug object
+	 * @global db $db Database connection object
+	 * @global debug $debug Debug object
 	 * @return boolean True if allowed to complete action, false if not.
 	 */
 	public function check_permission($acl_key, $group = 0, $true_if_all = true) {
@@ -132,8 +132,8 @@ class acl {
 
 	/**
 	 * set_permission - Set permissions for a certain group
-	 * @global object $db
-	 * @global object $debug
+	 * @global db $db
+	 * @global debug $debug
 	 * @param string $acl_key
 	 * @param integer $value
 	 * @param integer $group
@@ -201,7 +201,7 @@ class acl {
 
 	/**
 	 * get_acl_key_names - Load the list of permissions from the database
-	 * @global object $db Database connection object
+	 * @global db $db Database connection object
 	 * @return array An array of all existing permission keys
 	 */
 	private function get_acl_key_names() {
@@ -226,8 +226,8 @@ class acl {
 
 	/**
 	 * create_key - Create an ACL key if it does not exist already
-	 * @global object $db Database connection object
-	 * @global object $debug Debug object
+	 * @global db $db Database connection object
+	 * @global debug $debug Debug object
 	 * @param string $name Name of key (lowercase)
 	 * @param string $longname More descriptive name
 	 * @param string $description Description of what the key allows

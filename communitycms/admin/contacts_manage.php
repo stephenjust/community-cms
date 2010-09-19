@@ -23,8 +23,8 @@ $tab_layout = new tabs;
 
 /**
  * Get contact list
- * @global object $db Database object
- * @global object $debug Debugging object
+ * @global db $db Database object
+ * @global debug $debug Debugging object
  * @param integer $page Page ID
  * @return array Contact information (or false on failure)
  */
@@ -55,7 +55,7 @@ function contact_list($page = '*') {
 /**
  * Delete a contact entry from the database
  * @global object $acl Permission object
- * @global object $db Database object
+ * @global db $db Database object
  * @global object $log Logger object
  * @param integer $id Contact ID
  * @return boolean Success

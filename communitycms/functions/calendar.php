@@ -14,8 +14,8 @@ if (@SECURITY != 1) {
 
 /**
  * delete_category - Delete a calendar category entry
- * @global object $db
- * @global object $debug
+ * @global db $db
+ * @global debug $debug
  * @param integer $id
  * @return boolean
  */
@@ -67,8 +67,8 @@ function delete_category($id) {
 
 /**
  * delete_date - Delete a calendar entry
- * @global object $db
- * @global object $debug
+ * @global db $db
+ * @global debug $debug
  * @param integer $id
  * @return boolean
  */

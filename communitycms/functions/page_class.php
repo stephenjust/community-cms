@@ -126,8 +126,8 @@ class page {
 
 	/**
 	 * If a page exists, collect all information about it from the database.
-	 * @global object $db Database connection object
-	 * @global object $debug Debug object
+	 * @global db $db Database connection object
+	 * @global debug $debug Debug object
 	 * @return void
 	 */
 	public function get_page_information() {
@@ -313,8 +313,8 @@ class page {
 
 	/**
 	 * nav_menu - Returns HTML for navigation menu
-	 * @global object $db Database object
-	 * @global object $debug Debugging object
+	 * @global db $db Database object
+	 * @global debug $debug Debugging object
 	 * @return string HTML for menu
 	 */
 	private function nav_menu() {

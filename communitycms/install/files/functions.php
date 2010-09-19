@@ -162,7 +162,7 @@ END;
  * references to that permission. The deletion skips over any functions that
  * may have been created dynamically (currently only 'pagegroupedit-*').
  *
- * @global object $db Database connection object
+ * @global db $db Database connection object
  * @return integer Number of changed entries, or false on failure
  */
 function update_permission_records() {

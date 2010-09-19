@@ -17,8 +17,8 @@ class user {
 
 	/**
 	 * Check user's login status
-	 * @global object $db Database connection object
-	 * @global object $debug Debug object
+	 * @global db $db Database connection object
+	 * @global debug $debug Debug object
 	 * @return void
 	 */
 	function __construct() {
@@ -66,8 +66,8 @@ class user {
 
 	/**
 	 * Check given login information and log in a user
-	 * @global object $db Database connection object
-	 * @global object $debug Debug object
+	 * @global db $db Database connection object
+	 * @global debug $debug Debug object
 	 * @param string $username Username provided by input
 	 * @param string $password Unencrypted password provided by input
 	 */
@@ -161,7 +161,7 @@ class user {
 
 	/**
 	 * Destroy all session information
-	 * @global object $debug Debug class
+	 * @global debug $debug Debug class
 	 */
 	function logout() {
 		global $debug;

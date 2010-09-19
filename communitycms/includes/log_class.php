@@ -7,6 +7,11 @@
  * @package CommunityCMS.main
  */
 
+/**
+ * Log function class
+ *
+ * @package CommunityCMS.main
+ */
 class Log {
 	/**
 	 * Add a log message to the database

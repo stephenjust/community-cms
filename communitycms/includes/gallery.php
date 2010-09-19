@@ -97,7 +97,7 @@ class gallery {
 
 /**
  * Embed a gallery in the page
- * @global object $debug Debug object
+ * @global debug $debug Debug object
  * @param integer $id
  * @return mixed Object if succeeds, boolean if failed
  */
