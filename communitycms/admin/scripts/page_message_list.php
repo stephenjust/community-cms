@@ -43,7 +43,7 @@ $table_headings = array('Content');
 if ($acl->check_permission('page_message_delete')) {
 	$table_headings[] = 'Delete';
 }
-if ($acl->check_permission('page_message_edit')) {
+if ($acl->check_permission('adm_page_message_edit')) {
 	$table_headings[] = 'Edit';
 }
 $table_rows = array();
@@ -58,7 +58,7 @@ for ($i = 1; $i <= $page_message_rows; $i++) {
 			.'page='.$page_id.'\')"><img src="./admin/templates/default/images/delete.png" '
 			.'alt="Delete" width="16px" height="16px" border="0px" /></a>';
 	}
-	if ($acl->check_permission('page_message_edit')) {
+	if ($acl->check_permission('adm_page_message_edit')) {
 		$current_row[] = '<a href="?module=page_message_edit&amp;'
 			.'id='.$page_message['message_id'].'">'
 			.'<img src="./admin/templates/default/images/edit.png" alt="Edit" '
