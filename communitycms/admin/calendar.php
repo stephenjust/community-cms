@@ -49,31 +49,9 @@ switch ($_GET['action']) {
 		$start_time = $_POST['stime'];
 		$end_time = $_POST['etime'];
 		$category = $_POST['category'];
-		$location = addslashes($_POST['location']);
 
-		// Save location
-		if (get_config('calendar_save_locations') == 1) {
-			if (!isset($location) || strlen($location) < 2) {
-				$debug->add_trace('No location given',false);
-			} else {
-				$check_dupe_query = 'SELECT `value` FROM `'.LOCATION_TABLE.'`
-					WHERE `value` = \''.$location.'\'';
-				$check_dupe_handle = $db->sql_query($check_dupe_query);
-				if ($db->error[$check_dupe_handle] === 1) {
-					$content .= 'Failed to check for duplicate location entries.<br />'."\n";
-				} elseif ($db->sql_num_rows($check_dupe_handle) == 0) {
-					$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
-						(`value`) VALUES (\''.$location.'\')';
-					$new_loc_handle = $db->sql_query($new_loc_query);
-					if ($db->error[$new_loc_handle] === 1) {
-						$content .= 'Failed to create new location.<br />'."\n";
-						break;
-					}
-					$content .= 'Successfully created location.<br />'."\n";
-					log_action('Created new location');
-				}
-			}
-		}
+		// Add location to database
+		location_add($_POST['location']);
 
 		// Format date for insertion...
 		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');

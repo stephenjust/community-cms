@@ -13,6 +13,54 @@ if (@SECURITY != 1) {
 // ----------------------------------------------------------------------------
 
 /**
+ *
+ * @global acl $acl
+ * @global db $db
+ * @global Log $log
+ * @param string $location
+ * @return boolean Success
+ */
+function location_add($location) {
+	global $acl;
+	global $db;
+	global $log;
+
+	$location = addslashes($location);
+
+	// Check if location saving is disabled
+	if (get_config('calendar_save_locations') != 1) {
+		return false;
+	}
+	if (strlen($location) < 2) {
+		$debug->add_trace('No location given',false);
+		return false;
+	}
+
+	$check_dupe_query = 'SELECT `value` FROM `'.LOCATION_TABLE.'`
+		WHERE `value` = \''.$location.'\'';
+	$check_dupe_handle = $db->sql_query($check_dupe_query);
+	if ($db->error[$check_dupe_handle] === 1) {
+		$debug->add_trace('Failed to check for duplicate entries',true);
+		return false;
+	}
+	if ($db->sql_num_rows($check_dupe_handle) != 0) {
+		$debug->add_trace('Location \''.$location.'\' already exists',false);
+		return false;
+	}
+	$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
+		(`value`) VALUES (\''.$location.'\')';
+	$new_loc_handle = $db->sql_query($new_loc_query);
+	if ($db->error[$new_loc_handle] === 1) {
+		$debug->add_trace('Failed to create new location',true);
+		return false;
+	}
+	$log->new_message('Created new location \''.$location.'\'');
+	return true;
+}
+
+// ----------------------------------------------------------------------------
+
+/**
  * delete_category - Delete a calendar category entry
  * @global db $db
  * @global debug $debug
