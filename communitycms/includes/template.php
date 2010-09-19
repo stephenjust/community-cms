@@ -12,6 +12,35 @@ class template {
 	public $template_name;
 	public $path;
 	public $return;
+
+	function __construct() {
+		global $db;
+		global $debug;
+		global $template_cache;
+
+		if (!isset($template_cache)) {
+			$template_cache = array();
+		}
+		if (!isset($template_cache['path']) || !isset($template_cache['template_name'])) {
+			$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
+				WHERE id = '.get_config('site_template').' LIMIT 1';
+			$template_handle = $db->sql_query($template_query);
+			if ($db->sql_num_rows($template_handle) != 1) {
+				$debug->add_trace('Current template not found in database',true);
+				$this->path = 'default';
+			} else {
+				$template_result = $db->sql_fetch_assoc($template_handle);
+				$this->path = $template_result['path'];
+				$this->template_name = preg_replace('#(^templates/|/)#i',NULL,$template_result['path']);
+			}
+			$template_cache['path'] = $this->path;
+			$template_cache['template_name'] = $this->template_name;
+		} else {
+			$this->path = $template_cache['path'];
+			$this->template_name = $template_cache['template_name'];
+		}
+	}
+
 	public function __set($name,$value) {
 		if ($name == 'template' || $name == 'path' || $name == 'return') {
 			$this->$name = $value;
@@ -26,9 +55,9 @@ class template {
 	 * load_file - Loads a template file from the current frontend template
 	 */
 	public function load_file($file = 'index') {
-		$path = ROOT;
+		$this->path = ROOT.$this->path;
 		$file .= '.html';
-		if ($this->load_template($path,$file)) {
+		if ($this->load_template($file)) {
 			return true;
 		} else {
 			return false;
@@ -39,53 +68,27 @@ class template {
 	 * load_admin_file - Loads a template file from the admin template
 	 */
 	public function load_admin_file($file = 'index') {
-		$path = ROOT.'admin/';
+		$this->path = ROOT.'admin/'.$this->path;
 		$file .= '.html';
-		if ($this->load_template($path,$file)) {
+		if ($this->load_template($file)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	private function load_template($path,$file) {
-		global $db;
-
-		$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
-			WHERE id = '.get_config('site_template').' LIMIT 1';
-		$template_handle = $db->sql_query($template_query);
-		try {
-			if ($db->error[$template_handle] === 1 || $db->sql_num_rows($template_handle) == 0) {
-				throw new Exception('Failed to load template file.');
-			} else {
-				$template = $db->sql_fetch_assoc($template_handle);
-				$path .= $template['path'];
-				$template_name = str_replace('templates/',NULL,$template['path']);
-				$template_name = str_replace('/',NULL,$template_name);
-				$this->template_name = $template_name;
-				if (!file_exists($path.$file)) {
-					throw new Exception('Template file does not exist.');
-				}
-				if (filesize($path.$file) === 0) {
-					throw new Exception('Template file is empty.');
-				}
-				$handle = fopen($path.$file, 'r');
-				$template_contents = fread($handle,filesize($path.$file));
-				if (!$template_contents) {
-					throw new Exception('Failed to open template file.');
-				} else {
-					$this->template = $template_contents;
-				}
-				fclose($handle);
-			}
+	private function load_template($file) {
+		if (!file_exists($this->path.$file)) {
+			throw new Exception('Template file does not exist.');
 		}
-		catch(Exception $e) {
-			if (DEBUG === 1) {
-				echo '<span style="font-size: x-small; color: #FF0000;">'.$e.'</span>';
-			}
-			return false;
+		$handle = fopen($this->path.$file, 'r');
+		$template_contents = fread($handle,filesize($this->path.$file));
+		if (!$template_contents) {
+			$this->template = '<span class="errormessage">Failed to open template file \''.$file.'\'</span><br />';
+		} else {
+			$this->template = $template_contents;
 		}
-		$this->path = $path;
+		fclose($handle);
 		return true;
 	}
 
