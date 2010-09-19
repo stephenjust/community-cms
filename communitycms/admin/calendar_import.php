@@ -58,6 +58,8 @@ if ($first_line != "BEGIN:VCALENDAR") {
 	echo 'Invalid source format.<br />'."\n";
 	return 1;
 }
+$event_count = 0;
+$active_event = 0;
 while (isset($contents[0])) {
 	$current_line = array_shift($contents);
 	$current_line = str_replace(array("\n","\r"),NULL,$current_line);
@@ -75,6 +77,9 @@ while (isset($contents[0])) {
 		preg_match('/^DTSTAMP:.*/i',$current_line)) {
 
 	} elseif ($current_line == 'BEGIN:VEVENT') {
+		if ($active_event == 1) {
+			die ('Malformed iCal file');
+		}
 		$active_event = 1;
 		// Reset all vars...
 		$all_day = 0;
@@ -84,7 +89,9 @@ while (isset($contents[0])) {
 		$start = NULL;
 		$end = NULL;
 		$uid = NULL;
-		echo '<div class="importable_event">';
+		$event_count++;
+		echo '<div class="importable_event" id="event-'.$event_count.'">'."\n";
+		echo '<button onClick="import_event(\'event-'.$event_count.'\')" style="float: right;">Import</button>'."\n";
 	} elseif ($current_line == 'END:VEVENT') {
 		// Check if this event already exists (we need a UID for this)
 		if ($uid != NULL) {
@@ -102,10 +109,12 @@ while (isset($contents[0])) {
 			}
 		}
 		// Parse available info...
-		echo '<strong>'.$summary.'</strong><br />'."\n";
+		echo '<strong><span id="event-'.$event_count.'-title">'.$summary.'</span></strong><br />'."\n";
 		echo date('Y-m-d H:i:s',$start).' - '.date('Y-m-d H:i:s',$end).'<br />';
-		echo $desc.'<br />';
-		echo 'Location: '.$location.'<br />';
+		echo strip_tags($desc).'<br />';
+		if ($location != NULL) {
+			echo 'Location: '.$location.'<br />';
+		}
 		echo 'UID: '.$uid.'<br />';
 // ----------------------------------------------------------------------------
 // TODO
@@ -177,6 +186,9 @@ while (isset($contents[0])) {
 		$uid = str_replace('UID:',NULL,$current_line);
 	} elseif (preg_match('/^LOCATION:.*/i',$current_line)) {
 		$location = str_replace('LOCATION:',NULL,$current_line);
+		if (strlen(trim($location)) == 0) {
+			$location = NULL;
+		}
 	} elseif (preg_match('/^DESCRIPTION:.*/i',$current_line)) {
 		$desc = str_replace('DESCRIPTION:',NULL,$current_line);
 	} elseif ($current_line == 'END:VCALENDAR') {

@@ -202,7 +202,7 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 	case 'new_source':
 		$desc = addslashes($_POST['desc']);
-		$url = addslashes($_POST['url']);
+		$url = addslashes(trim($_POST['url']));
 		$new_src_query = 'INSERT INTO `' . CALENDAR_SOURCES_TABLE . '`
 			(`desc`,`url`) VALUES (\''.$desc.'\',\''.$url.'\')';
 		$new_src_handle = $db->sql_query($new_src_query);

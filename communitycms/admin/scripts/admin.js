@@ -129,4 +129,24 @@ function confirm_delete(target) {
 		window.location = target;
 	}
 }
+
+function import_event(event_div_id) {
+	var event_div = document.getElementById(event_div_id);
+	event_div.style.borderColor = '#000000';
+	event_div.style.backgroundColor = '#CCCCCC';
+
+	// Initialize default values
+	var event_title = '';
+	var event_location = '';
+	var event_start = '';
+	var event_end = '';
+	var event_uid = '';
+
+	var event_title_field = document.getElementById(event_div_id + "-title");
+	event_title = event_title_field.innerHTML;
+
+	event_div.innerHTML = "This doesn't work yet.";
+	setTimeout(function(){event_div.style.display = 'none';},5000);
+}
+
 -->
