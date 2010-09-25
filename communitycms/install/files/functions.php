@@ -174,6 +174,7 @@ function update_permission_records() {
 	$permission[] = array('all','All Permissions','Grant this permission to allow all actions within the CMS',0);
 	$permission[] = array('admin_access','Admin Access','Allow a user to access the administrative section of the CMS',0);
 	$permission[] = array('set_permissions','Set Permissions','Allow a user to modify the permission settings for user groups',0);
+	$permission[] = array('show_editbar','Show Editbar','Allow a user to see the edit bar on front-end content',0);
 	$permission[] = array('adm_help','Admin Help Module','Allow a user to access the help module',0);
 	$permission[] = array('adm_feedback','Admin Feedback Module','Allow a user to access the admin feedback module',0);
 	$permission[] = array('adm_site_config','Site Configuration','Allow a user to modify the CMS configuration',0);
@@ -210,7 +211,6 @@ function update_permission_records() {
 	$permission[] = array('news_create','Create Articles','Allow a user to create new news articles',0);
 	$permission[] = array('news_delete','Delete Articles','Allow a user to delete news articles',0);
 	$permission[] = array('news_edit','Edit Articles','Allow a user to edit news articles',0);
-	$permission[] = array('news_fe_manage','Manage News from Front-End','Allow a user to manage news articles from the front-end',0);
 	$permission[] = array('news_fe_show_unpublished','Show Unpublished News on Site','Allow a user to see unpublished articles from the site front-end',0);
 	$permission[] = array('news_publish','Publish/Unpublish Articles','Allow a user to publish or unpublish news articles',0);
 	$permission[] = array('newsletter_create','Create Newsletter','Allow a user to create a new newsletter',0);

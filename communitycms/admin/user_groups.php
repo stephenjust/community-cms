@@ -27,6 +27,7 @@ function permission_list($group = 0) {
 	$perm_list = array('all',
 		'admin_access',
 		'set_permissions',
+		'show_editbar',
 		'show_fe_errors',
 		'log_post_custom_message',
 		'adm_help',
@@ -76,7 +77,6 @@ function permission_list($group = 0) {
 		'news_delete',
 		'news_edit',
 		'news_publish',
-		'news_fe_manage',
 		'news_fe_show_unpublished');
 	$return .= permission_list_table($permission_list,$group,'News',$perm_list);
 

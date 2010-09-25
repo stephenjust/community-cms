@@ -124,16 +124,32 @@ class news_item {
 		}
 
 		// Edit bar permission check
-		if ($acl->check_permission('news_fe_manage') && $acl->check_permission('admin_access')) {
-			$edit_bar = news_edit_bar($article['id']);
-			if ($edit_bar != NULL) {
-				$template_article->edit_bar_start = NULL;
-				$template_article->edit_bar_end = NULL;
-				$template_article->edit_bar = news_edit_bar($article['id']);
-			} else {
-				$template_article->replace_range('edit_bar',NULL);
-				$debug->add_trace('Article edit bar is empty',false);
-			}
+		$editbar = new editbar;
+		$page_group_id = page_group_news($article['id']);
+		if (!$acl->check_permission('pagegroupedit-'.$page_group_id)) {
+			$editbar->visible = false;
+		}
+		$editbar->add_control('admin.php?module=news&amp;action=edit&amp;id='.$article['id'],
+				'edit.png',
+				'Edit',
+				array('news_edit','adm_news','admin_access'));
+
+		// Get current url
+		$query_string = $_SERVER['QUERY_STRING'];
+		$query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', NULL, $query_string);
+		if ($article['publish'] == '1') {
+			// Currently published
+			$editbar->add_control('index.php?'.$query_string.'&amp;unpublish='.$article['id'],
+					'unpublish.png','Unpublish',array('news_publish'));
+		} else {
+			// Currently unpublished
+			$editbar->add_control('index.php?'.$query_string.'&amp;publish='.$article['id'],
+				'publish.png','Publish',array('news_publish'));
+		}
+		if ($editbar !== '') {
+			$template_article->edit_bar_start = NULL;
+			$template_article->edit_bar_end = NULL;
+			$template_article->edit_bar = $editbar;
 		} else {
 			$template_article->replace_range('edit_bar',NULL);
 		}
