@@ -144,7 +144,9 @@ class user {
 			$_SESSION['type'] = $result['type'];
 			$_SESSION['groups'] = csv2array($result['groups']);
 			$_SESSION['last_login'] = time();
-			define('USERINFO',$result['id'].','.$result['realname'].','.$result['type']);
+			if (!defined('USERINFO')) {
+				define('USERINFO',$result['id'].','.$result['realname'].','.$result['type']);
+			}
 			// Set latest login time
 			$set_logintime_query = 'UPDATE ' . USER_TABLE . '
 				SET lastlogin='.$_SESSION['last_login'].'
