@@ -15,6 +15,7 @@
 class editbar {
 	public $visible = true;
 	public $control_count = 0;
+	public $class = 'edit_bar';
 	public $label = '';
 	public $string = NULL;
 
@@ -75,7 +76,7 @@ class editbar {
 		if ($this->control_count === 0) {
 			return '';
 		}
-		return $this->label.$this->string;
+		return '<div class="'.$this->class.'">'.$this->label.$this->string.'</div>';
 	}
 }
 ?>

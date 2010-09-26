@@ -147,13 +147,7 @@ class news_item {
 			$editbar->add_control('index.php?'.$query_string.'&amp;publish='.$article['id'],
 				'publish.png','Publish',array('news_publish'));
 		}
-		if ($editbar !== '') {
-			$template_article->edit_bar_start = NULL;
-			$template_article->edit_bar_end = NULL;
-			$template_article->edit_bar = $editbar;
-		} else {
-			$template_article->replace_range('edit_bar',NULL);
-		}
+		$template_article->edit_bar = $editbar;
 
 		$article_title = stripslashes($article['name']);
 		$this->article_title = $article_title;

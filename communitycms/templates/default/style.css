@@ -196,8 +196,10 @@ a:visited {
 /* EDIT BAR */
 
 div.edit_bar {
-	background: #CCCCCC;
-	border: 1px #999999 solid;
+	background: rgb(192,192,192);
+	background: rgba(192,192,192,0.75);
+	border: 1px rgb(128,128,128) solid;
+	border: 1px rgba(128,128,128,0.75) solid;
 	color: #333333;
 	float: right;
 	font-size: small;
