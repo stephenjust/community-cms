@@ -15,6 +15,7 @@
 class editbar {
 	public $visible = true;
 	public $control_count = 0;
+	public $label = '';
 	public $string = NULL;
 
 	/**
@@ -55,6 +56,14 @@ class editbar {
 		return true;
 	}
 
+	function set_label($label) {
+		if (strlen($label) == 0) {
+			$this->label = '';
+			return;
+		}
+		$this->label = $label.': ';
+	}
+
 	/**
 	 * Return the string of icons (links) for the edit bar
 	 * @return string
@@ -66,7 +75,7 @@ class editbar {
 		if ($this->control_count === 0) {
 			return '';
 		}
-		return $this->string;
+		return $this->label.$this->string;
 	}
 }
 ?>

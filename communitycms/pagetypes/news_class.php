@@ -125,6 +125,7 @@ class news_item {
 
 		// Edit bar permission check
 		$editbar = new editbar;
+		$editbar->set_label('Article');
 		$page_group_id = page_group_news($article['id']);
 		if (!$acl->check_permission('pagegroupedit-'.$page_group_id)) {
 			$editbar->visible = false;
