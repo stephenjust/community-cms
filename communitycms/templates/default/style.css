@@ -217,6 +217,9 @@ div.edit_bar img {
 	border: 0px;
 	padding: 0px 2px;
 }
+div.page_edit_bar {
+	position: absolute;
+}
 
 /* TABS */
 #fe_tabs {
@@ -336,7 +339,7 @@ p.no-spacing {
 
 /* NEWS */
 div.news_item_container {
-    position: relative;
+	position: relative;
     background: url('./images/news_topleft.png') no-repeat;
 	padding: 2px;
 }

@@ -435,6 +435,16 @@ class page {
 			$template->replace_range('body_title',NULL);
 		}
 
+		// Display page edit bar
+		$edit_bar = new editbar;
+		$edit_bar->set_label('Page');
+		$edit_bar->class = 'edit_bar page_edit_bar';
+		if ($this->id != 0) {
+			$edit_bar->add_control('admin.php?module=page&amp;action=edit&amp;id='.$this->id,
+					'edit.png','Edit',array('admin_access','page_edit'));
+		}
+		$template->page_edit_bar = $edit_bar;
+
 		// Display page notifications
 		if (strlen($this->notification) > 0) {
 			$template->notification = $this->notification;
