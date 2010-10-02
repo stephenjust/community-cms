@@ -52,6 +52,7 @@ function permission_list($group = 0) {
 
 	// Calendar
 	$perm_list = array('adm_calendar',
+		'date_create',
 		'adm_calendar_edit_date',
 		'adm_calendar_import',
 		'adm_calendar_locations');

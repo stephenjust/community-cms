@@ -204,6 +204,7 @@ function update_permission_records() {
 	$permission[] = array('block_create','Create Blocks','Allow a user to create new blocks',0);
 	$permission[] = array('block_delete','Delete Blocks','Allow a user to delete blocks',0);
 	$permission[] = array('calendar_settings','Calendar Settings','Allow a user to modify calendar settings',0);
+	$permission[] = array('date_create','Create Events','Allow a user to create calendar event entries',0);
 	$permission[] = array('file_create_folder','Create Folders','Allow a user to create new folders',0);
 	$permission[] = array('file_upload','Upload Files','Allow a user to upload files',0);
 	$permission[] = array('log_clear','Clear Logs','Allow a user to clear all log messages',0);
