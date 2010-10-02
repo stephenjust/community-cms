@@ -37,13 +37,14 @@ if (!$gallery_info) {
 switch (get_config('gallery_app')) {
 	case 'built-in':
 		$gallery_images = gallery_images($gallery_info['image_dir']);
-		$gallery_nav = '<div class="gallery_nav">'."\n";
+		$gallery_nav = '<div class="gallery_title">'.$gallery_info['title'].'</div>
+			<div class="gallery_nav">'."\n";
 		for ($i = 0; $i < count($gallery_images); $i++) {
 			$gallery_nav .= <<< END
 	<div class="nav_image">
 		<img src="files/{$gallery_info['image_dir']}/thumbs/{$gallery_images[$i]['file']}"
 			onClick="gallery_load_image('{$_GET['id']}',
-			'files/{$gallery_info['image_dir']}/{$gallery_images[$i]['file']}')"/>
+			'files/{$gallery_info['image_dir']}/{$gallery_images[$i]['file']}','{$gallery_images[$i]['caption']}')"/>
 	</div>
 END;
 		}

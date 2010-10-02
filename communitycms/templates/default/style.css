@@ -596,6 +596,12 @@ div.image_gallery {
 	display: block;
 	border: 0px;
 }
+div.image_gallery > div.gallery_title {
+	color: #333333;
+	font-size: large;
+	font-weight: bold;
+	text-align: center;
+}
 div.image_gallery > div.gallery_nav {
 	display: block;
 	padding: 2px;
@@ -621,8 +627,12 @@ div.image_gallery > div.gallery_body {
 	font-size: larger;
 	color: #666666;
 }
+div.image_gallery > div.gallery_body > div.image_caption {
+	font-size: large;
+}
 div.image_gallery > div.gallery_body > img {
 	max-width: 100%;
+	max-height: 400px;
 }
 
 div.errormessage {

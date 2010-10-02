@@ -16,8 +16,8 @@ function gallery_load(galleryid) {
 	loadHTML(urlBase + "?id=" + encodeURI(galleryid),gallerydiv);
 }
 
-function gallery_load_image(galleryid,imagepath) {
+function gallery_load_image(galleryid,imagepath,desc) {
 	var containerdiv = document.getElementById("gallery_body-" + galleryid);
-	containerdiv.innerHTML = '<img src="' + encodeURI(imagepath) +  '" />';
+	containerdiv.innerHTML = '<div class="image_caption">' + desc + '</div><img src="' + encodeURI(imagepath) +  '" />';
 }
 -->
