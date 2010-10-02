@@ -39,6 +39,7 @@ class db {
     var $query = array();
 	var $query_text = array();
     var $error = array();
+	var $errormsgs = array();
 	/**#@-*/
 
 	function print_query_stats() {
@@ -51,6 +52,9 @@ class db {
 		foreach($queries AS $querynum => $query) {
 			if ($this->error[$querynum] === 1) {
 				$return .= '<p><span style="color: #CC0000;">'.$query.'</span></p>'."\n";
+				if (isset($this->errormsgs[$querynum])) {
+					$return .= '<p><em>'.$this->errormsgs[$querynum].'</em></p>'."\n";
+				}
 			} else {
 				$return .= '<p>'.$query.'</p>'."\n";
 			}

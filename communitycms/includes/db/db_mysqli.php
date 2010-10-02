@@ -36,6 +36,7 @@ class db_mysqli extends db {
 		$this->query[$this->query_count] = mysqli_query($this->connect,$query);
 		if (!$this->query[$this->query_count]) {
 			$this->error[$this->query_count] = 1;
+			$this->errormsgs[$this->query_count] = $this->_print_error_query();
 		} else {
 			$this->error[$this->query_count] = 0;
 		}
@@ -145,7 +146,7 @@ class db_mysqli extends db {
     function sql_close() {
         mysqli_close($this->connect);
     }
-	function _print_error_query($query) {
+	function _print_error_query($query = NULL) {
 		return mysqli_error($this->connect);
 	}
 }
