@@ -91,6 +91,7 @@ function permission_list($group = 0) {
 		'page_set_home',
 		'page_order',
 		'page_delete',
+		'page_edit',
 		'page_group_create');
 	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
 
@@ -264,13 +265,11 @@ for ($i = 1; $i <= $group_list_rows; $i++) {
 		id="user_group_'.$group_list['id'].'">'.stripslashes($group_list['name']).'</span></td>
 		<td><a href="admin.php?module=user_groups&action=delete&id='.$group_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png"
 		alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>
-		<td><a href="#"><img src="<!-- $IMAGE_PATH$ -->edit.png"
-		alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>
+		<td><strike>Edit</strike></td>
 		<td><a href="admin.php?module=user_groups&action=perm&id='.$group_list['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->permissions.png"
 		alt="Permissions" width="16px" height="16px" border="0px" /></a></td>
-		<td><a href="#"><img src="<!-- $IMAGE_PATH$ -->members.png"
-		alt="Members" width="16px" height="16px" border="0px" /></a></td>
+		<td><strike>Members</strike></td>
 		</tr>';
 	if($rowstyle == 'row1') {
 		$rowstyle = 'row2';

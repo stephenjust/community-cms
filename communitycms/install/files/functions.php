@@ -219,6 +219,7 @@ function update_permission_records() {
 	$permission[] = array('page_set_home','Change Default Page','Allow a user to change the defualt CMS page',0);
 	$permission[] = array('page_order','Change Page Order','Allow a user to rearrange pages on the CMS menu',0);
 	$permission[] = array('page_delete','Delete Pages','Allow a user to delete pages',0);
+	$permission[] = array('page_edit','Edit Pages','Allow a user to edit pages (requires ability to edit specific page groups)',0);
 	$permission[] = array('page_group_create','Create Page Groups','Allow a user to create new page groups',0);
 	$permission[] = array('pagegroupedit-1','Edit Page Group \'Default Group\'','Allow user to edit pages in the group \'Default Group\'',0);
 	$permission[] = array('page_message_new','Create Page Messages','Allow a user to create new page messages',0);
