@@ -461,6 +461,11 @@ function generate_thumbnail($original,$thumb_path = NULL,$min_w = 1,$min_h = 1,$
 				$new_x = $image_x * ($new_y / $image_y);
 			}
 		}
+		// Prevent stretching
+		if ($image_y < $new_y || $image_x < $new_x) {
+			$new_y = $image_y;
+			$new_x = $image_x;
+		}
 		// Handle minimum values
 		if ($new_x < $min_w) {
 			$new_x = $min_w;
