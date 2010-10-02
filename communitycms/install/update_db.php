@@ -233,6 +233,8 @@ switch ($db_version) {
 					PRIMARY KEY (`id`)
 					) ENGINE=MyISAM CHARACTER SET=utf8 ;';
 				$query[] = 'ALTER TABLE `'.USER_TABLE.'` ADD `password_date` INT NOT NULL DEFAULT \'0\' AFTER `password`';
+				// Page table doesn't have a default value for 'hidden' - mysql only
+				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` CHANGE `hidden` `hidden` INT(1) NOT NULL DEFAULT \'0\'';
 				break;
 			case 'postgresql':
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` integer NOT NULL DEFAULT \'1\' AFTER `menu`';

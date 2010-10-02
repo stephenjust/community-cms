@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
 	`list` int(6) NOT NULL default '0',
 	`blocks_left` text NULL,
 	`blocks_right` text NULL,
-	`hidden` int(1) NOT NULL,
+	`hidden` int(1) NOT NULL default '0',
 	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
