@@ -106,6 +106,7 @@ function page_add_group($group_name) {
  * @global object $acl Permissions object
  * @global db $db Database connection object
  * @global debug $debug Debug object
+ * @global Log $log Logger object
  * @param int $id ID of page to delete
  * @return boolean Success
  */
@@ -113,6 +114,7 @@ function page_delete($id) {
 	global $acl;
 	global $db;
 	global $debug;
+	global $log;
 	// Check for permission to execute
 	if (!$acl->check_permission('page_delete')) {
 		$debug->add_trace('Lacking permission to remove pages',true);
@@ -144,7 +146,7 @@ function page_delete($id) {
 		$debug->add_trace('Delete query did not delete any entries',true);
 		return false;
 	}
-	log_action('Deleted page \''.stripslashes($page_info['title']).'\'');
+	$log->new_message('Deleted page \''.$page_info['title'].'\'');
 	return true;
 }
 

@@ -16,6 +16,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
  * @global object $acl Permission object
  * @global db $db Database connection object
  * @global debug $debug Debugger object
+ * @global Log $log Logging object
  * @param integer $id Page ID to set as the default page
  * @return boolean Success
  */
@@ -23,6 +24,7 @@ function set_home_page($id) {
 	global $acl;
 	global $db;
 	global $debug;
+	global $log;
 
 	if (!$acl->check_permission('page_set_home')) {
 		$debug->add_trace('Need permission \'page_set_home\' to perform this action',true);
@@ -49,7 +51,7 @@ function set_home_page($id) {
 			return false;
 		} else {
 			$check_page = $db->sql_fetch_assoc($check_handle);
-			log_action('Set home page to \''.stripslashes($check_page['title']).'\'');
+			$log->new_message('Set home page to \''.$check_page['title'].'\'');
 			return true;
 		}
 	} else {
@@ -80,6 +82,7 @@ if (isset($_POST['text_id']) && strlen($_POST['text_id']) > 0) {
 	}
 }
 if ($_GET['action'] == 'new') {
+	$title = addslashes($_POST['title']);
 	$menu = checkbox($_POST['menu']);
 	if (!isset($_POST['show_title'])) {
 		$_POST['show_title'] = NULL;
@@ -88,16 +91,17 @@ if ($_GET['action'] == 'new') {
 	$page_group = (int)$_POST['page_group'];
 	$show_title = checkbox($_POST['show_title']);
 	// Add page to database.
-	$new_page_query = 'INSERT INTO ' . PAGE_TABLE . '
-		(text_id,title,meta_desc,show_title,type,menu,parent,page_group)
-		VALUES (\''.$text_id.'\',\''.addslashes($_POST['title']).'\',\''.addslashes($_POST['meta_desc']).'\','.$show_title.',
+	$new_page_query = 'INSERT INTO `'.PAGE_TABLE.'`
+		(`text_id`,`title`,`meta_desc`,`show_title`,`type`,`menu`,`parent`,`page_group`)
+		VALUES
+		(\''.$text_id.'\',\''.$title.'\',\''.addslashes($_POST['meta_desc']).'\','.$show_title.',
 		\''.(int)$_POST['type'].'\','.$menu.','.$parent.','.$page_group.')';
 	$new_page = $db->sql_query($new_page_query);
 	if ($db->error[$new_page] === 1) {
 		$content .= 'Failed to add page.<br />';
 	} else {
 		$content .= 'Successfully added page.<br />'."\n";
-		log_action('New page \''.$_POST['title'].'\'');
+		$log->new_message('New page \''.$_POST['title'].'\'');
 	}
 } // IF 'new'
 
