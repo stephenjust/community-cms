@@ -56,6 +56,30 @@ function block_options_list_update() {
 }
 
 // Other functions
+function validate_form_field(module,field,field_id) {
+	var form_field = document.getElementById(field_id);
+	var form_value = form_field.value;
+	var pass_style = 'solid 1px #000000';
+	var fail_style = 'solid 1px #FF0000';
+
+	if (module == 'calendar' && field == 'date') {
+		if (form_value.match(/^[0-1][0-9]\/[0-3][0-9]\/[1-2][0-9]{3}$/)) {
+			form_field.style.border = pass_style;
+		} else {
+			form_field.style.border = fail_style;
+		}
+	}
+	if (module == 'calendar' && field == 'time') {
+		if (form_value.match(/^[0-1]?[0-9]:[0-9][0-9] ?[ap]m?$/i) ||
+			form_value.match(/^[0-2]?[0-9]:[0-5][0-9]$/i) ||
+			form_value.match(/^[0-1]?[0-9] ?[ap]m?$/i)) {
+			form_field.style.border = pass_style;
+		} else {
+			form_field.style.border = fail_style;
+		}
+	}
+}
+
 function update_dynamic_file_list() {
 	var urlBase = "./admin/scripts/dynamic_file_list.php";
 	var dynamiclistdiv = document.getElementById('dynamic_file_list');

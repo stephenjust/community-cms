@@ -13,9 +13,96 @@ if (@SECURITY != 1) {
 // ----------------------------------------------------------------------------
 
 /**
- *
+ * Create calendar event entry
  * @global acl $acl
  * @global db $db
+ * @global debug $debug
+ * @global Log $log
+ * @param string $title
+ * @param string $description
+ * @param string $author
+ * @param string $start_time
+ * @param string $end_time
+ * @param string $date
+ * @param integer $category
+ * @param string $location
+ * @param string $image
+ * @param boolean $hide
+ * @return integer See return codes in embedded comment
+ */
+function event_create($title,$description,$author,$start_time,$end_time,
+		$date,$category,$location,$image,$hide) {
+	global $acl;
+	global $db;
+	global $debug;
+	global $log;
+
+	/*
+	 * Return codes:
+	 * 1 - Success
+	 * 2 - Insufficient permissions
+	 * 3 - Invalidly formatted date
+	 * 4 - Missing field
+	 * 5 - Incorrect start or end time
+	 * 6 - Query failed
+	 */
+	if (!$acl->check_permission('date_create')) {
+		$debug->add_trace('Insufficient permissions',true);
+		return 2;
+	}
+
+	// Add location to list of saved locations
+	location_add($location);
+
+	$location = addslashes($location);
+	$title = addslashes($title);
+	$description = addslashes(remove_comments($description));
+	$author = addslashes($author);
+
+	if ($date == '') {
+		$date = date('d/m/Y');
+	}
+	if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#',$date)) {
+		$debug->add_trace('Invalid date format',true);
+		return 3;
+	}
+	$event_date_parts = explode('/',$date);
+	$year = $event_date_parts[2];
+	$month = $event_date_parts[0];
+	$day = $event_date_parts[1];
+
+	if ($start_time == "" || $end_time == "" || $year == "" || $title == "") {
+		$debug->add_trace('One or more fields was not filled out',true);
+		return 4;
+	}
+	$stime = explode('-',$start_time);
+	$etime = explode('-',$end_time);
+	$start_time = parse_time($start_time);
+	$end_time = parse_time($end_time);
+	if (!$start_time || !$end_time || $start_time > $end_time) {
+		$debug->add_trace('Invalid event times',true);
+		return 5;
+	}
+	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
+		(category,starttime,endtime,year,month,day,header,description,
+		location,author,image,hidden)
+		VALUES ("'.$category.'","'.$start_time.'","'.$end_time.'",
+		'.$year.','.$month.','.$day.',"'.$title.'","'.$description.'",
+		"'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
+	$create_date = $db->sql_query($create_date_query);
+	if ($db->error[$create_date] === 1) {
+		return 6;
+	}
+	$log->new_message('New date entry on '.$day.'/'.$month.'/'
+		.$year.' \''.stripslashes($title).'\'');
+	return 1;
+}
+
+/**
+ * Add a location to the list of saved locations
+ * @global acl $acl
+ * @global db $db
+ * @global debug $debug
  * @global Log $log
  * @param string $location
  * @return boolean Success
@@ -23,6 +110,7 @@ if (@SECURITY != 1) {
 function location_add($location) {
 	global $acl;
 	global $db;
+	global $debug;
 	global $log;
 
 	$location = addslashes($location);
@@ -103,7 +191,7 @@ function delete_category($id) {
 			return false;
 		} else {
 			$check_category = $db->sql_fetch_assoc($check_category_handle);
-			log_action('Deleted category \''.stripslashes($check_category['label']).'\'');
+			log_action('Deleted category \''.$check_category['label'].'\'');
 			return true;
 		}
 	} else {
@@ -187,14 +275,14 @@ function monthcal_get_date($day,$month,$year,$template) {
 			.'a='.$day_info['id'].'" class="calendar_event">';
 		if ($calendar_settings['month_show_cat_icons'] == 1) {
 			$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'
-			.' width="10px" height="10px" alt="'.stripslashes($day_info['label']).'" border="0px" />';
+			.' width="10px" height="10px" alt="'.$day_info['label'].'" border="0px" />';
 		}
 		if ($calendar_settings['month_show_stime'] == 1) {
 			$stime_tmp = explode(':',$day_info['starttime']);
 			$stime_tmp = mktime($stime_tmp[0],$stime_tmp[1]);
 			$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$stime_tmp).'</span> ';
 		}
-		$dates .= stripslashes($day_info['header']).'</a><br />'."\n";
+		$dates .= $day_info['header'].'</a><br />'."\n";
 	}
 	$template->day_events = $dates;
 	return (string)$template;

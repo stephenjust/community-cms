@@ -43,28 +43,23 @@ switch ($_GET['action']) {
 		break;
 
 	case 'new':
-		$title = addslashes($_POST['title']);
-		$item_content = addslashes(remove_comments($_POST['content']));
-		$author = addslashes($_POST['author']);
-		$start_time = $_POST['stime'];
-		$end_time = $_POST['etime'];
-		$category = $_POST['category'];
+		$create_return = event_create($_POST['title'],
+				$_POST['content'],
+				$_POST['author'],
+				$_POST['stime'],
+				$_POST['etime'],
+				$_POST['date'],
+				$_POST['category'],
+				$_POST['location'],
+				$image,
+				$hide);
 
-		// Add location to database
-		location_add($_POST['location']);
+		// Parse the event date so that 'manage' tab can default to the
+		// correct place
+		$event_date_parts = explode('/',$_POST['date']);
+		$year = isset($event_date_parts[2]) ? $event_date_parts[2] : date('Y');
+		$month = isset($event_date_parts[0]) ? $event_date_parts[0] : date('m');
 
-		// Format date for insertion...
-		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
-		if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#',$event_date)) {
-			$content .= 'Invalidly formatted date. Use MM/DD/YYYY format.<br />'."\n";
-			break;
-		}
-		$event_date_parts = explode('/',$event_date);
-		$year = $event_date_parts[2];
-		$month = $event_date_parts[0];
-		$day = $event_date_parts[1];
-
-		// Store month and year so that 'manage' tab will default here
 		if (!isset($_POST['month'])) {
 			$_POST['month'] = $month;
 		}
@@ -72,31 +67,26 @@ switch ($_GET['action']) {
 			$_POST['year'] = $year;
 		}
 
-		if ($start_time == "" || $end_time == "" || $year == "" || $title == "") {
-			$content .= 'One or more fields was not filled out. Please complete the fields marked with a star and resubmit.<br />'."\n";
-			break;
-		}
-		$stime = explode('-',$start_time);
-		$etime = explode('-',$end_time);
-		$start_time = parse_time($start_time);
-		$end_time = parse_time($end_time);
-		if (!$start_time || !$end_time || $start_time > $end_time) {
-			$content .= "You did not fill out one or more of the times properly. Please fix the problem and resubmit.";
-		} else {
-			$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
-				(category,starttime,endtime,year,month,day,header,description,
-				location,author,image,hidden)
-				VALUES ("'.$category.'","'.$start_time.'","'.$end_time.'",
-				'.$year.','.$month.','.$day.',"'.$title.'","'.$item_content.'",
-				"'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
-			$create_date = $db->sql_query($create_date_query);
-			if ($db->error[$create_date] === 1) {
-				$content .= 'Failed to create date information.<br />';
-			} else {
-				$content .= 'Successfully created date information. '
-					.log_action('New date entry on '.$day.'/'.$month.'/'
-					.$year.' \''.stripslashes($title).'\'');
-			}
+		// Parse error codes from function
+		switch ($create_return) {
+			default:
+				$content .= '<span class="errormessage">Failed to create event.</span><br />';
+				break;
+			case 1:
+				$content .= 'Successfully created event.<br />';
+				break;
+			case 2:
+				$content .= '<span class="errormessage">You do not have the necessary permissions to create an event.</span><br />';
+				break;
+			case 3:
+				$content .= '<span class="errormessage">Your event\'s date was formatted invalidly. It should be in the format dd/mm/yyyy.</span><br />';
+				break;
+			case 4:
+				$content .= '<span class="errormessage">You forgot to fill out one or more fields.</span><br />';
+				break;
+			case 5:
+				$content .= '<span class="errormessage">Invalid start or end time. Your event cannot end before it begins.</span><br />';
+				break;
 		}
 		break;
 
@@ -265,7 +255,7 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 		<td>'.date('M d, Y',$cal_time).'</td>
 		<td>'.$starttime.'</td>
 		<td>'.$endtime.'</td>
-		<td>'.stripslashes($cal['header']).'</td>
+		<td>'.$cal['header'].'</td>
 		<td><a href="admin.php?module=calendar_edit_date&amp;id='.$cal['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
 		height="16px" border="0px" /></a></td>
@@ -286,8 +276,8 @@ $tab_layout->add_tab('Manage Events',$tab_content['manage']);
 $form_create = new form;
 $form_create->set_target('admin.php?module=calendar&amp;action=new');
 $form_create->set_method('post');
-$form_create->add_hidden('author',stripslashes($_SESSION['name']));
-$form_create->add_textbox('title','Heading*',stripslashes($_POST['title']));
+$form_create->add_hidden('author',$_SESSION['name']);
+$form_create->add_textbox('title','Heading*',$_POST['title']);
 $category_list_query = 'SELECT cat_id,label FROM ' . CALENDAR_CATEGORY_TABLE . '
 	ORDER BY cat_id ASC';
 $category_list_handle = $db->sql_query($category_list_query);
@@ -303,13 +293,13 @@ for ($b = 1; $b <= $db->sql_num_rows($category_list_handle); $b++) {
 if (!isset($_POST['location'])) {
 	$new_location = get_config('calendar_default_location');
 } else {
-	$new_location = stripslashes($_POST['location']);
+	$new_location = addslashes($_POST['location']);
 }
 $form_create->add_select('category','Category',$category_ids,$category_names,$category);
-$form_create->add_textbox('stime','Start Time*',$_POST['stime']);
-$form_create->add_textbox('etime','End Time*',$_POST['etime']);
-$form_create->add_date_cal('date','Date',stripslashes($_POST['date']));
-$form_create->add_textarea('content','Description',stripslashes($_POST['content']));
+$form_create->add_textbox('stime','Start Time*',$_POST['stime'],'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"');
+$form_create->add_textbox('etime','End Time*',$_POST['etime'],'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
+$form_create->add_date_cal('date','Date',$_POST['date'],'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
+$form_create->add_textarea('content','Description',$_POST['content']);
 $form_create->add_textbox('location','Location',$new_location);
 $form_create->add_icon_list('image','Image','newsicons',$image);
 $form_create->add_checkbox('hide','Hidden',$hide);
