@@ -74,6 +74,11 @@ class page {
 	 * @var string
 	 */
 	public $meta_description;
+	/**
+	 * Page group
+	 * @var integer
+	 */
+	public $page_group = 0;
 	function __construct() {
 
 	}
@@ -187,6 +192,7 @@ class page {
 		$this->blocksright = $page['blocks_right'];
 		$this->exists = 1;
 		$this->meta_description = $page['meta_desc'];
+		$this->page_group = $page['page_group'];
 		$this->type = $page['filename'];
 		if (strlen($this->text_id) == 0) {
 			$this->url_reference = 'id='.$this->id;
@@ -440,8 +446,13 @@ class page {
 		$edit_bar->set_label('Page');
 		$edit_bar->class = 'edit_bar page_edit_bar';
 		if ($this->id != 0) {
+			$permission_list = array('admin_access','page_edit');
+			if ($this->page_group !== 0) {
+				$permission_list[] = 'pagegroupedit-'.$this->page_group;
+			}
 			$edit_bar->add_control('admin.php?module=page&amp;action=edit&amp;id='.$this->id,
-					'edit.png','Edit',array('admin_access','page_edit'));
+					'edit.png','Edit',$permission_list);
+			unset($permission_list);
 		}
 		$template->page_edit_bar = $edit_bar;
 

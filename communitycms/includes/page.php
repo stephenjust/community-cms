@@ -464,12 +464,8 @@ function page_editable($page_id) {
 	$page_id = (int)$page_id;
 
 	// First, check for permission to edit specific page group
-	if ($acl->check_permission('pagegroupedit-'.$page_id)) {
-		return true;
-	}
-
-	// Then check for global permission
-	if ($acl->check_permission('pageeditall')) {
+	if ($acl->check_permission('pagegroupedit-'.$page_id) &&
+		$acl->check_permission('page_edit')) {
 		return true;
 	}
 
