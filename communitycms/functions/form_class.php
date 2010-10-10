@@ -332,7 +332,11 @@ class form {
 			}
 		}
 		if ($nopageallowed == 1) {
-			$options .= '<option value="0">No Page</option>'."\n";
+			if ($value == 0) {
+				$options .= '<option value="0" selected>No Page</option>'."\n";
+			} else {
+				$options .= '<option value="0">No Page</option>'."\n";
+			}
 		}
 		$form_var = '<div class="admin_form_element"><label for="_'.$name.'">'.$label.'</label>
 			<select name="'.$name.'" id="_'.$name.'" '.$props.'>
