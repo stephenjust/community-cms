@@ -13,6 +13,7 @@ if (@SECURITY != 1) {
 
 /**
  * get_block - Get contents of a block
+ * @global acl $acl
  * @global db $db
  * @param int $block_id ID of block to display
  * @return string
@@ -22,6 +23,7 @@ function get_block($block_id = NULL) {
 	if(strlen($block_id) < 1 || $block_id <= 0) {
 		return;
 	}
+	global $acl;
 	global $db;
 	$block_content = NULL;
 	$block_query = 'SELECT * FROM ' . BLOCK_TABLE . '
@@ -32,7 +34,9 @@ function get_block($block_id = NULL) {
 			$block_info = $db->sql_fetch_assoc($block_handle);
 			$block_content .= include(ROOT.'content_blocks/'.$block_info['type'].'_block.php');
 		} else {
-			$block_content .= '<div class="notification"><strong>Error:</strong> Could not load block '.$block_id.'.</div>';
+			if ($acl->check_permission('show_fe_errors')) {
+				$block_content .= '<div class="notification"><strong>Error:</strong> Could not load block '.$block_id.'.</div>';
+			}
 		}
 	}
 	return $block_content;
