@@ -117,7 +117,7 @@ function block_edit_form($type,$vars = array()) {
 			if (!isset($vars['show_border'])) {
 				$vars['show_border'] = 'yes';
 			}
-			$news_query = 'SELECT `news`.`name`, `news`.`id`, `page`.`title`
+			$news_query = 'SELECT `news`.`name`, `news`.`id`, `news`.`page`, `page`.`title`
 				FROM `'.NEWS_TABLE.'` `news`
 				LEFT JOIN `'.PAGE_TABLE.'` `page`
 				ON `news`.`page` = `page`.`id`
@@ -134,8 +134,10 @@ function block_edit_form($type,$vars = array()) {
 			$return .= 'News Article <select name="article_id">'."\n";
 			for ($i = 1; $i <= $num_articles; $i++) {
 				$news_result = $db->sql_fetch_assoc($news_handle);
-				if ($news_result['title'] == NULL) {
+				if ($news_result['title'] == NULL && $news_result['page'] == 0) {
 					$news_result['title'] = 'No Page';
+				} elseif ($news_result['title'] == NULL && $news_result['page'] != 0) {
+					$news_result['title'] = 'Unknown Page';
 				}
 				if ($vars['article_id'] == $news_result['id']) {
 					$return .= "\t".'<option value="'.$news_result['id'].'" selected>'.$news_result['title'].' - '.$news_result['name'].'</option>'."\n";
