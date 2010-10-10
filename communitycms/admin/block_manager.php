@@ -75,80 +75,14 @@ switch ($_GET['action']) {
 		$edit_block = new block;
 		$edit_block->block_id = $edit_id;
 		$edit_block->get_block_information();
-
-		// Read block info file
-		$file_path = ROOT.'includes/blocks.xml';
-		$xmlreader = new XMLReader;
-		$xmlreader->open($file_path);
-		$correct_block = false;
-		$options_list = false;
-		$attribute_count = 0;
-		$attribute_list = array();
-		$options = NULL;
-		while ($xmlreader->read()) {
-			if ($xmlreader->name == 'block' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
-				if ($xmlreader->getAttribute('name') == $edit_block->type) {
-					$correct_block = true;
-				}
-			}
-			if ($xmlreader->name == 'block' && $xmlreader->nodeType == XMLREADER::END_ELEMENT) {
-				$correct_block = false;
-			}
-
-			if ($xmlreader->name == 'attribute' && $xmlreader->nodeType == XMLREADER::ELEMENT && $correct_block == true) {
-				$options .= $xmlreader->getAttribute('label')." \n";
-				$attribute_list[] = $xmlreader->getAttribute('name');
-				switch ($xmlreader->getAttribute('type')) {
-					default:
-						$options .= 'Not supported.<br />'."\n";
-						break;
-					case 'int':
-						$options .= '<input type="text" maxlength="9" size="3" name="'
-							.$xmlreader->getAttribute('name').'" value="'
-							.$edit_block->attribute[$xmlreader->getAttribute('name')].'"/><br />';
-						break;
-					case 'option':
-						$options .= '<select name="'.$xmlreader->getAttribute('name').'">'."\n";
-						$options_list = true;
-						$field_name = $xmlreader->getAttribute('name');
-						break;
-				}
-				$attribute_count++;
-			}
-
-			if ($xmlreader->name == 'value'
-					&& $xmlreader->nodeType == XMLREADER::ELEMENT
-					&& $options_list == true
-					&& $correct_block == true) {
-				if ($edit_block->attribute[$field_name] == $xmlreader->readString()) {
-					$options .= '<option value="'.$xmlreader->readString().'" selected>'.$xmlreader->readString().'</option>';
-				} else {
-					$options .= '<option value="'.$xmlreader->readString().'">'.$xmlreader->readString().'</option>';
-				}
-			}
-
-			if ($xmlreader->name == 'values'
-					&& $xmlreader->nodeType == XMLREADER::END_ELEMENT
-					&& $options_list == true
-					&& $correct_block == true) {
-				$options .= '</select><br />'."\n";
-				unset($field_name);
-				$options_list = false;
-			}
-		}
-		$xmlreader->close();
-		$attribute_list = array2csv($attribute_list);
-		if ($attribute_count == 0) {
-			$options .= 'No options.<br />';
-		}
+		$options = block_edit_form($edit_block->type,$edit_block->attribute);
 
 		$tab_content['edit'] = NULL;
 		$tab_content['edit'] .= 'Block Type: '.$edit_block->type.'<br />'."\n";
 		$tab_content['edit'] .= 'Options:<br />'."\n";
 		$tab_content['edit'] .= '<form method="post" action="?module=block_manager&amp;action=edit_save">'."\n"
-			.$options.'<input type="hidden" name="attributes" value="'.$attribute_list.'" />'
-			.'<input type="hidden" name="id" value="'.$edit_id.'" />'."\n";
-		if ($attribute_count != 0) {
+			.$options.'<input type="hidden" name="id" value="'.$edit_id.'" />'."\n";
+		if (count($edit_block->attribute) != 0) {
 			$tab_content['edit'] .= '<input type="Submit" value="Save Changes" />';
 		}
 		$tab_content['edit'] .= '</form><form method="post" action="?module=block_manager"><input type="submit" value="Go back" /></form>'."\n";
