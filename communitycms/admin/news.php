@@ -142,8 +142,8 @@ switch ($_GET['action']) {
 			$publish = (int)get_config('news_default_publish_value');
 		}
 		$new_article_query = 'INSERT INTO `' . NEWS_TABLE . "`
-			(`page`,`name`,`description`,`author`,`image`,`date`,`date_edited`,`showdate`,`publish`)
-			VALUES ($page,'$title','$article_content','$author','$image','".DATE_TIME."','','$showdate',$publish)";
+			(`page`,`name`,`description`,`author`,`image`,`date`,`showdate`,`publish`)
+			VALUES ($page,'$title','$article_content','$author','$image','".DATE_TIME."','$showdate',$publish)";
 		$new_article = $db->sql_query($new_article_query);
 		if($db->error[$new_article] === 1) {
 			$content .= 'Failed to add article. <br />';
