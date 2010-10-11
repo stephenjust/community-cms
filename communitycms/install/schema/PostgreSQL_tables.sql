@@ -65,7 +65,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->calendar_categories" (
 	"cat_id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq'),
 	"label" text NOT NULL,
 	"colour" text NOT NULL,
-	"description" text NOT NULL,
+	"description" text NULL default NULL,
 	PRIMARY KEY ("cat_id")
 );
 SELECT setval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq', (SELECT max("cat_id") FROM "<!-- $DB_PREFIX$ -->calendar_categories"));

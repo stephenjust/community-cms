@@ -281,6 +281,10 @@ switch ($db_version) {
 			DROP `email_hide`,
 			CHANGE `phone` `phone` CHAR( 11 ) NULL DEFAULT NULL';
 
+		// Make sure calendar categories description has a default NULL value
+		$query[] = 'ALTER TABLE `'.CALENDAR_CATEGORY_TABLE.'`
+			CHANGE `description` `description` text NULL default NULL';
+
 		// Move news config into global config table (and add new config values)
 		$query[] = 'INSERT INTO `'.CONFIG_TABLE.'` (\'config_name\',\'config_value\')
 			VALUES
