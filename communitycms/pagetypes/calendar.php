@@ -72,10 +72,11 @@ switch ($view) {
 // ----------------------------------------------------------------------------
 
 		// Load all events for the current month
-		$cal_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . ' date,
-			' . CALENDAR_CATEGORY_TABLE . ' cat
-			WHERE date.month = \''.$month_cal->month.'\' AND date.year = \''.$month_cal->year.'\'
-			AND date.category = cat.cat_id
+		$cal_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . ' date
+			LEFT JOIN '.CALENDAR_CATEGORY_TABLE.' cat
+			ON date.category = cat.cat_id
+			WHERE date.month = \''.$month_cal->month.'\'
+			AND date.year = \''.$month_cal->year.'\'
 			ORDER BY `date`.`day` ASC, `date`.`starttime` ASC';
 		$cal_info_handle = $db->sql_query($cal_info_query);
 		if ($db->error[$cal_info_handle] === 1) {
