@@ -113,22 +113,12 @@ switch ($_GET['action']) {
 		}
 		break;
 	case 'create_category':
-		$category_name = addslashes($_POST['category_name']);
-		if ($category_name != "") {
-			if (!isset($_POST['colour'])) {
-				$content .= 'No colour was selected for your new category. Category not created.<br />'."\n";
-				break;
-			}
-			$create_category_query = 'INSERT INTO ' . CALENDAR_CATEGORY_TABLE . '
-				(label,colour) VALUES (\''.$category_name.'\',\''.$_POST['colour'].'\')';
-			$create_category = $db->sql_query($create_category_query);
-			if($db->error[$create_category] === 1) {
-				$content .= 'Failed to create category \''.$category_name.'\' ';
-			} else {
-				$content .= 'Successfully created category. '.log_action('New category \''.$category_name.'\'');
-			}
+		$cat_name = $_POST['category_name'];
+		$cat_icon = (isset($_POST['colour'])) ? $_POST['colour'] : NULL;
+		if (event_cat_create($cat_name,$cat_icon)) {
+			$content .= 'Successfully created event category.<br />'."\n";
 		} else {
-			$content .= 'You did not provide a name for your new category.';
+			$content .= '<span class="errormessage">Failed to create new event category.</span><br />'."\n";
 		}
 		break;
 	case 'delete_category':

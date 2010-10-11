@@ -99,6 +99,43 @@ function event_create($title,$description,$author,$start_time,$end_time,
 }
 
 /**
+ * Create a calendar event category
+ * @global db $db
+ * @global debug $debug
+ * @global Log $log
+ * @param string $label Name of category
+ * @param string $icon Name of PNG icon file (minus .png extension)
+ * @param string $description Unused currently
+ * @return boolean 
+ */
+function event_cat_create($label,$icon,$description = NULL) {
+	global $db;
+	global $debug;
+	global $log;
+
+	$label = addslashes($label);
+	if (strlen($label) < 1) {
+		$debug->add_trace('Category name is too short',true);
+		return false;
+	}
+	if (strlen($icon) < 1) {
+		$debug->add_trace('Icon selection is invalid',true);
+		return false;
+	}
+	$query = 'INSERT INTO `'.CALENDAR_CATEGORY_TABLE.'`
+		(`label`,`colour`)
+		VALUES
+		(\''.$label.'\',\''.$icon.'\')';
+	$handle = $db->sql_query($query);
+	if($db->error[$handle] === 1) {
+		$debug->add_trace('Failed to create category',true);
+		return false;
+	}
+	$log->new_message('Created event category \''.stripslashes($label).'\'');
+	return true;
+}
+
+/**
  * Add a location to the list of saved locations
  * @global acl $acl
  * @global db $db
