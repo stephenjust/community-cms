@@ -133,8 +133,8 @@ switch ($view) {
 				}
 
 				// Give broken categories a default colour of red
-				if ($cal_info_result['colour'] == '') {
-					$cal_info_result['colour'] = 'red';
+				if ($cal_info_result['colour'] == NULL) {
+					$cal_info_result['colour'] = 'unknown';
 				}
 
 				// Create the link to the event page

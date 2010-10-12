@@ -104,7 +104,7 @@ function event_create($title,$description,$author,$start_time,$end_time,
  * @global debug $debug
  * @global Log $log
  * @param string $label Name of category
- * @param string $icon Name of PNG icon file (minus .png extension)
+ * @param string $icon Name of PNG icon file (icon-________.png)
  * @param string $description Unused currently
  * @return boolean 
  */

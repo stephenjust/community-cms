@@ -81,9 +81,12 @@ class calendar_event {
 	function get_event($id) {
 		global $db;
 		global $page;
-		$this->event_query = 'SELECT cal.*, cat.label
-			FROM ' . CALENDAR_TABLE . ' cal, ' . CALENDAR_CATEGORY_TABLE . ' cat
-			WHERE cal.id = '.(int)$id.' AND cal.category = cat.cat_id LIMIT 1';
+		$this->event_query = 'SELECT `cal`.*, `cat`.`label`
+			FROM `'.CALENDAR_TABLE.'` cal
+			LEFT JOIN `'.CALENDAR_CATEGORY_TABLE.'` cat
+			ON `cal`.`category` = `cat`.`cat_id`
+			WHERE `cal`.`id` = '.(int)$id.'
+			LIMIT 1';
 		$event_handle = $db->sql_query($this->event_query);
 		if($db->error[$event_handle] === 1) {
 			header('HTTP/1.1 404 Not Found');
@@ -123,7 +126,8 @@ class calendar_event {
 		} else {
 			$template_event->event_image = NULL;
 		}
-		$template_event->event_category = stripslashes($event_info['label']);
+		$event_category = ($event_info['label'] == NULL) ? 'Unknown Category' : $event_info['label'];
+		$template_event->event_category = $event_category;
 		$template_event->event_description = stripslashes($event_info['description']);
 
 		// Check if we need to fill the location field
