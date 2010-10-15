@@ -1,4 +1,11 @@
 <?php
+/**
+ * Community CMS
+ *
+ * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @author stephenjust@users.sourceforge.net
+ * @package CommunityCMS.help
+ */
 	// Security Check
 	if (@SECURITY != 1 || @ADMIN != 1) {
 		header('HTTP/1.1 403 Forbidden');

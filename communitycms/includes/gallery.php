@@ -11,6 +11,10 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
+/**
+ * Photo gallery class
+ * @package CommunityCMS.main
+ */
 class gallery {
 	/**
 	 * Gallery ID
@@ -47,6 +51,13 @@ class gallery {
 		}
 	}
 
+	/**
+	 * Fetch gallery information from the database
+	 * @todo This only seems to be used to check if the gallery exists
+	 * @global db $db Database object
+	 * @global debug $debug Debugging object
+	 * @return boolean Success
+	 */
 	function get_info() {
 		global $db;
 		global $debug;
@@ -65,6 +76,7 @@ class gallery {
 
 		$info = $db->sql_fetch_assoc($info_handle);
 		$this->info_file = 'scripts/gallery.php?id='.$this->id;
+		return true;
 	}
 
 	function __toString() {
