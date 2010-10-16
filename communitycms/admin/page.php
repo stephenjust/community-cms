@@ -21,40 +21,22 @@ if (!$acl->check_permission('adm_page')) {
 
 $page_id = (isset($_GET['id']) && (int)$_GET['id'] != 0) ? (int)$_GET['id'] : NULL;
 $page_id = (isset($_POST['id']) && (int)$_POST['id'] != 0 && $page_id == NULL) ? (int)$_POST['id'] : $page_id;
-$text_id = NULL;
-if (isset($_POST['text_id']) && strlen($_POST['text_id']) > 0) {
-	$text_id_query = 'SELECT * FROM ' . PAGE_TABLE . '
-		WHERE text_id = \''.$_POST['text_id'].'\' LIMIT 1';
-	$text_id_handle = $db->sql_query($text_id_query);
-	if ($db->sql_num_rows($text_id_handle) == 1) {
-		$content .= 'The Text ID you set is not unique.<br />';
+if ($_GET['action'] == 'new') {
+	$show_title = (isset($_POST['show_title'])) ? (bool)checkbox($_POST['show_title']) : false;
+	$show_menu = (isset($_POST['menu'])) ? (bool)checkbox($_POST['menu']) : false;
+	if (page_add($_POST['text_id'],
+			$_POST['title'],
+			$_POST['meta_desc'],
+			$_POST['type'],
+			$show_title,
+			$show_menu,
+			$_POST['parent'],
+			$_POST['page_group'])) {
+		$content .= 'Successfully added page.<br />'."\n";
 	} else {
-		$text_id = $_POST['text_id'];
+		$content .= '<span class="errormessage">Failed to add page.</span><br />'."\n";
 	}
 }
-if ($_GET['action'] == 'new') {
-	$title = addslashes($_POST['title']);
-	$menu = checkbox($_POST['menu']);
-	if (!isset($_POST['show_title'])) {
-		$_POST['show_title'] = NULL;
-	}
-	$parent = (int)$_POST['parent'];
-	$page_group = (int)$_POST['page_group'];
-	$show_title = checkbox($_POST['show_title']);
-	// Add page to database.
-	$new_page_query = 'INSERT INTO `'.PAGE_TABLE.'`
-		(`text_id`,`title`,`meta_desc`,`show_title`,`type`,`menu`,`parent`,`page_group`)
-		VALUES
-		(\''.$text_id.'\',\''.$title.'\',\''.addslashes($_POST['meta_desc']).'\','.$show_title.',
-		\''.(int)$_POST['type'].'\','.$menu.','.$parent.','.$page_group.')';
-	$new_page = $db->sql_query($new_page_query);
-	if ($db->error[$new_page] === 1) {
-		$content .= 'Failed to add page.<br />';
-	} else {
-		$content .= 'Successfully added page.<br />'."\n";
-		$log->new_message('New page \''.stripslashes($title).'\'');
-	}
-} // IF 'new'
 
 // ----------------------------------------------------------------------------
 
@@ -152,41 +134,41 @@ switch ($_GET['action']) {
 	case 'unhide':
 		// FIXME: Implement page hiding
 		break;
-}
 
 // ----------------------------------------------------------------------------
 
-if ($_GET['action'] == 'editsave') {
-	// TODO: Make sure you have permission to edit this page
-	$set_text_id = NULL;
-	if(!isset($_POST['text_id'])) {
-		$_POST['text_id'] = NULL;
-	}
-	if ($text_id == $_POST['text_id'] && $text_id != NULL) {
-		$set_text_id = "`text_id`='$text_id', ";
-	}
-	$title = addslashes($_POST['title']);
-	$meta_desc = addslashes($_POST['meta_desc']);
-	$page_group = (int)$_POST['page_group'];
-	$parent = (int)$_POST['parent'];
-	$menu = (isset($_POST['hidden'])) ? checkbox($_POST['hidden']) : 0;
-	$show_title = (isset($_POST['show_title'])) ? checkbox($_POST['show_title']) : 0;
-	$blocks_left = addslashes($_POST['blocks_left']);
-	$blocks_right = addslashes($_POST['blocks_right']);
-	$save_query = 'UPDATE ' . PAGE_TABLE . "
-		SET {$set_text_id}`title`='$title', `meta_desc`='$meta_desc',
-		`menu`=$menu, `show_title`=$show_title, `parent`=$parent,
-		`page_group`=$page_group, `blocks_left`='$blocks_left',
-		`blocks_right`='$blocks_right'
-		WHERE id = $page_id";
-	$save_handle = $db->sql_query($save_query);
-	if ($db->error[$save_handle] === 1) {
-		$content .= 'Failed to edit page.<br />';
-	} else {
+	case 'editsave':
+		// TODO: Make sure you have permission to edit this page
+		$set_text_id = NULL;
+		if(!isset($_POST['text_id'])) {
+			$_POST['text_id'] = NULL;
+		}
+		if (page_check_unique_id($_POST['text_id']) && $_POST['text_id'] != NULL) {
+			$set_text_id = "`text_id`='{$_POST['text_id']}', ";
+		}
+		$title = addslashes($_POST['title']);
+		$meta_desc = addslashes($_POST['meta_desc']);
+		$page_group = (int)$_POST['page_group'];
+		$parent = (int)$_POST['parent'];
+		$menu = (isset($_POST['hidden'])) ? checkbox($_POST['hidden']) : 0;
+		$show_title = (isset($_POST['show_title'])) ? checkbox($_POST['show_title']) : 0;
+		$blocks_left = addslashes($_POST['blocks_left']);
+		$blocks_right = addslashes($_POST['blocks_right']);
+		$save_query = 'UPDATE ' . PAGE_TABLE . "
+			SET {$set_text_id}`title`='$title', `meta_desc`='$meta_desc',
+			`menu`=$menu, `show_title`=$show_title, `parent`=$parent,
+			`page_group`=$page_group, `blocks_left`='$blocks_left',
+			`blocks_right`='$blocks_right'
+			WHERE id = $page_id";
+		$save_handle = $db->sql_query($save_query);
+		if ($db->error[$save_handle] === 1) {
+			$content .= '<span class="errormessage">Failed to edit page.</span><br />'."\n";
+			break;
+		}
 		$content .= 'Updated page information.<br />'."\n";
 		log_action('Updated information for page \''.stripslashes($title).'\'');
-	}
-} // IF 'editsave'
+		break;
+}
 
 // ----------------------------------------------------------------------------
 

@@ -55,7 +55,110 @@ function page_get_info($id,$fields = array('*')) {
 	return $page_info;
 }
 
-function page_add() {
+/**
+ * Check if a new text ID is unique
+ * @global db $db
+ * @global debug $debug
+ * @param string $text_id
+ * @return boolean 
+ */
+function page_check_unique_id($text_id) {
+	global $db;
+	global $debug;
+
+	if (strlen($text_id) == 0) {
+		$debug->add_trace('Text ID is empty',true);
+		return false;
+	}
+	$text_id_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+		WHERE `text_id` = \''.$text_id.'\' LIMIT 1';
+	$text_id_handle = $db->sql_query($text_id_query);
+	if ($db->sql_num_rows($text_id_handle) == 1) {
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Create a page record
+ * @global acl $acl
+ * @global db $db
+ * @global debug $debug
+ * @global log $log
+ * @param string $text_id
+ * @param string $title
+ * @param string $meta_desc
+ * @param integer $type
+ * @param boolean $show_title
+ * @param boolean $show_menu
+ * @param integer $parent
+ * @param integer $group
+ * @return boolean
+ */
+function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$parent,$group) {
+	global $acl;
+	global $db;
+	global $debug;
+	global $log;
+
+	// Validate parameters
+	if (strlen($text_id) == 0) {
+		$text_id = NULL;
+	} else {
+		$text_id = strtolower(str_replace(array(' ','/','\\','?','&','\'','"'),'_',$text_id));
+		// Make sure text ID is unique
+		if (!page_check_unique_id($text_id)) {
+			$text_id = NULL;
+		}
+	}
+	if (strlen($title) == 0) {
+		$debug->add_trace('Page title is not long enough.',true);
+		return false;
+	}
+	if (strlen($meta_desc) == 0) {
+		$meta_desc = NULL;
+	}
+	if (!is_numeric($type)) {
+		$debug->add_trace('Page type is not numeric',true);
+		return false;
+	}
+	$type = (int)$type;
+	if (!is_bool($show_title)) {
+		$debug->add_trace('Show title value is not a boolean',true);
+		return false;
+	}
+	$show_title = ($show_title === true) ? 1 : 0;
+	if (!is_bool($show_menu)) {
+		$debug->add_trace('Show menu value is not a boolean',true);
+		return false;
+	}
+	$show_menu = ($show_menu === true) ? 1 : 0;
+	if (!is_numeric($parent)) {
+		$debug->add_trace('Parent page ID is not numeric',true);
+		return false;
+	}
+	$parent = (int)$parent;
+	if (!is_numeric($group)) {
+		$debug->add_trace('Page group is not numeric',true);
+		return false;
+	}
+	$group = (int)$group;
+
+	// Add page to database.
+	$new_page_query = 'INSERT INTO `'.PAGE_TABLE.'`
+		(`text_id`,`title`,`meta_desc`,`show_title`,`type`,`menu`,`parent`,`page_group`)
+		VALUES
+		(\''.$text_id.'\',\''.addslashes($title).'\',\''.addslashes($meta_desc).'\','.$show_title.',
+		'.$type.','.$show_menu.','.$parent.','.$group.')';
+	$new_page = $db->sql_query($new_page_query);
+	if ($db->error[$new_page] === 1) {
+		return false;
+	}
+	$log->new_message('New page \''.$title.'\'');
+	return true;
+}
+
+function page_add_link() {
 	// FIXME: Stub
 }
 
