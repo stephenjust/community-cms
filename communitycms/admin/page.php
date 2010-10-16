@@ -11,55 +11,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-/**
- * set_home_page - Change the default CMS page
- * @global object $acl Permission object
- * @global db $db Database connection object
- * @global debug $debug Debugger object
- * @global Log $log Logging object
- * @param integer $id Page ID to set as the default page
- * @return boolean Success
- */
-function set_home_page($id) {
-	global $acl;
-	global $db;
-	global $debug;
-	global $log;
-
-	if (!$acl->check_permission('page_set_home')) {
-		$debug->add_trace('Need permission \'page_set_home\' to perform this action',true);
-		return false;
-	}
-
-	// Validate variables
-	if (!is_numeric($id)) {
-		$debug->add_trace('Page ID is not numeric',true);
-		return false;
-	}
-	$id = (int)$id;
-
-	$check_query = 'SELECT `id`,`title` FROM `'.PAGE_TABLE."`
-		WHERE `id` = $id LIMIT 1";
-	$check_handle = $db->sql_query($check_query);
-	if ($db->error[$check_handle] === 1) {
-		$debug->add_trace('Failed to read page table',true);
-		return false;
-	}
-	if ($db->sql_num_rows($check_handle) == 1) {
-		if(!set_config('home',$id)) {
-			$debug->add_trace('Failed to set config value',true);
-			return false;
-		} else {
-			$check_page = $db->sql_fetch_assoc($check_handle);
-			$log->new_message('Set home page to \''.$check_page['title'].'\'');
-			return true;
-		}
-	} else {
-		$debug->add_trace('Page ID provided does not belong to an existing page',true);
-		return false;
-	}
-}
-
 $content = NULL;
 global $debug;
 
@@ -140,7 +91,7 @@ switch ($_GET['action']) {
 		break;
 
 	case 'home':
-		if (set_home_page($page_id)) {
+		if (page_set_home($page_id)) {
 			$content .= 'Changed home page.<br />'."\n";
 		} else {
 			$content .= 'Failed to change home page.<br />'."\n";

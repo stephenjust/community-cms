@@ -402,6 +402,53 @@ function page_move_down($id) {
 	return true;
 }
 
+/**
+ * set_home_page - Change the default CMS page
+ * @global object $acl Permission object
+ * @global db $db Database connection object
+ * @global debug $debug Debugger object
+ * @global Log $log Logging object
+ * @param integer $id Page ID to set as the default page
+ * @return boolean Success
+ */
+function page_set_home($id) {
+	global $acl;
+	global $db;
+	global $debug;
+	global $log;
+
+	if (!$acl->check_permission('page_set_home')) {
+		$debug->add_trace('Need permission \'page_set_home\' to perform this action',true);
+		return false;
+	}
+
+	// Validate variables
+	if (!is_numeric($id)) {
+		$debug->add_trace('Page ID is not numeric',true);
+		return false;
+	}
+	$id = (int)$id;
+
+	$check_query = 'SELECT `id`,`title` FROM `'.PAGE_TABLE."`
+		WHERE `id` = $id LIMIT 1";
+	$check_handle = $db->sql_query($check_query);
+	if ($db->error[$check_handle] === 1) {
+		$debug->add_trace('Failed to read page table',true);
+		return false;
+	}
+	if ($db->sql_num_rows($check_handle) != 1) {
+		$debug->add_trace('Page does not exist',true);
+		return false;
+	}
+	if(!set_config('home',$id)) {
+		$debug->add_trace('Failed to set config value',true);
+		return false;
+	}
+	$check_page = $db->sql_fetch_assoc($check_handle);
+	$log->new_message('Set home page to \''.$check_page['title'].'\'');
+	return true;
+}
+
 function page_level($id) {
 	global $db;
 
