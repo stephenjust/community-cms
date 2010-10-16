@@ -101,7 +101,7 @@ if ($_GET['action'] == 'new') {
 		$content .= 'Failed to add page.<br />';
 	} else {
 		$content .= 'Successfully added page.<br />'."\n";
-		$log->new_message('New page \''.$_POST['title'].'\'');
+		$log->new_message('New page \''.stripslashes($title).'\'');
 	}
 } // IF 'new'
 
