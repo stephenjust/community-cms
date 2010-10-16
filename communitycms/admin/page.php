@@ -388,98 +388,101 @@ $tab_layout->add_tab('Manage Pages',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-$tab_content['add'] = NULL;
+if ($acl->check_permission('page_create')) {
+	$tab_content['add'] = NULL;
 
-// Get list of pages for list of options as parent page
-$parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-	ORDER BY `title` ASC';
-$parent_page_list_handle = $db->sql_query($parent_page_list_query);
-if ($db->error[$parent_page_list_handle] === 1) {
-	$parent_page = 'You cannot set a parent page at this time.'.
-		'<input type="hidden" name="parent" value="0" />';
-} else {
-	$parent_page = '<select name="parent">'."\n".
-		'<option value="0">(No Parent)</option>'."\n";
-	for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
-		$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
-		$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
-			$parent_page_result['title'].'</option>';
+	// Get list of pages for list of options as parent page
+	$parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+		ORDER BY `title` ASC';
+	$parent_page_list_handle = $db->sql_query($parent_page_list_query);
+	if ($db->error[$parent_page_list_handle] === 1) {
+		$parent_page = 'You cannot set a parent page at this time.'.
+			'<input type="hidden" name="parent" value="0" />';
+	} else {
+		$parent_page = '<select name="parent">'."\n".
+			'<option value="0">(No Parent)</option>'."\n";
+		for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
+			$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
+			$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
+				$parent_page_result['title'].'</option>';
+		}
+		$parent_page .= '</select>'."\n";
 	}
-	$parent_page .= '</select>'."\n";
-}
 
-// Get list of page groups
-// TODO: Exlude those that you don't have permission to edit
-$page_group_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
-	ORDER BY `id` ASC';
-$page_group_handle = $db->sql_query($page_group_query);
-if ($db->error[$page_group_handle] === 1) {
-	$debug->add_trace('Failed to read page group table',true);
-	$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
-} else {
-	$page_group = '<select name="page_group">';
-	for ($i = 1; $i <= $db->sql_num_rows($page_group_handle); $i++) {
-		$page_group_result = $db->sql_fetch_assoc($page_group_handle);
-		$page_group .= '<option value="'.$page_group_result['id'].'">'.
-			$page_group_result['label'].'</option>'."\n";
+	// Get list of page groups
+	// TODO: Exlude those that you don't have permission to edit
+	$page_group_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
+		ORDER BY `id` ASC';
+	$page_group_handle = $db->sql_query($page_group_query);
+	if ($db->error[$page_group_handle] === 1) {
+		$debug->add_trace('Failed to read page group table',true);
+		$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
+	} else {
+		$page_group = '<select name="page_group">';
+		for ($i = 1; $i <= $db->sql_num_rows($page_group_handle); $i++) {
+			$page_group_result = $db->sql_fetch_assoc($page_group_handle);
+			$page_group .= '<option value="'.$page_group_result['id'].'">'.
+				$page_group_result['label'].'</option>'."\n";
+		}
+		$page_group .= '</select>';
 	}
-	$page_group .= '</select>';
-}
 
-$tab_content['add'] .= '<form method="POST" action="admin.php?module=page&action=new">
-	<table class="admintable">
-	<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="" /></td></tr>
-	<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor"></textarea></td></tr>
-	<tr><td width="150">Parent Page:</td><td>'.$parent_page.'</td></tr>
-	<tr><td width="150">Page Group:</td><td>'.$page_group.'</td></tr>
-	<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>
-	<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
-	<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
-	<tr class="row1"><td valign="top">Type:</td><td>
-	<select name="type">';
-$pagetypes_query = 'SELECT id,name FROM ' . PAGE_TYPE_TABLE;
-$pagetypes_handle = $db->sql_query($pagetypes_query);
-$i = 1;
-while ($i <= $db->sql_num_rows($pagetypes_handle)) {
-	$pagetypes = $db->sql_fetch_assoc($pagetypes_handle);
-	$tab_content['add'] .= '<option value="'.$pagetypes['id'].'">'.$pagetypes['name'].'</option>';
-	$i++;
+	$tab_content['add'] .= '<form method="POST" action="admin.php?module=page&action=new">
+		<table class="admintable">
+		<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="" /></td></tr>
+		<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor"></textarea></td></tr>
+		<tr><td width="150">Parent Page:</td><td>'.$parent_page.'</td></tr>
+		<tr><td width="150">Page Group:</td><td>'.$page_group.'</td></tr>
+		<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>
+		<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
+		<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
+		<tr class="row1"><td valign="top">Type:</td><td>
+		<select name="type">';
+	$pagetypes_query = 'SELECT id,name FROM ' . PAGE_TYPE_TABLE;
+	$pagetypes_handle = $db->sql_query($pagetypes_query);
+	$i = 1;
+	while ($i <= $db->sql_num_rows($pagetypes_handle)) {
+		$pagetypes = $db->sql_fetch_assoc($pagetypes_handle);
+		$tab_content['add'] .= '<option value="'.$pagetypes['id'].'">'.$pagetypes['name'].'</option>';
+		$i++;
+	}
+	$tab_content['add'] .= '</select>
+		</td></td></tr>
+		<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
+		</table></form>';
+	$tab_layout->add_tab('Add Page',$tab_content['add']);
 }
-$tab_content['add'] .= '</select>
-	</td></td></tr>
-	<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Submit" /></td></tr>
-	</table></form>';
-$tab_layout->add_tab('Add Page',$tab_content['add']);
 
 // ----------------------------------------------------------------------------
 
-
-// Get list of pages for list of options as parent page
-$parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-	ORDER BY `title` ASC';
-$parent_page_list_handle = $db->sql_query($parent_page_list_query);
-if ($db->error[$parent_page_list_handle] === 1) {
-	$parent_page = 'You cannot set a parent page at this time.'.
-		'<input type="hidden" name="parent" value="0" />';
-} else {
-	$parent_page = '<select name="parent">'."\n".
-		'<option value="0">(No Parent)</option>'."\n";
-	for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
-		$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
-		$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
-			$parent_page_result['title'].'</option>';
+if ($acl->check_permission('page_create')) {
+	// Get list of pages for list of options as parent page
+	$parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+		ORDER BY `title` ASC';
+	$parent_page_list_handle = $db->sql_query($parent_page_list_query);
+	if ($db->error[$parent_page_list_handle] === 1) {
+		$parent_page = 'You cannot set a parent page at this time.'.
+			'<input type="hidden" name="parent" value="0" />';
+	} else {
+		$parent_page = '<select name="parent">'."\n".
+			'<option value="0">(No Parent)</option>'."\n";
+		for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
+			$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
+			$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
+				$parent_page_result['title'].'</option>';
+		}
+		$parent_page .= '</select>'."\n";
 	}
-	$parent_page .= '</select>'."\n";
+	$tab_content['addlink'] = '<form method="POST" action="admin.php?module=page&action=new_link">
+		<table class="admintable" id="adm_pg_table_create_link">
+		<tr class="row1"><td width="150">Link Text (required):</td><td><input type="text" name="title" value="" /></td></tr>
+		<tr class="row2"><td valign="top">URL (required):</td><td>
+		<input type="text" name="url" value="http://" /></td></tr>
+		<tr class="row1"><td>Parent Page</td><td>'.$parent_page.'</td></tr>
+		<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
+		</table></form>';
+	$tab_layout->add_tab('Add Link to External Page',$tab_content['addlink']);
 }
-$tab_content['addlink'] = '<form method="POST" action="admin.php?module=page&action=new_link">
-	<table class="admintable" id="adm_pg_table_create_link">
-	<tr class="row1"><td width="150">Link Text (required):</td><td><input type="text" name="title" value="" /></td></tr>
-	<tr class="row2"><td valign="top">URL (required):</td><td>
-	<input type="text" name="url" value="http://" /></td></tr>
-	<tr class="row1"><td>Parent Page</td><td>'.$parent_page.'</td></tr>
-	<tr class="row2"><td width="150">&nbsp;</td><td><input type="submit" value="Create Link" /></td></tr>
-	</table></form>';
-$tab_layout->add_tab('Add Link to External Page',$tab_content['addlink']);
 
 // ----------------------------------------------------------------------------
 

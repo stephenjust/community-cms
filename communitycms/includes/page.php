@@ -101,6 +101,10 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
 	global $debug;
 	global $log;
 
+	if (!$acl->check_permission('page_create')) {
+		return false;
+	}
+
 	// Validate parameters
 	if (strlen($text_id) == 0) {
 		$text_id = NULL;

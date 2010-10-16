@@ -89,10 +89,11 @@ function permission_list($group = 0) {
 
 	// Pages
 	$perm_list = array('adm_page',
-		'page_set_home',
-		'page_order',
+		'page_create',
 		'page_delete',
 		'page_edit',
+		'page_set_home',
+		'page_order',
 		'page_group_create');
 	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
 
