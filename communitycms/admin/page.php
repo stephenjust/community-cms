@@ -126,63 +126,23 @@ switch ($_GET['action']) {
 		if (!isset($_GET['id'])) {
 			$content .= 'No page group specified to delete.<br />'."\n";
 		}
-		// Verify that page group is empty
-		$pg_verify_empty_query = 'SELECT `page_group` FROM `'.PAGE_TABLE.'`
-			WHERE `page_group` = '.(int)$_GET['id'];
-		$pg_verify_empty_handle = $db->sql_query($pg_verify_empty_query);
-		if ($db->error[$pg_verify_empty_handle] === 1) {
-			$content .= 'Failed to verify that this group is empty.<br />'."\n";
-			break;
-		}
-		if ($db->sql_num_rows($pg_verify_empty_handle) != 0) {
-			$content .= 'This group is not empty. Plase reassign groups to any
-				pages that may be a member of this group.<br />'."\n";
-			break;
-		}
-
-		// Remove any permission assignments related to this group
-		$get_permission_query = 'SELECT `acl_table`.`acl_record_id` FROM
-			`'.ACL_KEYS_TABLE.'` `key_table`, `'.ACL_TABLE.'` `acl_table` WHERE
-			`acl_table`.`acl_id` = `key_table`.`acl_id`
-			AND `key_table`.`acl_name` = \'pagegroupedit-'.(int)$_GET['id'].'\'';
-		$get_permission_handle = $db->sql_query($get_permission_query);
-		if ($db->error[$get_permission_handle] === 1) {
-			$content .= 'Failed to search for users who have permission to edit this group.<br />'."\n";
-			break;
-		}
-		for ($i = 1; $i <= $db->sql_num_rows($get_permission_handle); $i++) {
-			$permission_entry = $db->sql_fetch_assoc($get_permission_handle);
-			$remove_permission_query = 'DELETE FROM `'.ACL_TABLE.'` WHERE
-				`acl_record_id` = '.$permission_entry['acl_record_id'];
-			$remove_permission_handle = $db->sql_query($remove_permission_query);
-			if ($db->error[$remove_permission_handle] === 1) {
-				$content .= 'Failed to remove permission to edit this group from a user group.<br />'."\n";
+		switch (page_delete_group((int)$_GET['id'])) {
+			default:
+				$content .= '<span class="errormessage">Failed to delete page group.</span><br />'."\n";
 				break;
-			}
+			case 2:
+				$content .= '<span class="errormessage">The page group you are trying to delete is not empty. Please reassign any pages assigned to this page group to another page group.</span><br />'."\n";
+				break;
+			case 3:
+				$content .= '<span class="errormessage">Failed to delete user permission records associated with this page group.</span><br />'."\n";
+				break;
+			case 4:
+				$content .= '<span class="errormessage">Failed to delete permission key associated with this page group.</span><br />'."\n";
+				break;
+			case true:
+				$content .= 'Successfully deleted page group.<br />'."\n";
+				break;
 		}
-		$content .= 'Removed permission to access this group from '.$db->sql_num_rows($get_permission_handle).' users.<br />'."\n";
-		$debug->add_trace('Removed permissions from group \'pagegroupedit-'.(int)$_GET['id'].'\'',false);
-
-		// Remove permission key
-		$del_acl_key_query = 'DELETE FROM `'.ACL_KEYS_TABLE.'` WHERE
-			`acl_name` = \'pagegroupedit-'.(int)$_GET['id'].'\'';
-		$del_acl_key_handle = $db->sql_query($del_acl_key_query);
-		if ($db->error[$del_acl_key_handle] === 1) {
-			$content .= 'Failed to delete permission key associated with this group.<br />'."\n";
-			break;
-		}
-		$content .= 'Removed permission key for this group.<br />'."\n";
-
-		// Delete group
-		$del_group_query = 'DELETE FROM `'.PAGE_GROUP_TABLE.'` WHERE
-			`id` = '.(int)$_GET['id'];
-		$del_group_handle = $db->sql_query($del_group_query);
-		if ($db->error[$del_group_handle] === 1) {
-			$content .= 'Failed to delete page group.<br />'."\n";
-			break;
-		}
-		$content .= 'Removed page group.<br />'."\n";
-		log_action('Deleted page group');
 		break; // case 'delete_page_group'
 
 	case 'hide':

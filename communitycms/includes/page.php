@@ -11,7 +11,7 @@
  * page_get_info - Get requested fields for a page entry in the database
  * @global db $db Database connection object
  * @global debug $debug Debug object
- * @param int $id Page ID
+ * @param integer $id Page ID
  * @param array $fields Database fields to get, default is all
  * @return mixed Returns false on failure, associative array of row on success
  */
@@ -61,10 +61,10 @@ function page_add() {
 
 /**
  * Create a new page group
- * @global object $acl Permission object
+ * @global acl $acl Permission object
  * @global db $db Database object
  * @global debug $debug Debugging object
- * @global object $log Logger object
+ * @global log $log Logger object
  * @param string $group_name Name of new group
  * @return boolean Success
  */
@@ -147,6 +147,79 @@ function page_delete($id) {
 		return false;
 	}
 	$log->new_message('Deleted page \''.$page_info['title'].'\'');
+	return true;
+}
+
+/**
+ * Delete a page group
+ * @global acl $acl
+ * @global db $db
+ * @global debug $debug
+ * @global log $log
+ * @param integer $group_id ID of group to delete
+ * @return mixed Boolean for success, integer error codes for more detailed error messages
+ */
+function page_delete_group($group_id) {
+	global $acl;
+	global $db;
+	global $debug;
+	global $log;
+
+	if (!is_numeric($group_id)) {
+		$debug->add_trace('No ID provided',true);
+		return false;
+	}
+	// Make sure page group is empty before deleting it
+	$verify_empty_query = 'SELECT `page_group` FROM `'.PAGE_TABLE.'`
+		WHERE `page_group` = '.$group_id;
+	$verify_empty_handle = $db->sql_query($verify_empty_query);
+	if ($db->error[$verify_empty_handle] === 1) {
+		$debug->add_trace('Failed to check if the group is empty',true);
+		return false;
+	}
+	if ($db->sql_num_rows($verify_empty_handle) != 0) {
+		$debug->add_trace('The group is not empty',true);
+		return 2;
+	}
+
+	// Remove any permission assignments related to this group
+	$get_permission_query = 'SELECT `acl_table`.`acl_record_id` FROM
+		`'.ACL_KEYS_TABLE.'` `key_table`, `'.ACL_TABLE.'` `acl_table` WHERE
+		`acl_table`.`acl_id` = `key_table`.`acl_id`
+		AND `key_table`.`acl_name` = \'pagegroupedit-'.$group_id.'\'';
+	$get_permission_handle = $db->sql_query($get_permission_query);
+	if ($db->error[$get_permission_handle] === 1) {
+		$debug->add_trace('Failed to check if there are users with permission to edit this group',true);
+		return false;
+	}
+	for ($i = 1; $i <= $db->sql_num_rows($get_permission_handle); $i++) {
+		$permission_entry = $db->sql_fetch_assoc($get_permission_handle);
+		$remove_permission_query = 'DELETE FROM `'.ACL_TABLE.'` WHERE
+			`acl_record_id` = '.$permission_entry['acl_record_id'];
+		$remove_permission_handle = $db->sql_query($remove_permission_query);
+		if ($db->error[$remove_permission_handle] === 1) {
+			$debug->add_trace('Failed to delete user permission records',true);
+			return 3;
+		}
+	}
+
+	// Remove permission key
+	$del_acl_key_query = 'DELETE FROM `'.ACL_KEYS_TABLE.'` WHERE
+		`acl_name` = \'pagegroupedit-'.$group_id.'\'';
+	$del_acl_key_handle = $db->sql_query($del_acl_key_query);
+	if ($db->error[$del_acl_key_handle] === 1) {
+		$debug->add_trace('Failed to delete permission key',true);
+		return 4;
+	}
+
+	// Delete group
+	$del_group_query = 'DELETE FROM `'.PAGE_GROUP_TABLE.'` WHERE
+		`id` = '.$group_id;
+	$del_group_handle = $db->sql_query($del_group_query);
+	if ($db->error[$del_group_handle] === 1) {
+		return false;
+	}
+	$log->new_message('Deleted page group');
 	return true;
 }
 
