@@ -326,13 +326,13 @@ class form {
 		for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
 			$page = $db->sql_fetch_assoc($page_query_handle);
 			if ($value == $page['id']) {
-				$options .= '<option value="'.$page['id'].'" selected>'.stripslashes($page['title']).'</option>'."\n";
+				$options .= '<option value="'.$page['id'].'" selected>'.$page['title'].'</option>'."\n";
 			} else {
-				$options .= '<option value="'.$page['id'].'" >'.stripslashes($page['title']).'</option>'."\n";
+				$options .= '<option value="'.$page['id'].'" >'.$page['title'].'</option>'."\n";
 			}
 		}
 		if ($nopageallowed == 1) {
-			if ($value == 0) {
+			if ($value === 0) {
 				$options .= '<option value="0" selected>No Page</option>'."\n";
 			} else {
 				$options .= '<option value="0">No Page</option>'."\n";
