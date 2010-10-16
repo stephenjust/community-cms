@@ -220,8 +220,8 @@ switch ($_GET['action']) {
 		$edit_form->set_method('post');
 		$edit_form->set_target('admin.php?module=news&amp;action=editsave');
 		$edit_form->add_hidden('id',$edit['id']);
-		$edit_form->add_textbox('title','Heading',stripslashes($edit['name']));
-		$edit_form->add_textarea('update_content','Content',stripslashes($edit['description']));
+		$edit_form->add_textbox('title','Heading',$edit['name']);
+		$edit_form->add_textarea('update_content','Content',$edit['description']);
 		$edit_form->add_page_list('page', 'Page', 1, 1, $edit['page']);
 		$edit_form->add_icon_list('image','Image','newsicons',$edit['image']);
 		$edit_form->add_select('date_params','Date',array(0,1,2),

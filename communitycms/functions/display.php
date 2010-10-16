@@ -54,7 +54,7 @@ function display_child_menu($parent) {
 		if ($items_result['type'] == 0) {
 			$link = explode('<LINK>',$items_result['title']); // Check if menu entry is a link
 			$link_path = $link[1];
-			$link_name = stripslashes($link[0]);
+			$link_name = $link[0];
 			unset($link);
 		} else {
 			if(strlen($items_result['text_id']) > 0) {
@@ -62,7 +62,7 @@ function display_child_menu($parent) {
 			} else {
 				$link_path = "index.php?id=".$items_result['id'];
 			}
-			$link_name = stripslashes($items_result['title']);
+			$link_name = $items_result['title'];
 		} // IF is link
 		$return .= '<li class="'.$link_class.'" id="menuitem_'.$items_result['id'].'">'."\n";
 		// Generate hidden child div

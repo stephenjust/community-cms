@@ -344,10 +344,10 @@ if ($_GET['action'] == 'edit') {
 
 				if ($edit_page['parent'] == $parent_page_result['id']) {
 					$parent_page .= '<option value="'.$parent_page_result['id'].'" selected>'.
-						stripslashes($parent_page_result['title']).'</option>';
+						$parent_page_result['title'].'</option>';
 				} else {
 					$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
-						stripslashes($parent_page_result['title']).'</option>';
+						$parent_page_result['title'].'</option>';
 				}
 			}
 			$parent_page .= '</select>'."\n";
@@ -376,8 +376,8 @@ if ($_GET['action'] == 'edit') {
 			$page_group .= '</select>';
 		}
 
-		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="'.stripslashes($edit_page['title']).'" /></td></tr>
-			<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.stripslashes($edit_page['meta_desc']).'</textarea></td></tr>
+		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
+			<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.$edit_page['meta_desc'].'</textarea></td></tr>
 			<tr><td width="150">Parent Page:</td><td>'.$parent_page.'</td></tr>
 			<tr><td width="150">Page Group:</td><td>'.$page_group.'</td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
@@ -417,7 +417,7 @@ function adm_page_manage_list_row($id) {
 	if (strlen($page_info['text_id']) == 0 && $page_info['type'] != 0) {
 		$return .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
 	}
-	$return .= stripslashes($page_info['title']).' ';
+	$return .= $page_info['title'].' ';
 	if ($page_info['id'] == get_config('home')) {
 		$return .= '(Default)';
 	}
@@ -510,7 +510,7 @@ if ($db->error[$parent_page_list_handle] === 1) {
 	for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
 		$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
 		$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
-			stripslashes($parent_page_result['title']).'</option>';
+			$parent_page_result['title'].'</option>';
 	}
 	$parent_page .= '</select>'."\n";
 }
@@ -574,7 +574,7 @@ if ($db->error[$parent_page_list_handle] === 1) {
 	for ($i = 1; $i <= $db->sql_num_rows($parent_page_list_handle); $i++) {
 		$parent_page_result = $db->sql_fetch_assoc($parent_page_list_handle);
 		$parent_page .= '<option value="'.$parent_page_result['id'].'">'.
-			stripslashes($parent_page_result['title']).'</option>';
+			$parent_page_result['title'].'</option>';
 	}
 	$parent_page .= '</select>'."\n";
 }

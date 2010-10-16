@@ -48,7 +48,7 @@ for ($i = 1; $i <= $article_list_rows; $i++) {
 	$current_row = array();
 	$current_row[] = '<input type="checkbox" name="item_'.$article_list['id'].'" />';
 	$current_row[] = $article_list['id'];
-	$article_title = stripslashes($article_list['name']);
+	$article_title = $article_list['name'];
 	if ($article_list['publish'] == 0) {
 		$article_title .= ' (Not published)';
 	}

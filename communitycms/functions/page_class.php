@@ -207,7 +207,7 @@ class page {
 			}
 			$this->url_reference = 'page='.$this->text_id;
 		}
-		$this->title = stripslashes($page['title']);
+		$this->title = $page['title'];
 		$this->page_title = $this->title;
 		if(!isset($this->content)) {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
@@ -363,7 +363,7 @@ class page {
 			if ($nav_menu_item['type'] == 0) {
 				$link = explode('<LINK>',$nav_menu_item['title']); // Check if menu entry is a link
 				$link_path = $link[1];
-				$link_name = stripslashes($link[0]);
+				$link_name = $link[0];
 				unset($link);
 			} else {
 				if(strlen($nav_menu_item['text_id']) > 0) {
@@ -371,7 +371,7 @@ class page {
 				} else {
 					$link_path = "index.php?id=".$nav_menu_item['id'];
 				}
-				$link_name = stripslashes($nav_menu_item['title']);
+				$link_name = $nav_menu_item['title'];
 			}
 			$item_template->menu_item_url = $link_path;
 			$item_template->menu_item_label = $link_name;

@@ -149,15 +149,15 @@ class news_item {
 		}
 		$template_article->edit_bar = $editbar;
 
-		$article_title = stripslashes($article['name']);
+		$article_title = $article['name'];
 		$this->article_title = $article_title;
 		if ($article['publish'] == 0) {
 			$article_title .= ' <span class="news_not_published_label">NOT PUBLISHED</span>';
 		}
 
 		$template_article->article_title = '<a href="view.php?article_id='.$article['id'].'" target="_blank">'.$article_title.'</a>';
-		$template_article->article_title_nolink = stripslashes($article['name']);
-		$template_article->article_content = stripslashes($article['description']);
+		$template_article->article_title_nolink = $article['name'];
+		$template_article->article_content = $article['description'];
 		$template_article->article_image = $picture;
 		$template_article->article_id = $article['id'];
 		$template_article->article_date_month = $date_month;
@@ -168,7 +168,7 @@ class news_item {
 		if (get_config('news_show_author') == 0) {
 			$template_article->replace_range('article_author',NULL);
 		} else {
-			$template_article->article_author = stripslashes($article['author']);
+			$template_article->article_author = $article['author'];
 		}
 
 		// Remove info div entirely if author and date are hidden
