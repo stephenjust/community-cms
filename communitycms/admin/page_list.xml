@@ -12,33 +12,19 @@
 	<category name="Feedback">
 		<link label="Feedback" module="feedback" acl="adm_feedback" hide="1"></link>
 	</category>
-	<category name="Blocks">
-		<link label="Block Manager" module="block_manager" acl="adm_block_manager"></link>
-	</category>
-	<category name="News">
-		<link label="Articles" module="news" acl="adm_news"></link>
-		<link label="Module Settings" module="news_settings" acl="adm_news_settings"></link>
+	<category name="Content">
+		<link label="News Articles" module="news" acl="adm_news"></link>
+		<link label="Newsletters" module="newsletter" acl="adm_newsletter"></link>
+		<link label="Calendar" module="calendar" acl="adm_calendar"></link>
+		<link label="Event Locations" module="calendar_locations" acl="adm_calendar_locations"></link>
+		<link label="Manage Contacts" module="contacts_manage" acl="adm_contacts_manage"></link>
 		<link label="Image Galleries" module="gallery_manager" acl="adm_gallery_manager"></link>
+		<link label="Polls" module="poll_manager" acl="adm_poll_manager"></link>
+		<link label="Files" module="filemanager" acl="adm_filemanager"></link>
+		<link label="News Settings" module="news_settings" acl="adm_news_settings"></link>
 		<link label="Gallery Settings" module="gallery_settings" acl="adm_gallery_settings"></link>
-	</category>
-	<category name="Calendar">
-		<link label="Manage Events" module="calendar" acl="adm_calendar"></link>
-		<link label="Manage Locations" module="calendar_locations" acl="adm_calendar_locations"></link>
 		<link label="Edit Date" module="calendar_edit_date" acl="adm_calendar_edit_date" hide="1"></link>
 		<link label="Import Events" module="calendar_import" acl="adm_calendar_import" hide="1"></link>
-	</category>
-	<category name="Contacts">
-		<link label="Manage Contacts" module="contacts_manage" acl="adm_contacts_manage"></link>
-	</category>
-	<category name="Files">
-		<link label="Manage Files" module="filemanager" acl="adm_filemanager"></link>
-	</category>
-	<category name="Newsletters">
-		<link label="Newsletters" module="newsletter" acl="adm_newsletter"></link>
-	</category>
-	<category name="Polls">
-		<link label="Poll Manager" module="poll_manager" acl="adm_poll_manager"></link>
-		<link label="New Poll" module="poll_new" acl="adm_poll_new"></link>
 		<link label="Poll Results" module="poll_results" acl="adm_poll_results" hide="1"></link>
 	</category>
 	<category name="Pages">
@@ -46,6 +32,9 @@
 		<link label="Page Messages" module="page_message" acl="adm_page_message"></link>
 		<link label="Create Page Message" module="page_message_new" acl="adm_page_message_new" hide="1"></link>
 		<link label="Edit Page Message" module="page_message_edit" acl="adm_page_message_edit" hide="1"></link>
+	</category>
+	<category name="Blocks">
+		<link label="Block Manager" module="block_manager" acl="adm_block_manager"></link>
 	</category>
 	<category name="Users">
 		<link label="Manage Users" module="user" acl="adm_user"></link>

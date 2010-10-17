@@ -194,7 +194,6 @@ function update_permission_records() {
 	$permission[] = array('adm_page_message','Page Message Module','Allow a user to access the page message module',0);
 	$permission[] = array('adm_page_message_edit','Edit Page Messages','Allow a user to edit page messages',0);
 	$permission[] = array('adm_poll_manager','Poll Manager Module','Allow a user to access the poll manager module',0);
-	$permission[] = array('adm_poll_new','Create Poll','Allow a user to create a new poll',0);
 	$permission[] = array('adm_poll_results','Poll Results','Allow a user to see the results of polls',0);
 	$permission[] = array('adm_user','User Module','Allow a user to access the user manager module',0);
 	$permission[] = array('adm_user_edit','Edit User Module','Allow a user to access the edit user module',0);
@@ -226,6 +225,7 @@ function update_permission_records() {
 	$permission[] = array('pagegroupedit-1','Edit Page Group \'Default Group\'','Allow user to edit pages in the group \'Default Group\'',0);
 	$permission[] = array('page_message_new','Create Page Messages','Allow a user to create new page messages',0);
 	$permission[] = array('page_message_delete','Delete Page Messages','Allow a user to delete existing page messages',0);
+	$permission[] = array('poll_create','Create Polls','Allow a user to create new polls',0);
 	$permission[] = array('user_create','Create User','Allow a user to create new users',0);
 	$permission[] = array('user_delete','Delete User','Allow a user to delete other users',0);
 	$permission[] = array('group_create','Create User Groups','Allow a user to create a new user group',0);

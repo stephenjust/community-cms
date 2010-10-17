@@ -106,7 +106,7 @@ function permission_list($group = 0) {
 
 	// Polls
 	$perm_list = array('adm_poll_manager',
-		'adm_poll_new',
+		'poll_create',
 		'adm_poll_results');
 	$return .= permission_list_table($permission_list,$group,'Polls',$perm_list);
 
