@@ -150,8 +150,6 @@ function location_add($location) {
 	global $debug;
 	global $log;
 
-	$location = addslashes($location);
-
 	// Check if location saving is disabled
 	if (get_config('calendar_save_locations') != 1) {
 		return false;
@@ -173,7 +171,7 @@ function location_add($location) {
 		return false;
 	}
 	$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
-		(`value`) VALUES (\''.$location.'\')';
+		(`value`) VALUES (\''.addslashes($location).'\')';
 	$new_loc_handle = $db->sql_query($new_loc_query);
 	if ($db->error[$new_loc_handle] === 1) {
 		$debug->add_trace('Failed to create new location',true);

@@ -38,29 +38,14 @@ switch ($_GET['action']) {
 
 	case 'new':
 		if (!isset($_POST['location'])) {
-			$content .= 'No location given.<br />'."\n";
+			$content .= '<span class="errormessage">No location given.</span><br />'."\n";
 			break;
 		}
-		$check_dupe_query = 'SELECT `value` FROM `'.LOCATION_TABLE.'`
-			WHERE `value` = \''.addslashes($_POST['location']).'\'';
-		$check_dupe_handle = $db->sql_query($check_dupe_query);
-		if ($db->error[$check_dupe_handle] === 1) {
-			$content .= 'Failed to check for duplicate entries.<br />'."\n";
-			break;
+		if (location_add($_POST['location'])) {
+			$content .= 'Successfully created new location entry.<br />'."\n";
+		} else {
+			$content .= '<span class="errormessage">Failed to create new location entry.</span><br />'."\n";
 		}
-		if ($db->sql_num_rows($check_dupe_handle) != 0) {
-			$content .= 'The location you are trying to add already exists.<br />'."\n";
-			break;
-		}
-		$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
-			(`value`) VALUES (\''.addslashes($_POST['location']).'\')';
-		$new_loc_handle = $db->sql_query($new_loc_query);
-		if ($db->error[$new_loc_handle] === 1) {
-			$content .= 'Failed to create new location.<br />'."\n";
-			break;
-		}
-		$content .= 'Successfully created location.<br />'."\n";
-		log_action('Created new location');
 		break;
 
 // ----------------------------------------------------------------------------
