@@ -40,10 +40,9 @@ page, so you can miz and match your pages.</div>';
 link in the \'Pages\' category.</li>
 <li>In the \'Manage Pages\' tab, click the edit button next to the page
 you would like to add a block to.</li>
-<li>In the \'Edit Page\' tab, list fill the \'Blocks\' fields with the IDs of the
-blocks that you want to display. Block IDs can be found on the \'Block Manager\' page.</li>
-<li>Make sure that the lists of Block IDs are comma separated, with no spaces, and no
-comma at the end of the list.</li>
+<li>In the \'Edit Page\' tab, select the block you would like to add to the page
+and click the green + button in the location that you would like the block to
+be located.</li>
 <li>Click \'Submit\'. Check the page you edited to make sure that the blocks are being
 displayed correctly.</li>
 </ul>

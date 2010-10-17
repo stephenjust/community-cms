@@ -37,8 +37,9 @@ to prevent those people who may not be as technically-literate from breaking thi
 	$return .= '<div class="admin_help_quick_instructions">
 <h3>Quick Instructions</h3>
 <ul>
-<li>In the navigation menu of any administration page, click the \'New User\'
+<li>In the navigation menu of any administration page, click the \'Manage Users\'
 link in the \'Users\' category.</li>
+<li>Open the \'Create User\' tab.</li>
 <li>Give the user a unique user name and fill in their personal information.</li>
 <li>Assign the user to one or more groups. Hold <i>Control</i> on your keyboard
 to select more than one group. The groups that the user is a member of determines

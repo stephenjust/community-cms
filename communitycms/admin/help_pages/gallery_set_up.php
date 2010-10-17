@@ -41,7 +41,7 @@ of any administration page.
 <h3>Quick Instructions</h3>
 <ul>
 <li>In the navigation menu of any administration page, click the \'Gallery Settings\'
-link in the \'News\' category.</li>
+link in the \'Content\' category.</li>
 <li>At this time, SimpleViewer is the only supported gallery application. Select
 it from the "Gallery Type" drop-down.</li>
 <li>In the "Gallery Directory" box, enter the path to the gallery installation,

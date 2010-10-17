@@ -44,7 +44,16 @@ the password for.</li>
 <li>Click the \'Edit User\' button when you are finished.</li>
 <li>If the resulting screen displays \'Password changed\', you are done. If the
 resulting screen displays \'Password not changed\', then you may have entered an
-incorrect old password, or your new password does not match in both fields.
+incorrect old password, or your new password does not match in both fields.</li>
+</ul>
+</div>';
+
+	// Alternate Method
+	$return .= '<div class="admin_help_quick_instructions">
+<h3>Alternate Method</h3>
+<ul>
+<li>When you log in, a \'Change Password\' link will appear where the login box
+was. Click this link to change your password without having admin privileges.</li>
 </ul>
 </div>';
 
