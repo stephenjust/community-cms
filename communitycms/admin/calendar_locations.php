@@ -104,7 +104,7 @@ for ($i = 1; $i <= $db->sql_num_rows($loc_handle); $i++) {
 	$loc = $db->sql_fetch_assoc($loc_handle);
 	$tab_content['manage'] .= '<tr><td class="row'.$rowcount.'">
 		<input type="radio" name="loc_del" value="'.$loc['id'].'" /></td>
-		<td class="row'.$rowcount.'">'.stripslashes($loc['value']).'</td></tr>';
+		<td class="row'.$rowcount.'">'.$loc['value'].'</td></tr>';
 
 	// Alternate row styles
 	if ($rowcount == 1) {

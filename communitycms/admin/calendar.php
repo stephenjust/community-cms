@@ -93,7 +93,7 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'delete':
-		if (delete_date($_GET['date_del'])) {
+		if (event_delete($_GET['date_del'])) {
 			$content .= 'Successfully deleted date entry.<br />'."\n";
 		} else {
 			$content .= 'Failed to delete date entry.<br />'."\n";
@@ -126,7 +126,7 @@ switch ($_GET['action']) {
 			$content .= 'No category selected to delete.<br />'."\n";
 			break;
 		}
-		if (delete_category($_POST['delete_category_id'])) {
+		if (event_cat_delete($_POST['delete_category_id'])) {
 			$content .= 'Successfully deleted category entry.<br />'."\n";
 		} else {
 			$content .= 'Failed to delete category entry.<br />'."\n";

@@ -186,13 +186,13 @@ function location_add($location) {
 // ----------------------------------------------------------------------------
 
 /**
- * delete_category - Delete a calendar category entry
+ * Delete a calendar category entry
  * @global db $db
  * @global debug $debug
  * @param integer $id
  * @return boolean
  */
-function delete_category($id) {
+function event_cat_delete($id) {
 	global $db;
 	global $debug;
 	// Validate parameters
@@ -239,13 +239,13 @@ function delete_category($id) {
 // ----------------------------------------------------------------------------
 
 /**
- * delete_date - Delete a calendar entry
+ * Delete a calendar event entry
  * @global db $db
  * @global debug $debug
  * @param integer $id
  * @return boolean
  */
-function delete_date($id) {
+function event_delete($id) {
 	global $db;
 	global $debug;
 	// Validate parameters

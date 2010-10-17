@@ -45,9 +45,6 @@ for ($i = 1; $i <= $db->sql_num_rows($sql_handle); $i++) {
 }
 $result = array('query'=>stripslashes($query),'suggestions'=>$suggestions);
 $json_result = json_encode($result);
-$json_result = str_replace('"query":','query:',$json_result);
-$json_result = str_replace('"suggestions":','suggestions:',$json_result);
-$json_result = str_replace('"','\'',$json_result);
 echo $json_result;
 clean_up();
 ?>
