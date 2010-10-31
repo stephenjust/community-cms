@@ -9,8 +9,10 @@
 
 <!ELEMENT link EMPTY>
 <!ATTLIST link
+    label CDATA #REQUIRED
     hide CDATA #IMPLIED
-    permission CDATA #IMPLIED
-    module CDATA #REQUIRED
-    label CDATA #IMPLIED
+    acl CDATA #IMPLIED
+    module CDATA #IMPLIED
+	url CDATA #IMPLIED
+	target CDATA #IMPLIED
 >
