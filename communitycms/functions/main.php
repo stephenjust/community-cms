@@ -43,7 +43,8 @@ function initialize($mode = NULL) {
 	require_once(ROOT . 'includes/debug.php');
 	$debug = new debug;
 
-	require_once(ROOT . 'includes/acl.php');
+	require_once(ROOT . 'includes/acl/acl.php');
+	require_once(ROOT . 'includes/acl/acl_functions.php');
 	$acl = new acl;
 
 	require_once(ROOT . 'includes/log_class.php');

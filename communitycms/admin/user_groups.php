@@ -11,7 +11,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-function permission_list($group = 0) {
+function perm_list($group = 0) {
 	global $acl;
 
 	$return = NULL;
@@ -20,135 +20,7 @@ function permission_list($group = 0) {
 	$form_var_list = array2csv($form_var_list);
 	$return .= '<input type="hidden" name="var_list" value="'.$form_var_list.'" />';
 
-	// Each category of permission is handled seperately, then anything
-	// remaining will be placed in "unsorted permissions"
-
-	// General
-	$perm_list = array('all',
-		'admin_access',
-		'set_permissions',
-		'show_editbar',
-		'show_fe_errors',
-		'log_post_custom_message',
-		'adm_help',
-		'adm_feedback');
-	$return .= permission_list_table($permission_list,$group,'General',$perm_list);
-
-	// Maintentance/Settings
-	$perm_list = array('adm_site_config',
-		'adm_gallery_settings',
-		'adm_news_settings',
-		'calendar_settings',
-		'adm_log_view',
-		'log_clear',
-		'adm_config_view');
-	$return .= permission_list_table($permission_list,$group,'Maintenance/Settings',$perm_list);
-
-	// Blocks
-	$perm_list = array('adm_block_manager',
-		'block_create',
-		'block_delete');
-	$return .= permission_list_table($permission_list,$group,'Blocks',$perm_list);
-
-	// Calendar
-	$perm_list = array('adm_calendar',
-		'date_create',
-		'adm_calendar_edit_date',
-		'adm_calendar_import',
-		'adm_calendar_locations');
-	$return .= permission_list_table($permission_list,$group,'Calendar',$perm_list);
-
-	// Contacts
-	$perm_list = array('adm_contacts_manage');
-	$return .= permission_list_table($permission_list,$group,'Contacts',$perm_list);
-
-	// Files
-	$perm_list = array('adm_filemanager',
-		'file_upload',
-		'file_create_folder');
-	$return .= permission_list_table($permission_list,$group,'Files',$perm_list);
-
-	// Image Galleries
-	$perm_list = array('adm_gallery_manager');
-	$return .= permission_list_table($permission_list,$group,'Image Galleries',$perm_list);
-
-	// News
-	$perm_list = array('adm_news',
-		'news_create',
-		'news_delete',
-		'news_edit',
-		'news_publish',
-		'news_fe_show_unpublished');
-	$return .= permission_list_table($permission_list,$group,'News',$perm_list);
-
-	// Newsletters
-	$perm_list = array('adm_newsletter',
-		'newsletter_create',
-		'newsletter_delete');
-	$return .= permission_list_table($permission_list,$group,'Newsletters',$perm_list);
-
-	// Pages
-	$perm_list = array('adm_page',
-		'page_create',
-		'page_delete',
-		'page_edit',
-		'page_set_home',
-		'page_order',
-		'page_group_create');
-	$return .= permission_list_table($permission_list,$group,'Pages',$perm_list);
-
-	// Page Messages
-	$perm_list = array('adm_page_message',
-		'adm_page_message_edit',
-		'page_message_new',
-		'page_message_delete');
-	$return .= permission_list_table($permission_list,$group,'Page Messages',$perm_list);
-
-	// Polls
-	$perm_list = array('adm_poll_manager',
-		'poll_create',
-		'adm_poll_results');
-	$return .= permission_list_table($permission_list,$group,'Polls',$perm_list);
-
-	// Users (and groups)
-	$perm_list = array('adm_user',
-		'user_create',
-		'user_delete',
-		'adm_user_edit',
-		'adm_user_groups',
-		'group_create');
-	$return .= permission_list_table($permission_list,$group,'Users',$perm_list);
-
-	// Unsorted Permissions
-	$perm_list = array_keys($permission_list);
-	$return .= permission_list_table($permission_list,$group,'Unsorted',$perm_list);
-
-	return $return;
-}
-
-function permission_list_table(&$permission_list,$group,$category,$perm_list) {
-	global $acl;
-
-	$return = "<h3>$category</h3>\n";
-	$table_content = array();
-	foreach($perm_list AS $perm) {
-		$current_perm = $acl->check_permission($perm,$group,false);
-		if ($current_perm == 1) {
-			$checkbox = '<input type="checkbox" name="'.$perm.'" checked />';
-		} else {
-			$checkbox = '<input type="checkbox" name="'.$perm.'" />';
-		}
-
-		if (!isset($permission_list[$perm]['longname'])) {
-			$table_content[] = array('',$perm,'<span class="errormessage">Error: Does not exist.</span>');
-		} else {
-			$table_content[] = array($checkbox,$permission_list[$perm]['longname'],$permission_list[$perm]['description']);
-		}
-		unset($permission_list[$perm]);
-	}
-	$return .= create_table(array('','Name','Description'),$table_content);
-	unset($table_content);
-
+	$return .= permission_list($acl->permission_list,$group,true);
 	return $return;
 }
 
@@ -240,7 +112,7 @@ $tab_layout = new tabs;
 if ($_GET['action'] == 'perm') {
 	$tab_content['permission'] = '<form method="post" action="admin.php?module=user_groups&action=permsave">
 		<input type="hidden" name="id" value="'.(int)$_GET['id'].'" />';
-	$tab_content['permission'] .= permission_list((int)$_GET['id']);
+	$tab_content['permission'] .= perm_list((int)$_GET['id']);
 	$tab_content['permission'] .= '<input type="submit" value="Save" /></form>';
 	unset($permission);
 

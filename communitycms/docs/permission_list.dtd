@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!ELEMENT permission_list (category+)>
+
+<!ELEMENT category (key?,key_range?)>
+<!ATTLIST category
+    name CDATA #REQUIRED
+>
+
+<!ELEMENT key EMPTY>
+<!ATTLIST key
+    name CDATA #REQUIRED
+	title CDATA #REQUIRED
+	description CDATA #REQUIRED
+	default CDATA #IMPLIED
+>
+
+<!ELEMENT key_range EMPTY>
+<!ATTLIST key_range
+	regex CDATA #REQUIRED
+>
