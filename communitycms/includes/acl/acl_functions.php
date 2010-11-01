@@ -100,7 +100,6 @@ function permission_list($permission_list,$group = 0,$form = false) {
 					}
 					// Reset array numbering to 0,1,2...
 					$permission_list = array_values($permission_list);
-					print_r($items);
 				} else {
 					$items[0] = $cat_items;
 				}
