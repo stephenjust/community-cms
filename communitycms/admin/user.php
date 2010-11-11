@@ -35,7 +35,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Successfully deleted user.<br />';
-		log_action('Deleted user #'.$_GET['id']);
+		$log->new_message('Deleted user #'.$_GET['id']);
 		break;
 
 // ----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= "Thank you, $real_name, your account has been created.";
-		log_action('New user \''.$real_name.'\'');
+		$log->new_message('New user \''.$real_name.'\'');
 		unset($username);
 		unset($pass);
 		unset($real_name);

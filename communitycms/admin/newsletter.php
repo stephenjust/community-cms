@@ -21,6 +21,7 @@ if (!$acl->check_permission('adm_newsletter')) {
  * @global acl $acl Permission object
  * @global db $db Database connection object
  * @global debug $debug Debugger object
+ * @global log $log
  * @param integer $id Newsletter ID
  * @return boolean Success
  */
@@ -28,6 +29,7 @@ function delete_newsletter($id) {
 	global $acl;
 	global $db;
 	global $debug;
+	global $log;
 
 	// Check permission
 	if (!$acl->check_permission('newsletter_delete')) {
@@ -60,7 +62,7 @@ function delete_newsletter($id) {
 	if($db->error[$delete_article]) {
 		return false;
 	}
-	log_action('Deleted newsletter \''.stripslashes($newsletter_info['label']).'\'');
+	$log->new_message('Deleted newsletter \''.stripslashes($newsletter_info['label']).'\'');
 	return true;
 }
 
@@ -96,7 +98,7 @@ switch ($_GET['action']) {
 				$page_handle = $db->sql_query($page_query);
 				$page = $db->sql_fetch_assoc($page_handle);
 				$content .= 'Successfully added newsletter entry. ';
-				log_action('Newsletter \''.$_POST['label'].'\' added to '.stripslashes($page['title']));
+				$log->new_message('Newsletter \''.$_POST['label'].'\' added to '.stripslashes($page['title']));
 			}
 		}
 		break;
@@ -158,7 +160,7 @@ switch ($_GET['action']) {
 			$content .= 'Failed to edit newsletter entry.<br />'."\n";
 			break;
 		} else {
-			log_action('Edited newsletter \''.$_POST['label'].'\'');
+			$log->new_message('Edited newsletter \''.$_POST['label'].'\'');
 			$content .= 'Updated newsletter entry.<br />'."\n";
 		}
 		break;

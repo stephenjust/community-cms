@@ -75,41 +75,6 @@ function admin_nav() {
 }
 
 /**
- * log_action - Add a message to the administration log
- * @deprecated
- * @global db $db Database class
- * @global debug $debug Debug object
- * @param string $message Message to add to database (not escaped)
- * @return string Error message, if any
- */
-function log_action($message) {
-	global $db;
-	global $debug;
-
-	$message_error = NULL;
-	$date = date('Y-m-d H:i:s');
-	$user = $_SESSION['userid'];
-	$ip_octet = '0';
-	if ( isset($_SERVER["REMOTE_ADDR"]) )    {
-		$ip_octet = $_SERVER["REMOTE_ADDR"];
-	} else if ( isset($_SERVER["HTTP_X_FORWARDED_FOR"]) )    {
-		$ip_octet = $_SERVER["HTTP_X_FORWARDED_FOR"];
-	} else if ( isset($_SERVER["HTTP_CLIENT_IP"]) )    {
-		$ip_octet = $_SERVER["HTTP_CLIENT_IP"];
-	}
-	$ip_int = ip2long($ip_octet);
-	$log_query = 'INSERT INTO ' . LOG_TABLE . '
-		(user_id,action,date,ip_addr)
-		VALUES ('.$user.',\''.addslashes($message).'\',\''.$date.'\','.$ip_int.')';
-	$log_handle = $db->sql_query($log_query);
-	if ($db->error[$log_handle] === 1) {
-		$message_error = $db->_print_error_query($log_handle);
-	}
-	$debug->add_trace('Deprecated use of log_action',true);
-	return $message_error;
-}
-
-/**
  * create_table - Generate styled tables for the admin interface
  * @global debug $debug Debug Object
  * @param array $columns Array of column headings

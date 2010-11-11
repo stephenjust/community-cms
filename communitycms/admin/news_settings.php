@@ -28,7 +28,7 @@ if($_GET['action'] == 'save') {
 		$content .= 'Failed to update configuration.<br />';
 	} else {
 		$content .= 'Successfully updated configuration.<br />'.
-			log_action('Updated news configuration');
+			$log->new_message('Updated news configuration');
 	}
 }
 

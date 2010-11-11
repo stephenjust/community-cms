@@ -21,6 +21,7 @@ if (!$acl->check_permission('adm_page_message')) {
  * @global acl $acl Permission object
  * @global db $db Database object
  * @global debug $debug Debug object
+ * @global log $log
  * @param integer $id Page message ID
  * @return boolean Success
  */
@@ -28,6 +29,7 @@ function delete_page_message($id) {
 	global $acl;
 	global $db;
 	global $debug;
+	global $log;
 
 	// Run pre-execution checks
 	if (!$acl->check_permission('page_message_delete')) {
@@ -60,7 +62,7 @@ function delete_page_message($id) {
 		return false;
 	}
 	$read_message = $db->sql_fetch_assoc($read_message_handle);
-	log_action('Deleted page message on page \''.stripslashes($read_message['title']).'\'');
+	$log->new_message('Deleted page message on page \''.stripslashes($read_message['title']).'\'');
 	return true;
 }
 

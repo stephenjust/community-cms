@@ -7,7 +7,7 @@
  * @package CommunityCMS.main
  */
 if (@SECURITY != 1) {
-    die ('You cannot access this page directly.');
+	die ('You cannot access this page directly.');
 }
 
 /**
@@ -15,6 +15,7 @@ if (@SECURITY != 1) {
  * @global object $acl
  * @global db $db
  * @global debug $debug
+ * @global log $log
  * @param mixed $article
  * @return boolean
  */
@@ -22,6 +23,7 @@ function delete_article($article) {
 	global $acl;
 	global $db;
 	global $debug;
+	global $log;
 
 	if (!$acl->check_permission('news_delete')) {
 		return false;
@@ -61,14 +63,14 @@ function delete_article($article) {
 		$info = $db->sql_fetch_assoc($info_handle);
 
 		// Delete article
-        $delete_query = 'DELETE FROM `' . NEWS_TABLE . '`
+		$delete_query = 'DELETE FROM `' . NEWS_TABLE . '`
 			WHERE `id` = '.$current;
-        $delete = $db->sql_query($delete_query);
-        if ($db->error[$delete] === 1) {
-            return false;
-        } else {
-            log_action('Deleted news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
-        }
+		$delete = $db->sql_query($delete_query);
+		if ($db->error[$delete] === 1) {
+			return false;
+		} else {
+			$log->new_message('Deleted news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
+		}
 
 		unset($delete_query);
 		unset($delete);
@@ -85,6 +87,7 @@ function delete_article($article) {
 function move_article($article,$new_location) {
 	global $db;
 	global $debug;
+	global $log;
 
 	$id = array();
 	if (is_numeric($article)) {
@@ -124,15 +127,15 @@ function move_article($article,$new_location) {
 		$info = $db->sql_fetch_assoc($info_handle);
 
 		// Move article
-        $move_query = 'UPDATE `' . NEWS_TABLE . '`
+		$move_query = 'UPDATE `' . NEWS_TABLE . '`
 			SET `page` = '.$new_location.'
 			WHERE `id` = '.$current;
-        $move = $db->sql_query($move_query);
-        if ($db->error[$move] === 1) {
-            return false;
-        } else {
-            log_action('Moved news article \''.stripslashes($info['name']).'\'');
-        }
+		$move = $db->sql_query($move_query);
+		if ($db->error[$move] === 1) {
+			return false;
+		} else {
+			$log->new_message('Moved news article \''.stripslashes($info['name']).'\'');
+		}
 
 		unset($move_query);
 		unset($move);
@@ -149,6 +152,7 @@ function move_article($article,$new_location) {
 function copy_article($article,$new_location) {
 	global $db;
 	global $debug;
+	global $log;
 
 	$id = array();
 	if (is_numeric($article)) {
@@ -188,16 +192,16 @@ function copy_article($article,$new_location) {
 		$info = $db->sql_fetch_assoc($info_handle);
 
 		// Move article
-        $move_query = 'INSERT INTO `' . NEWS_TABLE . '`
+		$move_query = 'INSERT INTO `' . NEWS_TABLE . '`
 			(`page`,`name`,`description`,`author`,`date`,`date_edited`,`image`,`showdate`)
 			VALUES ('.$new_location.",'{$info['name']}','{$info['description']}','{$info['author']}',
 			'{$info['date']}','{$info['date_edited']}','{$info['image']}',{$info['showdate']})";
-        $move = $db->sql_query($move_query);
-        if ($db->error[$move] === 1) {
-            return false;
-        } else {
-            log_action('Copied news article \''.stripslashes($info['name']).'\'');
-        }
+		$move = $db->sql_query($move_query);
+		if ($db->error[$move] === 1) {
+			return false;
+		} else {
+			$log->new_message('Copied news article \''.stripslashes($info['name']).'\'');
+		}
 
 		unset($move_query);
 		unset($move);
@@ -240,6 +244,7 @@ function news_publish($article_id,$publish = true) {
 	global $acl;
 	global $db;
 	global $debug;
+	global $log;
 
 	// Validate parameters
 	if (!is_numeric($article_id)) {
@@ -293,9 +298,9 @@ function news_publish($article_id,$publish = true) {
 		return false;
 	}
 	if ($publish === true) {
-		log_action('Published article \''.$info['name'].'\'');
+		$log->new_message('Published article \''.$info['name'].'\'');
 	} else {
-		log_action('Unpublished article \''.$info['name'].'\'');
+		$log->new_message('Unpublished article \''.$info['name'].'\'');
 	}
 	return true;
 }

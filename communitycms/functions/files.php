@@ -112,7 +112,8 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 
 /**
  * file_upload - Handle files uploaded via a form
- * @global object $acl Permission object
+ * @global acl $acl Permission object
+ * @globl log $log Logger object
  * @param string $path Directory to store file - special case if = newsicons
  * @param boolean $contentfile File belongs in file/ heirarchy?
  * @param boolean $thumb Generate a thumbnail (75x75) and make original 800x800 (largest)
@@ -120,6 +121,7 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
  */
 function file_upload($path = "", $contentfile = true, $thumb = false) {
 	global $acl;
+	global $log;
 	if (!$acl->check_permission('file_upload')) {
 		return '<span class="errormessage">You are not allowed to upload files.</span>';
 	}
@@ -183,7 +185,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 			@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
 			if (generate_thumbnail($target,$target,1,1,100,100)) {
 				$return = "The file " . $filename . " has been uploaded. ";
-				log_action ('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
+				$log->new_message('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
 			} else {
 				$return = "<span class=\"errormessage\">Failed to generate thumbnail.</span><br />\n";
 			}
@@ -197,7 +199,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	// Move temporary file to its new location
 	@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
 	$return = "The file " . $filename . " has been uploaded. ";
-	log_action ('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
+	$log->new_message('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
 	if ($thumb == true) {
 		if (generate_thumbnail($target,NULL,75,75,0,0)) {
 			$return .= 'Generated thumbnail. ';

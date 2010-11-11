@@ -51,7 +51,7 @@ switch ($_GET['action']) {
 						break;
 					}
 					$content .= 'Successfully created location.<br />'."\n";
-					log_action('Created new location');
+					$log->new_message('Created new location');
 				}
 			}
 		}
@@ -59,7 +59,7 @@ switch ($_GET['action']) {
 
 		// Format date for insertion...
 		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
-		if (!eregi('^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$',$event_date)) {
+		if (!preg_match('#^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$#i',$event_date)) {
 			$content .= 'Invalidly formatted date. Use MM/DD/YYYY format.<br />'."\n";
 			break;
 		}
@@ -101,7 +101,7 @@ switch ($_GET['action']) {
 			$content = 'Failed to edit date information.<br />';
 		} else {
 			$content = 'Successfully edited date information.<br />';
-			log_action('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.stripslashes($title).'\'');
+			$log->new_message('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.stripslashes($title).'\'');
 			$content .= '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
 		}
 		break;

@@ -187,12 +187,14 @@ function location_add($location) {
  * Delete a calendar category entry
  * @global db $db
  * @global debug $debug
+ * @global log $log
  * @param integer $id
  * @return boolean
  */
 function event_cat_delete($id) {
 	global $db;
 	global $debug;
+	global $log;
 	// Validate parameters
 	if (!is_numeric($id)) {
 		$debug->add_trace('Invalid ID given',true);
@@ -226,7 +228,7 @@ function event_cat_delete($id) {
 			return false;
 		} else {
 			$check_category = $db->sql_fetch_assoc($check_category_handle);
-			log_action('Deleted category \''.$check_category['label'].'\'');
+			$log->new_message('Deleted category \''.$check_category['label'].'\'');
 			return true;
 		}
 	} else {
@@ -240,12 +242,14 @@ function event_cat_delete($id) {
  * Delete a calendar event entry
  * @global db $db
  * @global debug $debug
+ * @global log $log
  * @param integer $id
  * @return boolean
  */
 function event_delete($id) {
 	global $db;
 	global $debug;
+	global $log;
 	// Validate parameters
 	if (!is_numeric($id)) {
 		$debug->add_trace('Invalid ID given',true);
@@ -266,7 +270,7 @@ function event_delete($id) {
 		if ($db->error[$del_handle] === 1) {
 			return false;
 		} else {
-			log_action('Deleted calendar date \''.$read_date_info['header'].'\'');
+			$log->new_message('Deleted calendar date \''.$read_date_info['header'].'\'');
 			return true;
 		}
 	}

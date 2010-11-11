@@ -16,7 +16,7 @@ $user_ip = $_SERVER['REMOTE_ADDR'];
 $question_id = stripslashes($_GET['question_id']);
 $answer_id = stripslashes($_GET['answer_id']);
 $referer = $_SERVER['HTTP_REFERER'];
-if (ereg('/$',$referer)) {
+if (preg_match('#/$#',$referer)) {
 	$referer .= 'index';
 }
 $referer_directory = dirname($referer);

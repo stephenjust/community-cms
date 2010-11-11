@@ -43,7 +43,7 @@ if ($_GET['action'] == 'save') {
 		set_config('footer',$_POST['footer']))
 	{
 		$content .= 'Successfully edited site information.<br />'."\n";
-		log_action('Updated site information.');
+		$log->new_message('Updated site information.');
 	} else {
 		$content .= 'Failed to update site information.<br />'."\n";
 	}

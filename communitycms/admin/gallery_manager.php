@@ -24,12 +24,14 @@ if (!$acl->check_permission('adm_gallery_manager')) {
  * delete_gallery - Deletes a photo gallery
  * @global db $db
  * @global debug $debug
+ * @global log $log
  * @param integer $gallery
  * @return boolean
  */
 function delete_gallery($gallery) {
 	global $db;
 	global $debug;
+	global $log;
 
 	if (!is_numeric($gallery)) {
 		return false;
@@ -59,7 +61,7 @@ function delete_gallery($gallery) {
 	if ($db->error[$delete] === 1) {
 		return false;
 	} else {
-		log_action('Deleted photo gallery \''.stripslashes($info['title']).'\' ('.$info['id'].')');
+		$log->new_message('Deleted photo gallery \''.stripslashes($info['title']).'\' ('.$info['id'].')');
 	}
 
 	unset($delete_query);
@@ -140,6 +142,7 @@ function gallery_photo_manager($gallery_id) {
  * Edit the caption for a gallery image
  * @global db $db Database connection object
  * @global debug $debug Debugger object
+ * @global log $log Logger object
  * @param integer $gallery_id
  * @param integer $file_id
  * @param string $file_name
@@ -149,6 +152,7 @@ function gallery_photo_manager($gallery_id) {
 function gallery_image_caption_edit($gallery_id,$file_id,$file_name,$caption) {
 	global $db;
 	global $debug;
+	global $log;
 
 	// Validate parameters
 	if (!is_numeric($gallery_id)) {
@@ -181,7 +185,7 @@ function gallery_image_caption_edit($gallery_id,$file_id,$file_name,$caption) {
 		$debug->add_trace('Failed to edit image caption',true);
 		return false;
 	}
-	log_action('Changed image caption for \''.$file_name.'\'');
+	$log->new_message('Changed image caption for \''.$file_name.'\'');
 	return true;
 }
 
@@ -217,7 +221,7 @@ switch ($_GET['action']) {
 				mkdir(ROOT.'files/'.$image_dir.'/thumbs');
 			}
 			$content .= 'Successfully created gallery.<br />'."\n";
-			log_action('Created gallery \''.$title.'\'');
+			$log->new_message('Created gallery \''.$title.'\'');
 		}
 		$gal_id_query = 'SELECT `id` FROM `'.GALLERY_TABLE.'`
 			WHERE `title` = \''.$title.'\'';
@@ -275,7 +279,7 @@ switch ($_GET['action']) {
 					$del2 = unlink($thumb_dir.$_POST['file_name']);
 					if ($del1 && $del2) {
 						$content .= 'Successfully deleted image.<br />'."\n";
-						log_action('Deleted image from gallery \''.$_POST['file_name'].'\'');
+						$log->new_message('Deleted image from gallery \''.$_POST['file_name'].'\'');
 					} else {
 						$content .= '<span class="errormessage">Failed to delete image.</span><br />'."\n";
 					}

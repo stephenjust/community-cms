@@ -91,7 +91,7 @@ if ($_GET['action'] == 'new_folder') {
 		if($error != 1) {
 			if(!file_exists(ROOT.'files/'.$new_folder_name)) {
 				mkdir(ROOT.'files/'.$new_folder_name);
-				log_action('Created new directory \'files/'.$new_folder_name.'\'');
+				$log->new_message('Created new directory \'files/'.$new_folder_name.'\'');
 			} else {
 				$content .= 'A file or folder with that name already exists.';
 			}
@@ -112,7 +112,7 @@ if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 			$content .= 'Failed to delete file.<br />';
 		} else {
 			$content .= 'Successfully deleted '.$_GET['filename'].'.<br />'.
-				log_action('Deleted file \''.$_GET['filename'].'\'');
+				$log->new_message('Deleted file \''.$_GET['filename'].'\'');
 			$delete_info_query = 'DELETE FROM ' . FILE_TABLE . '
 				WHERE `path` = \''.addslashes($_GET['filename']).'\'';
 			$delete_info_handle = $db->sql_query($delete_info_query);

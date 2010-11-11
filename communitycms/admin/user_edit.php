@@ -54,11 +54,11 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 		$groups = (isset($_POST['groups']) && is_array($_POST['groups']))
 			? array2csv($_POST['groups']) : NULL;
 		$error = 0;
-		if (strlen($telephone) <= 11 || !eregi('^[0-9\-]+\-[0-9]+\-[0-9]+$',$telephone)) {
+		if (strlen($telephone) <= 11 || !preg_match('/^[0-9\-]+\-[0-9]+\-[0-9]+$/i',$telephone)) {
 			$content .= 'Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.<br />';
 			$error = 1;
 		}
-		if (!eregi('^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$',$email)) {
+		if (!preg_match('/^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/i',$email)) {
 			$content .= 'You did not enter a valid email address.<br />';
 			$error = 1;
 		}

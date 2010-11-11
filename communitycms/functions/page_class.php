@@ -201,7 +201,7 @@ class page {
 				header("HTTP/1.1 301 Moved Permanently");
 				$matches = NULL;
 				$old_page_address = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
-				eregi('id=[0-9]+',$old_page_address,$matches);
+				preg_match('/id=[0-9]+/i',$old_page_address,$matches);
 				$new_page_address = str_replace($matches,'page='.$this->text_id,$old_page_address);
 				header('Location: '.$new_page_address);
 			}

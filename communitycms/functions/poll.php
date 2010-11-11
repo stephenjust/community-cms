@@ -19,7 +19,7 @@
 function poll_vote($question,$response,$ip) {
     $question = (int)$question;
     $response = (int)$response;
-    if (!eregi('^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$',$ip)) {
+    if (!preg_match('/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/i',$ip)) {
         return;
     }
     if ($question == 0 || $response == 0) {
