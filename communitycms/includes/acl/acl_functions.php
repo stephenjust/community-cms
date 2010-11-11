@@ -16,7 +16,7 @@ if (!defined('SECURITY')) {
 
 /**
  * Return the permission_list.xml file in array form
- * @return array Permission list
+ * @return array boolean Permission list, false on failure
  */
 function permission_file_read() {
 	$xml_file = ROOT.'includes/acl/permission_list.xml';
@@ -24,7 +24,9 @@ function permission_file_read() {
 	$category_count = 0;
 	$xmlreader = new XMLReader;
 	// Open XML file
-	$xmlreader->open($xml_file);
+	if (!$xmlreader->open($xml_file)) {
+		return false;
+	}
 	// Step through each element in the file
 	while ($xmlreader->read()) {
 		// Skip comments and other useless nodes
@@ -49,10 +51,16 @@ function permission_file_read() {
 			$key_name = $xmlreader->getAttribute('name');
 			$key_title = $xmlreader->getAttribute('title');
 			$key_description = $xmlreader->getAttribute('description');
+			$key_default = $xmlreader->getAttribute('default');
 			$permissions[$category_count]['items'][$key_count]['name'] = $key_name;
 			$permissions[$category_count]['items'][$key_count]['title'] = $key_title;
 			$permissions[$category_count]['items'][$key_count]['description'] = $key_description;
 			$permissions[$category_count]['items'][$key_count]['regex'] = false;
+			if ($key_default == '') {
+				$permissions[$category_count]['items'][$key_count]['default'] = 0;
+			} else {
+				$permissions[$category_count]['items'][$key_count]['default'] = 1;
+			}
 			$key_count++;
 		}
 		// Handle regex items
@@ -159,5 +167,104 @@ function permission_list($permission_list,$group = 0,$form = false) {
 		$debug->add_trace('Permission \''.$leftover_permission.'\' exists in the database but it is not found in the permission_list.xml file',true);
 	}
 	return $return;
+}
+
+/**
+ * Update permission list to reflect the XML file
+ * @global acl $acl
+ * @global db $db
+ * @global debug $debug
+ * @global log $log
+ * @return mixed Number of changes, or false on failure
+ */
+function permission_list_refresh() {
+	global $acl;
+	global $db;
+	global $debug;
+	global $log;
+
+	$num_changes = 0;
+	$regex_list = array();
+	$permission_list_file = permission_file_read();
+	if ($permission_list_file === false) {
+		return false;
+	}
+	$permission_list_db = $acl->permission_list;
+	foreach ($permission_list_file AS $permission_list) {
+		// Step through each permission category
+		for ($i = 0; $i < count($permission_list['items']); $i++) {
+			if ($permission_list['items'][$i]['regex'] == 1) {
+				$regex_list[] = $permission_list['items'][$i]['name'];
+				continue;
+			}
+			if (isset($permission_list_db[$permission_list['items'][$i]['name']])) {
+				// Key already exists in database
+				// Check each field for consistency
+				$db_perm = $permission_list_db[$permission_list['items'][$i]['name']];
+				if ($db_perm['longname'] != $permission_list['items'][$i]['title'] ||
+						$db_perm['description'] != $permission_list['items'][$i]['description'] ||
+						$db_perm['default'] != $permission_list['items'][$i]['default']) {
+					$update_query = 'UPDATE `'.ACL_KEYS_TABLE.'`
+						SET `acl_longname` = \''.addslashes($permission_list['items'][$i]['title']).'\',
+						`acl_description` = \''.addslashes($permission_list['items'][$i]['description']).'\',
+						`acl_value_default` = '.(int)$permission_list['items'][$i]['default'].'
+						WHERE `acl_id` = '.$db_perm['id'];
+					$update_handle = $db->sql_query($update_query);
+					if ($db->error[$update_handle] === 1) {
+						$debug->add_trace('Failed to update permission \''.$db_perm['shortname'].'\'',true);
+					} else {
+						$log->new_message('Modified permission key \''.$db_perm['longname'].'\'');
+						$num_changes++;
+					}
+				}
+				unset($permission_list_db[$permission_list['items'][$i]['name']]);
+			} else {
+				// Key does not exist in database. Create it.
+				$create_query = 'INSERT INTO `'.ACL_KEYS_TABLE.'`
+					(`acl_name`,`acl_longname`,`acl_description`,`acl_value_default`)
+					VALUES
+					(\''.addslashes($permission_list['items'][$i]['name']).'\',
+					\''.addslashes($permission_list['items'][$i]['title']).'\',
+					\''.addslashes($permission_list['items'][$i]['description']).'\',
+					'.(int)$permission_list['items'][$i]['default'].')';
+				$create_handle = $db->sql_query($create_query);
+				if ($db->error[$create_handle] === 1) {
+					$debug->add_trace('Failed to create permission key \''.$permission_list['items'][$i]['name'].'\'',true);
+				} else {
+					$log->new_message('Created permission key \''.$permission_list['items'][$i]['title'].'\'');
+					$num_changes++;
+				}
+			}
+		}
+	}
+	foreach ($permission_list_db AS $db_list) {
+		for ($i = 0; $i < count($regex_list); $i++) {
+			if (preg_match($regex_list[$i],$db_list['shortname'])) {
+				// Go to next foreach iteration
+				// (match found)
+				continue 2;
+			}
+		}
+		// No matches found - delete entry
+		// Delete all permission records
+		$recdel_query = 'DELETE FROM `'.ACL_TABLE.'`
+			WHERE `acl_id` = '.$db_list['id'];
+		$recdel_handle = $db->sql_query($recdel_query);
+		if ($db->error[$recdel_handle] === 1) {
+			$debug->add_trace('Failed to delete permission records associated with \''.$db_list['shortname'].'\'',true);
+		} else {
+			// Delete key
+			$del_query = 'DELETE FROM `'.ACL_KEYS_TABLE.'`
+				WHERE `acl_id` = '.$db_list['id'];
+			$del_handle = $db->sql_query($del_query);
+			if ($db->error[$del_handle] === 1) {
+				$debug->add_trace('Failed to delete key \''.$db_list['longname'].'\'',true);
+			} else {
+				$log->new_message('Deleted permission key \''.$db_list['longname'].'\'');
+				$num_changes++;
+			}
+		}
+	}
+	return $num_changes;
 }
 ?>

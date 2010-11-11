@@ -22,9 +22,13 @@ class acl {
 	/**#@+
 	 * @var array
 	 */
-	public $permission_list = array();
+	public $permission_list;
 	private $acl_cache = array();
 	/**#@-*/
+
+	function acl() {
+		$this->permission_list = $this->get_acl_key_names();
+	}
 
 	/**
 	 * check_permission - Read from the ACL and check if user is allowed to complete action
@@ -50,9 +54,6 @@ class acl {
 			}
 		} else {
 			$group_array = array($group);
-		}
-		if ($this->permission_list == array()) {
-			$this->permission_list = $this->get_acl_key_names();
 		}
 
 		// See if permission exists
@@ -255,15 +256,10 @@ class acl {
 			return false;
 		}
 		// Check if key already exists
-		if ($this->permission_list == array()) {
-			$this->permission_list = $this->get_acl_key_names();
-		}
 		if (isset($this->permission_list[$name])) {
 			$debug->add_trace('The ACL key '.$name.' already exists',true);
 			return false;
 		}
-		// Make sure that you read permission list on next permission check
-		$this->permission_list = array();
 		
 		// Add key
 		$new_key_query = 'INSERT INTO '.ACL_KEYS_TABLE.'
@@ -273,6 +269,8 @@ class acl {
 		if ($db->error[$new_key_handle] === 1) {
 			return false;
 		}
+		// Update permission list
+		$this->permission_list = $this->get_acl_key_names();
 		return true;
 	}
 }

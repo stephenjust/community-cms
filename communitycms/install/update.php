@@ -44,7 +44,7 @@ if(@ !include('../config.php')) {
 	// Update permissions if debug is enabled because that probably means
 	// you're using the source repository rather than a stable version.
 	if (DEBUG === 1) {
-		if (update_permission_records() !== false) {
+		if (permission_list_refresh() !== false) {
 			$page .= '<br />Updated permissions.<br />';
 		} else {
 			$page .= '<br />Failed to update permissions.<br />';

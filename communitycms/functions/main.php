@@ -43,17 +43,18 @@ function initialize($mode = NULL) {
 	require_once(ROOT . 'includes/debug.php');
 	$debug = new debug;
 
+	// Must initialize DB class before ACL class
+	$db->sql_connect();
+	if (!$db->connect) {
+		err_page(1001); // Database connection error
+	}
+
 	require_once(ROOT . 'includes/acl/acl.php');
 	require_once(ROOT . 'includes/acl/acl_functions.php');
 	$acl = new acl;
 
 	require_once(ROOT . 'includes/log_class.php');
 	$log = new Log;
-
-	$db->sql_connect();
-	if (!$db->connect) {
-		err_page(1001); // Database connection error
-	}
 
 	// Don't do this when installing - we have no DB version set yet
 	if ($mode != 'install') {

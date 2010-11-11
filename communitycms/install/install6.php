@@ -59,7 +59,7 @@ if ($error == 0) {
 
 // Create permissions
 $content .= 'Creating permission records... ';
-if (update_permission_records() !== false) {
+if (permission_list_refresh() !== false) {
 	$content .= 'DONE.<br />';
 } else {
 	$content .= 'Failed.<br />';
