@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE help SYSTEM "../docs/help_contents.dtd">
+<help>
+	<category name="General">
+		<helpfile id="index" label="Help Start" file="index.php" />
+		<helpfile id="change-password" label="Change Your Password" file="change-password.php" />
+	</category>
+</help>

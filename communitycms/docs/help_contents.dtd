@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!ELEMENT help (category+)>
+
+<!ELEMENT category (helpfile+)>
+<!ATTLIST category
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT helpfile EMPTY>
+<!ATTLIST helpfile
+	id CDATA #REQUIRED
+	label CDATA #REQUIRED
+	file CDATA #REQUIRED
+>
