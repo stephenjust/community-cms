@@ -53,6 +53,11 @@ class page {
 	 */
 	public $showtitle = true;
 	/**
+	 * If 'true' when display_left() called, user menu will be displayed.
+	 * @var boolean
+	 */
+	public $showlogin = true;
+	/**
 	 * Page type
 	 * @var string Page type
 	 */
@@ -101,21 +106,33 @@ class page {
 
 	/**
 	 * set_page - Set the current page by whatever identifier is provided
+	 * @global debug $debug Debug object
 	 * @param mixed $reference Numeric ID or String
 	 * @param boolean $is_id If $reference is a numeric ID or special page, true; else a text ID
 	 * @return boolean Success
 	 */
 	public function set_page($reference, $is_id = true) {
+		global $debug;
+
 		if ($is_id == true) {
 			if (!is_numeric($reference)) {
 				// Handle special page types
-				if ($reference == 'change_password') {
-					$this->text_id = $reference;
-					$this->url_reference = 'id=change_password';
-					$this->get_special_page();
-					return true;
+				switch ($reference) {
+					default:
+						// Error case
+						$debug->add_trace('Unknown special page type',true);
+						$this->exists = false;
+						$this->get_page_content();
+						return false;
+
+					case 'change_password':
+						// Change Password
+						$this->text_id = $reference;
+						$this->showlogin = false;
+						$this->url_reference = 'id=change_password';
+						$this->get_special_page();
+						return true;
 				}
-				return false;
 			}
 			$this->id = (int)$reference;
 		} else {
@@ -159,6 +176,7 @@ class page {
 			return;
 		}
 
+		// Get either the page ID or text ID for use in the section below
 		if ($this->id > 0 && strlen($this->text_id) == 0) {
 			$debug->add_trace('Using numeric ID to get page information',false);
 			$page_query_id = '`page`.`id` = '.$this->id;
@@ -168,6 +186,8 @@ class page {
 		} else {
 			return;
 		}
+
+		// Look up information (including page type) for the current page
 		$page_query = 'SELECT `page`.*, `pt`.`filename`
 			FROM `'.PAGE_TABLE.'` `page`, `'.PAGE_TYPE_TABLE.'` `pt`
 			WHERE '.$page_query_id.'
@@ -185,6 +205,8 @@ class page {
 			return;
 		}
 		$page = $db->sql_fetch_assoc($page_handle);
+
+		// Page was found; populate the class fields
 		$this->id = $page['id'];
 		$this->text_id = $page['text_id'];
 		$this->showtitle = ($page['show_title'] == 1) ? true : false;
@@ -212,6 +234,8 @@ class page {
 		if(!isset($this->content)) {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
 			if(!$this->content) {
+				// Including the pagetype file failed - either a file is missing,
+				// or the included file returned 'false'
 				header("HTTP/1.0 404 Not Found");
 				$this->exists = 0;
 				$this->notification = '<strong>Error: </strong>System file not found.<br />';
@@ -221,6 +245,10 @@ class page {
 		return;
 	}
 
+	/**
+	 * Handle "special" pages (i.e. change password page)
+	 * @global debug $debug
+	 */
 	private function get_special_page() {
 		global $debug;
 
@@ -393,8 +421,8 @@ class page {
 		$template->load_file('left');
 		$template->nav_bar = $this->nav_menu();
 
-		// Don't allow login on change password page. It can cause issues.
-		if ($this->id != 'change_password') {
+		// Hide login box when it may cause issues
+		if ($this->showlogin === true) {
 			$template->nav_login = display_login_box();
 		} else {
 			$template->nav_login = NULL;
