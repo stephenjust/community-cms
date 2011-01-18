@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2009-2010 Stephen Just
+ * @copyright Copyright (C) 2009-2011 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -17,6 +17,7 @@ if (!$acl->check_permission('adm_contacts_manage')) {
 }
 
 $content = NULL;
+include(ROOT.'functions/contacts.php');
 $tab_layout = new tabs;
 
 // ----------------------------------------------------------------------------
@@ -50,53 +51,6 @@ function contact_list($page = '*') {
 		$contacts[] = $contact_list;
 	}
 	return $contacts;
-}
-
-/**
- * Delete a contact entry from the database
- * @global object $acl Permission object
- * @global db $db Database object
- * @global object $log Logger object
- * @param integer $id Contact ID
- * @return boolean Success
- */
-function delete_contact($id) {
-	global $acl;
-	global $db;
-	global $log;
-
-	// Pre-execution checks
-	if (!$acl->check_permission('contact_delete')) {
-		return false;
-	}
-	if (!is_numeric($id)) {
-		return false;
-	}
-	$id = (int)$id;
-
-	// Get info for log message
-	$get_info_query = 'SELECT * FROM `'.CONTACTS_TABLE.'` WHERE
-		`id` = '.$id.' LIMIT 1';
-	$get_contact_info_handle = $db->sql_query($get_info_query);
-	if ($db->error[$get_contact_info_handle] === 1) {
-		return false;
-	}
-	if ($db->sql_num_rows($get_contact_info_handle) != 1) {
-		return false;
-	} else {
-		$contact_info = $db->sql_fetch_assoc($get_contact_info_handle);
-		unset($get_info_query);
-		unset($get_contact_info_handle);
-	}
-	// Delete record
-	$delete_query = 'DELETE FROM `' . CONTACTS_TABLE . '`
-		WHERE `id` = '.$id;
-	$delete_contact = $db->sql_query($delete_query);
-	if ($db->error[$delete_contact] === 1) {
-		return false;
-	}
-	$log->new_message('Deleted contact \''.stripslashes($contact_info['name']).'\'');
-	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -363,15 +317,22 @@ if ($db->error[$current_lists_handle] === 1) {
 	if ($db->sql_num_rows($current_lists_handle) == 0) {
 		$tab_content['manage_lists'] .= 'No Contact Lists exist. Please create a new Contacts page to add one.<br />';
 	} else {
-		$tab_content['manage_lists'] .= 'One or more contact lists exist. However, this feature is not completely implemented.<br />'."\n";
 		$tab_content['manage_lists'] .= '<select name="cl" id="adm_cl_list" onChange="update_cl_manager(\'-\')">'."\n";
 		for ($i = 0; $i < count($db->sql_num_rows($current_lists_handle)); $i++) {
 			$current_lists_result = $db->sql_fetch_assoc($current_lists_handle);
-			$tab_content['manage_lists'] .= "\t".'<option value="'.$current_lists_result['id'].'">'.$current_lists_result['title'].'</option>'."\n";
+			// Set default page
+			if (!isset($_POST['page'])) {
+				$_POST['page'] = $current_lists_result['id'];
+			}
+			if ($_POST['page'] == $current_lists_result['id']) {
+				$tab_content['manage_lists'] .= "\t".'<option value="'.$current_lists_result['id'].'" selected>'.$current_lists_result['title'].'</option>'."\n";
+			} else {
+				$tab_content['manage_lists'] .= "\t".'<option value="'.$current_lists_result['id'].'">'.$current_lists_result['title'].'</option>'."\n";
+			}
 		}
 		$tab_content['manage_lists'] .= '</select>'."\n";
-		// TODO: Implement contact list manager JS + PHP (uses comcms_content table)
-		$tab_content['manage_lists'] .= '<div id="contact_list_manager">Loading...</div>'."\n";
+		$tab_content['manage_lists'] .= '<div id="adm_contact_list_manager">Loading...</div>'."\n";
+		$tab_content['manage_lists'] .= '<script type="text/javascript">update_cl_manager(\''.$_POST['page'].'\');</script>';
 	}
 }
 $tab_layout->add_tab('Contact Lists',$tab_content['manage_lists']);

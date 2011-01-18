@@ -173,4 +173,27 @@ function import_event(event_div_id) {
 	setTimeout(function(){event_div.style.display = 'none';},5000);
 }
 
+function update_cl_manager(page) {
+	var urlBase = './admin/scripts/cl_manager.php';
+	var listdiv = document.getElementById('adm_contact_list_manager');
+	var pagelist = document.getElementById('adm_cl_list');
+	listdiv.innerHTML = 'Loading...';
+
+	if (page == '-') {
+		page = pagelist.value;
+	}
+
+	loadHTML(urlBase + "?page=" + encodeURI(page),listdiv);
+}
+function update_cl_manager_add() {
+	var urlBase = './admin/scripts/cl_manager.php';
+	var listdiv = document.getElementById('adm_contact_list_manager');
+	var pagelist = document.getElementById('adm_cl_list');
+	var contactelem = document.getElementById('cl_add_contact');
+	var contact = contactelem.value;
+	listdiv.innerHTML = 'Loading...';
+	var page = pagelist.value;
+
+	loadHTML(urlBase + "?page=" + encodeURI(page) + "&action=add&id=" + encodeURI(contact),listdiv);
+}
 -->

@@ -1,7 +1,7 @@
 <?php
 /**
  * Community CMS
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2011 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -13,8 +13,10 @@ global $db;
 global $page;
 $content = NULL;
 $current_contact = NULL;
-$contact_list_query = 'SELECT * FROM `' . CONTACTS_TABLE . '`
-	ORDER BY `name` ASC';
+$contact_list_query = 'SELECT `contacts`.*
+	FROM `'.CONTACTS_TABLE.'` `contacts`, `'.CONTENT_TABLE.'` `content`
+	WHERE `content`.`page_id` = '.$page->id.'
+	ORDER BY `content`.`order` ASC';
 $contact_list_handle = $db->sql_query($contact_list_query);
 $contact_list_num_rows = $db->sql_num_rows($contact_list_handle);
 if (!isset($_GET['message'])) {
