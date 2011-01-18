@@ -196,4 +196,13 @@ function update_cl_manager_add() {
 
 	loadHTML(urlBase + "?page=" + encodeURI(page) + "&action=add&id=" + encodeURI(contact),listdiv);
 }
+function update_cl_manager_remove(contact) {
+	var urlBase = './admin/scripts/cl_manager.php';
+	var listdiv = document.getElementById('adm_contact_list_manager');
+	var pagelist = document.getElementById('adm_cl_list');
+	listdiv.innerHTML = 'Loading...';
+	var page = pagelist.value;
+
+	loadHTML(urlBase + "?page=" + encodeURI(page) + "&action=remove&id=" + encodeURI(contact),listdiv);
+}
 -->

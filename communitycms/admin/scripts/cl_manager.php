@@ -45,6 +45,7 @@ switch ($_GET['action']) {
 	case 'add':
 		if ($_GET['id'] == 0) {
 			$content .= '<span class="errormessage">Error: No contact to add</span><br />'."\n";
+			break;
 		}
 		if (contact_add_to_list($_GET['id'],$page_id)) {
 			$content .= 'Successfully added contact to the list.<br />'."\n";
@@ -52,10 +53,21 @@ switch ($_GET['action']) {
 			$content .= '<span class="errormessage">Error: Failed to add the contact to the list.</span><br />'."\n";
 		}
 		break;
+	case 'remove':
+		if ($_GET['id'] == 0) {
+			$content .= '<span class="errormessage">Error: No contact to delete</span><br />'."\n";
+			break;
+		}
+		if (contact_remove_from_list($_GET['id'])) {
+			$content .= 'Successfully removed contact from the list.<br />'."\n";
+		} else {
+			$content .= '<span class="errormessage">Error: Failed to remove the contact from the list.</span><br />'."\n";
+		}
+		break;
 }
 
 // Get contact list
-$contact_list_query = 'SELECT `contacts`.*, `content`.`order`
+$contact_list_query = 'SELECT `contacts`.*, `content`.`order`, `content`.`id` AS `cnt_id`
 	FROM `'.CONTACTS_TABLE.'` `contacts`, `'.CONTENT_TABLE.'` `content`
 	WHERE `content`.`ref_id` = `contacts`.`id`
 	AND `content`.`page_id` = '.$page_id.'
@@ -63,18 +75,27 @@ $contact_list_query = 'SELECT `contacts`.*, `content`.`order`
 $contact_list_handle = $db->sql_query($contact_list_query);
 $contact_list_rows = $db->sql_num_rows($contact_list_handle);
 $list_rows = array();
+$contact_ids = array();
 for ($i = 1; $i <= $contact_list_rows; $i++) {
     $contact_list = $db->sql_fetch_assoc($contact_list_handle);
 	$current_row = array();
+	$contact_ids[] = $contact_list['id'];
 	$current_row[] = '<input type="checkbox" name="item_'.$contact_list['id'].'" />';
 	$current_row[] = $contact_list['id'];
 	$current_row[] = $contact_list['name'];
+	if ($acl->check_permission('contacts_edit_lists')) {
+		$current_row[] = '<a href="javascript:update_cl_manager_remove(\''.$contact_list['cnt_id'].'\')">Remove</a>';
+	}
 
 	$current_row[] = '<input type="text" size="3" maxlength="11" name="pri-'.$contact_list['id'].'" value="'.$contact_list['order'].'" />';
 	$list_rows[] = $current_row;
 } // FOR
 
-$label_array = array('','ID','Name','Order');
+$label_array = array('','ID','Name');
+if ($acl->check_permission('contacts_edit_lists')) {
+	$label_array[] = 'Delete';
+}
+$label_array[] = 'Order';
 
 $content .= create_table($label_array,$list_rows);
 $content .= '<input type="hidden" name="page" value="'.$page_id.'" />'."\n";
@@ -100,7 +121,10 @@ for ($i = 0; $i < $num_contacts; $i++) {
 	$content .= "\t".'<option value="'.$cl_result['id'].'">'.$cl_result['name'].'</option>';
 }
 $content .= '</select>'."\n";
-$content .= '<input type="button" value="Add" onClick="update_cl_manager_add()" />'."\n";
+$contact_ids = array2csv($contact_ids);
+$content .= '<input type="hidden" id="cl_contact_ids" value="'.$contact_ids.'" name="contact_ids" />'."\n";
+$content .= '<input type="button" value="Add" onClick="update_cl_manager_add()" /><br />'."\n";
+$content .= '<input type="button" value="Save Order" onClick="update_cl_manager_order()" /><br />'."\n";
 
 echo $content;
 

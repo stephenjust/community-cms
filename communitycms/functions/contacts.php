@@ -9,9 +9,9 @@
 
 /**
  * Delete a contact entry from the database
- * @global object $acl Permission object
+ * @global acl $acl Permission object
  * @global db $db Database object
- * @global object $log Logger object
+ * @global Log $log Logger object
  * @param integer $id Contact ID
  * @return boolean Success
  */
@@ -54,6 +54,14 @@ function delete_contact($id) {
 	return true;
 }
 
+/**
+ * Add a contact to a contact list
+ * @global acl $acl
+ * @global db $db
+ * @param integer $contact_id
+ * @param integer $list_id
+ * @return boolean
+ */
 function contact_add_to_list($contact_id,$list_id) {
 	global $acl;
 	global $db;
@@ -108,6 +116,32 @@ function contact_add_to_list($contact_id,$list_id) {
 		('.$list_id.',(SELECT `id` FROM `'.PAGE_TYPE_TABLE.'` WHERE `name` = \'Contacts\'),'.$contact_id.')';
 	$insert_handle = $db->sql_query($insert_query);
 	if ($db->error[$insert_handle] === 1) {
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Remove a contact from a contact list
+ * @global acl $acl
+ * @global db $db
+ * @param integer $content_id
+ * @return boolean
+ */
+function contact_remove_from_list($content_id) {
+	global $acl;
+	global $db;
+
+	if (!$acl->check_permission('contacts_edit_lists')) {
+		return false;
+	}
+	if (!is_numeric($content_id)) {
+		return false;
+	}
+	$delete_query = 'DELETE FROM `'.CONTENT_TABLE.'`
+		WHERE `id` = '.$content_id;
+	$delete_handle = $db->sql_query($delete_query);
+	if($db->error[$delete_handle] === 1) {
 		return false;
 	}
 	return true;
