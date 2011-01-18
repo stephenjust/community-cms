@@ -68,6 +68,48 @@ function contact_add_to_list($contact_id,$list_id) {
 		return false;
 	}
 
-	// TODO: Add contact to list, document function
+	$check_contact_query = 'SELECT `id` FROM `'.CONTACTS_TABLE.'`
+		WHERE `id` = '.$contact_id;
+	$check_contact_handle = $db->sql_query($check_contact_query);
+	if ($db->error[$check_contact_handle] === 1) {
+		return false;
+	}
+	if ($db->sql_num_rows($check_contact_handle) === 0) {
+		return false;
+	}
+
+	$check_list_query = 'SELECT `page`.`id`
+		FROM `'.PAGE_TABLE.'` `page`, `'.PAGE_TYPE_TABLE.'` `pt`
+		WHERE `page`.`type` = `pt`.`id`
+		AND `pt`.`name` = \'Contacts\'
+		AND `page`.`id` = '.$list_id;
+	$check_list_handle = $db->sql_query($check_list_query);
+	if ($db->error[$check_list_handle] === 1) {
+		return false;
+	}
+	if ($db->sql_num_rows($check_list_handle) === 0) {
+		return false;
+	}
+
+	$check_dupe_query = 'SELECT `id` FROM `'.CONTENT_TABLE.'`
+		WHERE `ref_id` = '.$contact_id.'
+		AND `page_id` = '.$list_id;
+	$check_dupe_handle = $db->sql_query($check_dupe_query);
+	if ($db->error[$check_dupe_handle] === 1) {
+		return false;
+	}
+	if ($db->sql_num_rows($check_dupe_handle) !== 0) {
+		return false;
+	}
+
+	// Add contact to list
+	$insert_query = 'INSERT INTO `'.CONTENT_TABLE.'`
+		(`page_id`,`ref_type`,`ref_id`) VALUES
+		('.$list_id.',(SELECT `id` FROM `'.PAGE_TYPE_TABLE.'` WHERE `name` = \'Contacts\'),'.$contact_id.')';
+	$insert_handle = $db->sql_query($insert_query);
+	if ($db->error[$insert_handle] === 1) {
+		return false;
+	}
+	return true;
 }
 ?>
