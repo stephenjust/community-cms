@@ -43,6 +43,14 @@ function delete_contact($id) {
 		unset($get_info_query);
 		unset($get_contact_info_handle);
 	}
+	// Delete 'content' records
+	$del_cnt_query = 'DELETE FROM `'.CONTENT_TABLE.'`
+		WHERE `ref_id` = '.$id.'
+		AND `ref_type` = (SELECT `id` FROM `'.PAGE_TYPE_TABLE.'` WHERE `name` = \'Contacts\')';
+	$del_cnt_handle = $db->sql_query($del_cnt_query);
+	if ($db->error[$del_cnt_handle] === 1) {
+		return false;
+	}
 	// Delete record
 	$delete_query = 'DELETE FROM `' . CONTACTS_TABLE . '`
 		WHERE `id` = '.$id;
@@ -58,6 +66,7 @@ function delete_contact($id) {
  * Add a contact to a contact list
  * @global acl $acl
  * @global db $db
+ * @global Log $log
  * @param integer $contact_id
  * @param integer $list_id
  * @return boolean
@@ -65,6 +74,7 @@ function delete_contact($id) {
 function contact_add_to_list($contact_id,$list_id) {
 	global $acl;
 	global $db;
+	global $log;
 
 	// Check permissions
 	if (!$acl->check_permission('contacts_edit_lists')) {
@@ -76,7 +86,7 @@ function contact_add_to_list($contact_id,$list_id) {
 		return false;
 	}
 
-	$check_contact_query = 'SELECT `id` FROM `'.CONTACTS_TABLE.'`
+	$check_contact_query = 'SELECT `id`,`name` FROM `'.CONTACTS_TABLE.'`
 		WHERE `id` = '.$contact_id;
 	$check_contact_handle = $db->sql_query($check_contact_query);
 	if ($db->error[$check_contact_handle] === 1) {
@@ -85,8 +95,9 @@ function contact_add_to_list($contact_id,$list_id) {
 	if ($db->sql_num_rows($check_contact_handle) === 0) {
 		return false;
 	}
+	$check_contact = $db->sql_fetch_assoc($check_contact_handle);
 
-	$check_list_query = 'SELECT `page`.`id`
+	$check_list_query = 'SELECT `page`.`id`, `page`.`title`
 		FROM `'.PAGE_TABLE.'` `page`, `'.PAGE_TYPE_TABLE.'` `pt`
 		WHERE `page`.`type` = `pt`.`id`
 		AND `pt`.`name` = \'Contacts\'
@@ -98,6 +109,7 @@ function contact_add_to_list($contact_id,$list_id) {
 	if ($db->sql_num_rows($check_list_handle) === 0) {
 		return false;
 	}
+	$check_list = $db->sql_fetch_assoc($check_list_handle);
 
 	$check_dupe_query = 'SELECT `id` FROM `'.CONTENT_TABLE.'`
 		WHERE `ref_id` = '.$contact_id.'
@@ -118,6 +130,7 @@ function contact_add_to_list($contact_id,$list_id) {
 	if ($db->error[$insert_handle] === 1) {
 		return false;
 	}
+	$log->new_message('Added '.$check_contact['name'].' to contact list \''.$check_list['title'].'\'');
 	return true;
 }
 
