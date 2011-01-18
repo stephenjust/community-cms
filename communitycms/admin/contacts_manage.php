@@ -293,7 +293,8 @@ EOT;
 <td>{$contact['id']}</td>
 <td>{$contact['name']}</td>
 <td><a href="?module=contacts_manage&action=edit&id={$contact['id']}"><img src="<!-- \$IMAGE_PATH\$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
-<td><a href="?module=contacts_manage&action=delete&id={$contact['id']}"><img src="<!-- \$IMAGE_PATH\$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
+<td><a href="javascript:confirm_delete('?module=contacts_manage&amp;action=delete&amp;
+	id={$contact['id']}')"><img src="<!-- \$IMAGE_PATH\$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>
 </tr>
 EOT;
 	}
