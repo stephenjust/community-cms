@@ -46,12 +46,16 @@ div.iconbar {
 	float: right;
 	right: 3px;
 	padding: 3px;
-	position: relative;
+	position: absolute;
 	text-align: right;
 	top: 2px;
 	z-index: 1000;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+}
+/* Fix for underlined spaces in certain browsers (eg. Chrome) */
+div.iconbar > a {
+	text-decoration: none;
 }
 
 h1 {
