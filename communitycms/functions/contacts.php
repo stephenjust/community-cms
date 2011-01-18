@@ -146,4 +146,33 @@ function contact_remove_from_list($content_id) {
 	}
 	return true;
 }
+
+/**
+ * Update contact order
+ * @global acl $acl
+ * @global db $db
+ * @param integer $list_entry
+ * @param integer $order
+ * @return boolean
+ */
+function contact_order_list($list_entry,$order) {
+	global $acl;
+	global $db;
+
+	if (!$acl->check_permission('contacts_edit_lists')) {
+		return false;
+	}
+	if (!is_numeric($list_entry) || !is_numeric($order)) {
+		return false;
+	}
+
+	$order_query = 'UPDATE `'.CONTENT_TABLE.'`
+		SET `order` = '.(int)$order.'
+		WHERE `id` = '.$list_entry;
+	$order_handle = $db->sql_query($order_query);
+	if($db->error[$order_handle] === 1) {
+		return false;
+	}
+	return true;
+}
 ?>

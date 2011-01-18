@@ -318,7 +318,7 @@ if ($db->error[$current_lists_handle] === 1) {
 		$tab_content['manage_lists'] .= 'No Contact Lists exist. Please create a new Contacts page to add one.<br />';
 	} else {
 		$tab_content['manage_lists'] .= '<select name="cl" id="adm_cl_list" onChange="update_cl_manager(\'-\')">'."\n";
-		for ($i = 0; $i < count($db->sql_num_rows($current_lists_handle)); $i++) {
+		for ($i = 0; $i < $db->sql_num_rows($current_lists_handle); $i++) {
 			$current_lists_result = $db->sql_fetch_assoc($current_lists_handle);
 			// Set default page
 			if (!isset($_POST['page'])) {

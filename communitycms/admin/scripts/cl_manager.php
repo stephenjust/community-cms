@@ -64,6 +64,14 @@ switch ($_GET['action']) {
 			$content .= '<span class="errormessage">Error: Failed to remove the contact from the list.</span><br />'."\n";
 		}
 		break;
+	case 'order':
+		if ($_GET['id'] == 0) {
+			$content .= '<span class="errormessage">Error: No contact to reorder.</span><br />'."\n";
+			break;
+		}
+		if (!contact_order_list($_GET['id'], $_GET['order'])) {
+			$content .= '<span class="errormessage">Error: Failed to change contact order.</span><br />'."\n";
+		}
 }
 
 // Get contact list
@@ -80,18 +88,17 @@ for ($i = 1; $i <= $contact_list_rows; $i++) {
     $contact_list = $db->sql_fetch_assoc($contact_list_handle);
 	$current_row = array();
 	$contact_ids[] = $contact_list['id'];
-	$current_row[] = '<input type="checkbox" name="item_'.$contact_list['id'].'" />';
 	$current_row[] = $contact_list['id'];
 	$current_row[] = $contact_list['name'];
 	if ($acl->check_permission('contacts_edit_lists')) {
 		$current_row[] = '<a href="javascript:update_cl_manager_remove(\''.$contact_list['cnt_id'].'\')">Remove</a>';
 	}
 
-	$current_row[] = '<input type="text" size="3" maxlength="11" name="pri-'.$contact_list['id'].'" value="'.$contact_list['order'].'" />';
+	$current_row[] = '<input type="text" size="3" maxlength="11" id="cl_order_'.$contact_list['cnt_id'].'" value="'.$contact_list['order'].'" onBlur="update_cl_manager_order(\''.$contact_list['cnt_id'].'\')" />';
 	$list_rows[] = $current_row;
 } // FOR
 
-$label_array = array('','ID','Name');
+$label_array = array('ID','Name');
 if ($acl->check_permission('contacts_edit_lists')) {
 	$label_array[] = 'Delete';
 }
@@ -124,7 +131,6 @@ $content .= '</select>'."\n";
 $contact_ids = array2csv($contact_ids);
 $content .= '<input type="hidden" id="cl_contact_ids" value="'.$contact_ids.'" name="contact_ids" />'."\n";
 $content .= '<input type="button" value="Add" onClick="update_cl_manager_add()" /><br />'."\n";
-$content .= '<input type="button" value="Save Order" onClick="update_cl_manager_order()" /><br />'."\n";
 
 echo $content;
 

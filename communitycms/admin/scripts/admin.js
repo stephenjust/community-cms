@@ -205,4 +205,15 @@ function update_cl_manager_remove(contact) {
 
 	loadHTML(urlBase + "?page=" + encodeURI(page) + "&action=remove&id=" + encodeURI(contact),listdiv);
 }
+function update_cl_manager_order(content) {
+	var urlBase = './admin/scripts/cl_manager.php';
+	var listdiv = document.getElementById('adm_contact_list_manager');
+	var pagelist = document.getElementById('adm_cl_list');
+	var orderfield = document.getElementById('cl_order_' + content)
+	var order = orderfield.value;
+	listdiv.innerHTML = 'Loading...';
+	var page = pagelist.value;
+
+	loadHTML(urlBase + "?page=" + encodeURI(page) + "&action=order&id=" + encodeURI(content) + "&order=" + encodeURI(order),listdiv);
+}
 -->
