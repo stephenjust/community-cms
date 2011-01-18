@@ -3,6 +3,11 @@
 <help>
 	<category name="General">
 		<helpfile id="index" label="Help Start" file="index.php" />
+		<helpfile id="permissions-overview" label="Permissions" file="permissions-overview.php" />
+	</category>
+	<category name="Content">
+	</category>
+	<category name="Users">
 		<helpfile id="change-password" label="Change Your Password" file="change-password.php" />
 	</category>
 </help>
