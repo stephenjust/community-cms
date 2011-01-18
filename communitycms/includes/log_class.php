@@ -48,7 +48,7 @@ class Log {
 		// Set user id based on level
 		switch ($level) {
 			default:
-				$user = $_SESSION['userid'];
+				$user = (isset($_SESSION['userid']))? $_SESSION['userid'] : 0;
 				break;
 			case LOG_LEVEL_ANON:
 				$user = 0;
