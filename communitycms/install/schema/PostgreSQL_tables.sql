@@ -108,6 +108,20 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->contacts" (
 SELECT setval('<!-- $DB_PREFIX$ -->contacts_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->contacts"));
 
 -- ----------------------------------------------------------------------------
+-- comcms_content
+-- ----------------------------------------------------------------------------
+CREATE SEQUENCE "<!-- $DB_PREFIX$ -->content_id_seq";
+CREATE TABLE "<!-- $DB_PREFIX$ -->content" (
+	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->content_id_seq'),
+	"page_id" integer NOT NULL default 0,
+	"ref_type" text NOT NULL,
+	"ref_id" integer NOT NULL default 0,
+	"order" integer NOT NULL default 0,
+	PRIMARY KEY ("id")
+);
+SELECT setval('<!-- $DB_PREFIX$ -->content_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->content"));
+
+-- ----------------------------------------------------------------------------
 -- comcms_files
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->files_id_seq";

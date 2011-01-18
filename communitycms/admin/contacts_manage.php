@@ -349,6 +349,35 @@ $tab_layout->add_tab('Manage Contacts',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
+// A contact list is the same thing as a contacts page. One list per page.
+$tab_content['manage_lists'] = NULL;
+// Get current list of Contacts pages
+$current_lists_query = 'SELECT `page`.`id`,`page`.`title`
+	FROM `'.PAGE_TABLE.'` `page`, `'.PAGE_TYPE_TABLE.'` `pt`
+	WHERE `pt`.`id` = `page`.`type`
+	AND `pt`.`name` = \'Contacts\'';
+$current_lists_handle = $db->sql_query($current_lists_query);
+if ($db->error[$current_lists_handle] === 1) {
+	$tab_content['manage_lists'] .= '<span class="errormessage">Failed to search for Contact Lists</span><br />';
+} else {
+	if ($db->sql_num_rows($current_lists_handle) == 0) {
+		$tab_content['manage_lists'] .= 'No Contact Lists exist. Please create a new Contacts page to add one.<br />';
+	} else {
+		$tab_content['manage_lists'] .= 'One or more contact lists exist. However, this feature is not completely implemented.<br />'."\n";
+		$tab_content['manage_lists'] .= '<select name="cl" id="adm_cl_list" onChange="update_cl_manager(\'-\')">'."\n";
+		for ($i = 0; $i < count($db->sql_num_rows($current_lists_handle)); $i++) {
+			$current_lists_result = $db->sql_fetch_assoc($current_lists_handle);
+			$tab_content['manage_lists'] .= "\t".'<option value="'.$current_lists_result['id'].'">'.$current_lists_result['title'].'</option>'."\n";
+		}
+		$tab_content['manage_lists'] .= '</select>'."\n";
+		// TODO: Implement contact list manager JS + PHP (uses comcms_content table)
+		$tab_content['manage_lists'] .= '<div id="contact_list_manager">Loading...</div>'."\n";
+	}
+}
+$tab_layout->add_tab('Contact Lists',$tab_content['manage_lists']);
+
+// ----------------------------------------------------------------------------
+
 $new_form = new form;
 $new_form->set_method('post');
 $new_form->set_target('admin.php?module=contacts_manage&amp;action=create');

@@ -235,6 +235,13 @@ switch ($db_version) {
 				$query[] = 'ALTER TABLE `'.USER_TABLE.'` ADD `password_date` INT NOT NULL DEFAULT \'0\' AFTER `password`';
 				// Page table doesn't have a default value for 'hidden' - mysql only
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` CHANGE `hidden` `hidden` INT(1) NOT NULL DEFAULT \'0\'';
+				$query[] = 'CREATE TABLE `'.CONTENT_TABLE.'` (
+					`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+					`page_id` INT NOT NULL default 0,
+					`ref_type` TEXT NOT NULL,
+					`ref_id` INT NOT NULL default 0,
+					`order` INT NOT NULL default 0
+					) ENGINE=MYISAM CHARACTER SET=utf8';
 				break;
 			case 'postgresql':
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` integer NOT NULL DEFAULT \'1\' AFTER `menu`';
@@ -256,6 +263,16 @@ switch ($db_version) {
 					)';
 				$query[] = 'SELECT setval(\''.CALENDAR_SOURCES_TABLE.'_id_seq\', (SELECT max("id") FROM "'.CALENDAR_SOURCES_TABLE.'"))';
 				$query[] = 'ALTER TABLE `'.USER_TABLE.'` ADD `password_date` integer NOT NULL DEFAULT \'0\' AFTER `password`';
+				$query[] = 'CREATE SEQUENCE "'.CONTENT_TABLE.'_id_seq"';
+				$query[] = 'CREATE TABLE "'.CONTENT_TABLE.'" (
+					"id" integer NOT NULL default nextval(\''.CONTENT_TABLE.'_id_seq\'),
+					"page_id" integer NOT NULL default 0,
+					"ref_type" text NOT NULL,
+					"ref_id" integer NOT NULL default 0,
+					"order" integer NOT NULL default 0,
+					PRIMARY KEY ("id")
+					)';
+				$query[] = 'SELECT setval(\''.CONTENT_TABLE.'_id_seq\', (SELECT max("id") FROM "'.CONTENT_TABLE.'"))';
 				break;
 		}
 		$query[] = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)

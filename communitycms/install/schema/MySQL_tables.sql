@@ -69,6 +69,14 @@ CREATE TABLE `<!-- $DB_PREFIX$ -->contacts` (
 	`title` TEXT NOT NULL
 ) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
+CREATE TABLE `<!-- $DB_PREFIX$ -->content` (
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`page_id` INT NOT NULL default 0,
+	`ref_type` TEXT NOT NULL,
+	`ref_id` INT NOT NULL default 0,
+	`order` INT NOT NULL default 0
+) ENGINE=MYISAM CHARACTER SET=utf8;
+
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
 	`id` int(11) NOT NULL auto_increment,
 	`type` int(11) NOT NULL,
