@@ -16,7 +16,8 @@ $current_contact = NULL;
 $contact_list_query = 'SELECT `contacts`.*
 	FROM `'.CONTACTS_TABLE.'` `contacts`, `'.CONTENT_TABLE.'` `content`
 	WHERE `content`.`page_id` = '.$page->id.'
-	ORDER BY `content`.`order` ASC';
+	AND `content`.`ref_id` = `contacts`.`id`
+	ORDER BY `content`.`order` ASC, `contacts`.`id` ASC';
 $contact_list_handle = $db->sql_query($contact_list_query);
 $contact_list_num_rows = $db->sql_num_rows($contact_list_handle);
 if (!isset($_GET['message'])) {
