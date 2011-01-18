@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2011 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -21,12 +21,10 @@ require(ROOT . 'includes/db/db.php');
 require(ROOT . 'includes/template.php');
 require(ROOT . 'functions/article.php');
 require(ROOT . 'includes/page.php');
+require(ROOT . 'includes/page_class.php');
 require(ROOT . 'includes/gallery.php');
 require(ROOT . 'includes/log_class.php');
 require(ROOT . 'includes/editbar_class.php');
-if(!include_once(ROOT.'functions/page_class.php')) {
-    err_page(2001);
-}
 if(!include_once(ROOT.'classes.php')) {
     err_page(2001);
 }
