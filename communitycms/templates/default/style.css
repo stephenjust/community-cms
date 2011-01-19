@@ -427,6 +427,10 @@ table.contacts_compact a {
 	color: #000000;
 	text-decoration: none;
 }
+table.contacts_compact span.contact_heading {
+	display: inline-block;
+	width: 6em;
+}
 
 /* NEWS BLOCK */
 div.news_block {
