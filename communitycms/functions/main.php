@@ -283,11 +283,15 @@ function str_replace_count($search,$replace,$subject,$times) {
 
 /**
  * format_tel - Format North American phone numbers
+ * @global debug $debug
  * @param integer $phone_number Phone number with no punctuation
  * @return string Phone number to display
  */
 function format_tel($phone_number) {
+	global $debug;
+
 	if (!is_numeric($phone_number)) {
+		$debug->add_trace('Phone number display function given non-numeric value');
 		return $phone_number;
 	}
 
@@ -314,6 +318,7 @@ function format_tel($phone_number) {
 		case '###.###.####':
 			return substr($phone_number,0,3).'.'.substr($phone_number,3,3).'.'.substr($phone_number,6,4);
 		default:
+			$debug->add_trace('Invalid phone number format',true);
 			return $phone_number;
 	}
 }
