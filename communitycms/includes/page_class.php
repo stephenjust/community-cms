@@ -301,6 +301,10 @@ class page {
 		$js_include = '<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/jquery.js"></script>
 			<script language="javascript" type="text/javascript"
+			src="'.ROOT.'scripts/jquery-ui.js" /></script>
+			<script language="javascript" type="text/javascript"
+			src="'.ROOT.'scripts/jquery-custom.js" /></script>
+			<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/ajax.js"></script>
 			<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/cms_fe.js"></script>';

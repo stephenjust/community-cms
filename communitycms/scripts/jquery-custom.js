@@ -19,6 +19,11 @@ window.onload=$(function(){
 		}
 	});
 
+	// Modal Dialog
+	$('#modal_dialog').dialog({
+		modal: true
+	});
+
 	// Dialog Link
 	$('#dialog_link').click(function(){
 		$('#dialog').dialog('open');
