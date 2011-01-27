@@ -49,18 +49,36 @@ if($db->sql_num_rows($event_handle) == 0) {
 }
 $bl_single_event = $template_events->get_range('event');
 $bl_all_events = NULL;
+
+// Get current page info so we can check if we're on a calendar page
+global $page;
+
 for($i = 1; $i <= $db->sql_num_rows($event_handle); $i++) {
 	$event = $db->sql_fetch_assoc($event_handle);
+	$event_heading = $event['header'];
+	// Create a link to the event, if we're on calendar page
+	if ($page->type == 'calendar.php') {
+		$event_url = 'index.php?'.$page->url_reference.'&amp;view=event&amp;a='.$event['id'];
+		$event_heading = '<a href="'.$event_url.'">'.$event_heading.'</a>';
+	}
 	$template_single_event = clone $template_events;
 	$template_single_event->template = $bl_single_event;
 	$bl_date = $event['day'].'/'.$event['month'].'/'.$event['year'];
 	$template_single_event->event_date = $bl_date;
-	$template_single_event->event_heading = stripslashes($event['header']);
+	$template_single_event->event_heading = $event_heading;
 	$bl_all_events .= $template_single_event;
 }
 unset($event_handle);
 unset($event);
 $template_events->replace_range('event',$bl_all_events);
+
+// Change the message in the block depending if you're on a calendar page or not
+if ($page->type == 'calendar.php') {
+	$template_events->event_block_message = 'Click on the events above for more information.';
+} else {
+	$template_events->event_block_message = 'Go to the calendar page for more information.';
+}
+
 $bl_return .= $template_events;
 unset($template_events);
 unset($event_block);
