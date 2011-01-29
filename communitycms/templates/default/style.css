@@ -79,20 +79,14 @@ div.nav_menu {
 	clear: both;
 }
 div.nav_menu_top {
+	background-color: #c3d9e1;
 	background: url('./images/menutop.png');
 	height: 6px;
 	width: 200px;
 	float: left;
 }
-div.nav_menu_separator {
-	background: url('./images/menusep.png');
-	height: 20px;
-	width: 200px;
-	float: left;
-	clear: both;
-	display: none;
-}
 div.nav_menu_bottom {
+	background-color: #c3d9e1;
 	background: url('./images/menubottom.png');
 	height: 6px;
 	width: 200px;
