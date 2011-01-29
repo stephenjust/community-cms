@@ -70,7 +70,8 @@ img.logo {
 	border: 0px;
 }
 div.nav_menu {
-	background: url('./images/menubg.png');
+	background-color: #c3d9e1;
+	background-image: url('./images/menubg.png');
 	width: 200px;
 	padding-left: 0px;
 	font-size: small;
@@ -80,14 +81,14 @@ div.nav_menu {
 }
 div.nav_menu_top {
 	background-color: #c3d9e1;
-	background: url('./images/menutop.png');
+	background-image: url('./images/menutop.png');
 	height: 6px;
 	width: 200px;
 	float: left;
 }
 div.nav_menu_bottom {
 	background-color: #c3d9e1;
-	background: url('./images/menubottom.png');
+	background-image: url('./images/menubottom.png');
 	height: 6px;
 	width: 200px;
 	float: left;
@@ -117,14 +118,16 @@ div.nav_menu .menuitem, .menuitem-hover, .menuitem_current,
 	padding: 0px;
 }
 div.nav_menu .menuitem, .menuitem_haschild {
-	background: url('./images/menuitembg.png') no-repeat bottom;
+	background-image: url('./images/menuitembg.png');
+	background-repeat: no-repeat;
+	background-position: bottom;
 }
 div.nav_menu .menuitem-hover, .menuitem_haschild-hover {
-	background: url('./images/menuitembg-hover.png');
+	background-image: url('./images/menuitembg-hover.png');
 }
 div.nav_menu .menuitem_current, .menuitem_haschild_current,
 .submenuitem_current, .submenuitem_haschild_current {
-	background: url('./images/menuitembg-current.png');
+	background-image: url('./images/menuitembg-current.png');
 }
 div.nav_menu .childarrow, .subchildarrow {
 	position: absolute;
@@ -136,7 +139,8 @@ div.nav_menu .childarrow, .subchildarrow {
 	z-index: 1000;
 }
 div.nav_menu .nav_submenu {
-	background: url('./images/menubg.png');
+	background-color: #c3d9e1;
+	background-image: url('./images/menubg.png');
 	border: 1px solid #5882BC;
 	position: absolute;
 	left: 200px;
@@ -149,7 +153,7 @@ div.nav_menu .nav_submenu .submenuitem, .submenuitem-hover,
 	padding: 0px;
 }
 div.nav_menu .nav_submenu .submenuitem-hover, .submenuitem_haschild-hover {
-	background: url('./images/menuitembg-hover.png');
+	background-image: url('./images/menuitembg-hover.png');
 }
 
 div.nav_menu input {
@@ -161,7 +165,8 @@ div.nav_menu a {
 	color: #333333;
 	padding-left: 10px;
 	text-decoration: none;
-	background: url('./images/menu.png') no-repeat;
+	background-image: url('./images/menu.png');
+	background-repeat: no-repeat;
 }
 div.notification {
 	width: 100%;
@@ -171,7 +176,7 @@ div.notification {
 	text-align: center;
 	font-size: x-large;
 	background: #FFCCCC;
-    border: 1px solid #CC3333;
+	border: 1px solid #CC3333;
 }
 #left div.notification {
 	clear: both;
@@ -561,15 +566,15 @@ div.page_edit_bar {
 
 /* IE6 IFRAME FIX (taken from datepicker 1.5.3 */
 .ui-datepicker-cover {
-    display: none; /*sorry for IE5*/
-    display/**/: block; /*sorry for IE5*/
-    position: absolute; /*must have*/
-    z-index: -1; /*must have*/
-    filter: mask(); /*must have*/
-    top: -4px; /*must have*/
-    left: -4px; /*must have*/
-    width: 200px; /*must have*/
-    height: 200px; /*must have*/
+	display: none; /*sorry for IE5*/
+	display/**/: block; /*sorry for IE5*/
+	position: absolute; /*must have*/
+	z-index: -1; /*must have*/
+	filter: mask(); /*must have*/
+	top: -4px; /*must have*/
+	left: -4px; /*must have*/
+	width: 200px; /*must have*/
+	height: 200px; /*must have*/
 }/* Dialog
 ----------------------------------*/
 .ui-dialog { position: relative; padding: .2em; width: 300px; }
@@ -656,19 +661,19 @@ p.no-spacing {
 /* NEWS */
 div.news_item_container {
 	position: relative;
-    background: url('./images/news_topleft.png') no-repeat;
+	background: url('./images/news_topleft.png') no-repeat;
 	padding: 2px;
 }
 div.news_item_top {
 	color: #999090;
-    display: inline;
+	display: inline;
 	font-size: small;
 	font-weight: bold;
 	height: 0px;
 	min-height: 5px;
-    max-height: 25px;
+	max-height: 25px;
 	padding-left: 3px;
-    text-align: left;
+	text-align: left;
 	width: 100%;
 }
 span.news_title {
@@ -679,12 +684,12 @@ span.news_title a {
 	text-decoration: none;
 }
 span.news_author {
-    font-size: small;
-    font-style: italic;
+	font-size: small;
+	font-style: italic;
 }
 div.news_content {
 	font-family: Tahoma,sans-serif;
-    font-size: medium;
+	font-size: medium;
 }
 img.news_image {
 	max-width: 100px;
@@ -753,7 +758,7 @@ div.news_block {
 	padding: 3px;
 }
 span.news_block_author {
-    font-size: small;
+	font-size: small;
 }
 span.news_block_title {
 	font-family: Cambria,
@@ -793,12 +798,12 @@ div.events_upcoming_block span.header {
 				"Century Schoolbook",
 				"Bitstream Vera Serif",
 				serif;
-	font-size: large;	
+	font-size: large;
 }
 div.events_upcoming_block table.events {
 	background: #FFF;
 	border: 1px solid #000;
-    font-size: small;
+	font-size: small;
 	width: 100%;
 }
 
