@@ -24,6 +24,12 @@ body {
 	padding: 0px;
 	width: 100%;
 }
+#body_title h1 {
+	border-bottom: 1px solid #DDDDDD;
+	font-weight: normal;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
 #footer {
 	clear: both;
 	background-color: #FFF;
