@@ -70,6 +70,7 @@ class user {
 	 * @global debug $debug Debug object
 	 * @param string $username Username provided by input
 	 * @param string $password Unencrypted password provided by input
+	 * @return boolean Success
 	 */
 	function login($username,$password) {
 		global $db;
@@ -104,61 +105,58 @@ class user {
 		if($num_rows != 1) {
 			$this->logout();
 			err_page(3003);
-		} else {
-			session_destroy();
-			session_set_cookie_params(84000000,get_config('cookie_path'));
-			session_name(get_config('cookie_name'));
-			session_start();
-
-			// Handle upgrade situations where a user may not have a time of last
-			// password change set.
-			if ($result['password_date'] == 0) {
-				$update_password_date_query = 'UPDATE `'.USER_TABLE.'`
-					SET `password_date` = '.time().' WHERE `id` = '.$result['id'];
-				$update_password_date_handle = $db->sql_query($update_password_date_query);
-				if ($db->error[$update_password_date_handle] === 1) {
-					die('Failed to set password creation date to today.');
-				}
-				$result['password_date'] = time();
-			}
-
-			// Check to see if password is expired
-			// If 'password_expire' is 0, then password expiration is disabled
-			if (get_config('password_expire') != 0) {
-				$curtime = time();
-				$expiretime = $result['password_date'] + get_config('password_expire');
-				if ($curtime > $expiretime) {
-					$_GET['page'] = NULL;
-					$_GET['id'] = 'change_password';
-					$debug->add_trace('Password is expired',true);
-					$_SESSION['expired'] = true;
-					return false;
-				}
-			}
-			$_SESSION['expired'] = false;
-
-			$_SESSION['userid'] = $result['id'];
-			$_SESSION['user'] = $username;
-			$_SESSION['pass'] = $password;
-			$_SESSION['name'] = $result['realname'];
-			$_SESSION['type'] = $result['type'];
-			$_SESSION['groups'] = csv2array($result['groups']);
-			$_SESSION['last_login'] = time();
-			if (!defined('USERINFO')) {
-				define('USERINFO',$result['id'].','.$result['realname'].','.$result['type']);
-			}
-			// Set latest login time
-			$set_logintime_query = 'UPDATE ' . USER_TABLE . '
-				SET lastlogin='.$_SESSION['last_login'].'
-				WHERE id = '.$_SESSION['userid'];
-			$set_logintime_handle = $db->sql_query($set_logintime_query);
-			if ($db->error[$set_logintime_handle]) {
-				$debug->add_trace('Failed to set log-in time',true);
-				$this->logout();
-			}
-			$debug->add_trace('Logged in user',false);
-			$this->logged_in = true;
+			return false;
 		}
+		session_destroy();
+		session_set_cookie_params(84000000,get_config('cookie_path'));
+		session_name(get_config('cookie_name'));
+		session_start();
+
+		// Handle upgrade situations where a user may not have a time of last
+		// password change set.
+		if ($result['password_date'] == 0) {
+			$update_password_date_query = 'UPDATE `'.USER_TABLE.'`
+				SET `password_date` = '.time().' WHERE `id` = '.$result['id'];
+			$update_password_date_handle = $db->sql_query($update_password_date_query);
+			if ($db->error[$update_password_date_handle] === 1) {
+				die('Failed to set password creation date to today.');
+			}
+			$result['password_date'] = time();
+		}
+
+		// Check to see if password is expired
+		// If 'password_expire' is 0, then password expiration is disabled
+		if (get_config('password_expire') != 0) {
+			$curtime = time();
+			$expiretime = $result['password_date'] + get_config('password_expire');
+			if ($curtime > $expiretime) {
+				$_GET['page'] = NULL;
+				$_GET['id'] = 'change_password';
+				$debug->add_trace('Password is expired',true);
+				$_SESSION['expired'] = true;
+				return false;
+			}
+		}
+		$_SESSION['expired'] = false;
+
+		$_SESSION['userid'] = $result['id'];
+		$_SESSION['user'] = $username;
+		$_SESSION['pass'] = $password;
+		$_SESSION['name'] = $result['realname'];
+		$_SESSION['type'] = $result['type'];
+		$_SESSION['groups'] = csv2array($result['groups']);
+		$_SESSION['last_login'] = time();
+		if (!defined('USERINFO')) {
+			define('USERINFO',$result['id'].','.$result['realname'].','.$result['type']);
+		}
+
+		if (!$this->set_login_time()) {
+			$this->logout();
+			return false;
+		}
+
+		$debug->add_trace('Logged in user',false);
+		$this->logged_in = true;
 	}
 
 	/**
@@ -173,12 +171,33 @@ class user {
 		unset($_SESSION['name']);
 		unset($_SESSION['type']);
 		unset($_SESSION['groups']);
-		unset($_SESSION['lastlogin']);
+		unset($_SESSION['last_login']);
 		unset($_SESSION['expired']);
 		session_destroy();
 		$debug->add_trace('Logged out user',false);
 		session_start();
 		$this->logged_in = false;
+	}
+
+	/**
+	 * Record time of login in the database
+	 * @global db $db
+	 * @global debug $debug
+	 * @return boolean Success
+	 */
+	private function set_login_time() {
+		global $db;
+		global $debug;
+
+		$set_logintime_query = 'UPDATE `'.USER_TABLE.'`
+			SET `lastlogin` = \''.$_SESSION['last_login'].'\'
+			WHERE `id` = '.$_SESSION['userid'];
+		$set_logintime_handle = $db->sql_query($set_logintime_query);
+		if ($db->error[$set_logintime_handle]) {
+			$debug->add_trace('Failed to set log-in time',true);
+			return false;
+		}
+		return true;
 	}
 }
 ?>
