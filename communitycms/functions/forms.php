@@ -11,25 +11,31 @@ if (@SECURITY != 1) {
  * @return mixed
  */
 function checkbox($var,$reverse = 0) {
+	// Interperet form information
 	if ($reverse == 0) {
 		if ($var == "on") {
 			return 1;
 		} else {
 			return 0;
 		}
+	}
+	// Turn boolean into input parameter
+	if ($var == 1) {
+		return 'checked';
 	} else {
-		if ($var == 1) {
-			return 'checked';
-		} else {
-			return NULL;
-		}
+		return NULL;
 	}
 }
 
-
+/**
+ * Convert possible time formats to H:i format
+ * @param string $time Time in any format
+ * @return string Time in H:i format
+ */
 function parse_time($time) {
 	$new_time = 0;
 	if (preg_match('#^[0-1]?[0-9]:[0-9][0-9] ?[ap]m?$#i',$time)) {
+		// Check for time in h:i a format
 		$time = str_replace(array(' ','m','M'),NULL,$time);
 		$time = explode(':',$time);
 		$hour = $time[0];
@@ -49,11 +55,13 @@ function parse_time($time) {
 			$new_time = '0'.$new_time;
 		}
 	} elseif (preg_match('#^[0-2]?[0-9]:[0-5][0-9]$#i',$time)) {
+		// Check for time in G:i format
 		$new_time = $time;
 		if (strlen($new_time) === 4) {
 			$new_time = '0'.$new_time;
 		}
 	} elseif (preg_match('#^[0-1]?[0-9] ?[ap]m?$#i',$time)) {
+		// Check for time in g:i a format
 		$time = str_replace(array(' ','m','M'),NULL,$time);
 		$minute = '00';
 		$hour = $time;
@@ -76,6 +84,11 @@ function parse_time($time) {
 	return $new_time;
 }
 
+/**
+ * Remove HTML comment tags from a string, or an array of strings
+ * @param mixed $text Input string(s)
+ * @return mixed Output, without comments
+ */
 function remove_comments($text) {
 	if ($text == NULL) {
 		return NULL;
