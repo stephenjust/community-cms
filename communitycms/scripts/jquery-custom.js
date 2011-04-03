@@ -63,5 +63,8 @@ window.onload=$(function(){
 		width:200
 	});
 
+	// News Ticker
+	$('#news_ticker').newsticker();
+
 });
 -->
