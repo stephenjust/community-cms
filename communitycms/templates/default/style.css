@@ -232,6 +232,12 @@ div.page_edit_bar {
 	position: absolute;
 }
 
+#news_ticker {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+
 /*
 * jQuery UI CSS Framework
 * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
