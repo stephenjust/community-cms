@@ -91,7 +91,7 @@ if (isset($_GET['article'])) {
 	if (!is_numeric($_GET['article']) || strlen($_GET['article']) == 0) {
 		$debug->add_trace('Article ID not numeric',true);
 		header("HTTP/1.0 404 Not Found");
-		$page->notification = 'The requested article does not exist.<br />'."\n";
+		Page::$notification = 'The requested article does not exist.<br />'."\n";
 		Page::$title = 'Article not found';
 		Page::$showtitle = false;
 		return $return.' ';
@@ -113,7 +113,7 @@ if (isset($_GET['article'])) {
 	if ($db->error[$article_page_handle] === 1) {
 		$debug->add_trace('Failed to look up article\'s page in the database',true);
 		header("HTTP/1.0 404 Not Found");
-		$page->notification = 'An error occurred when trying to retrieve the requested article.<br />'."\n";
+		Page::$notification = 'An error occurred when trying to retrieve the requested article.<br />'."\n";
 		Page::$title = 'Error';
 		Page::$showtitle = false;
 		return $return.' ';
@@ -121,7 +121,7 @@ if (isset($_GET['article'])) {
 	if ($db->sql_num_rows($article_page_handle) != 1) {
 		$debug->add_trace('Article does not exist',true);
 		header("HTTP/1.0 404 Not Found");
-		$page->notification = 'The requested article does not exist.<br />'."\n";
+		Page::$notification = 'The requested article does not exist.<br />'."\n";
 		Page::$title = 'Article not found';
 		Page::$showtitle = false;
 		return $return.' ';
@@ -141,7 +141,7 @@ if (isset($_GET['article'])) {
 		if ($start >= 1000) {
 			$debug->add_trace('Gave up looking for article',true);
 			header("HTTP/1.0 404 Not Found");
-			$page->notification = 'The requested article could not be found.<br />'."\n";
+			Page::$notification = 'The requested article could not be found.<br />'."\n";
 			Page::$title = 'Article not found';
 			Page::$showtitle = false;
 			return $return.' ';

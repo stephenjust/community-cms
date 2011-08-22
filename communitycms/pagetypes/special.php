@@ -64,7 +64,7 @@ switch ($page->id) {
 			$content .= '<strong>Changed your password. You may now log in.</strong>';
 		} else {
 			if (isset($_SESSION['expired']) && $_SESSION['expired'] == true) {
-				$page->notification .= 'You must change your password because it has expired.';
+				Page::$notification .= 'You must change your password because it has expired.';
 			}
 			$user->logout();
 			$content .= '<h1>Change Password</h1>'."\n";

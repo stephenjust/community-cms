@@ -27,15 +27,14 @@ function poll_vote($question,$response,$ip) {
     }
     $ip = ip2long($ip);
     global $db;
-    global $page;
     $vote_query = 'INSERT INTO ' . POLL_RESPONSE_TABLE . '
         (question_id ,answer_id ,value ,ip_addr) VALUES ('.$question.',
         '.$response.', NULL, \''.$ip.'\')';
     $vote_handle = $db->sql_query($vote_query);
     if ($db->error[$vote_handle] === 1) {
-        $page->notification .= 'Failed to record your vote.<br />';
+        Page::$notification .= 'Failed to record your vote.<br />';
     } else {
-        $page->notification .= 'Thank you for voting.<br />';
+        Page::$notification .= 'Thank you for voting.<br />';
     }
 }
 

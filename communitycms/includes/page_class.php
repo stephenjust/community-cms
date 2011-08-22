@@ -31,7 +31,7 @@ class Page {
 	 * Notification to display in the notification area of the page
 	 * @var string
 	 */
-	public $notification = '';
+	public static $notification = '';
 	/**
 	 * How scripts should reference the page
 	 * @var string Either Text ID or ID
@@ -238,7 +238,7 @@ class Page {
 				// or the included file returned 'false'
 				header("HTTP/1.0 404 Not Found");
 				Page::$exists = false;
-				$this->notification = '<strong>Error: </strong>System file not found.<br />';
+				Page::$notification = '<strong>Error: </strong>System file not found.<br />';
 				$debug->add_trace('Including '.$this->type.' returned false',true);
 			}
 		}
@@ -262,7 +262,7 @@ class Page {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
 			if(!$this->content) {
 				Page::$exists = false;
-				$this->notification = '<strong>Error: </strong>System file not found.<br />';
+				Page::$notification = '<strong>Error: </strong>System file not found.<br />';
 				$debug->add_trace('Including '.$this->type.' returned false',true);
 			}
 		}
@@ -272,7 +272,7 @@ class Page {
 		global $db;
 		if (Page::$exists === false) {
 			Page::$title .= 'Page Not Found';
-			$this->notification .= '<strong>Error: </strong>The requested page
+			Page::$notification .= '<strong>Error: </strong>The requested page
 				could not be found.<br />';
 			return;
 		} else {
@@ -489,8 +489,8 @@ class Page {
 		$template->page_edit_bar = $edit_bar;
 
 		// Display page notifications
-		if (strlen($this->notification) > 0) {
-			$template->notification = $this->notification;
+		if (strlen(Page::$notification) > 0) {
+			$template->notification = Page::$notification;
 			$template->notification_start = NULL;
 			$template->notification_end = NULL;
 		} else {
