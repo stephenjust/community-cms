@@ -26,7 +26,7 @@ class Page {
 	 * Unique string identifier for page
 	 * @var string Page Text ID
 	 */
-	public $text_id = NULL;
+	public static $text_id = NULL;
 	/**
 	 * Notification to display in the notification area of the page
 	 * @var string
@@ -83,7 +83,7 @@ class Page {
 	 * Page group
 	 * @var integer
 	 */
-	public $page_group = 0;
+	public static $page_group = 0;
 	function __construct() {
 
 	}
@@ -127,7 +127,7 @@ class Page {
 
 					case 'change_password':
 						// Change Password
-						$this->text_id = $reference;
+						Page::$text_id = $reference;
 						$this->showlogin = false;
 						Page::$url_reference = 'id=change_password';
 						$this->get_special_page();
@@ -139,8 +139,8 @@ class Page {
 			if (strlen($reference) == 0) {
 				return false;
 			}
-			$this->text_id = (string)$reference;
-			Page::$url_reference = 'page='.$this->text_id;
+			Page::$text_id = (string)$reference;
+			Page::$url_reference = 'page='.Page::$text_id;
 		}
 		$this->get_page_information();
 		return true;
@@ -160,7 +160,7 @@ class Page {
 		if (isset($_GET['showarticle'])) {
 			$debug->add_trace('Loading single article only',false);
 			$this->id = 0;
-			$this->text_id = NULL;
+			Page::$text_id = NULL;
 			Page::$showtitle = false;
 			require(ROOT . 'pagetypes/news_class.php');
 			$article = new news_item;
@@ -177,12 +177,12 @@ class Page {
 		}
 
 		// Get either the page ID or text ID for use in the section below
-		if ($this->id > 0 && strlen($this->text_id) == 0) {
+		if ($this->id > 0 && strlen(Page::$text_id) == 0) {
 			$debug->add_trace('Using numeric ID to get page information',false);
 			$page_query_id = '`page`.`id` = '.$this->id;
-		} elseif (strlen($this->text_id) > 0) {
+		} elseif (strlen(Page::$text_id) > 0) {
 			$debug->add_trace('Using text ID to get page information',false);
-			$page_query_id = '`page`.`text_id` = \''.$this->text_id.'\'';
+			$page_query_id = '`page`.`text_id` = \''.Page::$text_id.'\'';
 		} else {
 			return;
 		}
@@ -208,15 +208,15 @@ class Page {
 
 		// Page was found; populate the class fields
 		$this->id = $page['id'];
-		$this->text_id = $page['text_id'];
+		Page::$text_id = $page['text_id'];
 		Page::$showtitle = ($page['show_title'] == 1) ? true : false;
 		$this->blocksleft = $page['blocks_left'];
 		$this->blocksright = $page['blocks_right'];
 		Page::$exists = true;
 		$this->meta_description = $page['meta_desc'];
-		$this->page_group = $page['page_group'];
+		Page::$page_group = $page['page_group'];
 		$this->type = $page['filename'];
-		if (strlen($this->text_id) == 0) {
+		if (strlen(Page::$text_id) == 0) {
 			Page::$url_reference = 'id='.$this->id;
 		} else {
 			if(isset($_GET['id'])) {
@@ -224,10 +224,10 @@ class Page {
 				$matches = NULL;
 				$old_page_address = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
 				preg_match('/id=[0-9]+/i',$old_page_address,$matches);
-				$new_page_address = str_replace($matches,'page='.$this->text_id,$old_page_address);
+				$new_page_address = str_replace($matches,'page='.Page::$text_id,$old_page_address);
 				header('Location: '.$new_page_address);
 			}
-			Page::$url_reference = 'page='.$this->text_id;
+			Page::$url_reference = 'page='.Page::$text_id;
 		}
 		Page::$title = $page['title'];
 		Page::$page_title = Page::$title;
@@ -479,8 +479,8 @@ class Page {
 		$edit_bar->class = 'edit_bar page_edit_bar';
 		if ($this->id != 0) {
 			$permission_list = array('admin_access','page_edit');
-			if ($this->page_group !== 0) {
-				$permission_list[] = 'pagegroupedit-'.$this->page_group;
+			if (Page::$page_group !== 0) {
+				$permission_list[] = 'pagegroupedit-'.Page::$page_group;
 			}
 			$edit_bar->add_control('admin.php?module=page&amp;action=edit&amp;id='.$this->id,
 					'edit.png','Edit',$permission_list);
