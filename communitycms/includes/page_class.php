@@ -63,22 +63,22 @@ class Page {
 	 */
 	public static $type = 'news.php';
 	/**
-	 * Only print content when displaying page
+	 * Only print content when displaying page (unused)
 	 * @var boolean 
 	 */
-	public $content_only = false;
+	private static $content_only = false;
 	/**
 	 * Stores the content of the body
 	 * @var string
 	 */
-	public $content;
-	public $blocksleft = NULL;
-	public $blocksright = NULL;
+	public static $content;
+	private static $blocksleft = NULL;
+	private static $blocksright = NULL;
 	/**
 	 * Page meta-description for search engines
 	 * @var string
 	 */
-	public $meta_description;
+	private static $meta_description;
 	/**
 	 * Page group
 	 * @var integer
@@ -172,7 +172,7 @@ class Page {
 			}
 			Page::$title .= $article->article_title;
 			Page::$exists = true;
-			$this->content = $article->article;
+			Page::$content = $article->article;
 			return;
 		}
 
@@ -210,10 +210,10 @@ class Page {
 		$this->id = $page['id'];
 		Page::$text_id = $page['text_id'];
 		Page::$showtitle = ($page['show_title'] == 1) ? true : false;
-		$this->blocksleft = $page['blocks_left'];
-		$this->blocksright = $page['blocks_right'];
+		Page::$blocksleft = $page['blocks_left'];
+		Page::$blocksright = $page['blocks_right'];
 		Page::$exists = true;
-		$this->meta_description = $page['meta_desc'];
+		Page::$meta_description = $page['meta_desc'];
 		Page::$page_group = $page['page_group'];
 		Page::$type = $page['filename'];
 		if (strlen(Page::$text_id) == 0) {
@@ -231,9 +231,9 @@ class Page {
 		}
 		Page::$title = $page['title'];
 		Page::$page_title = Page::$title;
-		if(!isset($this->content)) {
-			$this->content = include(ROOT.'pagetypes/'.Page::$type);
-			if(!$this->content) {
+		if(!isset(Page::$content)) {
+			Page::$content = include(ROOT.'pagetypes/'.Page::$type);
+			if(!Page::$content) {
 				// Including the pagetype file failed - either a file is missing,
 				// or the included file returned 'false'
 				header("HTTP/1.0 404 Not Found");
@@ -254,13 +254,13 @@ class Page {
 
 		Page::$type = 'special.php';
 		Page::$showtitle = false;
-		$this->blocksleft = NULL;
-		$this->blocksright = NULL;
+		Page::$blocksleft = NULL;
+		Page::$blocksright = NULL;
 		Page::$exists = true;
-		$this->meta_description = NULL;
-		if(!isset($this->content)) {
-			$this->content = include(ROOT.'pagetypes/'.Page::$type);
-			if(!$this->content) {
+		Page::$meta_description = NULL;
+		if(!isset(Page::$content)) {
+			Page::$content = include(ROOT.'pagetypes/'.Page::$type);
+			if(!Page::$content) {
 				Page::$exists = false;
 				Page::$notification = '<strong>Error: </strong>System file not found.<br />';
 				$debug->add_trace('Including '.Page::$type.' returned false',true);
@@ -276,7 +276,7 @@ class Page {
 				could not be found.<br />';
 			return;
 		} else {
-			return $this->content;
+			return Page::$content;
 		}
 	}
 
@@ -331,7 +331,7 @@ class Page {
 		$template->print_header = get_config('site_name');
 
 		// Print Meta Description if available
-		$meta_desc = $this->meta_description;
+		$meta_desc = Page::$meta_description;
 		$meta_wrapper[1] = '<meta name="description" content="';
 		$meta_wrapper[2] = '" />';
 		if (strlen($meta_desc) > 1) {
@@ -434,7 +434,7 @@ class Page {
 
 		// Prepare blocks
 		$left_blocks_content = NULL;
-		$left_blocks = explode(',',$this->blocksleft);
+		$left_blocks = explode(',',Page::$blocksleft);
 		for ($bk = 1; $bk <= count($left_blocks); $bk++) {
 			$left_blocks_content .= get_block($left_blocks[$bk - 1]);
 		}
@@ -447,7 +447,7 @@ class Page {
 
 		// Prepare blocks
 		$right_blocks_content = NULL;
-		$right_blocks = explode(',',$this->blocksright);
+		$right_blocks = explode(',',Page::$blocksright);
 		for ($bk = 1; $bk <= count($right_blocks); $bk++) {
 			$right_blocks_content .= get_block($right_blocks[$bk - 1]);
 		}
