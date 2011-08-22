@@ -60,9 +60,9 @@ unset($_GET['page'],$_GET['id']);
 // Load page information.
 $page = new Page;
 if ($page_id == NULL && $page_text_id != NULL) {
-	$page->set_page($page_text_id,false);
+	Page::set_page($page_text_id,false);
 } else {
-	$page->set_page($page_id);
+	Page::set_page($page_id);
 }
 if (Page::$type == 'calendar.php') {
 	Page::$notification .= 'The Calendar page type does not work properly with tabbed pages.';

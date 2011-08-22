@@ -39,7 +39,7 @@ if (get_config('site_active') == 0) {
 
 // Load page information.
 $page = new Page;
-$page->set_type('settings_main');
+Page::set_type('settings_main');
 // Display the page.
 $page->display_header();
 display_page();

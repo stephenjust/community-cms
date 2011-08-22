@@ -91,9 +91,9 @@ if (isset($_POST['vote']) && isset($_POST['vote_poll'])) {
 	poll_vote($question_id,$answer_id,$user_ip);
 }
 if ($page_id == NULL && $page_text_id != NULL) {
-	$page->set_page($page_text_id,false);
+	Page::set_page($page_text_id,false);
 } else {
-	$page->set_page($page_id);
+	Page::set_page($page_id);
 }
 if (file_exists('./install')) {
 	$debug->add_trace('The ./install directory still exists',true);

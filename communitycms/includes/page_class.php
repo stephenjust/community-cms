@@ -84,19 +84,13 @@ class Page {
 	 * @var integer
 	 */
 	public static $page_group = 0;
-	function __construct() {
-
-	}
-	function __destruct() {
-
-	}
 	
 	/**
 	 * Set type of page to load for pages without ID
 	 * @param string $type Name of page type to load
 	 * @return void
 	 */
-	public function set_type($type) {
+	public static function set_type($type) {
 		switch ($type) {
 			default:
 				return;
@@ -111,7 +105,7 @@ class Page {
 	 * @param boolean $is_id If $reference is a numeric ID or special page, true; else a text ID
 	 * @return boolean Success
 	 */
-	public function set_page($reference, $is_id = true) {
+	public static function set_page($reference, $is_id = true) {
 		global $debug;
 
 		if ($is_id == true) {
@@ -269,7 +263,6 @@ class Page {
 	}
 
 	public function get_page_content() {
-		global $db;
 		if (Page::$exists === false) {
 			Page::$title .= 'Page Not Found';
 			Page::$notification .= '<strong>Error: </strong>The requested page
