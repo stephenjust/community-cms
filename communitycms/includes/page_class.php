@@ -46,12 +46,12 @@ class Page {
 	 * Page title in database
 	 * @var string text
 	 */
-	public $page_title = NULL;
+	public static $page_title = NULL;
 	/**
 	 * True if title is to be displayed on page.
 	 * @var boolean
 	 */
-	public $showtitle = true;
+	public static $showtitle = true;
 	/**
 	 * If 'true' when display_left() called, user menu will be displayed.
 	 * @var boolean
@@ -161,7 +161,7 @@ class Page {
 			$debug->add_trace('Loading single article only',false);
 			$this->id = 0;
 			$this->text_id = NULL;
-			$this->showtitle = false;
+			Page::$showtitle = false;
 			require(ROOT . 'pagetypes/news_class.php');
 			$article = new news_item;
 			$article->set_article_id((int)$_GET['showarticle']);
@@ -209,7 +209,7 @@ class Page {
 		// Page was found; populate the class fields
 		$this->id = $page['id'];
 		$this->text_id = $page['text_id'];
-		$this->showtitle = ($page['show_title'] == 1) ? true : false;
+		Page::$showtitle = ($page['show_title'] == 1) ? true : false;
 		$this->blocksleft = $page['blocks_left'];
 		$this->blocksright = $page['blocks_right'];
 		Page::$exists = true;
@@ -230,7 +230,7 @@ class Page {
 			Page::$url_reference = 'page='.$this->text_id;
 		}
 		Page::$title = $page['title'];
-		$this->page_title = Page::$title;
+		Page::$page_title = Page::$title;
 		if(!isset($this->content)) {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
 			if(!$this->content) {
@@ -253,7 +253,7 @@ class Page {
 		global $debug;
 
 		$this->type = 'special.php';
-		$this->showtitle = false;
+		Page::$showtitle = false;
 		$this->blocksleft = NULL;
 		$this->blocksright = NULL;
 		Page::$exists = true;
@@ -463,8 +463,8 @@ class Page {
 		$template->page_path = page_path($this->id);
 
 		// Display the page title if the configuration says to
-		if ($this->showtitle === true) {
-			$template->body_title = $this->page_title;
+		if (Page::$showtitle === true) {
+			$template->body_title = Page::$page_title;
 			// Remove marker comments
 			$template->body_title_start = NULL;
 			$template->body_title_end = NULL;

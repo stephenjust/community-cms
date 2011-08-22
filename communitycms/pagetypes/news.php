@@ -93,7 +93,7 @@ if (isset($_GET['article'])) {
 		header("HTTP/1.0 404 Not Found");
 		$page->notification = 'The requested article does not exist.<br />'."\n";
 		Page::$title = 'Article not found';
-		$page->showtitle = false;
+		Page::$showtitle = false;
 		return $return.' ';
 	}
 	$article_id = (int)$_GET['article'];
@@ -115,7 +115,7 @@ if (isset($_GET['article'])) {
 		header("HTTP/1.0 404 Not Found");
 		$page->notification = 'An error occurred when trying to retrieve the requested article.<br />'."\n";
 		Page::$title = 'Error';
-		$page->showtitle = false;
+		Page::$showtitle = false;
 		return $return.' ';
 	}
 	if ($db->sql_num_rows($article_page_handle) != 1) {
@@ -123,7 +123,7 @@ if (isset($_GET['article'])) {
 		header("HTTP/1.0 404 Not Found");
 		$page->notification = 'The requested article does not exist.<br />'."\n";
 		Page::$title = 'Article not found';
-		$page->showtitle = false;
+		Page::$showtitle = false;
 		return $return.' ';
 	} else {
 		$article_found = false;
@@ -143,7 +143,7 @@ if (isset($_GET['article'])) {
 			header("HTTP/1.0 404 Not Found");
 			$page->notification = 'The requested article could not be found.<br />'."\n";
 			Page::$title = 'Article not found';
-			$page->showtitle = false;
+			Page::$showtitle = false;
 			return $return.' ';
 		}
 	}
