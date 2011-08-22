@@ -60,7 +60,6 @@ function get_article_list($page,$start = 1) {
 global $acl;
 global $db;
 global $debug;
-global $page;
 $return = NULL;
 
 // (Un)publish articles on request
@@ -128,7 +127,7 @@ if (isset($_GET['article'])) {
 	} else {
 		$article_found = false;
 		while ($article_found == false && $start < 1000) {
-			$article_list = get_article_list($page->id,$start);
+			$article_list = get_article_list(Page::$id,$start);
 			for ($i = 0; $i < count($article_list); $i++) {
 				if ($article_list[$i] == $article_id) {
 					$article_found = true;
@@ -150,7 +149,7 @@ if (isset($_GET['article'])) {
 }
 
 include(ROOT.'pagetypes/news_class.php');
-$article_list = get_article_list($page->id,$start);
+$article_list = get_article_list(Page::$id,$start);
 $first_date = NULL;
 // Initialize session variable if not initialized to prevent warnings.
 if (!isset($_SESSION['user'])) {
@@ -172,7 +171,7 @@ for ($i = 0; $i < count($article_list); $i++) {
 
 // Get array of content IDs for pagination
 $news_id_query = 'SELECT `id` FROM `' . NEWS_TABLE .'`
-	WHERE `page` = '.$page->id.'
+	WHERE `page` = '.Page::$id.'
 	ORDER BY `date`,`id` DESC';
 $news_id_handle = $db->sql_query($news_id_query);
 if ($db->error[$news_id_handle] === 1) {

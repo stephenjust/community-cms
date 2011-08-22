@@ -10,11 +10,10 @@ if (@SECURITY != 1) {
 	die('You cannot access this page directly.');
 }
 global $db;
-global $page;
 $content = NULL;
 
 $subpage_query = 'SELECT `id`,`title` FROM `'.PAGE_TABLE.'`
-	WHERE `parent` = '.$page->id.' ORDER BY `list` ASC';
+	WHERE `parent` = '.Page::$id.' ORDER BY `list` ASC';
 $subpage_handle = $db->sql_query($subpage_query);
 
 // SQL error = not found

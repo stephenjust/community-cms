@@ -158,7 +158,7 @@ class admin_page extends Page {
 		unset($template);
 	}
 
-	public function display_debug() {
+	public static function display_debug() {
 		global $db;
 		global $debug;
 

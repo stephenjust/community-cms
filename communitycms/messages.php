@@ -92,7 +92,7 @@ $page->content = $content;
 
 $page->display_content();
 if (DEBUG === 1) {
-	$page->display_debug();
+	Page::display_debug();
 }
 $page->display_footer();
 

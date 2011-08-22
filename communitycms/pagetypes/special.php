@@ -15,7 +15,6 @@ if (!defined('SECURITY')) {
 }
 
 global $db;
-global $page;
 global $user;
 $content = NULL;
 
@@ -23,7 +22,7 @@ if (!isset($_GET['action'])) {
 	$_GET['action'] = NULL;
 }
 
-switch ($page->id) {
+switch (Page::$id) {
 	case 'change_password':
 		Page::$title = 'Change Password';
 		if ($_GET['action'] == 'save') {

@@ -12,7 +12,6 @@ if (@SECURITY != 1) {
 }
 global $acl;
 global $db;
-global $page;
 
 $text_block = new block;
 $text_block->block_id = $block_info['id'];

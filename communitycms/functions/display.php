@@ -16,7 +16,6 @@ if (@SECURITY != 1) {
 
 function display_child_menu($parent) {
 	global $db;
-	global $page;
 
 	if (!is_numeric($parent) || is_array($parent)) {
 		return false;
@@ -42,11 +41,11 @@ function display_child_menu($parent) {
 		if (page_has_children($items_result['id']) == true) {
 			$link_class = 'submenuitem_haschild';
 			$extra_text = '<div class="childarrow"></div>';
-			if ($page->id == $items_result['id']) {
+			if (Page::id == $items_result['id']) {
 				$link_class = 'submenuitem_haschild_current';
 			}
 			$haschild = 1;
-		} elseif ($page->id == $items_result['id']) {
+		} elseif (Page::$id == $items_result['id']) {
 			$link_class = 'submenuitem_current';
 		} else {
 			$link_class = 'submenuitem';

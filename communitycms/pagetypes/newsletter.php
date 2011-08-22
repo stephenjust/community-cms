@@ -12,9 +12,8 @@ if (@SECURITY != 1) {
 }
 $return = NULL;
 global $db;
-global $page;
 $newsletter_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . '
-	WHERE page = '.$page->id.' ORDER BY year desc, month desc LIMIT 30 OFFSET 0';
+	WHERE page = '.Page::$id.' ORDER BY year desc, month desc LIMIT 30 OFFSET 0';
 $newsletter_handle = $db->sql_query($newsletter_query);
 if($db->sql_num_rows($newsletter_handle) == 0) {
 	$return .= "No newsletters to display";

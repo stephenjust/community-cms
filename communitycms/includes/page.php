@@ -652,10 +652,9 @@ function page_level($id) {
 
 function page_path($id) {
 	global $debug;
-	global $page;
 
 	// Don't execute this for special pages or non-existant pages
-	if ((int)$page->id == 0 || Page::$exists == false) {
+	if ((int)Page::$id == 0 || Page::$exists == false) {
 		$debug->add_trace('Not generating page path',false);
 		return false;
 	}

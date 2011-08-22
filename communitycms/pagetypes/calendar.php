@@ -9,7 +9,6 @@
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
-global $page;
 global $page_content_info;
 global $view;
 

@@ -105,7 +105,7 @@ $page->display_left();
 $page->display_right();
 $page->display_content();
 if (DEBUG === 1) {
-	$page->display_debug();
+	Page::display_debug();
 }
 $page->display_footer();
 

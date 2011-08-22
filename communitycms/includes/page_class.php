@@ -16,7 +16,7 @@ class Page {
 	 * Unique identifier for page
 	 * @var integer Page ID
 	 */
-	public $id = 0;
+	public static $id = 0;
 	/**
 	 * Marker that records whether the page exists or not
 	 * @var bool True if page exists, false if it does not.
@@ -128,7 +128,7 @@ class Page {
 						return true;
 				}
 			}
-			$this->id = (int)$reference;
+			Page::$id = (int)$reference;
 		} else {
 			if (strlen($reference) == 0) {
 				return false;
@@ -136,7 +136,7 @@ class Page {
 			Page::$text_id = (string)$reference;
 			Page::$url_reference = 'page='.Page::$text_id;
 		}
-		$this->get_page_information();
+		Page::get_page_information();
 		return true;
 	}
 
@@ -146,14 +146,14 @@ class Page {
 	 * @global debug $debug Debug object
 	 * @return void
 	 */
-	public function get_page_information() {
+	public static function get_page_information() {
 		global $db;
 		global $debug;
 
 		// Article Page
 		if (isset($_GET['showarticle'])) {
 			$debug->add_trace('Loading single article only',false);
-			$this->id = 0;
+			Page::$id = 0;
 			Page::$text_id = NULL;
 			Page::$showtitle = false;
 			require(ROOT . 'pagetypes/news_class.php');
@@ -171,9 +171,9 @@ class Page {
 		}
 
 		// Get either the page ID or text ID for use in the section below
-		if ($this->id > 0 && strlen(Page::$text_id) == 0) {
+		if (Page::$id > 0 && strlen(Page::$text_id) == 0) {
 			$debug->add_trace('Using numeric ID to get page information',false);
-			$page_query_id = '`page`.`id` = '.$this->id;
+			$page_query_id = '`page`.`id` = '.Page::$id;
 		} elseif (strlen(Page::$text_id) > 0) {
 			$debug->add_trace('Using text ID to get page information',false);
 			$page_query_id = '`page`.`text_id` = \''.Page::$text_id.'\'';
@@ -201,7 +201,7 @@ class Page {
 		$page = $db->sql_fetch_assoc($page_handle);
 
 		// Page was found; populate the class fields
-		$this->id = $page['id'];
+		Page::$id = $page['id'];
 		Page::$text_id = $page['text_id'];
 		Page::$showtitle = ($page['show_title'] == 1) ? true : false;
 		Page::$blocksleft = $page['blocks_left'];
@@ -211,7 +211,7 @@ class Page {
 		Page::$page_group = $page['page_group'];
 		Page::$type = $page['filename'];
 		if (strlen(Page::$text_id) == 0) {
-			Page::$url_reference = 'id='.$this->id;
+			Page::$url_reference = 'id='.Page::$id;
 		} else {
 			if(isset($_GET['id'])) {
 				header("HTTP/1.1 301 Moved Permanently");
@@ -374,13 +374,13 @@ class Page {
 		$menu = NULL;
 		foreach ($nav_menu AS $nav_menu_item) {
 			$haschild = 0;
-			if ($nav_menu_item['has_children'] == true && $this->id == $nav_menu_item['id']) {
+			if ($nav_menu_item['has_children'] == true && Page::$id == $nav_menu_item['id']) {
 				$item_template = clone $cmenus_item_template;
 				$haschild = 1;
 			} elseif ($nav_menu_item['has_children'] == true) {
 				$item_template = clone $menus_item_template;
 				$haschild = 1;
-			} elseif ($this->id == $nav_menu_item['id']) {
+			} elseif (Page::$id == $nav_menu_item['id']) {
 				$item_template = clone $cmenu_item_template;
 			} else {
 				$item_template = clone $menu_item_template;
@@ -453,7 +453,7 @@ class Page {
 
 		$template = new template;
 		$template->load_file('content');
-		$template->page_path = page_path($this->id);
+		$template->page_path = page_path(Page::$id);
 
 		// Display the page title if the configuration says to
 		if (Page::$showtitle === true) {
@@ -470,12 +470,12 @@ class Page {
 		$edit_bar = new editbar;
 		$edit_bar->set_label('Page');
 		$edit_bar->class = 'edit_bar page_edit_bar';
-		if ($this->id != 0) {
+		if (Page::$id != 0) {
 			$permission_list = array('admin_access','page_edit');
 			if (Page::$page_group !== 0) {
 				$permission_list[] = 'pagegroupedit-'.Page::$page_group;
 			}
-			$edit_bar->add_control('admin.php?module=page&amp;action=edit&amp;id='.$this->id,
+			$edit_bar->add_control('admin.php?module=page&amp;action=edit&amp;id='.Page::$id,
 					'edit.png','Edit',$permission_list);
 			unset($permission_list);
 		}
@@ -495,7 +495,7 @@ class Page {
 		if (Page::$type != 'special.php') {
 			// Get page messages
 			$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
-				WHERE `page_id` = '.$this->id.'
+				WHERE `page_id` = '.Page::$id.'
 				ORDER BY `start_date` ASC';
 			$page_message_handle = $db->sql_query($page_message_query);
 			if ($db->error[$page_message_handle] === 0) { // Don't run the loop if the query failed
@@ -519,7 +519,7 @@ class Page {
 
 		// This must be done after $template->content is set because the
 		// following could be used within the content.
-		$template->page_id = $this->id;
+		$template->page_id = Page::$id;
 		$template->page_ref = Page::$url_reference;
 
 		echo $template;
@@ -532,7 +532,7 @@ class Page {
 		echo $template;
 		unset($template);
 	}
-	public function display_debug() {
+	public static function display_debug() {
 		global $db;
 		global $debug;
 

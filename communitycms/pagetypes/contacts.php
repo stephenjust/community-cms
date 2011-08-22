@@ -10,12 +10,11 @@ if (@SECURITY != 1) {
 	die('You cannot access this page directly.');
 }
 global $db;
-global $page;
 $content = NULL;
 $current_contact = NULL;
 $contact_list_query = 'SELECT `contacts`.*
 	FROM `'.CONTACTS_TABLE.'` `contacts`, `'.CONTENT_TABLE.'` `content`
-	WHERE `content`.`page_id` = '.$page->id.'
+	WHERE `content`.`page_id` = '.Page::$id.'
 	AND `content`.`ref_id` = `contacts`.`id`
 	ORDER BY `content`.`order` ASC, `contacts`.`id` ASC';
 $contact_list_handle = $db->sql_query($contact_list_query);

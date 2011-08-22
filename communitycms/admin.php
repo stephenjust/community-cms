@@ -89,7 +89,7 @@ function display_admin() {
 
 display_admin($content);
 if (DEBUG === 1) {
-	$admin_page->display_debug();
+	admin_page::display_debug();
 }
 $admin_page->display_footer();
 
