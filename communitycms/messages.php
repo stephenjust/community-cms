@@ -56,7 +56,7 @@ if ($_GET['del'] != "") {
 $page = new Page;
 $page->id = 0;
 Page::$title .= 'Messages';
-$page->type = 'special.php';
+Page::$type = 'special.php';
 Page::$exists = true;
 $page->display_header();
 $page->display_left();

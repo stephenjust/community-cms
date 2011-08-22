@@ -64,7 +64,7 @@ if ($page_id == NULL && $page_text_id != NULL) {
 } else {
 	$page->set_page($page_id);
 }
-if ($page->type == 'calendar.php') {
+if (Page::$type == 'calendar.php') {
 	Page::$notification .= 'The Calendar page type does not work properly with tabbed pages.';
 }
 

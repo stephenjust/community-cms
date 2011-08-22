@@ -14,7 +14,7 @@
 class Page {
 	/**
 	 * Unique identifier for page
-	 * @var int Page ID
+	 * @var integer Page ID
 	 */
 	public $id = 0;
 	/**
@@ -56,12 +56,12 @@ class Page {
 	 * If 'true' when display_left() called, user menu will be displayed.
 	 * @var boolean
 	 */
-	public $showlogin = true;
+	public static $showlogin = true;
 	/**
 	 * Page type
 	 * @var string Page type
 	 */
-	public $type = 'news.php';
+	public static $type = 'news.php';
 	/**
 	 * Only print content when displaying page
 	 * @var boolean 
@@ -128,7 +128,7 @@ class Page {
 					case 'change_password':
 						// Change Password
 						Page::$text_id = $reference;
-						$this->showlogin = false;
+						Page::$showlogin = false;
 						Page::$url_reference = 'id=change_password';
 						$this->get_special_page();
 						return true;
@@ -215,7 +215,7 @@ class Page {
 		Page::$exists = true;
 		$this->meta_description = $page['meta_desc'];
 		Page::$page_group = $page['page_group'];
-		$this->type = $page['filename'];
+		Page::$type = $page['filename'];
 		if (strlen(Page::$text_id) == 0) {
 			Page::$url_reference = 'id='.$this->id;
 		} else {
@@ -232,14 +232,14 @@ class Page {
 		Page::$title = $page['title'];
 		Page::$page_title = Page::$title;
 		if(!isset($this->content)) {
-			$this->content = include(ROOT.'pagetypes/'.$this->type);
+			$this->content = include(ROOT.'pagetypes/'.Page::$type);
 			if(!$this->content) {
 				// Including the pagetype file failed - either a file is missing,
 				// or the included file returned 'false'
 				header("HTTP/1.0 404 Not Found");
 				Page::$exists = false;
 				Page::$notification = '<strong>Error: </strong>System file not found.<br />';
-				$debug->add_trace('Including '.$this->type.' returned false',true);
+				$debug->add_trace('Including '.Page::$type.' returned false',true);
 			}
 		}
 		return;
@@ -252,18 +252,18 @@ class Page {
 	private function get_special_page() {
 		global $debug;
 
-		$this->type = 'special.php';
+		Page::$type = 'special.php';
 		Page::$showtitle = false;
 		$this->blocksleft = NULL;
 		$this->blocksright = NULL;
 		Page::$exists = true;
 		$this->meta_description = NULL;
 		if(!isset($this->content)) {
-			$this->content = include(ROOT.'pagetypes/'.$this->type);
+			$this->content = include(ROOT.'pagetypes/'.Page::$type);
 			if(!$this->content) {
 				Page::$exists = false;
 				Page::$notification = '<strong>Error: </strong>System file not found.<br />';
-				$debug->add_trace('Including '.$this->type.' returned false',true);
+				$debug->add_trace('Including '.Page::$type.' returned false',true);
 			}
 		}
 	}
@@ -308,7 +308,7 @@ class Page {
 			src="'.ROOT.'scripts/ajax.js"></script>
 			<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/cms_fe.js"></script>';
-		if ($this->type == 'tabs.php') {
+		if (Page::$type == 'tabs.php') {
 			$js_include .= '<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/jquery-ui.js"></script>
 			<script language="javascript" type="text/javascript"
@@ -426,7 +426,7 @@ class Page {
 		$template->nav_bar = $this->nav_menu();
 
 		// Hide login box when it may cause issues
-		if ($this->showlogin === true) {
+		if (Page::$showlogin === true) {
 			$template->nav_login = display_login_box();
 		} else {
 			$template->nav_login = NULL;
@@ -499,7 +499,7 @@ class Page {
 
 		// Skip page message fetch on special pages
 		$page_message = NULL;
-		if ($this->type != 'special.php') {
+		if (Page::$type != 'special.php') {
 			// Get page messages
 			$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
 				WHERE `page_id` = '.$this->id.'
