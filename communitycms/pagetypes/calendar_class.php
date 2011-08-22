@@ -80,7 +80,6 @@ class calendar_event {
 	}
 	function get_event($id) {
 		global $db;
-		global $page;
 		$this->event_query = 'SELECT `cal`.*, `cat`.`label`
 			FROM `'.CALENDAR_TABLE.'` cal
 			LEFT JOIN `'.CALENDAR_CATEGORY_TABLE.'` cat
@@ -138,15 +137,15 @@ class calendar_event {
 			$template_event->event_location_start = NULL;
 			$template_event->event_location_end = NULL;
 		}
-		$this->event_text .= "<a href='?".$page->url_reference."&amp;view=month&amp;m=".
+		$this->event_text .= "<a href='?".Page::$url_reference."&amp;view=month&amp;m=".
 			$event_info['month']."&amp;y=".$event_info['year']."'>Back to month
 			view</a><br />";
-		$this->event_text .= "<a href='?".$page->url_reference."&amp;view=day&amp;d=".
+		$this->event_text .= "<a href='?".Page::$url_reference."&amp;view=day&amp;d=".
 			$event_info['day']."&amp;m=".$event_info['month']."&amp;y=".$event_info['year'].
 			"'>Back to day view</a><br />";
 		$this->event_text .= $template_event;
 		unset($template_event);
-		$page->title .= ' - '.stripslashes($event_info['header']).' - '
+		Page::$title .= ' - '.stripslashes($event_info['header']).' - '
 				.$month_text.' '.$event_info['day'].', '.$event_info['year'];
 		unset($event);
 		return;

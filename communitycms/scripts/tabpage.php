@@ -58,7 +58,7 @@ if (!isset($_GET['id']) && !isset($_GET['page'])) {
 unset($_GET['page'],$_GET['id']);
 
 // Load page information.
-$page = new page;
+$page = new Page;
 if ($page_id == NULL && $page_text_id != NULL) {
 	$page->set_page($page_text_id,false);
 } else {

@@ -25,7 +25,7 @@ if (!isset($_GET['action'])) {
 
 switch ($page->id) {
 	case 'change_password':
-		$page->title = 'Change Password';
+		Page::$title = 'Change Password';
 		if ($_GET['action'] == 'save') {
 			if (!isset($_POST['cp_user']) || !isset($_POST['cp_oldpass']) ||
 					!isset($_POST['cp_newpass']) || !isset($_POST['cp_confpass'])) {

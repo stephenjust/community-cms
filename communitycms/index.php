@@ -83,7 +83,7 @@ if (!isset($_GET['id']) && !isset($_GET['page'])) {
 unset($_GET['page'],$_GET['id']);
 
 // Load page information.
-$page = new page;
+$page = new Page;
 if (isset($_POST['vote']) && isset($_POST['vote_poll'])) {
 	$question_id = (int)$_POST['vote_poll'];
 	$answer_id = (int)$_POST['vote'];

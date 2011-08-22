@@ -283,7 +283,6 @@ function monthcal_get_date($day,$month,$year,$template) {
 	global $calendar_settings;
 	global $db;
 	global $debug;
-	global $page;
 
 	$dates_query = 'SELECT * FROM `' . CALENDAR_TABLE . '` `date`,
 		`' . CALENDAR_CATEGORY_TABLE . '` `cat`
@@ -298,7 +297,7 @@ function monthcal_get_date($day,$month,$year,$template) {
 		return 'Error';
 	}
 	if ($db->sql_num_rows($dates_handle) > 0) {
-		$template->day_number = '<a href="?'.$page->url_reference
+		$template->day_number = '<a href="?'.Page::$url_reference
 			.'&amp;view=day&amp;m='.$month.'&amp;y='.$year.'&amp;d='
 			.$day.'" class="day_number">'.$day.'</a>';
 	} else {
@@ -310,7 +309,7 @@ function monthcal_get_date($day,$month,$year,$template) {
 		if($day_info['colour'] == '') {
 			$day_info['colour'] = 'red';
 		}
-		$dates .= '<a href="?'.$page->url_reference.'&amp;view=event&amp;'
+		$dates .= '<a href="?'.Page::$url_reference.'&amp;view=event&amp;'
 			.'a='.$day_info['id'].'" class="calendar_event">';
 		if ($calendar_settings['month_show_cat_icons'] == 1) {
 			$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$day_info['colour'].'.png"'

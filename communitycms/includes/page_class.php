@@ -11,7 +11,7 @@
  * Generates a page
  * @package CommunityCMS.main
  */
-class page {
+class Page {
 	/**
 	 * Unique identifier for page
 	 * @var int Page ID
@@ -36,12 +36,12 @@ class page {
 	 * How scripts should reference the page
 	 * @var string Either Text ID or ID
 	 */
-	public $url_reference = NULL;
+	public static $url_reference = NULL;
 	/**
 	 * Text to display in the page's title bar
 	 * @var string text
 	 */
-	public $title = NULL;
+	public static $title = NULL;
 	/**
 	 * Page title in database
 	 * @var string text
@@ -90,7 +90,7 @@ class page {
 	function __destruct() {
 
 	}
-
+	
 	/**
 	 * Set type of page to load for pages without ID
 	 * @param string $type Name of page type to load
@@ -129,7 +129,7 @@ class page {
 						// Change Password
 						$this->text_id = $reference;
 						$this->showlogin = false;
-						$this->url_reference = 'id=change_password';
+						Page::$url_reference = 'id=change_password';
 						$this->get_special_page();
 						return true;
 				}
@@ -140,7 +140,7 @@ class page {
 				return false;
 			}
 			$this->text_id = (string)$reference;
-			$this->url_reference = 'page='.$this->text_id;
+			Page::$url_reference = 'page='.$this->text_id;
 		}
 		$this->get_page_information();
 		return true;
@@ -170,7 +170,7 @@ class page {
 				$this->exists = 0;
 				return;
 			}
-			$this->title .= $article->article_title;
+			Page::$title .= $article->article_title;
 			$this->exists = 1;
 			$this->content = $article->article;
 			return;
@@ -217,7 +217,7 @@ class page {
 		$this->page_group = $page['page_group'];
 		$this->type = $page['filename'];
 		if (strlen($this->text_id) == 0) {
-			$this->url_reference = 'id='.$this->id;
+			Page::$url_reference = 'id='.$this->id;
 		} else {
 			if(isset($_GET['id'])) {
 				header("HTTP/1.1 301 Moved Permanently");
@@ -227,10 +227,10 @@ class page {
 				$new_page_address = str_replace($matches,'page='.$this->text_id,$old_page_address);
 				header('Location: '.$new_page_address);
 			}
-			$this->url_reference = 'page='.$this->text_id;
+			Page::$url_reference = 'page='.$this->text_id;
 		}
-		$this->title = $page['title'];
-		$this->page_title = $this->title;
+		Page::$title = $page['title'];
+		$this->page_title = Page::$title;
 		if(!isset($this->content)) {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
 			if(!$this->content) {
@@ -271,7 +271,7 @@ class page {
 	public function get_page_content() {
 		global $db;
 		if ($this->exists == 0) {
-			$this->title .= 'Page Not Found';
+			Page::$title .= 'Page Not Found';
 			$this->notification .= '<strong>Error: </strong>The requested page
 				could not be found.<br />';
 			return;
@@ -341,10 +341,10 @@ class page {
 		}
 
 		if ($this->exists == 0) {
-			$this->title .= 'Page not found';
+			Page::$title .= 'Page Not Found';
 		}
-		$this->title .= ' - '.get_config('site_name');
-		$template->page_title = $this->title;
+		Page::$title .= ' - '.get_config('site_name');
+		$template->page_title = Page::$title;
 		echo $template;
 		unset($template);
 	}
@@ -527,7 +527,7 @@ class page {
 		// This must be done after $template->content is set because the
 		// following could be used within the content.
 		$template->page_id = $this->id;
-		$template->page_ref = $this->url_reference;
+		$template->page_ref = Page::$url_reference;
 
 		echo $template;
 		unset($template);

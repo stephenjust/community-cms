@@ -13,12 +13,10 @@
  * @param int $num Number of content items per page
  * @param array $all_elements Array of all elements in series
  * @global debug $debug Debug object
- * @global object $page Page object
  * @return mixed False if paginating failed for some reason, a string if success
  */
 function pagination($start, $num, $all_elements) {
 	global $debug;
-	global $page;
 	// Validate variables
 	if (!is_array($all_elements)) {
 		$debug->add_trace('List of elements is not an array',true);
@@ -58,14 +56,14 @@ function pagination($start, $num, $all_elements) {
 		} else {
 			$prev_offset = $start - $num;
 		}
-		$template->prev_page = '<a href="index.php?'.$page->url_reference.'&amp;start='.$prev_offset.'" class="prev_page" id="prev_page">Previous Page</a>';
+		$template->prev_page = '<a href="index.php?'.Page::$url_reference.'&amp;start='.$prev_offset.'" class="prev_page" id="prev_page">Previous Page</a>';
 	} else {
 		$template->prev_page = '';
 	}
 	// If there's another page...
 	if ($start + $num - 1 < count($all_elements)) {
 		$next_offset = $start + $num;
-		$template->next_page = '<a href="index.php?'.$page->url_reference.'&amp;start='.$next_offset.'" class="next_page" id="next_page">Next Page</a>';
+		$template->next_page = '<a href="index.php?'.Page::$url_reference.'&amp;start='.$next_offset.'" class="next_page" id="next_page">Next Page</a>';
 	} else {
 		$template->next_page = '';
 	}

@@ -12,7 +12,7 @@
  *
  * @package CommunityCMS.admin
  */
-class admin_page extends page {
+class admin_page extends Page {
 	/**
 	 * Module
 	 * @var string

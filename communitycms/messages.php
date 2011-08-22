@@ -53,9 +53,9 @@ if ($_GET['del'] != "") {
 	}
 }
 
-$page = new page;
+$page = new Page;
 $page->id = 0;
-$page->title .= 'Messages';
+Page::$title .= 'Messages';
 $page->type = 'special.php';
 $page->exists = 1;
 $page->display_header();

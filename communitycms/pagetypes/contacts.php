@@ -32,12 +32,12 @@ if($_GET['message'] != '') {
 	header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0"); // HTTP/1.1
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache"); // HTTP/1.0
-	$content .= '<form method="POST" action="index.php?'.$page->url_reference.'&action=send">
+	$content .= '<form method="POST" action="index.php?'.Page::$url_reference.'&action=send">
 <input type="hidden" name="recipient" value="'.(int)$_GET['message'].'" />
 Message to user:<br />
 <textarea name="message" rows="5" cols="50"></textarea><br />
 <input type="submit" value="Send Message" />
-</form><form method="POST" action="index.php?'.$page->url_reference.'"><input type="submit" value="Cancel" /></form>';
+</form><form method="POST" action="index.php?'.Page::$url_reference.'"><input type="submit" value="Cancel" /></form>';
 }
 if($_GET['action'] == 'send') {
 	$message = addslashes($_POST['message']);
@@ -81,7 +81,7 @@ for ($i = 1; $contact_list_num_rows >= $i; $i++) {
 
 	// Prepare contact information
 	if ($contact_info['user_id'] != 0) {
-		$realname = '<a href="index.php?'.$page->url_reference.'&message='.$contact_info['user_id'].'">'.stripslashes($contact_info['name']).'</a>';
+		$realname = '<a href="index.php?'.Page::$url_reference.'&message='.$contact_info['user_id'].'">'.stripslashes($contact_info['name']).'</a>';
 	} else {
 		$realname = stripslashes($contact_info['name']);
 	}

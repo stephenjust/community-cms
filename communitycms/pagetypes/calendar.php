@@ -39,7 +39,7 @@ switch ($view) {
 		$template_month->load_file('calendar_month');
 
 		// Add month and year to page title
-		$page->title .= ' - '.date('F Y',$month_cal->first_day_ts);
+		Page::$title .= ' - '.date('F Y',$month_cal->first_day_ts);
 
 		// Replace template placeholders that should not be altered
 		// beyond this point
@@ -123,7 +123,7 @@ switch ($view) {
 				}
 				if ($cal_info_result['day'] == $counter_day) {
 					// There's at least one event on this day
-					$current_day->day_number = '<a href="?'.$page->url_reference
+					$current_day->day_number = '<a href="?'.Page::$url_reference
 						.'&amp;view=day&amp;m='.$month_cal->month.'&amp;y='.$month_cal->year.'&amp;d='
 						.$counter_day.'" class="day_number">'.$counter_day.'</a>';
 				} else {
@@ -138,7 +138,7 @@ switch ($view) {
 				}
 
 				// Create the link to the event page
-				$dates .= '<a href="?'.$page->url_reference.'&amp;view=event&amp;'
+				$dates .= '<a href="?'.Page::$url_reference.'&amp;view=event&amp;'
 					.'a='.$cal_info_result['id'].'" class="calendar_event">';
 				// Show icon if configured to do so
 				if (get_config('calendar_month_show_cat_icons') == 1) {
@@ -208,7 +208,7 @@ switch ($view) {
 			WHERE year = '.$year.' AND month = '.$month.' AND day = '.$day.'
 			ORDER BY starttime ASC';
 		$day_events_handle = $db->sql_query($day_events_query);
-		$page_content .= '<a href="?'.$page->url_reference.'&amp;view=month&amp;m='.$month.
+		$page_content .= '<a href="?'.Page::$url_reference.'&amp;view=month&amp;m='.$month.
 			'&amp;y='.$year.'">Back to month view</a><br />'."\n";
 		if ($db->error[$day_events_handle] === 1) {
 			$page_content .= 'Failed to read list of events from the database.';
@@ -256,7 +256,7 @@ switch ($view) {
 		unset($day_events_handle);
 		unset($day_events);
 		$month_text = date('F',$event_start);
-		$page->title .= ' - '.$month_text.' '.$day.', '.$year;
+		Page::$title .= ' - '.$month_text.' '.$day.', '.$year;
 		break;
 }
 return $page_content;
