@@ -57,7 +57,7 @@ $page = new Page;
 $page->id = 0;
 Page::$title .= 'Messages';
 $page->type = 'special.php';
-$page->exists = 1;
+Page::$exists = true;
 $page->display_header();
 $page->display_left();
 $page->display_right();

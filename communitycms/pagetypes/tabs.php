@@ -19,14 +19,14 @@ $subpage_handle = $db->sql_query($subpage_query);
 
 // SQL error = not found
 if ($db->error[$subpage_handle] === 1) {
-	$page->exists = 0;
+	Page::$exists = false;
 	return true;
 }
 
 // No subpages = not found
 $num_subpages = $db->sql_num_rows($subpage_handle);
 if ($num_subpages == 0) {
-	$page->exists = 0;
+	Page::$exists = false;
 	return true;
 }
 

@@ -655,7 +655,7 @@ function page_path($id) {
 	global $page;
 
 	// Don't execute this for special pages or non-existant pages
-	if ((int)$page->id == 0 || $page->exists == false) {
+	if ((int)$page->id == 0 || Page::$exists == false) {
 		$debug->add_trace('Not generating page path',false);
 		return false;
 	}

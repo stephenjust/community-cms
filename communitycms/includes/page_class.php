@@ -21,7 +21,7 @@ class Page {
 	 * Marker that records whether the page exists or not
 	 * @var bool True if page exists, false if it does not.
 	 */
-	public $exists = 0;
+	public static $exists = false;
 	/**
 	 * Unique string identifier for page
 	 * @var string Page Text ID
@@ -121,7 +121,7 @@ class Page {
 					default:
 						// Error case
 						$debug->add_trace('Unknown special page type',true);
-						$this->exists = false;
+						Page::$exists = false;
 						$this->get_page_content();
 						return false;
 
@@ -167,11 +167,11 @@ class Page {
 			$article->set_article_id((int)$_GET['showarticle']);
 			if (!$article->get_article()) {
 				header("HTTP/1.0 404 Not Found");
-				$this->exists = 0;
+				Page::$exists = false;
 				return;
 			}
 			Page::$title .= $article->article_title;
-			$this->exists = 1;
+			Page::$exists = true;
 			$this->content = $article->article;
 			return;
 		}
@@ -212,7 +212,7 @@ class Page {
 		$this->showtitle = ($page['show_title'] == 1) ? true : false;
 		$this->blocksleft = $page['blocks_left'];
 		$this->blocksright = $page['blocks_right'];
-		$this->exists = 1;
+		Page::$exists = true;
 		$this->meta_description = $page['meta_desc'];
 		$this->page_group = $page['page_group'];
 		$this->type = $page['filename'];
@@ -237,7 +237,7 @@ class Page {
 				// Including the pagetype file failed - either a file is missing,
 				// or the included file returned 'false'
 				header("HTTP/1.0 404 Not Found");
-				$this->exists = 0;
+				Page::$exists = false;
 				$this->notification = '<strong>Error: </strong>System file not found.<br />';
 				$debug->add_trace('Including '.$this->type.' returned false',true);
 			}
@@ -256,12 +256,12 @@ class Page {
 		$this->showtitle = false;
 		$this->blocksleft = NULL;
 		$this->blocksright = NULL;
-		$this->exists = 1;
+		Page::$exists = true;
 		$this->meta_description = NULL;
 		if(!isset($this->content)) {
 			$this->content = include(ROOT.'pagetypes/'.$this->type);
 			if(!$this->content) {
-				$this->exists = 0;
+				Page::$exists = false;
 				$this->notification = '<strong>Error: </strong>System file not found.<br />';
 				$debug->add_trace('Including '.$this->type.' returned false',true);
 			}
@@ -270,7 +270,7 @@ class Page {
 
 	public function get_page_content() {
 		global $db;
-		if ($this->exists == 0) {
+		if (Page::$exists === false) {
 			Page::$title .= 'Page Not Found';
 			$this->notification .= '<strong>Error: </strong>The requested page
 				could not be found.<br />';
@@ -340,7 +340,7 @@ class Page {
 			$template->meta_desc = NULL;
 		}
 
-		if ($this->exists == 0) {
+		if (Page::$exists === false) {
 			Page::$title .= 'Page Not Found';
 		}
 		Page::$title .= ' - '.get_config('site_name');
