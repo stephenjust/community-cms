@@ -116,7 +116,7 @@ class Page {
 						// Error case
 						$debug->add_trace('Unknown special page type',true);
 						Page::$exists = false;
-						$this->get_page_content();
+						Page::get_page_content();
 						return false;
 
 					case 'change_password':
@@ -124,7 +124,7 @@ class Page {
 						Page::$text_id = $reference;
 						Page::$showlogin = false;
 						Page::$url_reference = 'id=change_password';
-						$this->get_special_page();
+						Page::get_special_page();
 						return true;
 				}
 			}
@@ -243,7 +243,7 @@ class Page {
 	 * Handle "special" pages (i.e. change password page)
 	 * @global debug $debug
 	 */
-	private function get_special_page() {
+	private static function get_special_page() {
 		global $debug;
 
 		Page::$type = 'special.php';
@@ -262,7 +262,7 @@ class Page {
 		}
 	}
 
-	public function get_page_content() {
+	public static function get_page_content() {
 		if (Page::$exists === false) {
 			Page::$title .= 'Page Not Found';
 			Page::$notification .= '<strong>Error: </strong>The requested page
@@ -273,7 +273,7 @@ class Page {
 		}
 	}
 
-	public function display_page() {
+	public static function display_page() {
 		// Read template.xml for current template to figure out which order
 		// to spit out content
 
@@ -286,7 +286,7 @@ class Page {
 	/**
 	 * display_header - Print the page header
 	 */
-	public function display_header() {
+	public static function display_header() {
 		$template = new template;
 		$template->load_file('header');
 
@@ -348,7 +348,7 @@ class Page {
 	 * @global debug $debug Debugging object
 	 * @return string HTML for menu
 	 */
-	private function nav_menu() {
+	private static function nav_menu() {
 		global $db;
 		global $debug;
 
@@ -413,10 +413,10 @@ class Page {
 		$menu_template->menu_placeholder = $menu;
 		return $menu_template;
 	}
-	public function display_left() {
+	public static function display_left() {
 		$template = new template;
 		$template->load_file('left');
-		$template->nav_bar = $this->nav_menu();
+		$template->nav_bar = Page::nav_menu();
 
 		// Hide login box when it may cause issues
 		if (Page::$showlogin === true) {
@@ -434,7 +434,7 @@ class Page {
 		$template->left_content = $left_blocks_content;
 		echo $template;
 	}
-	public function display_right() {
+	public static function display_right() {
 		$template = new template;
 		$template->load_file('right');
 
@@ -448,7 +448,7 @@ class Page {
 		echo $template;
 	}
 
-	public function display_content() {
+	public static function display_content() {
 		global $db;
 
 		$template = new template;
@@ -515,7 +515,7 @@ class Page {
 			$template->replace_range('page_message',NULL);
 		}
 
-		$template->content = $this->get_page_content();
+		$template->content = Page::get_page_content();
 
 		// This must be done after $template->content is set because the
 		// following could be used within the content.
@@ -525,7 +525,7 @@ class Page {
 		echo $template;
 		unset($template);
 	}
-	public function display_footer() {
+	public static function display_footer() {
 		$template = new template;
 		$template->load_file('footer');
 		$template->footer = get_config('footer');

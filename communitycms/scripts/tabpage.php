@@ -58,7 +58,6 @@ if (!isset($_GET['id']) && !isset($_GET['page'])) {
 unset($_GET['page'],$_GET['id']);
 
 // Load page information.
-$page = new Page;
 if ($page_id == NULL && $page_text_id != NULL) {
 	Page::set_page($page_text_id,false);
 } else {
@@ -69,7 +68,7 @@ if (Page::$type == 'calendar.php') {
 }
 
 // Display page content
-$page->display_content();
+Page::display_content();
 
 clean_up();
 ?>

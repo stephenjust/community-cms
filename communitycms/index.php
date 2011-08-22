@@ -100,14 +100,14 @@ if (file_exists('./install')) {
 }
 
 // Display the page.
-$page->display_header();
-$page->display_left();
-$page->display_right();
-$page->display_content();
+Page::display_header();
+Page::display_left();
+Page::display_right();
+Page::display_content();
 if (DEBUG === 1) {
 	Page::display_debug();
 }
-$page->display_footer();
+Page::display_footer();
 
 clean_up();
 

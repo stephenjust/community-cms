@@ -57,7 +57,7 @@ require(ROOT.'functions/admin.php');
 require(ROOT.'includes/admin_page_class.php');
 
 $admin_page = new admin_page($module);
-$admin_page->display_header();
+admin_page::display_header();
 
 function display_admin() {
 	global $CONFIG;
@@ -91,7 +91,7 @@ display_admin($content);
 if (DEBUG === 1) {
 	admin_page::display_debug();
 }
-$admin_page->display_footer();
+admin_page::display_footer();
 
 clean_up();
 ?>

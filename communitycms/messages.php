@@ -58,9 +58,9 @@ $page->id = 0;
 Page::$title .= 'Messages';
 Page::$type = 'special.php';
 Page::$exists = true;
-$page->display_header();
-$page->display_left();
-$page->display_right();
+Page::display_header();
+Page::display_left();
+Page::display_right();
 
 // Get message list
 $message_list_query = 'SELECT * FROM ' . MESSAGE_TABLE . '
@@ -90,11 +90,11 @@ while ($message_num_rows >= $i) {
 }
 $page->content = $content;
 
-$page->display_content();
+Page::display_content();
 if (DEBUG === 1) {
 	Page::display_debug();
 }
-$page->display_footer();
+Page::display_footer();
 
 // Close database connections and clean up loose ends.
 clean_up();

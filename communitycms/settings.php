@@ -41,12 +41,12 @@ if (get_config('site_active') == 0) {
 $page = new Page;
 Page::set_type('settings_main');
 // Display the page.
-$page->display_header();
+Page::display_header();
 display_page();
 if (DEBUG === 1) {
 	$debug->display_traces();
 }
-$page->display_footer();
+Page::display_footer();
 
 clean_up();
 ?>

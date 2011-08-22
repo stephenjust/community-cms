@@ -27,7 +27,7 @@ class admin_page extends Page {
 	/**
 	 * display_header - Print the page header
 	 */
-	public function display_header() {
+	public static function display_header() {
 		global $acl;
 
 		$template = new template;
@@ -171,7 +171,7 @@ class admin_page extends Page {
 		unset($template);
 	}
 
-	public function display_footer() {
+	public static function display_footer() {
 		$template = new template;
 		$template->load_admin_file('footer');
 		$template->footer = 'Powered by Community CMS';
