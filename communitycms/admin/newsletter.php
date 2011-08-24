@@ -38,7 +38,7 @@ function delete_newsletter($id) {
 
 	// Validate parameters
 	if (!is_numeric($id)) {
-		$debug->add_trace('Invalid newsletter ID',true);
+		$debug->addMessage('Invalid newsletter ID',true);
 		return false;
 	}
 
@@ -47,11 +47,11 @@ function delete_newsletter($id) {
 		`id` = '.$id.' LIMIT 1';
 	$newsletter_info_handle = $db->sql_query($newsletter_info_query);
 	if ($db->error[$newsletter_info_handle] === 1) {
-		$debug->add_trace('Failed to read newsletter information',true);
+		$debug->addMessage('Failed to read newsletter information',true);
 		return false;
 	}
 	if ($db->sql_num_rows($newsletter_info_handle) != 1) {
-		$debug->add_trace('Newsletter entry not found',false);
+		$debug->addMessage('Newsletter entry not found',false);
 		return false;
 	}
 	$newsletter_info = $db->sql_fetch_assoc($newsletter_info_handle);

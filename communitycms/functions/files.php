@@ -421,11 +421,11 @@ function generate_thumbnail($original,$thumb_path = NULL,$min_w = 1,$min_h = 1,$
 	global $debug;
 
 	if (!file_exists($original)) {
-		$debug->add_trace('Failed to find original file',true);
+		$debug->addMessage('Failed to find original file',true);
 		return false;
 	}
 	if ($min_w == 0 || $min_h == 0) {
-		$debug->add_trace('Cannot have minimum dimension of 0px',true);
+		$debug->addMessage('Cannot have minimum dimension of 0px',true);
 		return false;
 	}
 	if (preg_match('/\.png$/i',$original)) {
@@ -435,7 +435,7 @@ function generate_thumbnail($original,$thumb_path = NULL,$min_w = 1,$min_h = 1,$
 		$image = imageCreateFromJPEG($original);
 		$imagetype = 'jpg';
 	} else {
-		$debug->add_trace('A thumbnail cannot be created from '.$original,true);
+		$debug->addMessage('A thumbnail cannot be created from '.$original,true);
 		return false;
 	}
 
@@ -495,7 +495,7 @@ function generate_thumbnail($original,$thumb_path = NULL,$min_w = 1,$min_h = 1,$
 	} else {
 		imagejpeg($thumb_image,$thumb_path);
 	}
-	$debug->add_trace('Generated thumbnail',false);
+	$debug->addMessage('Generated thumbnail',false);
 	return true;
 }
 

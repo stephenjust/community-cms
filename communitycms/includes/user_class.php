@@ -36,7 +36,7 @@ class user {
 			// One or more of the session variables was not set, so clear all
 			// of the session variables to make sure that the session remains
 			// clean
-			$debug->add_trace('Forcing logout due to incomplete set of session vars',false);
+			$debug->addMessage('Forcing logout due to incomplete set of session vars',false);
 			$this->logout();
 			return;
 		}
@@ -51,7 +51,7 @@ class user {
 		$access = $db->sql_query($query);
 		$num_rows = $db->sql_num_rows($access);
 		if($num_rows != 1) {
-			$debug->add_trace('No user exists with those login credentials',true);
+			$debug->addMessage('No user exists with those login credentials',true);
 			$this->logout();
 			err_page(3002);
 			return false;
@@ -61,7 +61,7 @@ class user {
 			define('USERINFO',$userinfo['id'].','.$userinfo['realname'].','.$userinfo['type']);
 		}
 		$this->logged_in = true;
-		$debug->add_trace('Verified logged-in state',false);
+		$debug->addMessage('Verified logged-in state',false);
 	}
 
 	/**
@@ -78,12 +78,12 @@ class user {
 
 		// Validate parameters
 		if (strlen($username) < 4) {
-			$debug->add_trace('User name is too short',true);
+			$debug->addMessage('User name is too short',true);
 			err_page(3001);
 			return false;
 		}
 		if (strlen($password) < 8) {
-			$debug->add_trace('Password is too short',true);
+			$debug->addMessage('Password is too short',true);
 			err_page(3001);
 			return false;
 		}
@@ -132,7 +132,7 @@ class user {
 			if ($curtime > $expiretime) {
 				$_GET['page'] = NULL;
 				$_GET['id'] = 'change_password';
-				$debug->add_trace('Password is expired',true);
+				$debug->addMessage('Password is expired',true);
 				$_SESSION['expired'] = true;
 				return false;
 			}
@@ -155,7 +155,7 @@ class user {
 			return false;
 		}
 
-		$debug->add_trace('Logged in user',false);
+		$debug->addMessage('Logged in user',false);
 		$this->logged_in = true;
 	}
 
@@ -174,7 +174,7 @@ class user {
 		unset($_SESSION['last_login']);
 		unset($_SESSION['expired']);
 		session_destroy();
-		$debug->add_trace('Logged out user',false);
+		$debug->addMessage('Logged out user',false);
 		session_start();
 		$this->logged_in = false;
 	}
@@ -194,7 +194,7 @@ class user {
 			WHERE `id` = '.$_SESSION['userid'];
 		$set_logintime_handle = $db->sql_query($set_logintime_query);
 		if ($db->error[$set_logintime_handle]) {
-			$debug->add_trace('Failed to set log-in time',true);
+			$debug->addMessage('Failed to set log-in time',true);
 			return false;
 		}
 		return true;

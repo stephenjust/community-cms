@@ -19,29 +19,29 @@ function pagination($start, $num, $all_elements) {
 	global $debug;
 	// Validate variables
 	if (!is_array($all_elements)) {
-		$debug->add_trace('List of elements is not an array',true);
+		$debug->addMessage('List of elements is not an array',true);
 		return false;
 	}
 	if (!is_int($start) || (int)$start < 0) {
-		$debug->add_trace('Start number is not an integer or is an invalid integer',true);
+		$debug->addMessage('Start number is not an integer or is an invalid integer',true);
 		return false;
 	}
 	if (!is_numeric($num)) {
-		$debug->add_trace('Number of entries to display on a page is not an integer',true);
+		$debug->addMessage('Number of entries to display on a page is not an integer',true);
 		return false;
 	}
 	$num = (int)$num;
 	// If the total number of items to paginate will not fill more than one
 	// page, don't bother calculating whether anything must be done.
 	if (count($all_elements) <= $num) {
-		$debug->add_trace('There is not enough elements to paginate',false);
+		$debug->addMessage('There is not enough elements to paginate',false);
 		return false;
 	}
-	$debug->add_trace('The total number of visible elements for this page is '.count($all_elements),false);
+	$debug->addMessage('The total number of visible elements for this page is '.count($all_elements),false);
 	// If the element number we're starting on is greater than the total number
 	// of elements, something is wrong.
 	if ($start > count($all_elements)) {
-		$debug->add_trace('Attempt to start at an increment that is too high',true);
+		$debug->addMessage('Attempt to start at an increment that is too high',true);
 		return false;
 	}
 	$return = '';

@@ -209,11 +209,11 @@ function array2csv($array) {
 	global $debug;
 	if (count($array) == 0) {
 		if (is_object($debug))
-			$debug->add_trace('Array provided is empty',true);
+			$debug->addMessage('Array provided is empty',true);
 		return '';
 	}
 	if (is_object($debug))
-		$debug->add_trace('Array provided has '.count($array).' entries',false);
+		$debug->addMessage('Array provided has '.count($array).' entries',false);
 	$string = NULL;
 	$array_count = count($array);
 	for ($i = 0; $i < $array_count; $i++) {
@@ -227,7 +227,7 @@ function array2csv($array) {
 			$string .= $array[$i];
 		} else {
 			if (is_object($debug))
-				$debug->add_trace('Empty array element found',false);
+				$debug->addMessage('Empty array element found',false);
 		}
 		if ($i != $array_count - 1) {
 			$string .= ',';
@@ -291,7 +291,7 @@ function format_tel($phone_number) {
 	global $debug;
 
 	if (!is_numeric($phone_number)) {
-		$debug->add_trace('Phone number display function given non-numeric value');
+		$debug->addMessage('Phone number display function given non-numeric value');
 		return $phone_number;
 	}
 
@@ -318,7 +318,7 @@ function format_tel($phone_number) {
 		case '###.###.####':
 			return substr($phone_number,0,3).'.'.substr($phone_number,3,3).'.'.substr($phone_number,6,4);
 		default:
-			$debug->add_trace('Invalid phone number format',true);
+			$debug->addMessage('Invalid phone number format',true);
 			return $phone_number;
 	}
 }

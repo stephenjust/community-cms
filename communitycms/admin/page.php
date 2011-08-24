@@ -252,7 +252,7 @@ if ($_GET['action'] == 'edit') {
 			ORDER BY `id` ASC';
 		$page_group_handle = $db->sql_query($page_group_query);
 		if ($db->error[$page_group_handle] === 1) {
-			$debug->add_trace('Failed to read page group table',true);
+			$debug->addMessage('Failed to read page group table',true);
 			$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
 		} else {
 			$page_group = '<select name="page_group">';
@@ -415,7 +415,7 @@ if ($acl->check_permission('page_create')) {
 		ORDER BY `id` ASC';
 	$page_group_handle = $db->sql_query($page_group_query);
 	if ($db->error[$page_group_handle] === 1) {
-		$debug->add_trace('Failed to read page group table',true);
+		$debug->addMessage('Failed to read page group table',true);
 		$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
 	} else {
 		$page_group = '<select name="page_group">';

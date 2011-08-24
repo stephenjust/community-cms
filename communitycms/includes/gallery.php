@@ -66,11 +66,11 @@ class gallery {
 			WHERE `id` = '.$this->id.' LIMIT 1';
 		$info_handle = $db->sql_query($info_query);
 		if ($db->error[$info_handle] === 1) {
-			$debug->add_trace('Failed to read from gallery table',true);
+			$debug->addMessage('Failed to read from gallery table',true);
 			return false;
 		}
 		if ($db->sql_num_rows($info_handle) != 1) {
-			$debug->add_trace('Gallery '.$this->id.' does not exist',true);
+			$debug->addMessage('Gallery '.$this->id.' does not exist',true);
 			return false;
 		}
 
@@ -117,7 +117,7 @@ function gallery_embed($id) {
 	global $debug;
 
 	if (!is_numeric($id)) {
-		$debug->add_trace('Gallery id is not numeric',true);
+		$debug->addMessage('Gallery id is not numeric',true);
 		return false;
 	}
 
@@ -172,7 +172,7 @@ function gallery_images($directory) {
 			`file` = \''.$gallery_files[$i].'\' LIMIT 1';
 		$info_handle = $db->sql_query($info_query);
 		if ($db->sql_num_rows($info_handle) == 0) {
-			$debug->add_trace('No image details set for '.$directory.'/'.$gallery_files[$i],false);
+			$debug->addMessage('No image details set for '.$directory.'/'.$gallery_files[$i]);
 			$image_files[$j]['caption'] = NULL;
 			$image_files[$j]['file_id'] = NULL;
 		} else {

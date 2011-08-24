@@ -35,7 +35,7 @@ switch ($_GET['action']) {
 		// Save location
 		if (get_config('calendar_save_locations') == 1) {
 			if (!isset($location) || strlen($location) < 2) {
-				$debug->add_trace('No location given',false);
+				$debug->addMessage('No location given',false);
 			} else {
 				$check_dupe_query = 'SELECT `value` FROM `'.LOCATION_TABLE.'`
 					WHERE `value` = \''.$location.'\'';

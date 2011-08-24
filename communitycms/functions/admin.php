@@ -86,19 +86,19 @@ function create_table($columns, $values) {
 
 	// Validate input
 	if (!is_array($columns)) {
-		$debug->add_trace('Column list must be an array',true);
+		$debug->addMessage('Column list must be an array',true);
 		return NULL;
 	}
 	if (!is_array($values)) {
-		$debug->add_trace('Values must be stored in an array',true);
+		$debug->addMessage('Values must be stored in an array',true);
 		return NULL;
 	}
 	for ($i = 0; $i < count($values); $i++) {
 		if (!is_array($values[$i])) {
-			$debug->add_trace('List of values is not a 2D array',true);
+			$debug->addMessage('List of values is not a 2D array',true);
 		}
 		if (count($values[$i]) != count($columns)) {
-			$debug->add_trace('Number of values and mumbe of columns are not equal',true);
+			$debug->addMessage('Number of values and mumbe of columns are not equal',true);
 			print_r($columns);
 			print_r($values);
 			return NULL;

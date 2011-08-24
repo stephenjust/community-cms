@@ -30,7 +30,7 @@ class editbar {
 
 		if (!$acl->check_permission('show_editbar')) {
 			$this->visible = false;
-			$debug->add_trace('Not displaying edit bar because the user lacks permissions to see it',false);
+			$debug->addMessage('Not displaying edit bar because the user lacks permissions to see it',false);
 		}
 	}
 

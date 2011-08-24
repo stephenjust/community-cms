@@ -96,7 +96,7 @@ if ($page_id == NULL && $page_text_id != NULL) {
 	Page::set_page($page_id);
 }
 if (file_exists('./install')) {
-	$debug->add_trace('The ./install directory still exists',true);
+	$debug->addMessage('The ./install directory still exists',true);
 }
 
 // Display the page.

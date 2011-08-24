@@ -114,7 +114,7 @@ class Page {
 				switch ($reference) {
 					default:
 						// Error case
-						$debug->add_trace('Unknown special page type',true);
+						$debug->addMessage('Unknown special page type',true);
 						Page::$exists = false;
 						Page::get_page_content();
 						return false;
@@ -152,7 +152,7 @@ class Page {
 
 		// Article Page
 		if (isset($_GET['showarticle'])) {
-			$debug->add_trace('Loading single article only',false);
+			$debug->addMessage('Loading single article only',false);
 			Page::$id = 0;
 			Page::$text_id = NULL;
 			Page::$showtitle = false;
@@ -172,10 +172,10 @@ class Page {
 
 		// Get either the page ID or text ID for use in the section below
 		if (Page::$id > 0 && strlen(Page::$text_id) == 0) {
-			$debug->add_trace('Using numeric ID to get page information',false);
+			$debug->addMessage('Using numeric ID to get page information',false);
 			$page_query_id = '`page`.`id` = '.Page::$id;
 		} elseif (strlen(Page::$text_id) > 0) {
-			$debug->add_trace('Using text ID to get page information',false);
+			$debug->addMessage('Using text ID to get page information',false);
 			$page_query_id = '`page`.`text_id` = \''.Page::$text_id.'\'';
 		} else {
 			return;
@@ -190,12 +190,12 @@ class Page {
 		$page_handle = $db->sql_query($page_query);
 		if ($db->error[$page_handle] == 1) {
 			header("HTTP/1.0 404 Not Found");
-			$debug->add_trace('Error looking up page information',true);
+			$debug->addMessage('Error looking up page information',true);
 			return;
 		}
 		if ($db->sql_num_rows($page_handle) != 1) {
 			header("HTTP/1.0 404 Not Found");
-			$debug->add_trace('Page is not listed in database',true);
+			$debug->addMessage('Page is not listed in database',true);
 			return;
 		}
 		$page = $db->sql_fetch_assoc($page_handle);
@@ -233,7 +233,7 @@ class Page {
 				header("HTTP/1.0 404 Not Found");
 				Page::$exists = false;
 				Page::$notification = '<strong>Error: </strong>System file not found.<br />';
-				$debug->add_trace('Including '.Page::$type.' returned false',true);
+				$debug->addMessage('Including '.Page::$type.' returned false',true);
 			}
 		}
 		return;
@@ -257,7 +257,7 @@ class Page {
 			if(!Page::$content) {
 				Page::$exists = false;
 				Page::$notification = '<strong>Error: </strong>System file not found.<br />';
-				$debug->add_trace('Including '.Page::$type.' returned false',true);
+				$debug->addMessage('Including '.Page::$type.' returned false',true);
 			}
 		}
 	}

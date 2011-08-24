@@ -47,7 +47,7 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	 * 6 - Query failed
 	 */
 	if (!$acl->check_permission('date_create')) {
-		$debug->add_trace('Insufficient permissions',true);
+		$debug->addMessage('Insufficient permissions',true);
 		return 2;
 	}
 
@@ -63,7 +63,7 @@ function event_create($title,$description,$author,$start_time,$end_time,
 		$date = date('d/m/Y');
 	}
 	if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#',$date)) {
-		$debug->add_trace('Invalid date format',true);
+		$debug->addMessage('Invalid date format',true);
 		return 3;
 	}
 	$event_date_parts = explode('/',$date);
@@ -72,7 +72,7 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	$day = $event_date_parts[1];
 
 	if ($start_time == "" || $end_time == "" || $year == "" || $title == "") {
-		$debug->add_trace('One or more fields was not filled out',true);
+		$debug->addMessage('One or more fields was not filled out',true);
 		return 4;
 	}
 	$stime = explode('-',$start_time);
@@ -80,7 +80,7 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	$start_time = parse_time($start_time);
 	$end_time = parse_time($end_time);
 	if (!$start_time || !$end_time || $start_time > $end_time) {
-		$debug->add_trace('Invalid event times',true);
+		$debug->addMessage('Invalid event times',true);
 		return 5;
 	}
 	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
@@ -115,11 +115,11 @@ function event_cat_create($label,$icon,$description = NULL) {
 
 	$label = addslashes($label);
 	if (strlen($label) < 1) {
-		$debug->add_trace('Category name is too short',true);
+		$debug->addMessage('Category name is too short',true);
 		return false;
 	}
 	if (strlen($icon) < 1) {
-		$debug->add_trace('Icon selection is invalid',true);
+		$debug->addMessage('Icon selection is invalid',true);
 		return false;
 	}
 	$query = 'INSERT INTO `'.CALENDAR_CATEGORY_TABLE.'`
@@ -128,7 +128,7 @@ function event_cat_create($label,$icon,$description = NULL) {
 		(\''.$label.'\',\''.$icon.'\')';
 	$handle = $db->sql_query($query);
 	if($db->error[$handle] === 1) {
-		$debug->add_trace('Failed to create category',true);
+		$debug->addMessage('Failed to create category',true);
 		return false;
 	}
 	$log->new_message('Created event category \''.stripslashes($label).'\'');
@@ -155,7 +155,7 @@ function location_add($location) {
 		return false;
 	}
 	if (strlen($location) < 2) {
-		$debug->add_trace('No location given',false);
+		$debug->addMessage('No location given',false);
 		return false;
 	}
 
@@ -163,18 +163,18 @@ function location_add($location) {
 		WHERE `value` = \''.$location.'\'';
 	$check_dupe_handle = $db->sql_query($check_dupe_query);
 	if ($db->error[$check_dupe_handle] === 1) {
-		$debug->add_trace('Failed to check for duplicate entries',true);
+		$debug->addMessage('Failed to check for duplicate entries',true);
 		return false;
 	}
 	if ($db->sql_num_rows($check_dupe_handle) != 0) {
-		$debug->add_trace('Location \''.$location.'\' already exists',false);
+		$debug->addMessage('Location \''.$location.'\' already exists',false);
 		return false;
 	}
 	$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
 		(`value`) VALUES (\''.addslashes($location).'\')';
 	$new_loc_handle = $db->sql_query($new_loc_query);
 	if ($db->error[$new_loc_handle] === 1) {
-		$debug->add_trace('Failed to create new location',true);
+		$debug->addMessage('Failed to create new location',true);
 		return false;
 	}
 	$log->new_message('Created new location \''.$location.'\'');
@@ -197,18 +197,18 @@ function event_cat_delete($id) {
 	global $log;
 	// Validate parameters
 	if (!is_numeric($id)) {
-		$debug->add_trace('Invalid ID given',true);
+		$debug->addMessage('Invalid ID given',true);
 		return false;
 	}
 
 	$check_if_last_query = 'SELECT * FROM `'.CALENDAR_CATEGORY_TABLE.'` LIMIT 2';
 	$check_if_last_handle = $db->sql_query($check_if_last_query);
 	if ($db->error[$check_if_last_handle] === 1) {
-		$debug->add_trace('Failed to check if you are trying to delete the last category',false);
+		$debug->addMessage('Failed to check if you are trying to delete the last category',false);
 		return false;
 	}
 	if ($db->sql_num_rows($check_if_last_handle) == 1) {
-		$debug->add_trace('Cannot delete last entry',true);
+		$debug->addMessage('Cannot delete last entry',true);
 		return false;
 	}
 
@@ -216,7 +216,7 @@ function event_cat_delete($id) {
 		WHERE `cat_id` = '.$id.' LIMIT 1';
 	$check_category_handle = $db->sql_query($check_category_query);
 	if ($db->error[$check_category_handle] === 1) {
-		$debug->add_trace('Failed to read category information. Does it exist?',false);
+		$debug->addMessage('Failed to read category information. Does it exist?',false);
 		return false;
 	}
 	if ($db->sql_num_rows($check_category_handle) == 1) {
@@ -224,7 +224,7 @@ function event_cat_delete($id) {
 			WHERE `cat_id` = '.$id;
 		$delete_category = $db->sql_query($delete_category_query);
 		if ($db->error[$delete_category] === 1) {
-			$debug->add_trace('Failed to perform delete operation',true);
+			$debug->addMessage('Failed to perform delete operation',true);
 			return false;
 		} else {
 			$check_category = $db->sql_fetch_assoc($check_category_handle);
@@ -252,7 +252,7 @@ function event_delete($id) {
 	global $log;
 	// Validate parameters
 	if (!is_numeric($id)) {
-		$debug->add_trace('Invalid ID given',true);
+		$debug->addMessage('Invalid ID given',true);
 		return false;
 	}
 
@@ -260,7 +260,7 @@ function event_delete($id) {
 		WHERE `id` = '.$id;
 	$read_date_info_handle = $db->sql_query($read_date_info_query);
 	if ($db->error[$read_date_info_handle] === 1) {
-		$debug->add_trace('Failed to read date information. Does it exist?',false);
+		$debug->addMessage('Failed to read date information. Does it exist?',false);
 		return false;
 	} else {
 		$del_query = 'DELETE FROM ' . CALENDAR_TABLE . '
@@ -293,7 +293,7 @@ function monthcal_get_date($day,$month,$year,$template) {
 	unset($dates_query);
 
 	if ($db->error[$dates_handle] === 1) {
-		$debug->add_trace('Failed to read date information',true);
+		$debug->addMessage('Failed to read date information',true);
 		return 'Error';
 	}
 	if ($db->sql_num_rows($dates_handle) > 0) {

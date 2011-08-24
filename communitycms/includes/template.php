@@ -26,7 +26,7 @@ class template {
 				WHERE id = '.get_config('site_template').' LIMIT 1';
 			$template_handle = $db->sql_query($template_query);
 			if ($db->sql_num_rows($template_handle) != 1) {
-				$debug->add_trace('Current template not found in database',true);
+				$debug->addMessage('Current template not found in database',true);
 				$this->path = 'default';
 			} else {
 				$template_result = $db->sql_fetch_assoc($template_handle);
@@ -121,7 +121,7 @@ class template {
 			$length = $end - $start - strlen($start_string);
 			return substr($this->template,$start + strlen($start_string),$length);
 		}
-		$debug->add_trace('Could not find start or end of range '.$field,true);
+		$debug->addMessage('Could not find start or end of range '.$field,true);
 		return false;
 	}
 
@@ -181,7 +181,7 @@ class template {
 
 		$content = $this->get_range($range);
 		if ($content === false) {
-			$debug->add_trace('Failed to get segment of template',true);
+			$debug->addMessage('Failed to get segment of template',true);
 			return false;
 		}
 		$return = new template;

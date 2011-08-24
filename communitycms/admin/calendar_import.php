@@ -104,7 +104,7 @@ while (isset($contents[0])) {
 			}
 			if ($db->sql_num_rows($check_handle) == 1) {
 				// This is a duplicate event
-				$debug->add_trace('Duplicate event \''.$summary.'\'',false);
+				$debug->addMessage('Duplicate event \''.$summary.'\'',false);
 				continue;
 			}
 		}

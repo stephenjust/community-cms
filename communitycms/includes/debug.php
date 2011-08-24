@@ -31,20 +31,21 @@ class Debug {
 	 * @param boolean $error True if this is an error trace
 	 * @return boolean Success
 	 */
-	public function add_trace($message,$error,$function_name = NULL) {
-		// Prevent infinite loops
+	public function addMessage($message,$error = false) {
+		// Prevent infinite loops of message adding
 		if (count(Debug::$error_count) > 100) {
 			return false;
 		}
 		// Check variables
 		if (!is_bool($error)) {
-			$this->add_trace('Malformed success indicator',true);
+			$this->addMessage('Malformed success indicator',true);
 			return false;
 		}
 		if (!is_string($message)) {
-			$this->add_trace('Malformed debug message',true);
+			$this->addMessage('Malformed debug message',true);
 			return false;
 		}
+		// Get calling function name
 		$bt = debug_backtrace();
 		if (!isset($bt[1])) {
 			$function_name = $bt[0]['file'];

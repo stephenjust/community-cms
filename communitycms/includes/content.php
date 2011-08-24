@@ -39,11 +39,11 @@ class content {
 			WHERE `content_id` = '.$this->content_id.' LIMIT 1';
 		$content_info_handle = $db->sql_query($content_info_query);
 		if ($db->error[$content_info_handle] === 1) {
-			$debug->add_trace('Failed to read from database',true);
+			$debug->addMessage('Failed to read from database',true);
 			return false;
 		}
 		if ($db->sql_num_rows($content_info_handle) === 0) {
-			$debug->add_trace('Content not found',true);
+			$debug->addMessage('Content not found',true);
 			return false;
 		}
 		$content_info = $db->sql_fetch_assoc($content_info_handle);

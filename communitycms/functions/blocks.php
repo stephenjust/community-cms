@@ -106,7 +106,7 @@ function block_edit_form($type,$vars = array()) {
 
 	$return = NULL;
 	if (!is_array($vars)) {
-		$debug->add_trace('Invalid set of variables',true);
+		$debug->addMessage('Invalid set of variables',true);
 		return false;
 	}
 	switch ($type) {
@@ -126,7 +126,7 @@ function block_edit_form($type,$vars = array()) {
 				ORDER BY `news`.`page` ASC, `news`.`name` ASC';
 			$news_handle = $db->sql_query($news_query);
 			if ($db->error[$news_handle] === 1) {
-				$debug->add_trace('Failed to read news articles',true);
+				$debug->addMessage('Failed to read news articles',true);
 				return false;
 			}
 			$num_articles = $db->sql_num_rows($news_handle);
@@ -170,7 +170,7 @@ function block_edit_form($type,$vars = array()) {
 				ORDER BY `question` ASC';
 			$poll_handle = $db->sql_query($poll_query);
 			if ($db->error[$poll_handle] === 1) {
-				$debug->add_trace('Failed to read poll table');
+				$debug->addMessage('Failed to read poll table');
 				return false;
 			}
 			$poll_count = $db->sql_num_rows($poll_handle);
