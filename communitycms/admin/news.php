@@ -164,7 +164,7 @@ switch ($_GET['action']) {
 			unset($page_title_handle);
 			unset($page_title_);
 			$content .= 'Successfully added article. <br />';
-			$log->new_message('Article \''.stripslashes($title).'\' added to \''.$page_title.'\'');
+			Log::new_message('Article \''.stripslashes($title).'\' added to \''.$page_title.'\'');
 		}
 		break;
 
@@ -285,7 +285,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Successfully edited article. <br />';
-		$log->new_message('Edited news article \''.$name.'\'');
+		Log::new_message('Edited news article \''.$name.'\'');
 		break;
 }
 

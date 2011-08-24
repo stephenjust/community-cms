@@ -56,7 +56,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Successfully created block.<br />'."\n";
-		$log->new_message('Created block \''.$type.' ('.$attributes_final.')\'');
+		Log::new_message('Created block \''.$type.' ('.$attributes_final.')\'');
 		unset($type);
 		break;
 
@@ -126,7 +126,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Successfully edited block.<br />'."\n";
-		$log->new_message('Edited block \''.$_POST['id'].' ('.$attributes_final.')\'');
+		Log::new_message('Edited block \''.$_POST['id'].' ('.$attributes_final.')\'');
 		break;
 }
 

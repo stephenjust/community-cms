@@ -62,7 +62,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Deleted location.<br />'."\n";
-		$log->new_message('Deleted location');
+		Log::new_message('Deleted location');
 		break;
 }
 

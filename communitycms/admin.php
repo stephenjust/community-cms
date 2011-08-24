@@ -64,7 +64,6 @@ function display_admin() {
 	global $db;
 	global $acl;
 	global $module;
-	global $log;
 
 	$template_page = new template;
 	$template_page->load_admin_file();

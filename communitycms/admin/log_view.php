@@ -25,7 +25,7 @@ switch ($_GET['action']) {
 			$content .= '<span class="errormessage">You are not authorized to clear the log.</span><br />'."\n";
 			break;
 		}
-		if ($log->clear()) {
+		if (Log::clear()) {
 			$content .= 'Cleared log messages.<br />'."\n";
 		} else {
 			$content .= '<span class="errormessage">Failed to clear log messages.</span><br />'."\n";
@@ -46,7 +46,7 @@ if ($view_all == true) {
 } else {
 	$limit = 50;
 }
-$messages = $log->get_last_message($limit);
+$messages = Log::get_last_message($limit);
 if (!$messages) {
 	$tab_content['view'] = '<span class="errormessage">Failed to read log messages.</span><br />'."\n";
 }

@@ -17,7 +17,6 @@ if (@SECURITY != 1) {
  * @global acl $acl
  * @global db $db
  * @global Debug $debug
- * @global Log $log
  * @param string $title
  * @param string $description
  * @param string $author
@@ -35,7 +34,6 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	/*
 	 * Return codes:
@@ -93,7 +91,7 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	if ($db->error[$create_date] === 1) {
 		return 6;
 	}
-	$log->new_message('New date entry on '.$day.'/'.$month.'/'
+	Log::new_message('New date entry on '.$day.'/'.$month.'/'
 		.$year.' \''.stripslashes($title).'\'');
 	return 1;
 }
@@ -102,7 +100,6 @@ function event_create($title,$description,$author,$start_time,$end_time,
  * Create a calendar event category
  * @global db $db
  * @global Debug $debug
- * @global Log $log
  * @param string $label Name of category
  * @param string $icon Name of PNG icon file (icon-________.png)
  * @param string $description Unused currently
@@ -111,7 +108,6 @@ function event_create($title,$description,$author,$start_time,$end_time,
 function event_cat_create($label,$icon,$description = NULL) {
 	global $db;
 	global $debug;
-	global $log;
 
 	$label = addslashes($label);
 	if (strlen($label) < 1) {
@@ -131,7 +127,7 @@ function event_cat_create($label,$icon,$description = NULL) {
 		$debug->addMessage('Failed to create category',true);
 		return false;
 	}
-	$log->new_message('Created event category \''.stripslashes($label).'\'');
+	Log::new_message('Created event category \''.stripslashes($label).'\'');
 	return true;
 }
 
@@ -140,7 +136,6 @@ function event_cat_create($label,$icon,$description = NULL) {
  * @global acl $acl
  * @global db $db
  * @global Debug $debug
- * @global Log $log
  * @param string $location
  * @return boolean Success
  */
@@ -148,7 +143,6 @@ function location_add($location) {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	// Check if location saving is disabled
 	if (get_config('calendar_save_locations') != 1) {
@@ -177,7 +171,7 @@ function location_add($location) {
 		$debug->addMessage('Failed to create new location',true);
 		return false;
 	}
-	$log->new_message('Created new location \''.$location.'\'');
+	Log::new_message('Created new location \''.$location.'\'');
 	return true;
 }
 
@@ -187,14 +181,12 @@ function location_add($location) {
  * Delete a calendar category entry
  * @global db $db
  * @global Debug $debug
- * @global log $log
  * @param integer $id
  * @return boolean
  */
 function event_cat_delete($id) {
 	global $db;
 	global $debug;
-	global $log;
 	// Validate parameters
 	if (!is_numeric($id)) {
 		$debug->addMessage('Invalid ID given',true);
@@ -228,7 +220,7 @@ function event_cat_delete($id) {
 			return false;
 		} else {
 			$check_category = $db->sql_fetch_assoc($check_category_handle);
-			$log->new_message('Deleted category \''.$check_category['label'].'\'');
+			Log::new_message('Deleted category \''.$check_category['label'].'\'');
 			return true;
 		}
 	} else {
@@ -242,14 +234,12 @@ function event_cat_delete($id) {
  * Delete a calendar event entry
  * @global db $db
  * @global Debug $debug
- * @global log $log
  * @param integer $id
  * @return boolean
  */
 function event_delete($id) {
 	global $db;
 	global $debug;
-	global $log;
 	// Validate parameters
 	if (!is_numeric($id)) {
 		$debug->addMessage('Invalid ID given',true);
@@ -270,7 +260,7 @@ function event_delete($id) {
 		if ($db->error[$del_handle] === 1) {
 			return false;
 		} else {
-			$log->new_message('Deleted calendar date \''.$read_date_info['header'].'\'');
+			Log::new_message('Deleted calendar date \''.$read_date_info['header'].'\'');
 			return true;
 		}
 	}

@@ -37,7 +37,6 @@ function initialize($mode = NULL) {
 	global $db;
 	global $debug;
 	global $acl;
-	global $log;
 	global $user;
 
 	require_once(ROOT . 'includes/debug.php');
@@ -53,8 +52,7 @@ function initialize($mode = NULL) {
 	require_once(ROOT . 'includes/acl/acl_functions.php');
 	$acl = new acl;
 
-	require_once(ROOT . 'includes/log_class.php');
-	$log = new Log;
+	require_once(ROOT . 'includes/Log.class.php');
 
 	// Don't do this when installing - we have no DB version set yet
 	if ($mode != 'install') {

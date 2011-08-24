@@ -61,7 +61,6 @@ class Gallery {
 	 * Class constructor, and if passed ID is false, create a new gallery with
 	 * the given parameters
 	 * @global db $db
-	 * @global Log $log
 	 * @param integer $id Gallery ID or false
 	 * @param string $title
 	 * @param string $caption
@@ -69,7 +68,6 @@ class Gallery {
 	 */
 	function __construct($id, $title = NULL, $caption = NULL, $image_dir = NULL) {
 		global $db;
-		global $log;
 
 		if ($id === false) {
 			// Creating a new gallery
@@ -96,7 +94,7 @@ class Gallery {
 			if (!file_exists(ROOT.'files/'.$image_dir.'/thumbs')) {
 				mkdir(ROOT.'files/'.$image_dir.'/thumbs');
 			}
-			$log->new_message("Created gallery '$title'");
+			Log::new_message("Created gallery '$title'");
 		}
 
 		if (!is_numeric($id))
@@ -271,11 +269,9 @@ class Gallery {
 	 * @param string $caption New image caption
 	 * @param string $file_name Image file name
 	 * @global db $db
-	 * @global Log $log
 	 */
 	public function setImageCaption($image_id,$caption,$file_name) {
 		global $db;
-		global $log;
 
 		if (!is_numeric($image_id) && $image_id !== false)
 			throw new GalleryException('Invalid image ID.');
@@ -300,7 +296,7 @@ class Gallery {
 		if ($db->error[$handle] === 1)
 			throw new GalleryException('Failed to set image caption.');
 
-		$log->new_message('Changed image caption for \''.$file_name.'\'');
+		Log::new_message('Changed image caption for \''.$file_name.'\'');
 	}
 	
 	public function deleteImageCaption($image_id) {
@@ -317,8 +313,6 @@ class Gallery {
 	}
 	
 	public function deleteImage($image) {
-		global $log;
-
 		// Remove caption
 		$this->deleteImageCaption($this->getImageID($image));
 
@@ -334,17 +328,15 @@ class Gallery {
 			unlink($thumb_dir.$image);
 		}
 
-		$log->new_message('Deleted image from gallery \''.$image.'\'');
+		Log::new_message('Deleted image from gallery \''.$image.'\'');
 	}
 	
 	/**
 	 * Deletes the current photo gallery
 	 * @global db $db
-	 * @global log $log
 	 */
 	public function delete() {
 		global $db;
-		global $log;
 
 		$id = $this->id;
 
@@ -354,7 +346,7 @@ class Gallery {
 		$handle = $db->sql_query($query);
 		if ($db->error[$handle] === 1)
 			throw new GalleryException('Failed to delete gallery.');
-		$log->new_message('Deleted photo gallery \''.$this->title.'\' ('.$this->id.')');
+		Log::new_message('Deleted photo gallery \''.$this->title.'\' ('.$this->id.')');
 	}
 	
 	function __toString() {

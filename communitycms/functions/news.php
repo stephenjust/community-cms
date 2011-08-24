@@ -15,7 +15,6 @@ if (@SECURITY != 1) {
  * @global object $acl
  * @global db $db
  * @global Debug $debug
- * @global log $log
  * @param mixed $article
  * @return boolean
  */
@@ -23,7 +22,6 @@ function delete_article($article) {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	if (!$acl->check_permission('news_delete')) {
 		return false;
@@ -69,7 +67,7 @@ function delete_article($article) {
 		if ($db->error[$delete] === 1) {
 			return false;
 		} else {
-			$log->new_message('Deleted news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
+			Log::new_message('Deleted news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
 		}
 
 		unset($delete_query);
@@ -87,7 +85,6 @@ function delete_article($article) {
 function move_article($article,$new_location) {
 	global $db;
 	global $debug;
-	global $log;
 
 	$id = array();
 	if (is_numeric($article)) {
@@ -134,7 +131,7 @@ function move_article($article,$new_location) {
 		if ($db->error[$move] === 1) {
 			return false;
 		} else {
-			$log->new_message('Moved news article \''.stripslashes($info['name']).'\'');
+			Log::new_message('Moved news article \''.stripslashes($info['name']).'\'');
 		}
 
 		unset($move_query);
@@ -152,7 +149,6 @@ function move_article($article,$new_location) {
 function copy_article($article,$new_location) {
 	global $db;
 	global $debug;
-	global $log;
 
 	$id = array();
 	if (is_numeric($article)) {
@@ -200,7 +196,7 @@ function copy_article($article,$new_location) {
 		if ($db->error[$move] === 1) {
 			return false;
 		} else {
-			$log->new_message('Copied news article \''.stripslashes($info['name']).'\'');
+			Log::new_message('Copied news article \''.stripslashes($info['name']).'\'');
 		}
 
 		unset($move_query);
@@ -244,7 +240,6 @@ function news_publish($article_id,$publish = true) {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	// Validate parameters
 	if (!is_numeric($article_id)) {
@@ -298,9 +293,9 @@ function news_publish($article_id,$publish = true) {
 		return false;
 	}
 	if ($publish === true) {
-		$log->new_message('Published article \''.$info['name'].'\'');
+		Log::new_message('Published article \''.$info['name'].'\'');
 	} else {
-		$log->new_message('Unpublished article \''.$info['name'].'\'');
+		Log::new_message('Unpublished article \''.$info['name'].'\'');
 	}
 	return true;
 }

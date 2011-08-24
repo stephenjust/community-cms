@@ -51,7 +51,7 @@ switch ($_GET['action']) {
 						break;
 					}
 					$content .= 'Successfully created location.<br />'."\n";
-					$log->new_message('Created new location');
+					Log::new_message('Created new location');
 				}
 			}
 		}
@@ -101,7 +101,7 @@ switch ($_GET['action']) {
 			$content = 'Failed to edit date information.<br />';
 		} else {
 			$content = 'Successfully edited date information.<br />';
-			$log->new_message('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.stripslashes($title).'\'');
+			Log::new_message('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.stripslashes($title).'\'');
 			$content .= '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
 		}
 		break;

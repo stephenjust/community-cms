@@ -44,7 +44,7 @@ if ($_GET['action'] == 'edit') {
 		} else {
 			$page_name = $db->sql_fetch_assoc($page_name_handle);
 			$content .= 'Successfully edited page message.<br />';
-			$log->new_message('Edited page message for page \''.$page_name['title'].'\'');
+			Log::new_message('Edited page message for page \''.$page_name['title'].'\'');
 		}
 	} else {
 		$content .= 'Failed to find the page which you are trying to edit the message of.';

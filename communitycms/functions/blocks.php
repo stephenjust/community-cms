@@ -47,7 +47,6 @@ function get_block($block_id = NULL) {
  * @global object $acl Permission object
  * @global db $db Database connection object
  * @global Debug $debug Debug object
- * @global log $log Logger object
  * @param integer $id Block ID
  * @return string Response message
  */
@@ -55,7 +54,6 @@ function delete_block($id) {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 	$message = NULL;
 
 	if (!$acl->check_permission('block_delete')) {
@@ -82,7 +80,7 @@ function delete_block($id) {
 				$message .= 'Failed to delete block.<br />'."\n";
 			} else {
 				$block_exists = $db->sql_fetch_assoc($block_exists_handle);
-				$log->new_message('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
+				Log::new_message('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
 				$message .= 'Successfully deleted block.<br />'."\n";
 			}
 		} else {

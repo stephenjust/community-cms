@@ -60,7 +60,7 @@ switch ($_GET['action']) {
 			$i++;
 		}
 		$content .= 'Created poll.<br />'."\n";
-		$log->new_message('Created poll question \''.$question.'\'');
+		Log::new_message('Created poll question \''.$question.'\'');
 		break;
 }
 if ($_GET['action'] == 'del') {
@@ -84,7 +84,7 @@ if ($_GET['action'] == 'del') {
 			$delete_question_handle = $db->sql_query($delete_question_query);
 			if ($db->error[$delete_question_handle] === 0) {
 				$content .= 'Deleted '.$num_deleted_respones.' poll respones, '.$num_deleted_answers.' poll answer choices, and the poll question.<br />'.
-				$log->new_message('Deleted poll question, answers and responses for poll ID '.$_POST['question_id']);
+				Log::new_message('Deleted poll question, answers and responses for poll ID '.$_POST['question_id']);
 			}
 		}
 	}

@@ -174,14 +174,12 @@ function permission_list($permission_list,$group = 0,$form = false) {
  * @global acl $acl
  * @global db $db
  * @global Debug $debug
- * @global log $log
  * @return mixed Number of changes, or false on failure
  */
 function permission_list_refresh() {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	$num_changes = 0;
 	$regex_list = array();
@@ -213,7 +211,7 @@ function permission_list_refresh() {
 					if ($db->error[$update_handle] === 1) {
 						$debug->addMessage('Failed to update permission \''.$db_perm['shortname'].'\'',true);
 					} else {
-						$log->new_message('Modified permission key \''.$db_perm['longname'].'\'');
+						Log::new_message('Modified permission key \''.$db_perm['longname'].'\'');
 						$num_changes++;
 					}
 				}
@@ -231,7 +229,7 @@ function permission_list_refresh() {
 				if ($db->error[$create_handle] === 1) {
 					$debug->addMessage('Failed to create permission key \''.$permission_list['items'][$i]['name'].'\'',true);
 				} else {
-					$log->new_message('Created permission key \''.$permission_list['items'][$i]['title'].'\'');
+					Log::new_message('Created permission key \''.$permission_list['items'][$i]['title'].'\'');
 					$num_changes++;
 				}
 			}
@@ -260,7 +258,7 @@ function permission_list_refresh() {
 			if ($db->error[$del_handle] === 1) {
 				$debug->addMessage('Failed to delete key \''.$db_list['longname'].'\'',true);
 			} else {
-				$log->new_message('Deleted permission key \''.$db_list['longname'].'\'');
+				Log::new_message('Deleted permission key \''.$db_list['longname'].'\'');
 				$num_changes++;
 			}
 		}

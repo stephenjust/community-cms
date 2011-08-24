@@ -84,7 +84,6 @@ function page_check_unique_id($text_id) {
  * @global acl $acl
  * @global db $db
  * @global Debug $debug
- * @global log $log
  * @param string $text_id
  * @param string $title
  * @param string $meta_desc
@@ -99,7 +98,6 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	if (!$acl->check_permission('page_create')) {
 		return false;
@@ -158,7 +156,7 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
 	if ($db->error[$new_page] === 1) {
 		return false;
 	}
-	$log->new_message('New page \''.$title.'\'');
+	Log::new_message('New page \''.$title.'\'');
 	return true;
 }
 
@@ -171,7 +169,6 @@ function page_add_link() {
  * @global acl $acl Permission object
  * @global db $db Database object
  * @global Debug $debug Debugging object
- * @global log $log Logger object
  * @param string $group_name Name of new group
  * @return boolean Success
  */
@@ -179,7 +176,6 @@ function page_add_group($group_name) {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	if (!$acl->check_permission('page_group_create')) {
 		return false;
@@ -204,7 +200,7 @@ function page_add_group($group_name) {
 		$debug->addMessage('Failed to create new permission value',true);
 		return false;
 	}
-	$log->new_message('Created page group \''.stripslashes($group_name).'\'');
+	Log::new_message('Created page group \''.stripslashes($group_name).'\'');
 	return true;
 }
 
@@ -213,7 +209,6 @@ function page_add_group($group_name) {
  * @global object $acl Permissions object
  * @global db $db Database connection object
  * @global Debug $debug Debug object
- * @global Log $log Logger object
  * @param int $id ID of page to delete
  * @return boolean Success
  */
@@ -221,7 +216,6 @@ function page_delete($id) {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 	// Check for permission to execute
 	if (!$acl->check_permission('page_delete')) {
 		$debug->addMessage('Lacking permission to remove pages',true);
@@ -253,7 +247,7 @@ function page_delete($id) {
 		$debug->addMessage('Delete query did not delete any entries',true);
 		return false;
 	}
-	$log->new_message('Deleted page \''.$page_info['title'].'\'');
+	Log::new_message('Deleted page \''.$page_info['title'].'\'');
 	return true;
 }
 
@@ -262,7 +256,6 @@ function page_delete($id) {
  * @global acl $acl
  * @global db $db
  * @global Debug $debug
- * @global log $log
  * @param integer $group_id ID of group to delete
  * @return mixed Boolean for success, integer error codes for more detailed error messages
  */
@@ -270,7 +263,6 @@ function page_delete_group($group_id) {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	if (!is_numeric($group_id)) {
 		$debug->addMessage('No ID provided',true);
@@ -326,7 +318,7 @@ function page_delete_group($group_id) {
 	if ($db->error[$del_group_handle] === 1) {
 		return false;
 	}
-	$log->new_message('Deleted page group');
+	Log::new_message('Deleted page group');
 	return true;
 }
 
@@ -587,7 +579,6 @@ function page_move_down($id) {
  * @global object $acl Permission object
  * @global db $db Database connection object
  * @global Debug $debug Debugger object
- * @global Log $log Logging object
  * @param integer $id Page ID to set as the default page
  * @return boolean Success
  */
@@ -595,7 +586,6 @@ function page_set_home($id) {
 	global $acl;
 	global $db;
 	global $debug;
-	global $log;
 
 	if (!$acl->check_permission('page_set_home')) {
 		$debug->addMessage('Need permission \'page_set_home\' to perform this action',true);
@@ -625,7 +615,7 @@ function page_set_home($id) {
 		return false;
 	}
 	$check_page = $db->sql_fetch_assoc($check_handle);
-	$log->new_message('Set home page to \''.$check_page['title'].'\'');
+	Log::new_message('Set home page to \''.$check_page['title'].'\'');
 	return true;
 }
 

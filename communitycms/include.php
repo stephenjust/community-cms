@@ -24,7 +24,7 @@ require(ROOT . 'functions/article.php');
 require(ROOT . 'includes/page.php');
 require(ROOT . 'includes/page_class.php');
 require(ROOT . 'includes/Gallery.class.php');
-require(ROOT . 'includes/log_class.php');
+require(ROOT . 'includes/Log.class.php');
 require(ROOT . 'includes/editbar_class.php');
 if(!include_once(ROOT.'classes.php')) {
     err_page(2001);
