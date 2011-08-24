@@ -15,7 +15,7 @@ if (@SECURITY != 1) {
  * Photo gallery class
  * @package CommunityCMS.main
  */
-class gallery {
+class Gallery {
 	/**
 	 * Gallery ID
 	 * @var integer
@@ -30,7 +30,7 @@ class gallery {
 	 * Gallery engine
 	 * @var string
 	 */
-	private $engine;
+	private static $engine;
 	/**
 	 * Gallery information file
 	 * @var string
@@ -39,7 +39,7 @@ class gallery {
 
 	function __construct($id) {
 		$this->id = $id;
-		$this->engine = get_config('gallery_app');
+		Gallery::$engine = get_config('gallery_app');
 		if ($this->engine === NULL) {
 			$this->exists = false;
 			return;
@@ -80,7 +80,7 @@ class gallery {
 	}
 
 	function __toString() {
-		switch ($this->engine) {
+		switch (Gallery::$engine) {
 			case 'built-in':
 				return '<div id="image_gallery-'.$this->id.'" class="image_gallery">
 					<script type="text/javascript">gallery_load(\''.$this->id.'\');</script>
@@ -121,7 +121,7 @@ function gallery_embed($id) {
 		return false;
 	}
 
-	$gallery = new gallery($id);
+	$gallery = new Gallery($id);
 	return $gallery;
 }
 
