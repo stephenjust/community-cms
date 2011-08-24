@@ -147,7 +147,13 @@ class template {
 				} else {
 					return false;
 				}
-				eval('$newvalue = '.$replacement);
+				try {
+					eval('$newvalue = '.$replacement);
+				}
+				catch (Exception $e)
+				{
+					$newvalue = $e->getMessage();
+				}
 				$this->template = str_replace($match[$i],$newvalue,$this->template);
 			}
 		}
@@ -200,7 +206,7 @@ class template {
 				$this->replace_variable('article_url_onpage','article_url_onpage($a);');
 				$this->replace_variable('article_url_ownpage','article_url_ownpage($a);');
 				$this->replace_variable('article_url_nopage','article_url_nopage($a);');
-				$this->replace_variable('gallery_embed','gallery_embed($a);');
+				$this->replace_variable('gallery_embed','(string) new Gallery($a);');
 			}
 		}
 		$return = (string)$this->template;

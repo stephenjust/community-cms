@@ -343,28 +343,4 @@ class Gallery {
 		}
 	}
 }
-
-/**
- * Embed a gallery in the page
- * @global Debug $debug Debug object
- * @param integer $id
- * @return mixed Object if succeeds, boolean if failed
- */
-function gallery_embed($id) {
-	global $debug;
-
-	if (!is_numeric($id)) {
-		$debug->addMessage('Gallery id is not numeric',true);
-		return false;
-	}
-
-	try {
-		$gallery = new Gallery($id);
-	}
-	catch (GalleryException $e)
-	{
-		$gallery = $e->getMessage();
-	}
-	return $gallery;
-}
 ?>
