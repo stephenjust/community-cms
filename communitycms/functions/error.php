@@ -91,5 +91,6 @@ function err_page($code = 0) {
 }
 
 // Add special exception classes
+class GalleryException extends Exception {}
 class PageException extends Exception {}
 ?>

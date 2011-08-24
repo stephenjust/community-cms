@@ -28,16 +28,20 @@ require(ROOT.'include.php');
 
 initialize('ajax');
 
-$gallery_info = gallery_info($_GET['id']);
-if (!$gallery_info) {
+try {
+	$gallery = new Gallery((int) $_GET['id']);
+	$gallery_info = gallery_info((int) $_GET['id']);
+}
+catch (GalleryException $e)
+{
 	header("HTTP/1.0 404 Not Found");
 	exit;
 }
 
-switch (get_config('gallery_app')) {
+switch (Gallery::getEngine()) {
 	case 'built-in':
-		$gallery_images = gallery_images($gallery_info['image_dir']);
-		$gallery_nav = '<div class="gallery_title">'.$gallery_info['title'].'</div>
+		$gallery_images = $gallery->getImages();
+		$gallery_nav = '<div class="gallery_title">'.$gallery->getTitle().'</div>
 			<div class="gallery_nav">'."\n";
 		for ($i = 0; $i < count($gallery_images); $i++) {
 			$gallery_nav .= <<< END
@@ -74,7 +78,7 @@ END;
 
 >
 END;
-		$gallery_images = gallery_images($gallery_info['image_dir']);
+		$gallery_images = $gallery->getImages();
 		for ($i = 0; $i < count($gallery_images); $i++) {
 			echo <<< END
 <image imageURL="files/{$gallery_info['image_dir']}/{$gallery_images[$i]['file']}"

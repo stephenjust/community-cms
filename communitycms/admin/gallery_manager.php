@@ -20,60 +20,6 @@ if (!$acl->check_permission('adm_gallery_manager')) {
 
 // ----------------------------------------------------------------------------
 
-/**
- * delete_gallery - Deletes a photo gallery
- * @global db $db
- * @global Debug $debug
- * @global log $log
- * @param integer $gallery
- * @return boolean
- */
-function delete_gallery($gallery) {
-	global $db;
-	global $debug;
-	global $log;
-
-	if (!is_numeric($gallery)) {
-		return false;
-	}
-	$id = (int)$gallery;
-	unset($gallery);
-
-	// Read article information for log
-	$info_query = 'SELECT * FROM
-		`' . GALLERY_TABLE . '` WHERE
-		`id` = '.$id.' LIMIT 1';
-	$info_handle = $db->sql_query($info_query);
-	if ($db->error[$info_handle] === 1) {
-		$debug->addMessage('Query failed',true);
-		return false;
-	}
-	if ($db->sql_num_rows($info_handle) === 0) {
-		$debug->addMessage('Article not found',true);
-		return false;
-	}
-	$info = $db->sql_fetch_assoc($info_handle);
-
-	// Delete article
-	$delete_query = 'DELETE FROM `' . GALLERY_TABLE . '`
-		WHERE `id` = '.$id;
-	$delete = $db->sql_query($delete_query);
-	if ($db->error[$delete] === 1) {
-		return false;
-	} else {
-		$log->new_message('Deleted photo gallery \''.stripslashes($info['title']).'\' ('.$info['id'].')');
-	}
-
-	unset($delete_query);
-	unset($delete);
-	unset($info_query);
-	unset($info_handle);
-	unset($info);
-	return true;
-}
-
-// ----------------------------------------------------------------------------
-
 function gallery_upload_box($gallery_id,$gallery_dir) {
 	global $db;
 	global $debug;
@@ -100,27 +46,27 @@ function gallery_upload_box($gallery_id,$gallery_dir) {
 function gallery_photo_manager($gallery_id) {
 	global $debug;
 
-	$gallery_info = gallery_info($gallery_id);
-	if (!file_exists(ROOT.'files/'.$gallery_info['image_dir'])) {
+	$gallery = new Gallery($gallery_id);
+	if (!file_exists($gallery->getImageDir())) {
 		$debug->addMessage('Gallery folder does not exist',true);
 		return false;
 	}
-	if (!file_exists(ROOT.'files/'.$gallery_info['image_dir'].'/thumbs')) {
+	if (!file_exists($gallery->getImageDir().'/thumbs')) {
 		$debug->addMessage('Gallery thumbnail dir does not exist',true);
 		return false;
 	}
 
-	$gallery_images = gallery_images($gallery_info['image_dir']);
+	$gallery_images = $gallery->getImages();;
 
 	if (count($gallery_images) == 0) {
 		return 'There are currently no images in this gallery.';
 	}
 	$image_manager = '<table border="0px">';
-	$image_path = ROOT.'files/'.$gallery_info['image_dir'].'/';
+	$image_path = $gallery->getImageDir().'/';
 	$thumbs_path = $image_path.'thumbs/';
 	for ($i = 0; $i < count($gallery_images); $i++) {
 		$image_manager .= '<form method="post" action="?module=gallery_manager&amp;
-			action=edit&amp;id='.$gallery_info['id'].'&amp;edit=desc">
+			action=edit&amp;id='.$gallery->getID().'&amp;edit=desc">
 			<input type="hidden" name="file_id" value="'.$gallery_images[$i]['file_id'].'" />
 			<input type="hidden" name="file_name" value="'.$gallery_images[$i]['file'].'" />';
 		$image_manager .= '<tr><td style="vertical-align: middle;"><a href="'.$image_path.$gallery_images[$i]['file'].'">
@@ -128,7 +74,7 @@ function gallery_photo_manager($gallery_id) {
 			<td><textarea class="mceNoEditor mceSimple" name="desc">'.stripslashes($gallery_images[$i]['caption']).'</textarea></td>
 			<td style="vertical-align: middle;"><input type="submit" value="Save Description" /><br /></form></td>
 			<td style="vertical-align: middle;">
-			<form method="post" action="?module=gallery_manager&amp;action=edit&amp;id='.$gallery_info['id'].'&amp;edit=del">
+			<form method="post" action="?module=gallery_manager&amp;action=edit&amp;id='.$gallery->getID().'&amp;edit=del">
 			<input type="hidden" name="file_id" value="'.$gallery_images[$i]['file_id'].'" />
 			<input type="hidden" name="file_name" value="'.$gallery_images[$i]['file'].'" />
 			<input type="submit" value="Remove Image" />
@@ -240,60 +186,46 @@ switch ($_GET['action']) {
 			$content .= '<span class="errormessage">No gallery selected.</span><br />'."\n";
 			break;
 		}
-		if (!is_numeric($_POST['gallery'])) {
-			$content .= '<span class="errormessage">Invalidly formatted gallery ID.</span><br />'."\n";
-			break;
-		}
+		if (!isset($_GET['edit']))
+			$_GET['edit'] = NULL;
+
 		$gallery_id = (int)$_POST['gallery'];
 		unset($_POST['gallery']);
 
-		// Get gallery information
-		$gallery_info = gallery_info($gallery_id);
+		try {
+			// Get gallery information
+			$gallery = new Gallery($gallery_id);
+			
+			// Save image caption
+			if ($_GET['edit'] === 'desc') {
+				if (!isset($_POST['desc'])
+						|| !isset($_POST['file_name']))
+					throw new GalleryException('Unable to set image caption.');
+				$gallery->setImageCaption(
+						$gallery->getImageID($_POST['file_name']),
+						$_POST['desc'], $_POST['file_name']);
+				$content .= 'Successfully edited image caption.<br />'."\n";
+			} elseif ($_GET['edit'] === 'del') {
+				if (!isset($_POST['file_name']))
+					throw new GalleryException('Unable to delete image.');
 
-		// Save edits to image descriptions
-		if (isset($_GET['edit'])) {
-			if ($_GET['edit'] == 'desc' && isset($_POST['file_id']) && isset($_POST['file_name'])) {
-				if (gallery_image_caption_edit($gallery_id,
-						$_POST['file_id'], $_POST['file_name'], $_POST['desc'])) {
-					$content .= 'Successfully edited image caption.<br />'."\n";
-				} else {
-					$content .= '<span class="errormessage">Failed to edit image caption.</span><br />'."\n";
-				}
-			} elseif ($_GET['edit'] == 'del' && isset($_POST['file_id']) && isset($_POST['file_name'])) {
 				// Delete image caption if it exists
-				if ($_POST['file_id'] != '') {
-					$description_query = 'DELETE FROM `'.GALLERY_IMAGE_TABLE.'`
-						WHERE `id` = '.(int)$_POST['file_id'];
-					$description_handle = $db->sql_query($description_query);
-					if ($db->error[$description_handle] === 1) {
-						$content .= '<span class="errormessage">Failed to delete image caption.</span><br />'."\n";
-					} else {
-						$content .= 'Successfully deleted image caption.<br />'."\n";
-					}
-				}
-				// Delete image
-				$image_dir = ROOT.'files/'.$gallery_info['image_dir'].'/';
-				$thumb_dir = $image_dir.'thumbs/';
-				if (file_exists($image_dir.$_POST['file_name']) && file_exists($thumb_dir.$_POST['file_name'])) {
-					$del1 = unlink($image_dir.$_POST['file_name']);
-					$del2 = unlink($thumb_dir.$_POST['file_name']);
-					if ($del1 && $del2) {
-						$content .= 'Successfully deleted image.<br />'."\n";
-						$log->new_message('Deleted image from gallery \''.$_POST['file_name'].'\'');
-					} else {
-						$content .= '<span class="errormessage">Failed to delete image.</span><br />'."\n";
-					}
-				}
+				$gallery->deleteImage($_POST['file_name']);
+				$content .= 'Successfully deleted image.<br />'."\n";
 			}
 		}
+		catch (GalleryException $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
+		}
 
+		$gallery_info = gallery_info($gallery_id);
 		// Show gallery manager
-		$gallery_reference = '$GALLERY_EMBED-'.$gallery_info['id'].'$';
-		$tab_content['edit'] = '<span style="font-size: large; font-weight: bold;">'.$gallery_info['title'].'</span><br />'."\n";
+		$gallery_reference = '$GALLERY_EMBED-'.$gallery->getID().'$';
+		$tab_content['edit'] = '<span style="font-size: large; font-weight: bold;">'.$gallery->getTitle().'</span><br />'."\n";
 		$tab_content['edit'] .= 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
 		$tab_content['edit'] .= '<input type="text" value="'.$gallery_reference.'" /><br />'."\n";
-		$tab_content['edit'] .= gallery_photo_manager($gallery_info['id']);
-		$tab_content['edit'] .= gallery_upload_box($gallery_info['id'],$gallery_info['image_dir']);
+		$tab_content['edit'] .= gallery_photo_manager($gallery->getID());
+		$tab_content['edit'] .= gallery_upload_box($gallery->getID(),$gallery_info['image_dir']);
 		$tab_layout->add_tab('Edit Gallery',$tab_content['edit']);
 		break;
 
@@ -302,10 +234,14 @@ switch ($_GET['action']) {
 			$content .= 'No gallery selected.<br />'."\n";
 			break;
 		}
-		if (delete_gallery((int)$_GET['id'])) {
-			$content .= 'Successfully deleted gallery.'."\n";
-		} else {
-			$content .= 'Failed to delete gallery.<br />'."\n";
+		try {
+			$gallery = new Gallery($_GET['id']);
+			$gallery->delete();
+			unset($gallery);
+			$content .= 'Successfully deleted gallery.<br />'."\n";
+		}
+		catch (GalleryException $e) {
+			$content .= $e->getMessage();
 		}
 		break;
 
