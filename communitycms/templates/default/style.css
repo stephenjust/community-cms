@@ -670,6 +670,25 @@ p.no-spacing {
 	padding: 0px;
 }
 
+/* WIDGETS ----------------------------------------------------------------- */
+div.widget {
+	background: #FFFFFF;
+	border: 1px solid #000033;
+	margin: 2px 5px 20px 5px;
+}
+div.widget > div.widget-title {
+	border-bottom: 1px solid #000033;
+	color: #000033;
+	font-family: Cambria, serif;
+	font-size: 1.5em;
+	margin: 0px 5px 4px 5px;
+}
+div.widget > div.widget-content {
+	font-family: Calibri, sans-serif;
+	font-size: 1.0em;
+	margin: 0px 5px 3px 5px;
+}
+
 /* NEWS */
 div.news_item_container {
 	position: relative;

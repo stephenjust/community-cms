@@ -39,7 +39,7 @@ $content .= '</textarea></div>'."\n";
 // MIT-Style License
 // (for jQuery plugins)
 $content .= '<div class="license_header">MIT License</div>'."\n";
-$content .= '<div class="license_applicable">Applies to jQuery "multi-ddm", Autocomplete Plug-Ins</div>'."\n";
+$content .= '<div class="license_applicable">Applies to jQuery "multi-ddm", Autocomplete Plug-Ins, cycle plugin</div>'."\n";
 $content .= '<div class="license_body"><textarea>'."\n";
 $content .= file_get_contents(ROOT.'docs/license-mit.txt');
 $content .= '</textarea></div>'."\n";

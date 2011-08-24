@@ -19,6 +19,7 @@ if(!include_once(ROOT.'functions/main.php')) {
 require(ROOT . 'includes/constants.php');
 require(ROOT . 'includes/db/db.php');
 require(ROOT . 'includes/template.php');
+require(ROOT . 'includes/widget.class.php');
 require(ROOT . 'functions/article.php');
 require(ROOT . 'includes/page.php');
 require(ROOT . 'includes/page_class.php');
