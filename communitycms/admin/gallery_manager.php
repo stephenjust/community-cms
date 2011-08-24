@@ -99,31 +99,19 @@ if (get_config('gallery_app') == 'disabled' || get_config('gallery_app') == NULL
 // Process actions
 switch ($_GET['action']) {
 	case 'create':
-		$title = addslashes($_POST['title']);
-		$description = addslashes($_POST['description']);
-		$image_dir = replace_file_special_chars($_POST['image_dir']);
-		$create_query = 'INSERT INTO `'.GALLERY_TABLE.'` (`title`,`description`,`image_dir`)
-			VALUES (\''.$title.'\',\''.$description.'\',\''.$image_dir.'\')';
-		$create_handle = $db->sql_query($create_query);
-		if ($db->error[$create_handle] === 1) {
-			$content .= 'Failed to create gallery.<br />'."\n";
-			break;
-		} else {
-			if (!file_exists(ROOT.'files/'.$image_dir)) {
-				mkdir(ROOT.'files/'.$image_dir);
-			}
-			if (!file_exists(ROOT.'files/'.$image_dir.'/thumbs')) {
-				mkdir(ROOT.'files/'.$image_dir.'/thumbs');
-			}
+		$title = $_POST['title'];
+		$description = $_POST['description'];
+		$image_dir = $_POST['image_dir'];
+		try {
+			$gallery = new Gallery(false,$title,$description,$image_dir);
 			$content .= 'Successfully created gallery.<br />'."\n";
-			$log->new_message('Created gallery \''.$title.'\'');
+			$_GET['action'] = 'edit';
+			$_POST['gallery'] = $gallery->getID();
+			unset($gallery);
 		}
-		$gal_id_query = 'SELECT `id` FROM `'.GALLERY_TABLE.'`
-			WHERE `title` = \''.$title.'\'';
-		$gal_id_handle = $db->sql_query($gal_id_query);
-		$gal_id = $db->sql_fetch_assoc($gal_id_handle);
-		$_GET['id'] = $gal_id['id'];
-		$_GET['action'] = 'edit';
+		catch (GalleryException $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+		}
 
 	case 'edit':
 		// Set gallery id for future use

@@ -57,7 +57,48 @@ class Gallery {
 	 */
 	private $info_file;
 
-	function __construct($id) {
+	/**
+	 * Class constructor, and if passed ID is false, create a new gallery with
+	 * the given parameters
+	 * @global db $db
+	 * @global Log $log
+	 * @param integer $id Gallery ID or false
+	 * @param string $title
+	 * @param string $caption
+	 * @param string $image_dir 
+	 */
+	function __construct($id, $title = NULL, $caption = NULL, $image_dir = NULL) {
+		global $db;
+		global $log;
+
+		if ($id === false) {
+			// Creating a new gallery
+			$title = $db->sql_escape_string($title);
+			$caption = $db->sql_escape_string($caption);
+			$image_dir = $db->sql_escape_string(
+					replace_file_special_chars($image_dir));
+			if (!$title || !$caption || !$image_dir)
+				throw new GalleryException('You must fill out all of the fields to create an image gallery.');
+
+			$create_query = "INSERT INTO `".GALLERY_TABLE."`
+				(`title`,`description`,`image_dir`)
+				VALUES
+				('$title','$caption','$image_dir')";
+			$create_handle = $db->sql_query($create_query);
+			if ($db->error[$create_handle] === 1)
+				throw new GalleryException('Failed to create new gallery.');
+
+			$id = $db->sql_insert_id(GALLERY_TABLE,'id');
+			// Create gallery directories
+			if (!file_exists(ROOT.'files/'.$image_dir)) {
+				mkdir(ROOT.'files/'.$image_dir);
+			}
+			if (!file_exists(ROOT.'files/'.$image_dir.'/thumbs')) {
+				mkdir(ROOT.'files/'.$image_dir.'/thumbs');
+			}
+			$log->new_message("Created gallery '$title'");
+		}
+
 		if (!is_numeric($id))
 			throw new GalleryException('An invalid gallery ID number was provided.');
 		$this->id = (int) $id;
