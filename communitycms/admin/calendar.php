@@ -108,7 +108,7 @@ switch ($_GET['action']) {
 		if ($db->error[$delete_old_handle] === 1) {
 			$content .= 'Failed to delete old calendar entries.<br />'."\n";
 		} else {
-			Log::new_message('Deleted old calendar entries ('.$old_year.' and previous)');
+			Log::addMessage('Deleted old calendar entries ('.$old_year.' and previous)');
 			$content .= 'Successfully deleted old calendar entries.<br />'."\n";
 		}
 		break;
@@ -150,7 +150,7 @@ switch ($_GET['action']) {
 				set_config('calendar_default_location',$new_fields['default_location']))
 			{
 				$content .= 'Updated calendar settings.<br />'."\n";
-				Log::new_message('Updated calendar settings');
+				Log::addMessage('Updated calendar settings');
 			} else  {
 				$content .= 'Failed to save settings.<br />'."\n";
 			}
@@ -167,7 +167,7 @@ switch ($_GET['action']) {
 		if ($db->error[$new_src_handle] === 1) {
 			$content .= 'Failed to add calendar source.<br />'."\m";
 		} else {
-			Log::new_message('Added calendar source \''.stripslashes($desc).'\'');
+			Log::addMessage('Added calendar source \''.stripslashes($desc).'\'');
 			$content .= 'Added calendar source.<br />'."\n";
 		}
 		break;

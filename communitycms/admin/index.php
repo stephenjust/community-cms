@@ -19,7 +19,7 @@ if ($_GET['action'] == 'new_log') {
 	} else {
 		$log_message = strip_tags($_POST['message']);
 		if (strlen($log_message) > 5) {
-			Log::new_message($log_message);
+			Log::addMessage($log_message);
 		} else {
 			$content .= 'The log message you entered was too short.<br />';
 		}
@@ -31,7 +31,7 @@ if ($_GET['action'] == 'new_log') {
 $tab_layout = new tabs;
 $tab_content['activity'] = NULL;
 // Display log messages
-$messages = Log::get_last_message(5);
+$messages = Log::getLastMessages(5);
 if (!$messages) {
 	$tab_content['activity'] = '<span class="errormessage">Failed to read log messages.</span><br />'."\n";
 }

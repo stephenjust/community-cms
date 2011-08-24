@@ -179,7 +179,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 			@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
 			if (generate_thumbnail($target,$target,1,1,100,100)) {
 				$return = "The file " . $filename . " has been uploaded. ";
-				Log::new_message('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
+				Log::addMessage('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
 			} else {
 				$return = "<span class=\"errormessage\">Failed to generate thumbnail.</span><br />\n";
 			}
@@ -193,7 +193,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	// Move temporary file to its new location
 	@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
 	$return = "The file " . $filename . " has been uploaded. ";
-	Log::new_message('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
+	Log::addMessage('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
 	if ($thumb == true) {
 		if (generate_thumbnail($target,NULL,75,75,0,0)) {
 			$return .= 'Generated thumbnail. ';

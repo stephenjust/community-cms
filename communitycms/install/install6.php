@@ -73,7 +73,7 @@ if ($error == 0) {
 } else {
 	$content .= 'An error has occured.';
 }
-Log::new_message('Installed Community CMS',LOG_LEVEL_INSTALL);
+Log::addMessage('Installed Community CMS',LOG_LEVEL_INSTALL);
 
 clean_up();
 ?>

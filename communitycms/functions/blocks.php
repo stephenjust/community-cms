@@ -80,7 +80,7 @@ function delete_block($id) {
 				$message .= 'Failed to delete block.<br />'."\n";
 			} else {
 				$block_exists = $db->sql_fetch_assoc($block_exists_handle);
-				Log::new_message('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
+				Log::addMessage('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
 				$message .= 'Successfully deleted block.<br />'."\n";
 			}
 		} else {

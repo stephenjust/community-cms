@@ -211,7 +211,7 @@ function permission_list_refresh() {
 					if ($db->error[$update_handle] === 1) {
 						$debug->addMessage('Failed to update permission \''.$db_perm['shortname'].'\'',true);
 					} else {
-						Log::new_message('Modified permission key \''.$db_perm['longname'].'\'');
+						Log::addMessage('Modified permission key \''.$db_perm['longname'].'\'');
 						$num_changes++;
 					}
 				}
@@ -229,7 +229,7 @@ function permission_list_refresh() {
 				if ($db->error[$create_handle] === 1) {
 					$debug->addMessage('Failed to create permission key \''.$permission_list['items'][$i]['name'].'\'',true);
 				} else {
-					Log::new_message('Created permission key \''.$permission_list['items'][$i]['title'].'\'');
+					Log::addMessage('Created permission key \''.$permission_list['items'][$i]['title'].'\'');
 					$num_changes++;
 				}
 			}
@@ -258,7 +258,7 @@ function permission_list_refresh() {
 			if ($db->error[$del_handle] === 1) {
 				$debug->addMessage('Failed to delete key \''.$db_list['longname'].'\'',true);
 			} else {
-				Log::new_message('Deleted permission key \''.$db_list['longname'].'\'');
+				Log::addMessage('Deleted permission key \''.$db_list['longname'].'\'');
 				$num_changes++;
 			}
 		}

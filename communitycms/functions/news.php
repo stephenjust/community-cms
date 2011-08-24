@@ -67,7 +67,7 @@ function delete_article($article) {
 		if ($db->error[$delete] === 1) {
 			return false;
 		} else {
-			Log::new_message('Deleted news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
+			Log::addMessage('Deleted news article \''.stripslashes($info['name']).'\' ('.$info['id'].')');
 		}
 
 		unset($delete_query);
@@ -131,7 +131,7 @@ function move_article($article,$new_location) {
 		if ($db->error[$move] === 1) {
 			return false;
 		} else {
-			Log::new_message('Moved news article \''.stripslashes($info['name']).'\'');
+			Log::addMessage('Moved news article \''.stripslashes($info['name']).'\'');
 		}
 
 		unset($move_query);
@@ -196,7 +196,7 @@ function copy_article($article,$new_location) {
 		if ($db->error[$move] === 1) {
 			return false;
 		} else {
-			Log::new_message('Copied news article \''.stripslashes($info['name']).'\'');
+			Log::addMessage('Copied news article \''.stripslashes($info['name']).'\'');
 		}
 
 		unset($move_query);
@@ -293,9 +293,9 @@ function news_publish($article_id,$publish = true) {
 		return false;
 	}
 	if ($publish === true) {
-		Log::new_message('Published article \''.$info['name'].'\'');
+		Log::addMessage('Published article \''.$info['name'].'\'');
 	} else {
-		Log::new_message('Unpublished article \''.$info['name'].'\'');
+		Log::addMessage('Unpublished article \''.$info['name'].'\'');
 	}
 	return true;
 }

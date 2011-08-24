@@ -56,7 +56,7 @@ function delete_contact($id) {
 	if ($db->error[$delete_contact] === 1) {
 		return false;
 	}
-	Log::new_message('Deleted contact \''.stripslashes($contact_info['name']).'\'');
+	Log::addMessage('Deleted contact \''.stripslashes($contact_info['name']).'\'');
 	return true;
 }
 
@@ -126,7 +126,7 @@ function contact_add_to_list($contact_id,$list_id) {
 	if ($db->error[$insert_handle] === 1) {
 		return false;
 	}
-	Log::new_message('Added '.$check_contact['name'].' to contact list \''.$check_list['title'].'\'');
+	Log::addMessage('Added '.$check_contact['name'].' to contact list \''.$check_list['title'].'\'');
 	return true;
 }
 

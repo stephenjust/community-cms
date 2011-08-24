@@ -56,7 +56,7 @@ if ($_GET['action'] == 'new_link') {
 				$content .= 'Failed to create link to external page.<br />';
 			} else {
 				$content .= 'Successfully created link to external page.<br />'."\n";
-				Log::new_message('New menu link to external page \''.$_POST['title'].'\'');
+				Log::addMessage('New menu link to external page \''.$_POST['title'].'\'');
 			}
 		} else {
 			$content .= 'Failed to create link to external page. Invalid link name.<br />';
@@ -166,7 +166,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Updated page information.<br />'."\n";
-		Log::new_message('Updated information for page \''.stripslashes($title).'\'');
+		Log::addMessage('Updated information for page \''.stripslashes($title).'\'');
 		break;
 }
 

@@ -60,7 +60,7 @@ function delete_page_message($id) {
 		return false;
 	}
 	$read_message = $db->sql_fetch_assoc($read_message_handle);
-	Log::new_message('Deleted page message on page \''.stripslashes($read_message['title']).'\'');
+	Log::addMessage('Deleted page message on page \''.stripslashes($read_message['title']).'\'');
 	return true;
 }
 

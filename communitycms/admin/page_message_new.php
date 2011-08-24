@@ -46,7 +46,7 @@ if ($_GET['action'] == 'save') {
 		} else {
 			$page_name = $db->sql_fetch_assoc($page_name_handle);
 			$content .= 'Successfully created page message.<br />';
-			Log::new_message('Created page message for page \''.$page_name['title'].'\'');
+			Log::addMessage('Created page message for page \''.$page_name['title'].'\'');
 			$content .= '<a href="admin.php?module=page_message&amp;page='.$page_id.'">
 				Return to previous page</a><br />';
 		}

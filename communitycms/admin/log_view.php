@@ -46,7 +46,7 @@ if ($view_all == true) {
 } else {
 	$limit = 50;
 }
-$messages = Log::get_last_message($limit);
+$messages = Log::getLastMessages($limit);
 if (!$messages) {
 	$tab_content['view'] = '<span class="errormessage">Failed to read log messages.</span><br />'."\n";
 }

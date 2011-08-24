@@ -134,7 +134,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Successfully created contact.<br />'."\n";
-		Log::new_message('New contact \''.$name.'\'');
+		Log::addMessage('New contact \''.$name.'\'');
 		break;
 
 // ----------------------------------------------------------------------------
@@ -260,7 +260,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Successfully edited contact.<br />'."\n";
-		Log::new_message('Edited contact \''.stripslashes($name).'\'');
+		Log::addMessage('Edited contact \''.stripslashes($name).'\'');
 		break;
 
 // ----------------------------------------------------------------------------

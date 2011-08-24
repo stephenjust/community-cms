@@ -94,7 +94,7 @@ class Gallery {
 			if (!file_exists(ROOT.'files/'.$image_dir.'/thumbs')) {
 				mkdir(ROOT.'files/'.$image_dir.'/thumbs');
 			}
-			Log::new_message("Created gallery '$title'");
+			Log::addMessage("Created gallery '$title'");
 		}
 
 		if (!is_numeric($id))
@@ -296,7 +296,7 @@ class Gallery {
 		if ($db->error[$handle] === 1)
 			throw new GalleryException('Failed to set image caption.');
 
-		Log::new_message('Changed image caption for \''.$file_name.'\'');
+		Log::addMessage('Changed image caption for \''.$file_name.'\'');
 	}
 	
 	public function deleteImageCaption($image_id) {
@@ -328,7 +328,7 @@ class Gallery {
 			unlink($thumb_dir.$image);
 		}
 
-		Log::new_message('Deleted image from gallery \''.$image.'\'');
+		Log::addMessage('Deleted image from gallery \''.$image.'\'');
 	}
 	
 	/**
@@ -346,7 +346,7 @@ class Gallery {
 		$handle = $db->sql_query($query);
 		if ($db->error[$handle] === 1)
 			throw new GalleryException('Failed to delete gallery.');
-		Log::new_message('Deleted photo gallery \''.$this->title.'\' ('.$this->id.')');
+		Log::addMessage('Deleted photo gallery \''.$this->title.'\' ('.$this->id.')');
 	}
 	
 	function __toString() {

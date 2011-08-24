@@ -20,7 +20,7 @@ class Log {
 	 * @param integer $level User level (use constants LOG_LEVEL_*)
 	 * @return boolean Success
 	 */
-	public static function new_message($message, $level = LOG_LEVEL_ADMIN) {
+	public static function addMessage($message, $level = LOG_LEVEL_ADMIN) {
 		global $db;
 
 		// Validate parameters
@@ -87,7 +87,7 @@ class Log {
 			return false;
 			break;
 		}
-		Log::new_message('Cleared log messages.',LOG_LEVEL_ADMIN);
+		Log::addMessage('Cleared log messages.',LOG_LEVEL_ADMIN);
 		return true;
 	}
 
@@ -97,7 +97,7 @@ class Log {
 	 * @param integer $count Number of log messages to fetch
 	 * @return array Log messages (false if failure)
 	 */
-	public static function get_last_message($count = 1) {
+	public static function getLastMessages($count = 1) {
 		global $db;
 
 		if (!is_int($count)) {

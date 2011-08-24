@@ -156,7 +156,7 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
 	if ($db->error[$new_page] === 1) {
 		return false;
 	}
-	Log::new_message('New page \''.$title.'\'');
+	Log::addMessage('New page \''.$title.'\'');
 	return true;
 }
 
@@ -200,7 +200,7 @@ function page_add_group($group_name) {
 		$debug->addMessage('Failed to create new permission value',true);
 		return false;
 	}
-	Log::new_message('Created page group \''.stripslashes($group_name).'\'');
+	Log::addMessage('Created page group \''.stripslashes($group_name).'\'');
 	return true;
 }
 
@@ -247,7 +247,7 @@ function page_delete($id) {
 		$debug->addMessage('Delete query did not delete any entries',true);
 		return false;
 	}
-	Log::new_message('Deleted page \''.$page_info['title'].'\'');
+	Log::addMessage('Deleted page \''.$page_info['title'].'\'');
 	return true;
 }
 
@@ -318,7 +318,7 @@ function page_delete_group($group_id) {
 	if ($db->error[$del_group_handle] === 1) {
 		return false;
 	}
-	Log::new_message('Deleted page group');
+	Log::addMessage('Deleted page group');
 	return true;
 }
 
@@ -615,7 +615,7 @@ function page_set_home($id) {
 		return false;
 	}
 	$check_page = $db->sql_fetch_assoc($check_handle);
-	Log::new_message('Set home page to \''.$check_page['title'].'\'');
+	Log::addMessage('Set home page to \''.$check_page['title'].'\'');
 	return true;
 }
 

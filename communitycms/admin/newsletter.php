@@ -60,7 +60,7 @@ function delete_newsletter($id) {
 	if($db->error[$delete_article]) {
 		return false;
 	}
-	Log::new_message('Deleted newsletter \''.stripslashes($newsletter_info['label']).'\'');
+	Log::addMessage('Deleted newsletter \''.stripslashes($newsletter_info['label']).'\'');
 	return true;
 }
 
@@ -96,7 +96,7 @@ switch ($_GET['action']) {
 				$page_handle = $db->sql_query($page_query);
 				$page = $db->sql_fetch_assoc($page_handle);
 				$content .= 'Successfully added newsletter entry. ';
-				Log::new_message('Newsletter \''.$_POST['label'].'\' added to '.stripslashes($page['title']));
+				Log::addMessage('Newsletter \''.$_POST['label'].'\' added to '.stripslashes($page['title']));
 			}
 		}
 		break;
@@ -158,7 +158,7 @@ switch ($_GET['action']) {
 			$content .= 'Failed to edit newsletter entry.<br />'."\n";
 			break;
 		} else {
-			Log::new_message('Edited newsletter \''.$_POST['label'].'\'');
+			Log::addMessage('Edited newsletter \''.$_POST['label'].'\'');
 			$content .= 'Updated newsletter entry.<br />'."\n";
 		}
 		break;

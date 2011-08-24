@@ -35,7 +35,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= 'Successfully deleted user.<br />';
-		Log::new_message('Deleted user #'.$_GET['id']);
+		Log::addMessage('Deleted user #'.$_GET['id']);
 		break;
 
 // ----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$content .= "Thank you, $real_name, your account has been created.";
-		Log::new_message('New user \''.$real_name.'\'');
+		Log::addMessage('New user \''.$real_name.'\'');
 		unset($username);
 		unset($pass);
 		unset($real_name);

@@ -363,7 +363,7 @@ if($error == 1) {
 } else {
 	echo 'Update successful. <a href="../index.php">View Site</a>';
 	set_config('db_version',$db_version);
-	Log::new_message('Upgraded Community CMS',LOG_LEVEL_INSTALL);
+	Log::addMessage('Upgraded Community CMS',LOG_LEVEL_INSTALL);
 }
 clean_up();
 echo "</body>\n</html>\n";

@@ -41,7 +41,7 @@ if ($_GET['action'] == 'delete') {
 			$content .= '<span class="errormessage">Failed to delete group.</span><br />';
 		} else {
 			$content .= 'Successfully deleted group.<br />';
-			Log::new_message('Deleted group #'.(int)$_GET['id']);
+			Log::addMessage('Deleted group #'.(int)$_GET['id']);
 		}
 	}
 } // IF 'delete'
@@ -61,7 +61,7 @@ if ($_GET['action'] == 'new') {
 				$content .= '<span class="errormessage">Error: Failed to create group.</span><br />';
 			} else {
 				$content .= 'Created group \''.$_POST['group_name'].'\'.<br />';
-				Log::new_message('Created user group \''.addslashes($_POST['group_name']).'\'');
+				Log::addMessage('Created user group \''.addslashes($_POST['group_name']).'\'');
 			}
 		}
 	}
@@ -98,7 +98,7 @@ if ($_GET['action'] == 'permsave') {
 		unset($form_var_value);
 		if ($set_perm_error == 0) {
 			$content .= 'Updated permissions for group.<br />';
-			Log::new_message('Updated group permissions');
+			Log::addMessage('Updated group permissions');
 		} else {
 			$content .= '<span class="errormessage">Failed to update permissions.</span><br />';
 		}
