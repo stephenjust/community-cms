@@ -13,9 +13,17 @@
  *
  * @package CommunityCMS.main
  */
-class debug {
-	public $debug_stack = array();
-	public $error_count = 0;
+class Debug {
+	/**
+	 * Array of all messages given to the debugging tool
+	 * @var array
+	 */
+	private static $message_list = array();
+	/**
+	 * Number of errors that have been recorded
+	 * @var integer
+	 */
+	private static $error_count = 0;
 
 	/**
 	 * add_trace - Use this to add entries to the debug error stack
@@ -25,7 +33,7 @@ class debug {
 	 */
 	public function add_trace($message,$error,$function_name = NULL) {
 		// Prevent infinite loops
-		if (count($this->error_count) > 100) {
+		if (count(Debug::$error_count) > 100) {
 			return false;
 		}
 		// Check variables
@@ -47,9 +55,9 @@ class debug {
 			}
 		}
 		// Add information to stack
-		$this->debug_stack[] = array('message' => $message, 'function' => $function_name, 'error' => $error);
+		Debug::$message_list[] = array('message' => $message, 'function' => $function_name, 'error' => $error);
 		if ($error === true) {
-			$this->error_count++;
+			Debug::$error_count++;
 		}
 		return true;
 	}
@@ -60,14 +68,14 @@ class debug {
 	 */
 	public function display_traces() {
 		$stack = NULL;
-		if (count($this->debug_stack) === 0) {
+		if (count(Debug::$message_list) === 0) {
 			$stack .= "\t".'No errors have occured<br />'."\n";
 		}
-		for ($i = 0; $i < count($this->debug_stack); $i++) {
-			if ($this->debug_stack[$i]['error'] == true) {
-				$stack .= "\t".'<p><span style="color: #CC0000;">Error: \''.$this->debug_stack[$i]['message'].'\' reported by \''.$this->debug_stack[$i]['function'].'\'</span></p>'."\n";
+		for ($i = 0; $i < count(Debug::$message_list); $i++) {
+			if (Debug::$message_list[$i]['error'] == true) {
+				$stack .= "\t".'<p><span style="color: #CC0000;">Error: \''.Debug::$message_list[$i]['message'].'\' reported by \''.Debug::$message_list[$i]['function'].'\'</span></p>'."\n";
 			} else {
-				$stack .= "\t<p>'".$this->debug_stack[$i]['message'].'\' reported by \''.$this->debug_stack[$i]['function'].'\'</p>'."\n";
+				$stack .= "\t<p>'".Debug::$message_list[$i]['message'].'\' reported by \''.Debug::$message_list[$i]['function'].'\'</p>'."\n";
 			}
 		}
 		return $stack;

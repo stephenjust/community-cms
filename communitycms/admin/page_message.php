@@ -20,7 +20,7 @@ if (!$acl->check_permission('adm_page_message')) {
  * Deletes a page message entry
  * @global acl $acl Permission object
  * @global db $db Database object
- * @global debug $debug Debug object
+ * @global Debug $debug Debug object
  * @global log $log
  * @param integer $id Page message ID
  * @return boolean Success

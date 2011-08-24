@@ -36,7 +36,7 @@ class acl {
 	 * @param int $group Group to check (current user's group if not set)
 	 * @param boolean $true_if_all Automatically return true if the group has 'All Permissions' set
 	 * @global db $db Database connection object
-	 * @global debug $debug Debug object
+	 * @global Debug $debug Debug object
 	 * @return boolean True if allowed to complete action, false if not.
 	 */
 	public function check_permission($acl_key, $group = 0, $true_if_all = true) {
@@ -134,7 +134,7 @@ class acl {
 	/**
 	 * set_permission - Set permissions for a certain group
 	 * @global db $db
-	 * @global debug $debug
+	 * @global Debug $debug
 	 * @param string $acl_key
 	 * @param integer $value
 	 * @param integer $group
@@ -228,7 +228,7 @@ class acl {
 	/**
 	 * create_key - Create an ACL key if it does not exist already
 	 * @global db $db Database connection object
-	 * @global debug $debug Debug object
+	 * @global Debug $debug Debug object
 	 * @param string $name Name of key (lowercase)
 	 * @param string $longname More descriptive name
 	 * @param string $description Description of what the key allows

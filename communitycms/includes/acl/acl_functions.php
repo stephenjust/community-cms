@@ -79,7 +79,7 @@ function permission_file_read() {
 /**
  * Create a permission list with HTML tables
  * @global acl $acl
- * @global debug $debug
+ * @global Debug $debug
  * @param array $permission_list
  * @param integer $group
  * @param boolean $form
@@ -173,7 +173,7 @@ function permission_list($permission_list,$group = 0,$form = false) {
  * Update permission list to reflect the XML file
  * @global acl $acl
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @global log $log
  * @return mixed Number of changes, or false on failure
  */

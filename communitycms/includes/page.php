@@ -10,7 +10,7 @@
 /**
  * page_get_info - Get requested fields for a page entry in the database
  * @global db $db Database connection object
- * @global debug $debug Debug object
+ * @global Debug $debug Debug object
  * @param integer $id Page ID
  * @param array $fields Database fields to get, default is all
  * @return mixed Returns false on failure, associative array of row on success
@@ -58,7 +58,7 @@ function page_get_info($id,$fields = array('*')) {
 /**
  * Check if a new text ID is unique
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @param string $text_id
  * @return boolean 
  */
@@ -83,7 +83,7 @@ function page_check_unique_id($text_id) {
  * Create a page record
  * @global acl $acl
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @global log $log
  * @param string $text_id
  * @param string $title
@@ -170,7 +170,7 @@ function page_add_link() {
  * Create a new page group
  * @global acl $acl Permission object
  * @global db $db Database object
- * @global debug $debug Debugging object
+ * @global Debug $debug Debugging object
  * @global log $log Logger object
  * @param string $group_name Name of new group
  * @return boolean Success
@@ -212,7 +212,7 @@ function page_add_group($group_name) {
  * page_delete - Delete a page entry from the database
  * @global object $acl Permissions object
  * @global db $db Database connection object
- * @global debug $debug Debug object
+ * @global Debug $debug Debug object
  * @global Log $log Logger object
  * @param int $id ID of page to delete
  * @return boolean Success
@@ -261,7 +261,7 @@ function page_delete($id) {
  * Delete a page group
  * @global acl $acl
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @global log $log
  * @param integer $group_id ID of group to delete
  * @return mixed Boolean for success, integer error codes for more detailed error messages
@@ -586,7 +586,7 @@ function page_move_down($id) {
  * set_home_page - Change the default CMS page
  * @global object $acl Permission object
  * @global db $db Database connection object
- * @global debug $debug Debugger object
+ * @global Debug $debug Debugger object
  * @global Log $log Logging object
  * @param integer $id Page ID to set as the default page
  * @return boolean Success

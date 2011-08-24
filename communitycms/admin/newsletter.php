@@ -20,7 +20,7 @@ if (!$acl->check_permission('adm_newsletter')) {
  * Delete newsletter entry from the database
  * @global acl $acl Permission object
  * @global db $db Database connection object
- * @global debug $debug Debugger object
+ * @global Debug $debug Debugger object
  * @global log $log
  * @param integer $id Newsletter ID
  * @return boolean Success

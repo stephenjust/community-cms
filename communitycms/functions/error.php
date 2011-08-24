@@ -89,4 +89,7 @@ function err_page($code = 0) {
 	$template = str_replace('<!-- $FOOTER$ -->','',$template);
 	die($template);
 }
+
+// Add special exception classes
+class PageException extends Exception {}
 ?>

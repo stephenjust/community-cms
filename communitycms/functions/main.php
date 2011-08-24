@@ -17,7 +17,7 @@ if (@SECURITY != 1) {
  *
  * @global object $acl
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  */
 function initialize($mode = NULL) {
 	// Report all PHP errors
@@ -41,7 +41,7 @@ function initialize($mode = NULL) {
 	global $user;
 
 	require_once(ROOT . 'includes/debug.php');
-	$debug = new debug;
+	$debug = new Debug;
 
 	// Must initialize DB class before ACL class
 	$db->sql_connect();
@@ -201,7 +201,7 @@ function truncate($text,$numb) {
 
 /**
  * array2csv - Convert an array to a list of comma separated values
- * @global debug $debug Debug object
+ * @global Debug $debug Debug object
  * @param array $array Array of values that will appear in the result string
  * @return string Comma separated list of values
  */
@@ -283,7 +283,7 @@ function str_replace_count($search,$replace,$subject,$times) {
 
 /**
  * format_tel - Format North American phone numbers
- * @global debug $debug
+ * @global Debug $debug
  * @param integer $phone_number Phone number with no punctuation
  * @return string Phone number to display
  */

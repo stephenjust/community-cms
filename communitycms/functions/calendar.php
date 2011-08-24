@@ -16,7 +16,7 @@ if (@SECURITY != 1) {
  * Create calendar event entry
  * @global acl $acl
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @global Log $log
  * @param string $title
  * @param string $description
@@ -101,7 +101,7 @@ function event_create($title,$description,$author,$start_time,$end_time,
 /**
  * Create a calendar event category
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @global Log $log
  * @param string $label Name of category
  * @param string $icon Name of PNG icon file (icon-________.png)
@@ -139,7 +139,7 @@ function event_cat_create($label,$icon,$description = NULL) {
  * Add a location to the list of saved locations
  * @global acl $acl
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @global Log $log
  * @param string $location
  * @return boolean Success
@@ -186,7 +186,7 @@ function location_add($location) {
 /**
  * Delete a calendar category entry
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @global log $log
  * @param integer $id
  * @return boolean
@@ -241,7 +241,7 @@ function event_cat_delete($id) {
 /**
  * Delete a calendar event entry
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @global log $log
  * @param integer $id
  * @return boolean

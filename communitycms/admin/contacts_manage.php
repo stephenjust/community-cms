@@ -25,7 +25,7 @@ $tab_layout = new tabs;
 /**
  * Get contact list
  * @global db $db Database object
- * @global debug $debug Debugging object
+ * @global Debug $debug Debugging object
  * @param integer $page Page ID
  * @return array Contact information (or false on failure)
  */

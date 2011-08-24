@@ -408,7 +408,7 @@ function replace_file_special_chars($filename) {
 
 /**
  * Resize an image
- * @global debug $debug Debug object
+ * @global Debug $debug Debug object
  * @param string $original Path to original file
  * @param string $thumb_path Path to new file; if NULL, put it in /thumbs/ subdir
  * @param integer $min_w Minimum thumbnail width; cannot be 0

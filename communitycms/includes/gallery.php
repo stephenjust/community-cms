@@ -55,7 +55,7 @@ class gallery {
 	 * Fetch gallery information from the database
 	 * @todo This only seems to be used to check if the gallery exists
 	 * @global db $db Database object
-	 * @global debug $debug Debugging object
+	 * @global Debug $debug Debugging object
 	 * @return boolean Success
 	 */
 	function get_info() {
@@ -109,7 +109,7 @@ class gallery {
 
 /**
  * Embed a gallery in the page
- * @global debug $debug Debug object
+ * @global Debug $debug Debug object
  * @param integer $id
  * @return mixed Object if succeeds, boolean if failed
  */

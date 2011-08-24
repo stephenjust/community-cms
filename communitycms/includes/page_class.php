@@ -100,7 +100,7 @@ class Page {
 
 	/**
 	 * set_page - Set the current page by whatever identifier is provided
-	 * @global debug $debug Debug object
+	 * @global Debug $debug Debug object
 	 * @param mixed $reference Numeric ID or String
 	 * @param boolean $is_id If $reference is a numeric ID or special page, true; else a text ID
 	 * @return boolean Success
@@ -143,7 +143,7 @@ class Page {
 	/**
 	 * If a page exists, collect all information about it from the database.
 	 * @global db $db Database connection object
-	 * @global debug $debug Debug object
+	 * @global Debug $debug Debug object
 	 * @return void
 	 */
 	public static function get_page_information() {
@@ -241,7 +241,7 @@ class Page {
 
 	/**
 	 * Handle "special" pages (i.e. change password page)
-	 * @global debug $debug
+	 * @global Debug $debug
 	 */
 	private static function get_special_page() {
 		global $debug;
@@ -345,7 +345,7 @@ class Page {
 	/**
 	 * nav_menu - Returns HTML for navigation menu
 	 * @global db $db Database object
-	 * @global debug $debug Debugging object
+	 * @global Debug $debug Debugging object
 	 * @return string HTML for menu
 	 */
 	private static function nav_menu() {

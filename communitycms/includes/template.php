@@ -105,7 +105,7 @@ class template {
 
 	/**
 	 * get_range - Returns the content between two markers in a template file
-	 * @global debug $debug
+	 * @global Debug $debug
 	 * @param string $field Marker name
 	 * @return mixed Content string, or false on failure
 	 */

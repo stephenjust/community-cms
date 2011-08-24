@@ -12,7 +12,7 @@
  * @param int $start First content number (starts at 1)
  * @param int $num Number of content items per page
  * @param array $all_elements Array of all elements in series
- * @global debug $debug Debug object
+ * @global Debug $debug Debug object
  * @return mixed False if paginating failed for some reason, a string if success
  */
 function pagination($start, $num, $all_elements) {

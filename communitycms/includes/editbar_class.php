@@ -22,7 +22,7 @@ class editbar {
 	/**
 	 * Initialize the editbar class
 	 * @global acl $acl
-	 * @global debug $debug
+	 * @global Debug $debug
 	 */
 	function __construct() {
 		global $acl;

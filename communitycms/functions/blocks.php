@@ -46,7 +46,7 @@ function get_block($block_id = NULL) {
  * delete_block - Delete a block
  * @global object $acl Permission object
  * @global db $db Database connection object
- * @global debug $debug Debug object
+ * @global Debug $debug Debug object
  * @global log $log Logger object
  * @param integer $id Block ID
  * @return string Response message
@@ -95,7 +95,7 @@ function delete_block($id) {
 /**
  * Generate the form for block management
  * @global db $db
- * @global debug $debug
+ * @global Debug $debug
  * @param string $type Block type
  * @param array $vars Array of parameters to set as form defaults
  * @return string HTML for form (or false on failure)

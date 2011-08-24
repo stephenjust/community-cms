@@ -76,7 +76,7 @@ function admin_nav() {
 
 /**
  * create_table - Generate styled tables for the admin interface
- * @global debug $debug Debug Object
+ * @global Debug $debug Debug Object
  * @param array $columns Array of column headings
  * @param array $values 2D array of values [row][column]
  * @return string HTML for table or NULL
