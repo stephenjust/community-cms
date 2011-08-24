@@ -88,9 +88,9 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 		for ($i = 1; $i < $num_files; $i++) {
 			if($files[$i] != '..' && is_dir(ROOT.'files/'.$files[$i])) {
 				if ($files[$i] == $current_dir) {
-					$return .= '<option value="'.$files[$i].'" selected>'.$files[$i].'</option>';
+					$return .= '<option value="files/'.$files[$i].'" selected>'.$files[$i].'</option>';
 				} else {
-					$return .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
+					$return .= '<option value="files/'.$files[$i].'">'.$files[$i].'</option>';
 				}
 			}
 		} // FOR
@@ -128,11 +128,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	if ($path != "") {
 		$path .= '/';
 	}
-	if ($contentfile == true) {
-		$target = ROOT.'files/'.$path;
-	} else {
-		$target = ROOT.$path;
-	}
+	$target = ROOT.$path;
 	$filename = stripslashes(basename($_FILES['upload']['name']));
 	$target .= $filename;
 	$target = replace_file_special_chars($target);

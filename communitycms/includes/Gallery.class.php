@@ -120,7 +120,7 @@ class Gallery {
 	 * @return string
 	 */
 	public function getImageDir() {
-		return ROOT.'files/'.$this->image_dir;
+		return 'files/'.$this->image_dir;
 	}
 	
 	/**
@@ -128,7 +128,7 @@ class Gallery {
 	 * @return string
 	 */
 	public function getThumbDir() {
-		return ROOT.'files/'.$this->thumb_dir;
+		return 'files/'.$this->thumb_dir;
 	}
 	
 	/**
@@ -366,13 +366,5 @@ function gallery_embed($id) {
 		$gallery = $e->getMessage();
 	}
 	return $gallery;
-}
-
-function gallery_info($id) {
-	global $db;
-	$query = 'SELECT * FROM `'.GALLERY_TABLE.'` WHERE `id` = '.$id.' LIMIT 1';
-	$handle = $db->sql_query($query);
-	$result = $db->sql_fetch_assoc($handle);
-	return $result;
 }
 ?>

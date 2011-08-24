@@ -30,7 +30,7 @@ initialize('ajax');
 
 try {
 	$gallery = new Gallery((int) $_GET['id']);
-	$gallery_info = gallery_info((int) $_GET['id']);
+	$galleryImageDir = $gallery->getImageDir();
 }
 catch (GalleryException $e)
 {
@@ -46,9 +46,9 @@ switch (Gallery::getEngine()) {
 		for ($i = 0; $i < count($gallery_images); $i++) {
 			$gallery_nav .= <<< END
 	<div class="nav_image">
-		<img src="files/{$gallery_info['image_dir']}/thumbs/{$gallery_images[$i]['file']}"
+		<img src="$galleryImageDir/thumbs/{$gallery_images[$i]['file']}"
 			onClick="gallery_load_image('{$_GET['id']}',
-			'files/{$gallery_info['image_dir']}/{$gallery_images[$i]['file']}','{$gallery_images[$i]['caption']}')"/>
+			'$galleryImageDir/{$gallery_images[$i]['file']}','{$gallery_images[$i]['caption']}')"/>
 	</div>
 END;
 		}
@@ -57,12 +57,13 @@ END;
 		echo '<div id="gallery_body-'.$_GET['id'].'" class="gallery_body">Click on one of the images above for a larger view.</div>';
 		break;
 	case 'simpleviewer':
+		$galleryTitle = htmlspecialchars($gallery->getTitle());
 		// FIXME: Don't hardcode maxImageWidth & maxImageHeight
 		echo <<< END
 <?xml version="1.0" encoding="UTF-8"?>
 <simpleviewergallery
 	galleryStyle="MODERN"
-	title="{$gallery_info['title']}"
+	title="{$galleryTitle}"
 	textColor="000000"
 	frameColor="CCCCCC"
 	frameWidth="10"
@@ -73,16 +74,16 @@ END;
 	showFullscreenButton="TRUE"
 	maxImageWidth="800"
 	maxImageHeight="800"
-	imagePath="files/{$gallery_info['image_dir']}/"
-	thumbPath="files/{$gallery_info['image_dir']}/thumbs/"
+	imagePath="$galleryImageDir/"
+	thumbPath="$galleryImageDir/thumbs/"
 
 >
 END;
 		$gallery_images = $gallery->getImages();
 		for ($i = 0; $i < count($gallery_images); $i++) {
 			echo <<< END
-<image imageURL="files/{$gallery_info['image_dir']}/{$gallery_images[$i]['file']}"
-	thumbURL="files/{$gallery_info['image_dir']}/thumbs/{$gallery_images[$i]['file']}" linkURL="" linkTarget="" >
+<image imageURL="$galleryImageDir/{$gallery_images[$i]['file']}"
+	thumbURL="$galleryImageDir/thumbs/{$gallery_images[$i]['file']}" linkURL="" linkTarget="" >
 	<caption>{$gallery_images[$i]['caption']}</caption>
 </image>
 END;

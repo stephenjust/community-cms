@@ -28,7 +28,7 @@ function gallery_upload_box($gallery_id,$gallery_dir) {
 		$debug->addMessage('Gallery ID not numeric',true);
 		return false;
 	}
-	if (!file_exists(ROOT.'files/'.$gallery_dir)) {
+	if (!file_exists(ROOT.$gallery_dir)) {
 		return '<span style="font-weight: bold; color: #FF0000;">The gallery folder no longer exists.<br />
 			Please delete this gallery.</span>';
 	}
@@ -47,11 +47,11 @@ function gallery_photo_manager($gallery_id) {
 	global $debug;
 
 	$gallery = new Gallery($gallery_id);
-	if (!file_exists($gallery->getImageDir())) {
+	if (!file_exists(ROOT.$gallery->getImageDir())) {
 		$debug->addMessage('Gallery folder does not exist',true);
 		return false;
 	}
-	if (!file_exists($gallery->getImageDir().'/thumbs')) {
+	if (!file_exists(ROOT.$gallery->getImageDir().'/thumbs')) {
 		$debug->addMessage('Gallery thumbnail dir does not exist',true);
 		return false;
 	}
@@ -62,7 +62,7 @@ function gallery_photo_manager($gallery_id) {
 		return 'There are currently no images in this gallery.';
 	}
 	$image_manager = '<table border="0px">';
-	$image_path = $gallery->getImageDir().'/';
+	$image_path = ROOT.$gallery->getImageDir().'/';
 	$thumbs_path = $image_path.'thumbs/';
 	for ($i = 0; $i < count($gallery_images); $i++) {
 		$image_manager .= '<form method="post" action="?module=gallery_manager&amp;
@@ -82,57 +82,6 @@ function gallery_photo_manager($gallery_id) {
 	}
 	$image_manager .= '</table>';
 	return $image_manager;
-}
-
-/**
- * Edit the caption for a gallery image
- * @global db $db Database connection object
- * @global Debug $debug Debugger object
- * @global log $log Logger object
- * @param integer $gallery_id
- * @param integer $file_id
- * @param string $file_name
- * @param string $caption
- * @return boolean Success 
- */
-function gallery_image_caption_edit($gallery_id,$file_id,$file_name,$caption) {
-	global $db;
-	global $debug;
-	global $log;
-
-	// Validate parameters
-	if (!is_numeric($gallery_id)) {
-		$debug->addMessage('Invalid gallery ID',true);
-		return false;
-	}
-	if (!is_numeric($file_id) && strlen($file_id) != 0) {
-		$debug->addMessage('Invalid file ID',true);
-		return false;
-	}
-	$caption = addslashes($caption);
-
-	// Different queries depending whether there is an existing description
-	// or not
-	if ($file_id == '') {
-		// Description does not exist
-		$query = 'INSERT INTO `'.GALLERY_IMAGE_TABLE.'`
-			(`gallery_id`,`file`,`caption`) VALUES
-			('.$gallery_id.',\''.$file_name.'\',\''.$caption.'\')';
-	} else {
-		// Description does exist
-		$query = 'UPDATE `'.GALLERY_IMAGE_TABLE.'`
-			SET `caption` = \''.$caption.'\'
-			WHERE `id` = '.$file_id;
-	}
-
-	// Execute query
-	$handle = $db->sql_query($query);
-	if ($db->error[$handle] === 1) {
-		$debug->addMessage('Failed to edit image caption',true);
-		return false;
-	}
-	$log->new_message('Changed image caption for \''.$file_name.'\'');
-	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -218,14 +167,13 @@ switch ($_GET['action']) {
 			$content .= '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
 		}
 
-		$gallery_info = gallery_info($gallery_id);
 		// Show gallery manager
 		$gallery_reference = '$GALLERY_EMBED-'.$gallery->getID().'$';
 		$tab_content['edit'] = '<span style="font-size: large; font-weight: bold;">'.$gallery->getTitle().'</span><br />'."\n";
 		$tab_content['edit'] .= 'To add this gallery to your site, copy the following text into the place you would like the gallery to appear:<br />';
 		$tab_content['edit'] .= '<input type="text" value="'.$gallery_reference.'" /><br />'."\n";
 		$tab_content['edit'] .= gallery_photo_manager($gallery->getID());
-		$tab_content['edit'] .= gallery_upload_box($gallery->getID(),$gallery_info['image_dir']);
+		$tab_content['edit'] .= gallery_upload_box($gallery->getID(),$gallery->getImageDir());
 		$tab_layout->add_tab('Edit Gallery',$tab_content['edit']);
 		break;
 
