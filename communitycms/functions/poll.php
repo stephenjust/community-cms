@@ -8,37 +8,6 @@
  */
 
 /**
- * Add a user's vote to a poll
- * @global class $db
- * @global class $page
- * @param int $question ID of the question that was responded to
- * @param int $response ID of the answer choice chosen
- * @param string $ip IP of the user that voted
- * @return void
- */
-function poll_vote($question,$response,$ip) {
-    $question = (int)$question;
-    $response = (int)$response;
-    if (!preg_match('/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/i',$ip)) {
-        return;
-    }
-    if ($question == 0 || $response == 0) {
-        return;
-    }
-    $ip = ip2long($ip);
-    global $db;
-    $vote_query = 'INSERT INTO ' . POLL_RESPONSE_TABLE . '
-        (question_id ,answer_id ,value ,ip_addr) VALUES ('.$question.',
-        '.$response.', NULL, \''.$ip.'\')';
-    $vote_handle = $db->sql_query($vote_query);
-    if ($db->error[$vote_handle] === 1) {
-        Page::$notification .= 'Failed to record your vote.<br />';
-    } else {
-        Page::$notification .= 'Thank you for voting.<br />';
-    }
-}
-
-/**
  * poll_get_results - Fetch an array of poll results
  * @global db $db Database connection object
  * @param int $poll_id Poll ID (as in database)

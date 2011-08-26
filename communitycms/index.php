@@ -88,7 +88,14 @@ if (isset($_POST['vote']) && isset($_POST['vote_poll'])) {
 	$question_id = (int)$_POST['vote_poll'];
 	$answer_id = (int)$_POST['vote'];
 	$user_ip = $_SERVER['REMOTE_ADDR'];
-	poll_vote($question_id,$answer_id,$user_ip);
+	try {
+		$poll = new Poll($question_id);
+		$poll->vote($answer_id, $user_ip);
+		Page::$notification .= 'Thank you for voting.<br />';
+	}
+	catch (PollException $e) {
+		Page::$notification .= '<span class="errormessage">'.$e->getMessage.'</span><br />';
+	}
 }
 if ($page_id == NULL && $page_text_id != NULL) {
 	Page::set_page($page_text_id,false);

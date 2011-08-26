@@ -69,24 +69,13 @@ if ($_GET['action'] == 'del') {
 		<input type="hidden" name="question_id" value="'.addslashes($_GET['id']).'" />
 		<input type="submit" value="Delete Poll" /></form>';
 } elseif ($_GET['action'] == 'really_delete') {
-	$delete_responses_query = 'DELETE FROM ' . POLL_RESPONSE_TABLE . '
-		WHERE question_id = '.(int)$_POST['question_id'];
-	$delete_answers_query = 'DELETE FROM ' . POLL_ANSWER_TABLE . '
-		WHERE question_id = '.(int)$_POST['question_id'];
-	$delete_question_query = 'DELETE FROM ' . POLL_QUESTION_TABLE . '
-		WHERE question_id = '.(int)$_POST['question_id'];
-	$delete_responses_handle = $db->sql_query($delete_responses_query);
-	if ($db->error[$delete_responses_handle] === 0) {
-		$num_deleted_respones = $db->sql_affected_rows($delete_responses_handle);
-		$delete_answers_handle = $db->sql_query($delete_answers_query);
-		if ($db->error[$delete_answers_handle] === 0) {
-			$num_deleted_answers = $db->sql_affected_rows($delete_answers_handle);
-			$delete_question_handle = $db->sql_query($delete_question_query);
-			if ($db->error[$delete_question_handle] === 0) {
-				$content .= 'Deleted '.$num_deleted_respones.' poll respones, '.$num_deleted_answers.' poll answer choices, and the poll question.<br />'.
-				Log::addMessage('Deleted poll question, answers and responses for poll ID '.$_POST['question_id']);
-			}
-		}
+	try {
+		$poll = new Poll($_POST['question_id']);
+		$result = $poll->delete();
+		$content .= 'Deleted '.$result['responses'].' poll respones, '.$result['answers'].' poll answer choices, and the poll question.<br />';
+	}
+	catch (PollException $e) {
+		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 	}
 }
 

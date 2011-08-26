@@ -13,7 +13,7 @@
  * @todo Use this class
  * @package CommunityCMS.main
  */
-class content {
+class Content {
 	/**
 	 * @var int Unique content ID
 	 */

@@ -8,3 +8,4 @@
 
 # Exclude TinyMCE cache files
 /communitycms/scripts/tiny_mce/tiny_mce_*.gz
+/communitycms/simpleviewer/
