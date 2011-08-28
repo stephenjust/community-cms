@@ -159,6 +159,37 @@ function block_edit_form($type,$vars = array()) {
 			break;
 
 // ----------------------------------------------------------------------------
+			
+		case 'scrolling':
+			if (!isset($vars['page'])) {
+				$vars['page'] = 0;
+			}
+			$news_query = 'SELECT *
+				FROM `'.PAGE_TABLE.'`
+				ORDER BY `title` ASC';
+			$news_handle = $db->sql_query($news_query);
+			if ($db->error[$news_handle] === 1) {
+				$debug->addMessage('Failed to read pages',true);
+				return false;
+			}
+			$num_articles = $db->sql_num_rows($news_handle);
+			if ($num_articles == 0) {
+				return 'No pages exist.<br />'."\n";
+			}
+			$return .= 'Page <select name="page">'."\n";
+			for ($i = 1; $i <= $num_articles; $i++) {
+				$news_result = $db->sql_fetch_assoc($news_handle);
+				if ($vars['page'] == $news_result['id']) {
+					$return .= "\t".'<option value="'.$news_result['id'].'" selected>'.$news_result['title'].'</option>'."\n";
+				} else {
+					$return .= "\t".'<option value="'.$news_result['id'].'">'.$news_result['title'].'</option>'."\n";
+				}
+			}
+			$return .= '</select><br />'."\n";
+			$return .= '<input type="hidden" name="attributes" value="page" />';
+			break;
+			
+// ----------------------------------------------------------------------------
 
 		case 'poll':
 			if (!isset($vars['question_id'])) {

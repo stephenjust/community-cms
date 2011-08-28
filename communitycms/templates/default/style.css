@@ -232,10 +232,46 @@ div.page_edit_bar {
 	position: absolute;
 }
 
-#news_ticker {
-	list-style: none;
-	margin: 0px;
-	padding: 0px;
+/*
+NEWS SCROLLER
+*/
+#news-scroller {
+	background: #FFFFFF;
+	border: 1px solid #000000;
+	padding: 2px;
+	padding-bottom: 10px;
+}
+#news-scroller #news-scroller-content {
+	cursor: pointer !important;
+	width: 100% !important;
+}
+#news-scroller #news-scroller-content > div {
+	background: #FFFFFF;
+	width: 100% !important;
+}
+#news-scroller span.title {
+	font-family: Cambria, serif;
+	font-size: large;
+	font-weight: bold;
+}
+#news-scroller span.author {
+	color: #666666;
+	font-size: small;
+}
+#news-scroller span.content {
+	
+}
+#news-scroller #scroll_prev {
+	background: #CCCCCC;
+	border: 1px solid #000000;
+	cursor: pointer !important;
+	display: inline;
+}
+#news-scroller #scroll_next {
+	background: #CCCCCC;
+	border: 1px solid #000000;
+	cursor: pointer !important;
+	display: inline;
 }
 
 /*

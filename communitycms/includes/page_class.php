@@ -295,6 +295,8 @@ class Page {
 			src="'.ROOT.'scripts/jquery.js"></script>
 			<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/jquery-ui.js" /></script>
+				<script language="javascript" type="text/javascript"
+			src="'.ROOT.'scripts/jquery-cycle.js" /></script>
 			<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/jquery-fe.js" /></script>
 			<script language="javascript" type="text/javascript"
