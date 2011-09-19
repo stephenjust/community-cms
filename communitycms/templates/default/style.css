@@ -245,7 +245,7 @@ NEWS SCROLLER
 	cursor: pointer !important;
 	width: 100% !important;
 }
-#news-scroller #news-scroller-content > div {
+#news-scroller-content > div {
 	background: #FFFFFF;
 	width: 100% !important;
 }

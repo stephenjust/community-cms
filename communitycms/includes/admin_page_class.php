@@ -47,6 +47,8 @@ class admin_page extends Page {
 		$scripts = '<link type="text/css"
 			href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
 			<script language="javascript" type="text/javascript"
+			src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+			<script language="javascript" type="text/javascript"
 			src="./scripts/ajax.js"></script>
 			<script language="javascript" type="text/javascript"
 			src="./admin/scripts/admin.js?t='.$admin_js_mtime.'"></script>

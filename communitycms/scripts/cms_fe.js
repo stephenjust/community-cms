@@ -10,7 +10,7 @@ window.onload=$(function(){
 
 	// News Ticker
 	$('#news-scroller-content').cycle({
-		fx:		'blindY',
+		fx:		'scrollUp',
 		next:	'#scroll_next',
 		prev:	'#scroll_prev',
 		fit:	'1'

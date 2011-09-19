@@ -292,6 +292,8 @@ class Page {
 
 		// Include javascript
 		$js_include = '<script language="javascript" type="text/javascript"
+			src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+			<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/jquery.js"></script>
 			<script language="javascript" type="text/javascript"
 			src="'.ROOT.'scripts/jquery-ui.js" /></script>
