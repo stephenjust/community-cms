@@ -27,8 +27,8 @@ if($_GET['action'] == 'save') {
 			!set_config('news_default_publish_value',$def_pub_val)) {
 		$content .= 'Failed to update configuration.<br />';
 	} else {
-		$content .= 'Successfully updated configuration.<br />'.
-			Log::addMessage('Updated news configuration');
+		$content .= 'Successfully updated configuration.<br />';
+		Log::addMessage('Updated news configuration');
 	}
 }
 

@@ -46,7 +46,7 @@ if($db->sql_num_rows($text_handle) == 0) {
 	}
 }
 
-$return .= '<div id="news-scroller"><div id="news-scroller-content">';
+$return .= '<div class="news_block"><div id="news-scroller"><div id="news-scroller-content">';
 for ($i = 1; $i <= $db->sql_num_rows($text_handle); $i++) {
 	$text = $db->sql_fetch_assoc($text_handle);
 	$date = substr($text['date'],0,10);
@@ -86,8 +86,7 @@ for ($i = 1; $i <= $db->sql_num_rows($text_handle); $i++) {
 }
 
 $return .= '</div>';
-$return .= '<div id="scroll_prev">&lt;</div> <div id="scroll_next">&gt;</div>';
-$return .= '</div>';
+$return .= '</div><div id="scroll_prev">&lt;</div> <div id="scroll_next">&gt;</div></div>';
 
 return $return;
 ?>

@@ -239,15 +239,16 @@ NEWS SCROLLER
 	background: #FFFFFF;
 	border: 1px solid #000000;
 	padding: 2px;
-	padding-bottom: 10px;
 }
 #news-scroller #news-scroller-content {
 	cursor: pointer !important;
 	width: 100% !important;
+	overflow: visible;
 }
 #news-scroller-content > div {
 	background: #FFFFFF;
-	width: 100% !important;
+	width: 188px !important;
+	overflow: auto;
 }
 #news-scroller span.title {
 	font-family: Cambria, serif;
@@ -261,17 +262,21 @@ NEWS SCROLLER
 #news-scroller span.content {
 	
 }
-#news-scroller #scroll_prev {
+.news_block #scroll_prev {
 	background: #CCCCCC;
 	border: 1px solid #000000;
 	cursor: pointer !important;
 	display: inline;
+	float: left;
+	margin-top: 5px;
 }
-#news-scroller #scroll_next {
+.news_block #scroll_next {
 	background: #CCCCCC;
 	border: 1px solid #000000;
 	cursor: pointer !important;
 	display: inline;
+	float: right;
+	margin-top: 5px;
 }
 
 /*
@@ -823,6 +828,7 @@ table.contacts_compact span.contact_heading {
 /* NEWS BLOCK */
 div.news_block {
 	padding: 3px;
+	overflow: auto;
 }
 span.news_block_author {
 	font-size: small;
