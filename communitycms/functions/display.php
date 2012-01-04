@@ -41,7 +41,7 @@ function display_child_menu($parent) {
 		if (page_has_children($items_result['id']) == true) {
 			$link_class = 'submenuitem_haschild';
 			$extra_text = '<div class="childarrow"></div>';
-			if (Page::id == $items_result['id']) {
+			if (Page::$id == $items_result['id']) {
 				$link_class = 'submenuitem_haschild_current';
 			}
 			$haschild = 1;
