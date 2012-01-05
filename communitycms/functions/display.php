@@ -32,24 +32,41 @@ function display_child_menu($parent) {
 	if ($db->sql_num_rows($items_handle) == 0) {
 		return false;
 	}
+	
+	// Read template
+	$template = new template();
+	$template->load_file('nav_bar');
+	// Grab the sub-menu part of the template
+	$sub_template = $template->split_range('nav_submenu');
+	unset($template);
+	
+	// Pull out the styles for the types of items contained within
+	$item_temp = $sub_template->split_range('menu_item');
+	$currentitem_temp = $sub_template->split_range('current_menu_item');
+	$itemchild_temp = $sub_template->split_range('menu_item_with_child');
+	$currentitemchild_temp = $sub_template->split_range('current_menu_item_with_child');
+	
+	$sub_template->nav_menu_id = 'nav-menu-sub-'.$parent;
 
-	$return .= '<ul id="nav-menu-sub-'.$parent.'" class="nav_submenu">';
+	// Populate the menu with items
+	$menu_items = NULL;
 	for ($i = 1; $i <= $db->sql_num_rows($items_handle); $i++) {
 		$items_result = $db->sql_fetch_assoc($items_handle);
 		$haschild = 0;
 		$extra_text = NULL;
-		if (page_has_children($items_result['id']) == true) {
-			$link_class = 'submenuitem_haschild';
-			$extra_text = '<div class="childarrow"></div>';
-			if (Page::$id == $items_result['id']) {
-				$link_class = 'submenuitem_haschild_current';
-			}
-			$haschild = 1;
-		} elseif (Page::$id == $items_result['id']) {
-			$link_class = 'submenuitem_current';
-		} else {
-			$link_class = 'submenuitem';
-		}
+		// Select the proper template
+		if (page_has_children($items_result['id']) === true && Page::$id !== $items_result['id']) {
+			$this_item = clone $itemchild_temp;
+			$this_item->child_placeholder = display_child_menu($items_result['id']);
+		} elseif (page_has_children($items_result['id']) === true && Page::$id === $items_result['id']) {
+			$this_item = clone $currentitemchild_temp;
+			$this_item->child_placeholder = display_child_menu($items_result['id']);
+		} elseif (page_has_children($items_result['id']) === false && Page::$id !== $items_result['id'])
+			$this_item = clone $item_temp;
+		else
+			$this_item = clone $currentitem_temp;
+
+		$this_item->menu_item_id = 'menuitem_'.$items_result['id'];
 		if ($items_result['type'] == 0) {
 			$link = explode('<LINK>',$items_result['title']); // Check if menu entry is a link
 			$link_path = $link[1];
@@ -63,17 +80,15 @@ function display_child_menu($parent) {
 			}
 			$link_name = $items_result['title'];
 		} // IF is link
-		$return .= '<li class="'.$link_class.'" id="menuitem_'.$items_result['id'].'">'."\n";
-		// Generate hidden child div
-		if ($haschild == 1) {
-			$return .= display_child_menu($items_result['id']);
-		}
-		$return .= '<a href="'.$link_path.'">'.$link_name.'</a>'.$extra_text;
-		$return .= '</li>'."\n";
+		$this_item->menu_item_url = $link_path;
+		$this_item->menu_item_label = $link_name;
+		$menu_items .= (string)$this_item;
+		unset($this_item);
 	}
-	$return .= '</ul>';
+	$sub_template->menu_placeholder = $menu_items;
 
-	return $return;
+	// Output the template
+	return $sub_template;
 }
 
 /**
