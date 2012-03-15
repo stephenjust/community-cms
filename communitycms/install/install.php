@@ -135,6 +135,16 @@ if (check_library('gd')) {
 }
 $content .= '</td></tr>'."\n";
 
+// Check for MBString
+$content .= '<tr><td>Multi-Byte String Library</td><td>';
+if (check_library('mbstring')) {
+	$content .= '<span class="req_good">Found</span>';
+} else {
+	$content .= '<span class="req_false">Not Found</span>';
+	$error = 1;
+}
+$content .= '</td></tr>'."\n";
+
 // Check for PEAR
 $content .= '<tr><td>PEAR Library</td><td>';
 if (check_library('pear')) {

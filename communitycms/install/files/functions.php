@@ -48,6 +48,14 @@ function check_library($library) {
 			}
 			break;
 
+		case 'mbstring':
+			if (function_exists('mb_convert_case')) {
+				return true;
+			} else {
+				return false;
+			}
+			break;
+
 		case 'xmlreader':
 			if (class_exists('XMLReader')) {
 				return true;
