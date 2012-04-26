@@ -257,6 +257,32 @@ function folder_list($directory = "",$current = "",$type = 0,$name='folder_list'
 // ----------------------------------------------------------------------------
 
 /**
+ * Create a subdirectory in the files/ tree
+ * @global acl $acl
+ * @param string $folder_name
+ * @throws Exception 
+ */
+function file_create_folder($folder_name) {
+	global $acl;
+	if (!$acl->check_permission('file_create_folder'))
+		throw new Exception('You are not allowed to create folders.');
+
+	$folder_name = trim($folder_name);
+	// Validate folder name
+	if (strlen($folder_name) > 30
+			|| strlen($folder_name) < 4
+			|| !preg_match('#^[a-z0-9\_]+$#i',$folder_name))
+		throw new Exception('New folder name must be between 4 and 30 '.
+				'characters long and can only contain letters, numbers, and _.');
+
+	if(file_exists(ROOT.'files/'.$folder_name))
+		throw new Exception('A file or folder with that name already exists.');
+
+	mkdir(ROOT.'files/'.$folder_name);
+	Log::addMessage('Created new directory \'files/'.$folder_name.'\'');
+}
+
+/**
  * Generate a list of files
  * @param string $directory
  * @param integer $type

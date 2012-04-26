@@ -65,42 +65,21 @@ if ($_GET['action'] == 'saveinfo') {
 
 // Upload file
 if (isset($_GET['upload'])) {
-	if ($acl->check_permission('file_upload')) {
-		try {
-			$content .= file_upload($_POST['path']);
-		}
-		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
-		}
+	try {
+		$content .= file_upload($_POST['path']);
+	}
+	catch (Exception $e) {
+		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 	}
 }
-// ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'new_folder') {
-	if ($acl->check_permission('file_create_folder')) {
-		$new_folder_name = addslashes($_POST['new_folder_name']);
-		$error = 0;
-		// Validate folder name
-		if (strlen($new_folder_name) > 30) {
-			$content .= 'New folder name too long.<br />';
-			$error = 1;
-		}
-		if(strlen($new_folder_name) < 4) {
-			$content .= 'New folder name too short.<br />';
-			$error = 1;
-		}
-		if(!preg_match('#^[a-z0-9\_]+$#i',$new_folder_name) && $error != 1) {
-			$content .= 'New folder name contains an invalid character.<br />';
-			$error = 1;
-		}
-		if($error != 1) {
-			if(!file_exists(ROOT.'files/'.$new_folder_name)) {
-				mkdir(ROOT.'files/'.$new_folder_name);
-				Log::addMessage('Created new directory \'files/'.$new_folder_name.'\'');
-			} else {
-				$content .= 'A file or folder with that name already exists.';
-			}
-		} // IF error
+	try {
+		file_create_folder($_POST['new_folder_name']);
+		$content .= 'Successfully created directory.<br />';
+	}
+	catch (Exception $e) {
+		$content .= '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
 	}
 } // IF 'new_folder'
 
