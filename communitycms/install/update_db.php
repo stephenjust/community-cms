@@ -300,7 +300,11 @@ switch ($db_version) {
 		// Make sure calendar categories description has a default NULL value
 		$query[] = 'ALTER TABLE `'.CALENDAR_CATEGORY_TABLE.'`
 			CHANGE `description` `description` text NULL default NULL';
-
+		
+		// Make sure files 'type' field has a default value
+		$query[] = 'ALTER TABLE `'.FILE_TABLE.'`
+			CHANGE `type` `type` int NULL default 0';
+		
 		// Move news config into global config table (and add new config values)
 		$query[] = 'INSERT INTO `'.CONFIG_TABLE.'` (\'config_name\',\'config_value\')
 			VALUES

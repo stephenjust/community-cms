@@ -38,6 +38,7 @@ class file_list {
         return;
     }
     public function set_directory($directory) {
+		$directory = basename($directory);
         if (preg_match('#[.|/|\\\\]#',$directory)) {
             $this->file_list = '<div class="notification">
                 Invalid directory.</div>';

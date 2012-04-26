@@ -120,9 +120,8 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
  */
 function file_upload($path = "", $contentfile = true, $thumb = false) {
 	global $acl;
-	if (!$acl->check_permission('file_upload')) {
-		return '<span class="errormessage">You are not allowed to upload files.</span>';
-	}
+	if (!$acl->check_permission('file_upload'))
+		throw new Exception('You are not allowed to upload files.');
 	if ($path != "") {
 		$path .= '/';
 	}
@@ -133,60 +132,59 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	$filename = replace_file_special_chars($filename);
 
 	// Check if a file by that name already exists
-	if (file_exists($target)) {
-		return '<span class="errormessage">A file by that name already exists.'.
+	if (file_exists($target))
+		throw new Exception('A file by that name already exists.<br />'.
 			'Please use a different file name or delete the old file before '.
-			'attempting to upload the file again.</span>';
-	}
+			'attempting to upload the file again.');
 
 	// Handle file upload errors sooner rather than later
-	if ($_FILES['upload']['error'] != 0) {
-		$return = "Sorry, there was a problem uploading your file.<br />";
+	if ($_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
+		$err = 'Sorry, there was a problem uploading your file.<br />';
 
 		// List of errors
 		switch ($_FILES['upload']['error']) {
-			case 1:
-				$return .= '<span class="errormessage">File is too large (limited by php.ini)</span><br />';
+			case UPLOAD_ERR_INI_SIZE:
+				$err .= 'File is too large (limited by php.ini)<br />';
 				break;
-			case 2:
-				$return .= '<span class="errormessage">File is too large (limited by form)</span><br />';
+			case UPLOAD_ERR_FORM_SIZE:
+				$err .= 'File is too large (limited by form)<br />';
 				break;
-			case 3:
-				$return .= '<span class="errormessage">File was only partially uploaded</span><br />';
+			case UPLOAD_ERR_PARTIAL:
+				$err .= 'File was only partially uploaded<br />';
 				break;
-			case 4:
-				$return .= '<span class="errormessage">No file was uploaded</span><br />';
+			case UPLOAD_ERR_NO_FILE:
+				$err .= 'No file was uploaded<br />';
 				break;
-			case 6:
-				$return .= '<span class="errormessage">Temporary folder does not exist</span><br />';
+			case UPLOAD_ERR_NO_TMP_DIR:
+				$err .= 'Temporary folder does not exist<br />';
 				break;
-			case 7:
-				$return .= '<span class="errormessage">Could not write to temporary folder</span><br />';
+			case UPLOAD_ERR_CANT_WRITE:
+				$err .= 'Could not write to temporary folder<br />';
 				break;
-			case 7:
-				$return .= '<span class="errormessage">A PHP extension prevented the upload</span><br />';
+			case UPLOAD_ERR_EXTENSION:
+				$err .= 'A PHP extension prevented the upload<br />';
 				break;
 			default:
-				$return .= '<span class="errormessage">Error '.$_FILES['upload']['error'].'</span><br />';
+				$err .= 'Error '.$_FILES['upload']['error'].'<br />';
 				break;
 		}
-		return $return;
+		throw new Exception($err);
 	}
 
 	// Handle uploads to 'newsicons'
-	if ($path == 'newsicons/') {
+	if (basename($path) == 'newsicons') {
 		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
 			@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
 			if (generate_thumbnail($target,$target,1,1,100,100)) {
 				$return = "The file " . $filename . " has been uploaded. ";
 				Log::addMessage('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
 			} else {
-				$return = "<span class=\"errormessage\">Failed to generate thumbnail.</span><br />\n";
+				throw new Exception('Failed to generate thumbnail.');
 			}
 			return $return;
 		} else {
-			return '<span class="errormessage">The \'newsicons\' folder can '.
-				'only contain PNG and Jpeg images.</span>';
+			throw new Exception('The \'newsicons\' folder can '.
+				'only contain PNG and Jpeg images.');
 		}
 	}
 

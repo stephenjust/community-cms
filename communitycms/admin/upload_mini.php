@@ -28,10 +28,15 @@ $template->dialog_title = 'Upload File';
 $content = NULL;
 // Check if the form has been submitted.
 if(isset($_GET['upload'])) {
-	if (isset($_POST['thumbs'])) {
-		$content .= file_upload($_POST['path'],true,true);
-	} else {
-		$content .= file_upload($_POST['path']);
+	try {
+		if (isset($_POST['thumbs'])) {
+			$content .= file_upload($_POST['path'],true,true);
+		} else {
+			$content .= file_upload($_POST['path']);
+		}
+	}
+	catch (Exception $e) {
+		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 	}
 }
 // Display upload form and upload location selector.

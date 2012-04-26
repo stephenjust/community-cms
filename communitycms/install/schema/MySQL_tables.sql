@@ -79,7 +79,7 @@ CREATE TABLE `<!-- $DB_PREFIX$ -->content` (
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
 	`id` int(11) NOT NULL auto_increment,
-	`type` int(11) NOT NULL,
+	`type` int(11) NOT NULL default 0,
 	`label` text NOT NULL,
 	`path` text NOT NULL,
 	PRIMARY KEY (`id`)

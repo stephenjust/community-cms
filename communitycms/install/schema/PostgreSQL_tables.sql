@@ -127,7 +127,7 @@ SELECT setval('<!-- $DB_PREFIX$ -->content_id_seq', (SELECT max("id") FROM "<!--
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->files_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->files" (
 	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->files_id_seq'),
-	"type" integer NOT NULL,
+	"type" integer NOT NULL default 0,
 	"label" text NOT NULL,
 	"path" text NOT NULL,
 	PRIMARY KEY ("id")

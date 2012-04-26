@@ -66,7 +66,12 @@ if ($_GET['action'] == 'saveinfo') {
 // Upload file
 if (isset($_GET['upload'])) {
 	if ($acl->check_permission('file_upload')) {
-		$content .= file_upload($_POST['path']);
+		try {
+			$content .= file_upload($_POST['path']);
+		}
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+		}
 	}
 }
 // ----------------------------------------------------------------------------
@@ -111,8 +116,8 @@ if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 		if(!$del) {
 			$content .= 'Failed to delete file.<br />';
 		} else {
-			$content .= 'Successfully deleted '.$_GET['filename'].'.<br />'.
-				Log::addMessage('Deleted file \''.$_GET['filename'].'\'');
+			$content .= 'Successfully deleted '.$_GET['filename'].'.<br />';
+			Log::addMessage('Deleted file \''.$_GET['filename'].'\'');
 			$delete_info_query = 'DELETE FROM ' . FILE_TABLE . '
 				WHERE `path` = \''.addslashes($_GET['filename']).'\'';
 			$delete_info_handle = $db->sql_query($delete_info_query);
