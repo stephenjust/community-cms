@@ -73,6 +73,7 @@ if (isset($_GET['upload'])) {
 	}
 }
 
+// Create new subfolder
 if ($_GET['action'] == 'new_folder') {
 	try {
 		file_create_folder($_POST['new_folder_name']);
@@ -81,30 +82,19 @@ if ($_GET['action'] == 'new_folder') {
 	catch (Exception $e) {
 		$content .= '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
 	}
-} // IF 'new_folder'
+}
 
-// ----------------------------------------------------------------------------
-
+// Delete files
 if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 	if (!isset($_GET['filename'])) {
 		$content .= 'No file was specified to delete.<br />';
-	} elseif (preg_match('#^\.\.|\.\.#',$_GET['filename']) || !file_exists($_GET['filename'])) {
-		$content .= 'Invalid file name.<br />';
 	} else {
-		$del = unlink($_GET['filename']);
-		if(!$del) {
-			$content .= 'Failed to delete file.<br />';
-		} else {
-			$content .= 'Successfully deleted '.$_GET['filename'].'.<br />';
-			Log::addMessage('Deleted file \''.$_GET['filename'].'\'');
-			$delete_info_query = 'DELETE FROM ' . FILE_TABLE . '
-				WHERE `path` = \''.addslashes($_GET['filename']).'\'';
-			$delete_info_handle = $db->sql_query($delete_info_query);
-			if($db->error[$delete_info_handle] === 1) {
-				$content .= 'Failed to delete information for this file.<br />';
-			} else {
-				$content .= 'Deleted information associated with the file.<br />';
-			}
+		try {
+			file_delete($_GET['filename']);
+			$content .= 'Suucessfully deleted "'.$_GET['filename'].'".<br />';
+		}
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 	}
 }

@@ -286,6 +286,39 @@ function file_create_folder($folder_name) {
 }
 
 /**
+ * Delete an uploaded file
+ * @global acl $acl
+ * @global db $db
+ * @param type $filename
+ * @throws Exception 
+ */
+function file_delete($filename) {
+	global $acl;
+	global $db;
+
+	if (!$acl->check_permission('file_delete'))
+		throw new Exception('You are not allowed to delete files.');
+	if (!file_exists($filename))
+		throw new Exception('The file you are trying to delete does not exist.');
+	if (preg_match('/^\.\.|\.\./',$filename) || !preg_match('#^\./files/#i',$filename))
+		throw new Exception('The file you are trying to delete is invalid.');
+
+	// Attempt to delete file from disk
+	$del = unlink($filename);
+	if(!$del)
+		throw new Exception('The file "'.$filename.'" could not be deleted.');
+
+	// Attempt to delete database record associated with file
+	$delete_info_query = 'DELETE FROM `'.FILE_TABLE.'`
+		WHERE `path` = \''.$db->sql_escape_string($filename).'\'';
+	$delete_info_handle = $db->sql_query($delete_info_query);
+	if($db->error[$delete_info_handle] === 1)
+		throw new Exception('The database record for file "'.$filename.'" could not be deleted.');
+
+	Log::addMessage('Deleted file \''.$filename.'\'');
+}
+
+/**
  * Generate a list of files
  * @param string $directory
  * @param integer $type

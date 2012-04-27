@@ -50,6 +50,8 @@ class file_list {
         return;
     }
     public function get_list() {
+		global $acl;
+
         if(strlen($this->folder) < 1) {
             return;
         }
@@ -61,8 +63,12 @@ class file_list {
 		}
         $this->file_array = scandir($this->folder);
         $num_files = count($this->file_array);
+		
+		$num_cols = 1;
+		if ($acl->check_permission('file_delete')) $num_cols++;
+
         $return = '<table class="admintable">'."\n<tr>\n<th>File Name</th>
-            <th>Label</th><th colspan='2'></th></tr>\n";
+            <th>Label</th><th colspan='$num_cols'></th></tr>\n";
         $display_count = 0;
         for ($i = 1; $i <= $num_files; $i++) {
             if (!is_dir($this->folder.'/'.$this->file_array[$i - 1]) &&
@@ -73,10 +79,13 @@ class file_list {
                     </a></td><td>'.$file_info['label'].'</td><td><a href="admin.php?module='.$_GET['module'].'&amp;'.
 					'action=edit&amp;file='.$this->script_folder.'/'.$this->file_array[$i - 1].'&amp;path='.
 					$_POST['folder_list'].'"><img src="./admin/templates/default/images/edit.png"
-                    alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td><td>
-                    <a href="admin.php?module='.$_GET['module'].'&amp;action=delete&amp;filename='.
+                    alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td>';
+				if ($acl->check_permission('file_delete')) {
+					$return .= '<td><a href="admin.php?module='.$_GET['module'].'&amp;action=delete&amp;filename='.
                     $this->script_folder.'/'.$this->file_array[$i - 1].'&amp;path='.$_POST['folder_list'].'">
-                    <img src="./admin/templates/default/images/delete.png" width="16px" height="16px" border="0px"></a></tr>';
+                    <img src="./admin/templates/default/images/delete.png" width="16px" height="16px" border="0px"></a></td>';
+				}
+				$return .= '</tr>';
                 $display_count++;
             }
         }
