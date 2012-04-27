@@ -132,7 +132,7 @@ if ($_GET['action'] == 'edit') {
 		}
 	}
 	$form = new form;
-	$form->set_target('admin.php?module=filemanager&action=saveinfo');
+	$form->set_target('admin.php?module=filemanager&amp;action=saveinfo&amp;path='.$_GET['path']);
 	$form->set_method('post');
 	$form->add_hidden('id',$file_info['id']);
 	$form->add_hidden('path',$file_info['path']);
@@ -151,7 +151,7 @@ if (!isset($_POST['folder_list']) && !isset($_POST['path'])) {
 	$_POST['folder_list'] = $_POST['path'];
 }
 $tab_content['list'] = '<form method="POST" action="admin.php?module=filemanager">
-'.folder_list('',$_POST['folder_list'],1,'adm_file_dir_list','onChange="update_file_list(\'-\')"'); // Create listbox with folder names and a form to navigate folders.
+'.folder_list('',basename($_POST['folder_list']),1,'adm_file_dir_list','onChange="update_file_list(\'-\')"'); // Create listbox with folder names and a form to navigate folders.
 $tab_content['list'] .= '</form>
 <br />
 <div id="adm_file_list">Loading...</div>
@@ -175,7 +175,12 @@ if ($acl->check_permission('file_upload')) {
 	$tab_content['upload'] = NULL;
 
 	// Display upload form and upload location selector.
-	$tab_content['upload'] .= file_upload_box(1);
+	try {
+		$tab_content['upload'] .= file_upload_box(1);
+	}
+	catch (Exception $e) {
+		$tab_content['upload'] .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+	}
 	$tab_layout->add_tab('Upload File',$tab_content['upload']);
 }
 $content .= $tab_layout;

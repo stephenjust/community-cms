@@ -54,14 +54,16 @@ function load_template_file($filename = 'index.html') {
  * @param string $dir
  * @param string $extra_vars
  * @return string Form HTML
+ * @throws Exception
  */
 function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 	global $acl;
-	if (!$acl->check_permission('file_upload')) {
-		return '';
-	}
+	if (!$acl->check_permission('file_upload'))
+		throw new Exception('You are not allowed to upload files.');
+
 	$query_string = $_SERVER['QUERY_STRING'];
-	$query_string = preg_replace('/action=.+\&/',NULL,$query_string);
+	$query_string = str_replace('upload=upload', NULL, $query_string);
+	$query_string = preg_replace('/action=.+\&?/i',NULL,$query_string);
 	$return = '<form enctype="multipart/form-data"
 		action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&amp;'.
 		$query_string.'" method="POST">
@@ -79,12 +81,12 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 		} else {
 			$current_dir = '';
 		}
-		$return = $return.'Where would you like to save the file?<br />';
+		$return .= 'Where would you like to save the file?<br />';
 		$dir = ROOT.'files';
 		$files = scandir($dir);
 		$num_files = count($files);
 		$return .= '<select name="path">
-			<option value="">Default</option>';
+			<option value="files">Default</option>';
 		for ($i = 1; $i < $num_files; $i++) {
 			if($files[$i] != '..' && is_dir(ROOT.'files/'.$files[$i])) {
 				if ($files[$i] == $current_dir) {
@@ -130,7 +132,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	$target .= $filename;
 	$target = replace_file_special_chars($target);
 	$filename = replace_file_special_chars($filename);
-
+	
 	// Check if a file by that name already exists
 	if (file_exists($target))
 		throw new Exception('A file by that name already exists.<br />'.
@@ -189,7 +191,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	}
 
 	// Move temporary file to its new location
-	@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
+	move_uploaded_file($_FILES['upload']['tmp_name'], $target);
 	$return = "The file " . $filename . " has been uploaded. ";
 	Log::addMessage('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
 	if ($thumb == true) {
@@ -275,7 +277,8 @@ function file_create_folder($folder_name) {
 		throw new Exception('New folder name must be between 4 and 30 '.
 				'characters long and can only contain letters, numbers, and _.');
 
-	if(file_exists(ROOT.'files/'.$folder_name))
+	// Don't create subdirectories called 'files', that will cause issues
+	if(file_exists(ROOT.'files/'.$folder_name) || $folder_name == 'files')
 		throw new Exception('A file or folder with that name already exists.');
 
 	mkdir(ROOT.'files/'.$folder_name);

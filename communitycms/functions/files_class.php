@@ -39,6 +39,7 @@ class file_list {
     }
     public function set_directory($directory) {
 		$directory = basename($directory);
+		if ($directory == 'files') $directory = '';
         if (preg_match('#[.|/|\\\\]#',$directory)) {
             $this->file_list = '<div class="notification">
                 Invalid directory.</div>';
@@ -69,8 +70,9 @@ class file_list {
                 $file_info = get_file_info($this->script_folder.'/'.$this->file_array[$i - 1]);
                 $return .= '<tr><td><a href="'.$this->script_folder.'/'
                     .$this->file_array[$i - 1].'">'.$this->file_array[$i - 1].'
-                    </a></td><td>'.$file_info['label'].'</td><td><a href="admin.php?module='.$_GET['module'].'&action=edit&file='.
-                    $this->script_folder.'/'.$this->file_array[$i - 1].'"><img src="./admin/templates/default/images/edit.png"
+                    </a></td><td>'.$file_info['label'].'</td><td><a href="admin.php?module='.$_GET['module'].'&amp;'.
+					'action=edit&amp;file='.$this->script_folder.'/'.$this->file_array[$i - 1].'&amp;path='.
+					$_POST['folder_list'].'"><img src="./admin/templates/default/images/edit.png"
                     alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td><td>
                     <a href="admin.php?module='.$_GET['module'].'&amp;action=delete&amp;filename='.
                     $this->script_folder.'/'.$this->file_array[$i - 1].'&amp;path='.$_POST['folder_list'].'">

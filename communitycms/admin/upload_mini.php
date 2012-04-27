@@ -40,14 +40,19 @@ if(isset($_GET['upload'])) {
 	}
 }
 // Display upload form and upload location selector.
-if (isset($_GET['dir'])) {
-	$extra_vars = array();
-	if (isset($_GET['thumb'])) {
-		$extra_vars['thumbs'] = 1;
+try {
+	if (isset($_GET['dir'])) {
+		$extra_vars = array();
+		if (isset($_GET['thumb'])) {
+			$extra_vars['thumbs'] = 1;
+		}
+		$content .= file_upload_box(0,$_GET['dir'],$extra_vars);
+	} else {
+		$content .= file_upload_box(1);
 	}
-	$content .= file_upload_box(0,$_GET['dir'],$extra_vars);
-} else {
-	$content .= file_upload_box(1);
+}
+catch (Exception $e) {
+	$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 }
 $template->dialog_body = $content;
 echo $template;
