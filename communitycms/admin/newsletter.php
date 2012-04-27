@@ -20,48 +20,94 @@ if (!$acl->check_permission('adm_newsletter')) {
  * Delete newsletter entry from the database
  * @global acl $acl Permission object
  * @global db $db Database connection object
- * @global Debug $debug Debugger object
  * @param integer $id Newsletter ID
- * @return boolean Success
+ * @throws Exception
  */
-function delete_newsletter($id) {
+function newsletter_delete($id) {
 	global $acl;
 	global $db;
-	global $debug;
 
 	// Check permission
-	if (!$acl->check_permission('newsletter_delete')) {
-		return false;
-	}
+	if (!$acl->check_permission('newsletter_delete'))
+		throw new Exception('You are not allowed to delete newsletters.');
 
 	// Validate parameters
-	if (!is_numeric($id)) {
-		$debug->addMessage('Invalid newsletter ID',true);
-		return false;
-	}
+	if (!is_numeric($id))
+		throw new Exception('The newsletter you are trying to delete is invalid.');
 
 	// Get newsletter info
 	$newsletter_info_query = 'SELECT * FROM `'.NEWSLETTER_TABLE.'` WHERE
 		`id` = '.$id.' LIMIT 1';
 	$newsletter_info_handle = $db->sql_query($newsletter_info_query);
-	if ($db->error[$newsletter_info_handle] === 1) {
-		$debug->addMessage('Failed to read newsletter information',true);
-		return false;
-	}
-	if ($db->sql_num_rows($newsletter_info_handle) != 1) {
-		$debug->addMessage('Newsletter entry not found',false);
-		return false;
-	}
+	if ($db->error[$newsletter_info_handle] === 1)
+		throw new Exception('An error occurred when trying to locate the newsletter in the database.');
+	if ($db->sql_num_rows($newsletter_info_handle) != 1)
+		throw new Exception('The newsletter you are trying to delete does not exist.');
 	$newsletter_info = $db->sql_fetch_assoc($newsletter_info_handle);
 
-	$delete_article_query = 'DELETE FROM ' . NEWSLETTER_TABLE . '
-		WHERE id = '.$_GET['id'];
+	// Delete newsletter entry
+	$delete_article_query = 'DELETE FROM `'.NEWSLETTER_TABLE.'`
+		WHERE `id` = '.$id;
 	$delete_article = $db->sql_query($delete_article_query);
-	if($db->error[$delete_article]) {
-		return false;
-	}
-	Log::addMessage('Deleted newsletter \''.stripslashes($newsletter_info['label']).'\'');
-	return true;
+	if($db->error[$delete_article])
+		throw new Exception('An error occurred when deleting the newsletter entry.');
+
+	Log::addMessage('Deleted newsletter \''.$newsletter_info['label'].'\'');
+}
+
+/**
+ * Create a newsletter record
+ * @global acl $acl
+ * @global db $db
+ * @param string $entry_name
+ * @param string $entry_file
+ * @param integer $page Numeric Page ID
+ * @param integer $year
+ * @param integer $month
+ * @throws Exception 
+ */
+function newsletter_create($entry_name,$entry_file,$page,$year,$month) {
+	global $acl;
+	global $db;
+	
+	// Check permissions
+	if (!$acl->check_permission('newsletter_create'))
+		throw new Exception('You are not allowed to create newsletters.');
+
+	// Sanitize inputs
+	$entry_name = $db->sql_escape_string($entry_name);
+	$entry_file = $db->sql_escape_string($entry_file);
+	$page = (int)$page;
+	$year = (int)$year;
+	$month = (int)$month;
+	if (strlen($entry_file) <= 3)
+		throw new Exception('No file was selected for the newsletter.');
+	if ($month > 12 || $month < 1)
+		throw new Exception('An invalid month was selected for the newsletter.');
+	if ($year > 3000 || $year < 1000)
+		throw new Exception('An invalid year was selected for the newsletter.');
+
+	// Validate the newsletter page
+	$page_query = 'SELECT `title` FROM `'.PAGE_TABLE.'`
+		WHERE `id` = '.$page.' LIMIT 1';
+	$page_handle = $db->sql_query($page_query);
+	if ($db->error[$page_handle] === 1) 
+		throw new Exception('An error occurred when validating the given page information.');
+	if ($db->sql_num_rows($page_handle) === 0)
+		throw new Exception('The page given for the newsletter does not exist.');
+	$page_title = $db->sql_fetch_assoc($page_handle);
+	
+	// Create the new newsletter record
+	$new_article_query = 'INSERT INTO `'.NEWSLETTER_TABLE."`
+		(`label`,`page`,`year`,`month`,`path`) VALUES
+		('$entry_name',".$page.",".$year.",
+		".$month.",'".$entry_file."')";
+	$new_article = $db->sql_query($new_article_query);
+	if ($db->error[$new_article] === 1)
+		throw new Exception('An error occurred when creating the newsletter.');
+	
+	// Create the log entry
+	Log::addMessage('Newsletter \''.$entry_name.'\' added to page '.$page_title);
 }
 
 $content = NULL;
@@ -74,37 +120,24 @@ switch ($_GET['action']) {
 
 		break;
 	case 'new':
-		if (!$acl->check_permission('newsletter_create')) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to create a new newsletter.</span><br />';
-			break;
-		}
 		$_POST['file_list'] = (isset($_POST['file_list'])) ? $_POST['file_list'] : NULL;
-		$label = addslashes($_POST['label']);
-		if (strlen($_POST['file_list']) <= 3) {
-			$content .= 'No file selected.';
-		} else {
-			$new_article_query = 'INSERT INTO ' . NEWSLETTER_TABLE . "
-				(label,page,year,month,path) VALUES
-				('$label',".$_POST['page'].",".$_POST['year'].",
-				".$_POST['month'].",'".$_POST['file_list']."')";
-			$new_article = $db->sql_query($new_article_query);
-			if ($db->error[$new_article] === 1) {
-				$content .= 'Failed to add newsletter.<br />';
-			} else {
-				$page_query = 'SELECT title FROM ' . PAGE_TABLE . '
-					WHERE id = '.$_POST['page'].' LIMIT 1';
-				$page_handle = $db->sql_query($page_query);
-				$page = $db->sql_fetch_assoc($page_handle);
-				$content .= 'Successfully added newsletter entry. ';
-				Log::addMessage('Newsletter \''.$_POST['label'].'\' added to '.stripslashes($page['title']));
-			}
+		try {
+			newsletter_create($_POST['label'],
+					$_POST['file_list'],
+					$_POST['page'], $_POST['year'], $_POST['month']);
+			$content .= 'Successfully added newsletter entry.<br />';
+		}
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
 	case 'delete':
-		if(!delete_newsletter($_GET['id'])) {
-			$content .= 'Failed to delete newsletter entry.<br />'."\n";
-		} else {
+		try {
+			newsletter_delete($_GET['id']);
 			$content .= 'Successfully deleted newsletter entry.<br />'."\n";
+		}
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
 	case 'edit':
