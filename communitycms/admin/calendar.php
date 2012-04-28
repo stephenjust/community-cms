@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -43,16 +43,22 @@ switch ($_GET['action']) {
 		break;
 
 	case 'new':
-		$create_return = event_create($_POST['title'],
-				$_POST['content'],
-				$_POST['author'],
-				$_POST['stime'],
-				$_POST['etime'],
-				$_POST['date'],
-				$_POST['category'],
-				$_POST['location'],
-				$image,
-				$hide);
+		try {
+			event_create($_POST['title'],
+					$_POST['content'],
+					$_POST['author'],
+					$_POST['stime'],
+					$_POST['etime'],
+					$_POST['date'],
+					$_POST['category'],
+					$_POST['location'],
+					$image,
+					$hide);
+			$content .= 'Successfully created event.<br />';
+		}
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		}
 
 		// Parse the event date so that 'manage' tab can default to the
 		// correct place
@@ -65,28 +71,6 @@ switch ($_GET['action']) {
 		}
 		if (!isset($_POST['year'])) {
 			$_POST['year'] = $year;
-		}
-
-		// Parse error codes from function
-		switch ($create_return) {
-			default:
-				$content .= '<span class="errormessage">Failed to create event.</span><br />';
-				break;
-			case 1:
-				$content .= 'Successfully created event.<br />';
-				break;
-			case 2:
-				$content .= '<span class="errormessage">You do not have the necessary permissions to create an event.</span><br />';
-				break;
-			case 3:
-				$content .= '<span class="errormessage">Your event\'s date was formatted invalidly. It should be in the format dd/mm/yyyy.</span><br />';
-				break;
-			case 4:
-				$content .= '<span class="errormessage">You forgot to fill out one or more fields.</span><br />';
-				break;
-			case 5:
-				$content .= '<span class="errormessage">Invalid start or end time. Your event cannot end before it begins.</span><br />';
-				break;
 		}
 		break;
 

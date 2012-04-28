@@ -1,7 +1,7 @@
 <?php
 /**
  * Community CMS
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -16,7 +16,6 @@ if (@SECURITY != 1) {
  * Create calendar event entry
  * @global acl $acl
  * @global db $db
- * @global Debug $debug
  * @param string $title
  * @param string $description
  * @param string $author
@@ -27,60 +26,49 @@ if (@SECURITY != 1) {
  * @param string $location
  * @param string $image
  * @param boolean $hide
- * @return integer See return codes in embedded comment
  */
 function event_create($title,$description,$author,$start_time,$end_time,
 		$date,$category,$location,$image,$hide) {
 	global $acl;
 	global $db;
-	global $debug;
 
-	/*
-	 * Return codes:
-	 * 1 - Success
-	 * 2 - Insufficient permissions
-	 * 3 - Invalidly formatted date
-	 * 4 - Missing field
-	 * 5 - Incorrect start or end time
-	 * 6 - Query failed
-	 */
-	if (!$acl->check_permission('date_create')) {
-		$debug->addMessage('Insufficient permissions',true);
-		return 2;
-	}
+	if (!$acl->check_permission('date_create'))
+		throw new Exception('You are not allowed to create calendar events.');
 
 	// Add location to list of saved locations
-	location_add($location);
+	try {
+		location_save($location);
+	}
+	catch (Exception $e) {
+	}
 
-	$location = addslashes($location);
-	$title = addslashes($title);
-	$description = addslashes(remove_comments($description));
-	$author = addslashes($author);
+	// Sanitize inputs
+	$location = $db->sql_escape_string(strip_tags($location));
+	$title = $db->sql_escape_string(strip_tags($title));
+	$description = $db->sql_escape_string(remove_comments($description));
+	$author = $db->sql_escape_string(strip_tags($author));
 
+	// Determine date
 	if ($date == '') {
 		$date = date('d/m/Y');
 	}
-	if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#',$date)) {
-		$debug->addMessage('Invalid date format',true);
-		return 3;
-	}
+	if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#',$date))
+		throw new Exception('Your event\'s date was formatted invalidly. It should be in the format dd/mm/yyyy.');
 	$event_date_parts = explode('/',$date);
 	$year = $event_date_parts[2];
 	$month = $event_date_parts[0];
 	$day = $event_date_parts[1];
 
-	if ($start_time == "" || $end_time == "" || $year == "" || $title == "") {
-		$debug->addMessage('One or more fields was not filled out',true);
-		return 4;
-	}
+	if ($start_time == "" || $end_time == "" || $year == "" || $title == "") 
+		throw new Exception('One or more required fields was left blank.');
 	$stime = explode('-',$start_time);
 	$etime = explode('-',$end_time);
 	$start_time = parse_time($start_time);
 	$end_time = parse_time($end_time);
-	if (!$start_time || !$end_time || $start_time > $end_time) {
-		$debug->addMessage('Invalid event times',true);
-		return 5;
-	}
+	if (!$start_time || !$end_time || $start_time > $end_time)
+		throw new Exception('Invalid start or end time. Your event cannot end before it begins.');
+	
+	// Create event entry
 	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
 		(category,starttime,endtime,year,month,day,header,description,
 		location,author,image,hidden)
@@ -88,12 +76,11 @@ function event_create($title,$description,$author,$start_time,$end_time,
 		'.$year.','.$month.','.$day.',"'.$title.'","'.$description.'",
 		"'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
 	$create_date = $db->sql_query($create_date_query);
-	if ($db->error[$create_date] === 1) {
-		return 6;
-	}
+	if ($db->error[$create_date] === 1)
+		throw new Exception('An error occurred while creating the calendar event.');
+
 	Log::addMessage('New date entry on '.$day.'/'.$month.'/'
 		.$year.' \''.stripslashes($title).'\'');
-	return 1;
 }
 
 /**
@@ -132,47 +119,43 @@ function event_cat_create($label,$icon,$description = NULL) {
 }
 
 /**
- * Add a location to the list of saved locations
- * @global acl $acl
- * @global db $db
+ * Save a new location entry if it does not already exist
  * @global Debug $debug
- * @param string $location
- * @return boolean Success
+ * @global db $db
+ * @param string $location (unescaped)
+ * @return void
+ * @throws Exception 
  */
-function location_add($location) {
-	global $acl;
-	global $db;
+function location_save($location) {
 	global $debug;
+	global $db;
 
-	// Check if location saving is disabled
-	if (get_config('calendar_save_locations') != 1) {
-		return false;
-	}
-	if (strlen($location) < 2) {
+	if (get_config('calendar_save_locations') != 1)
+		return;
+
+	if (!isset($location) || strlen($location) < 2) {
 		$debug->addMessage('No location given',false);
-		return false;
+		return;
 	}
+	$location = $db->sql_escape_string($location);
 
+	// Check if the given location is already in the database
 	$check_dupe_query = 'SELECT `value` FROM `'.LOCATION_TABLE.'`
 		WHERE `value` = \''.$location.'\'';
 	$check_dupe_handle = $db->sql_query($check_dupe_query);
-	if ($db->error[$check_dupe_handle] === 1) {
-		$debug->addMessage('Failed to check for duplicate entries',true);
-		return false;
-	}
-	if ($db->sql_num_rows($check_dupe_handle) != 0) {
-		$debug->addMessage('Location \''.$location.'\' already exists',false);
-		return false;
-	}
+	if ($db->error[$check_dupe_handle] === 1)
+		throw new Exception('An error occurred when reading the list of saved locations.');
+	if ($db->sql_num_rows($check_dupe_handle) == 1)
+		return;
+
+	// Create new location entry
 	$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
-		(`value`) VALUES (\''.addslashes($location).'\')';
+		(`value`) VALUES (\''.$location.'\')';
 	$new_loc_handle = $db->sql_query($new_loc_query);
-	if ($db->error[$new_loc_handle] === 1) {
-		$debug->addMessage('Failed to create new location',true);
-		return false;
-	}
-	Log::addMessage('Created new location \''.$location.'\'');
-	return true;
+	if ($db->error[$new_loc_handle] === 1)
+		throw new Exception('An error occurred while attempting to save a new location entry.');
+
+	Log::addMessage('Created new location \''.stripslashes($location).'\'.');
 }
 
 // ----------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -31,31 +31,15 @@ switch ($_GET['action']) {
 		$start_time = (isset($_POST['stime'])) ? $_POST['stime'] : NULL;
 		$end_time = (isset($_POST['etime'])) ? $_POST['etime'] : NULL;
 		$date = (isset($_POST['date'])) ? (int)$_POST['date'] : NULL;
+		$location = (isset($_POST['location'])) ? $_POST['location'] : NULL;
 
 		// Save location
-		if (get_config('calendar_save_locations') == 1) {
-			if (!isset($location) || strlen($location) < 2) {
-				$debug->addMessage('No location given',false);
-			} else {
-				$check_dupe_query = 'SELECT `value` FROM `'.LOCATION_TABLE.'`
-					WHERE `value` = \''.$location.'\'';
-				$check_dupe_handle = $db->sql_query($check_dupe_query);
-				if ($db->error[$check_dupe_handle] === 1) {
-					$content .= 'Failed to check for duplicate location entries.<br />'."\n";
-				} elseif ($db->sql_num_rows($check_dupe_handle) == 0) {
-					$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
-						(`value`) VALUES (\''.$location.'\')';
-					$new_loc_handle = $db->sql_query($new_loc_query);
-					if ($db->error[$new_loc_handle] === 1) {
-						$content .= 'Failed to create new location.<br />'."\n";
-						break;
-					}
-					$content .= 'Successfully created location.<br />'."\n";
-					Log::addMessage('Created new location');
-				}
-			}
+		try {
+			location_save($location);
 		}
-
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		}
 
 		// Format date for insertion...
 		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
@@ -75,7 +59,6 @@ switch ($_GET['action']) {
 		}
 
 		$ar_content = (isset($_POST['content'])) ? addslashes(remove_comments($_POST['content'])) : NULL;
-		$location = (isset($_POST['location'])) ? $_POST['location'] : NULL;
 		$hide = (isset($_POST['hide'])) ? checkbox($_POST['hide']) : 0;
 		$image = (isset($_POST['image'])) ? $_POST['image'] : NULL;
 		$id = (int)$_POST['id'];

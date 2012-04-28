@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2009-2010 Stephen Just
+ * @copyright Copyright (C) 2009-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -41,10 +41,12 @@ switch ($_GET['action']) {
 			$content .= '<span class="errormessage">No location given.</span><br />'."\n";
 			break;
 		}
-		if (location_add($_POST['location'])) {
+		try {
+			location_save($_POST['location']);
 			$content .= 'Successfully created new location entry.<br />'."\n";
-		} else {
-			$content .= '<span class="errormessage">Failed to create new location entry.</span><br />'."\n";
+		}
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
 
