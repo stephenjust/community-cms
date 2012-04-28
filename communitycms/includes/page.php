@@ -83,7 +83,6 @@ function page_check_unique_id($text_id) {
  * Create a page record
  * @global acl $acl
  * @global db $db
- * @global Debug $debug
  * @param string $text_id
  * @param string $title
  * @param string $meta_desc
@@ -92,16 +91,15 @@ function page_check_unique_id($text_id) {
  * @param boolean $show_menu
  * @param integer $parent
  * @param integer $group
- * @return boolean
+ * @throws Exception
  */
 function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$parent,$group) {
 	global $acl;
 	global $db;
-	global $debug;
 
-	if (!$acl->check_permission('page_create')) {
-		return false;
-	}
+	// Check permission
+	if (!$acl->check_permission('page_create')) 
+		throw new Exception('You are not allowed to create new pages.');
 
 	// Validate parameters
 	if (strlen($text_id) == 0) {
@@ -109,55 +107,42 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
 	} else {
 		$text_id = strtolower(str_replace(array(' ','/','\\','?','&','\'','"'),'_',$text_id));
 		// Make sure text ID is unique
-		if (!page_check_unique_id($text_id)) {
+		if (!page_check_unique_id($text_id))
 			$text_id = NULL;
-		}
 	}
-	if (strlen($title) == 0) {
-		$debug->addMessage('Page title is not long enough.',true);
-		return false;
-	}
-	if (strlen($meta_desc) == 0) {
+	$title = $db->sql_escape_string($title);
+	if (strlen($title) == 0)
+		throw new Exception('The page title was not long enough.');
+	if (strlen($meta_desc) == 0)
 		$meta_desc = NULL;
-	}
-	if (!is_numeric($type)) {
-		$debug->addMessage('Page type is not numeric',true);
-		return false;
-	}
+	$meta_desc = $db->sql_escape_string($meta_desc);
 	$type = (int)$type;
-	if (!is_bool($show_title)) {
-		$debug->addMessage('Show title value is not a boolean',true);
-		return false;
-	}
+	if ($type < 0)
+		throw new Exception('An invalid page type was selected.');
+	if (!is_bool($show_title))
+		throw new Exception('Invalid value for "Show Title".');
 	$show_title = ($show_title === true) ? 1 : 0;
-	if (!is_bool($show_menu)) {
-		$debug->addMessage('Show menu value is not a boolean',true);
-		return false;
-	}
+	if (!is_bool($show_menu))
+		throw new Exception('Invalid value for "Show Menu".');
 	$show_menu = ($show_menu === true) ? 1 : 0;
-	if (!is_numeric($parent)) {
-		$debug->addMessage('Parent page ID is not numeric',true);
-		return false;
-	}
 	$parent = (int)$parent;
-	if (!is_numeric($group)) {
-		$debug->addMessage('Page group is not numeric',true);
-		return false;
-	}
+	if ($parent < 0)
+		throw new Exception('Invalid parent page selected.');
 	$group = (int)$group;
+	if ($group < 0)
+		throw new Exception('Invalid page group selected.');
 
 	// Add page to database.
-	$new_page_query = 'INSERT INTO `'.PAGE_TABLE.'`
+	$new_page_query = 'INSERT INTO `'.PAGE_TABLE."`
 		(`text_id`,`title`,`meta_desc`,`show_title`,`type`,`menu`,`parent`,`page_group`)
 		VALUES
-		(\''.$text_id.'\',\''.addslashes($title).'\',\''.addslashes($meta_desc).'\','.$show_title.',
-		'.$type.','.$show_menu.','.$parent.','.$group.')';
+		('$text_id','$title','$meta_desc',$show_title,
+		$type,$show_menu,$parent,$group)";
 	$new_page = $db->sql_query($new_page_query);
-	if ($db->error[$new_page] === 1) {
-		return false;
-	}
-	Log::addMessage('New page \''.$title.'\'');
-	return true;
+	if ($db->error[$new_page] === 1)
+		throw new Exception('An error occurred while creating a new page.');
+
+	Log::addMessage('New page \''.stripslashes($title).'\'');
 }
 
 function page_add_link() {

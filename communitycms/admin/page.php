@@ -24,17 +24,19 @@ $page_id = (isset($_POST['id']) && (int)$_POST['id'] != 0 && $page_id == NULL) ?
 if ($_GET['action'] == 'new') {
 	$show_title = (isset($_POST['show_title'])) ? (bool)checkbox($_POST['show_title']) : false;
 	$show_menu = (isset($_POST['menu'])) ? (bool)checkbox($_POST['menu']) : false;
-	if (page_add($_POST['text_id'],
+	try {
+		page_add($_POST['text_id'],
 			$_POST['title'],
 			$_POST['meta_desc'],
 			$_POST['type'],
 			$show_title,
 			$show_menu,
 			$_POST['parent'],
-			$_POST['page_group'])) {
+			$_POST['page_group']);
 		$content .= 'Successfully added page.<br />'."\n";
-	} else {
-		$content .= '<span class="errormessage">Failed to add page.</span><br />'."\n";
+	}
+	catch (Exception $e) {
+		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 	}
 }
 
