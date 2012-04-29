@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2010 Stephen Just
+ * @copyright Copyright (C) 2010-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -67,6 +67,67 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate) {
 		$page_title = 'No Page';
 
 	Log::addMessage('Article \''.stripslashes($title).'\' added to \''.$page_title.'\'');
+}
+
+/**
+ * Edit news article record
+ * @global acl $acl
+ * @global db $db
+ * @param integer $id
+ * @param string $title
+ * @param string $content
+ * @param integer $page
+ * @param string $image
+ * @param integer showdate
+ * @throws Exception 
+ */
+function news_edit($id,$title,$content,$page,$image,$showdate) {
+	global $acl;
+	global $db;
+
+	if (!$acl->check_permission('news_edit'))
+		throw new Exception('You are not allowed to edit news articles.');
+
+	// Sanitize inputs
+	$id = (int)$id;
+	if ($id < 1)
+		throw new Exception('An invalid article ID was provided.');
+	$title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
+	$content = $db->sql_escape_string(remove_comments($content));
+	$page = (int)$page;
+	if ($page < 0)
+		throw new Exception('An invalid page was selected.');
+	$image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
+	$showdate = (int)$showdate;
+	if(strlen($image) <= 3)
+		$image = NULL;
+
+	// Check if the user has permission to edit in this page group
+	$article_page_group = page_group_news($id);
+	if (!$acl->check_permission('pagegroupedit-'.$article_page_group))
+		throw new Exception('You are not allowed to edit content in this page group.');
+
+	// Check if the article exists
+	$check_query = 'SELECT `id`
+		FROM `'.NEWS_TABLE.'`
+		WHERE `id` = '.$id.'
+		LIMIT 1';
+	$check_handle = $db->sql_query($check_query);
+	if ($db->error[$check_handle] === 1) 
+		throw new Exception('An error occurred while verifying that the article exists.');
+	if ($db->sql_num_rows($check_handle) === 0)
+		throw new Exception('The article you are trying to edit does not exist.');
+
+	// Update article record
+	$edit_query = 'UPDATE `' . NEWS_TABLE . "`
+		SET `name`='$title',`description`='$content',`page`='$page',
+		`image`='$image',`date_edited`='".DATE_TIME."',`showdate`='$showdate'
+		WHERE `id` = $id";
+	$edit_article = $db->sql_query($edit_query);
+	if ($db->error[$edit_article] === 1)
+		throw new Exception('An error occurred while updating the article\'s record.');
+
+	Log::addMessage('Edited news article \''.stripslashes($title).'\'');
 }
 
 /**

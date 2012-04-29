@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -195,59 +195,15 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'editsave':
-		if (!$acl->check_permission('news_edit')) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
-			break;
+		try {
+			news_edit($_POST['id'], $_POST['title'],
+					$_POST['update_content'], $_POST['page'],
+					$_POST['image'], $_POST['date_params']);
+			$content .= 'Successfully edited article.<br />';
 		}
-		if (!isset($_POST['id'])) {
-			$content .= '<span class="errormessage">Invalid article ID.</span><br />';
-			break;
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
-		if (!is_numeric($_POST['id'])) {
-			$content .= '<span class="errormessage">Invalid article ID.</span><br />';
-			break;
-		}
-		$article_id = (int)$_POST['id'];
-
-		// Pre-save checks
-		$edit_query = 'SELECT * FROM ' . NEWS_TABLE . '
-			WHERE id = '.$article_id.' LIMIT 1';
-		$edit_handle = $db->sql_query($edit_query);
-		if ($db->sql_num_rows($edit_handle) == 0) {
-			$content .= '<span class="errormessage">The article you are trying to edit does not exist.</span><br />';
-			break;
-		}
-		$article_page_group = page_group_news($article_id);
-		if (!$acl->check_permission('pagegroupedit-'.$article_page_group)) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
-			break;
-		}
-
-		// Clean up variables.
-		if (strlen($_POST['image']) <= 3) {
-			$_POST['image'] = NULL;
-		}
-		$edit_content = addslashes(remove_comments($_POST['update_content']));
-		$edit_id = addslashes($_POST['id']);
-		$name = $_POST['title'];
-		$name = str_replace('"','&quot;',$name);
-		$name = str_replace('<','&lt;',$name);
-		$name = str_replace('>','&gt;',$name);
-		$name = addslashes($name);
-		$showdate = (int)$_POST['date_params'];
-		$image = $_POST['image'];
-		$page = (int)$_POST['page'];
-		$edit_article_query = 'UPDATE `' . NEWS_TABLE . "`
-			SET `name`='$name',`description`='$edit_content',`page`='$page',
-			`image`='$image',`date_edited`='".DATE_TIME."',`showdate`='$showdate'
-			WHERE `id` = $edit_id";
-		$edit_article = $db->sql_query($edit_article_query);
-		if ($db->error[$edit_article] === 1) {
-			$content .= '<span class="errormessage">Failed to edit article.</span><br />';
-			break;
-		}
-		$content .= 'Successfully edited article. <br />';
-		Log::addMessage('Edited news article \''.$name.'\'');
 		break;
 }
 
