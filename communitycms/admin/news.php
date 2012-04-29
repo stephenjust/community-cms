@@ -119,52 +119,14 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'new':
-		if (!$acl->check_permission('news_create')) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions required to create new news articles.</span><br />';
-			break;
+		try {
+			news_create($_POST['title'], $_POST['content'],
+					$_POST['page'], $_POST['author'], $_POST['image'],
+					$_POST['publish'], $_POST['date_params']);
+			$content .= 'Successfully added article.<br />';
 		}
-		// Clean up variables.
-		$title = addslashes($_POST['title']);
-		$title = str_replace('"','&quot;',$title);
-		$title = str_replace('<','&lt;',$title);
-		$title = str_replace('>','&gt;',$title);
-		$article_content = addslashes(remove_comments($_POST['content']));
-		$author = addslashes($_POST['author']);
-		$image = addslashes($_POST['image']);
-		$page = addslashes($_POST['page']);
-		$showdate = $_POST['date_params'];
-		if(strlen($image) <= 3) {
-			$image = NULL;
-		}
-		if ($acl->check_permission('news_publish')) {
-			$publish = (int)$_POST['publish'];
-		} else {
-			$publish = (int)get_config('news_default_publish_value');
-		}
-		$new_article_query = 'INSERT INTO `' . NEWS_TABLE . "`
-			(`page`,`name`,`description`,`author`,`image`,`date`,`showdate`,`publish`)
-			VALUES ($page,'$title','$article_content','$author','$image','".DATE_TIME."','$showdate',$publish)";
-		$new_article = $db->sql_query($new_article_query);
-		if($db->error[$new_article] === 1) {
-			$content .= 'Failed to add article. <br />';
-		} else {
-			$page_title_query = 'SELECT * FROM `'.PAGE_TABLE.'` WHERE `id` = '.$_POST['page'].' LIMIT 1';
-			$page_title_handle = $db->sql_query($page_title_query);
-			if ($db->error[$page_title_handle] === 1) {
-				$content .= 'Failed to process log message.<br />'."\n";
-				break;
-			}
-			if ($db->sql_num_rows($page_title_handle) == 1) {
-				$page_title_ = $db->sql_fetch_assoc($page_title_handle);
-				$page_title = stripslashes($page_title_['title']);
-			} else {
-				$page_title = 'No Page';
-			}
-			unset($page_title_query);
-			unset($page_title_handle);
-			unset($page_title_);
-			$content .= 'Successfully added article. <br />';
-			Log::addMessage('Article \''.stripslashes($title).'\' added to \''.$page_title.'\'');
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 

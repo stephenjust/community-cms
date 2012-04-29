@@ -11,6 +11,65 @@ if (@SECURITY != 1) {
 }
 
 /**
+ * Create a news article record
+ * @global acl $acl
+ * @global db $db
+ * @param string $title
+ * @param string $content
+ * @param integer $page
+ * @param string $author
+ * @param string $image
+ * @param integer $publish
+ * @param integer $showdate
+ * @throws Exception 
+ */
+function news_create($title,$content,$page,$author,$image,$publish,$showdate) {
+	global $acl;
+	global $db;
+
+	if (!$acl->check_permission('news_create'))
+		throw new Exception('You are not allowed to create news articles.');
+
+	// Sanitize inputs
+	$title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
+	$content = $db->sql_escape_string(remove_comments($content));
+	$page = (int)$page;
+	if ($page < 0)
+		throw new Exception('An invalid page was selected.');
+	$publish = ($acl->check_permission('news_publish')) ?
+		(int)$publish : (int)get_config('news_default_publish_value');
+	$author = $db->sql_escape_string(htmlspecialchars(strip_tags($author)));
+	$image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
+	$showdate = (int)$showdate;
+	if(strlen($image) <= 3)
+		$image = NULL;
+
+	// Create article
+	$new_article_query = 'INSERT INTO `'.NEWS_TABLE."`
+		(`page`,`name`,`description`,`author`,`image`,`date`,`showdate`,`publish`)
+		VALUES ($page,'$title','$content','$author','$image','".DATE_TIME."','$showdate',$publish)";
+	$new_article = $db->sql_query($new_article_query);
+	if($db->error[$new_article] === 1)
+		throw new Exception('An error occurred while attempting to create the article.');
+
+	// Get page title for log message
+	$page_title_query = 'SELECT `title`
+		FROM `'.PAGE_TABLE.'`
+		WHERE `id` = '.$page.'
+		LIMIT 1';
+	$page_title_handle = $db->sql_query($page_title_query);
+	if ($db->error[$page_title_handle] === 1)
+		throw new Exception('An error occurred while looking up page information.');
+	if ($db->sql_num_rows($page_title_handle) == 1) {
+		$page_title_result = $db->sql_fetch_assoc($page_title_handle);
+		$page_title = $page_title_result['title'];
+	} else
+		$page_title = 'No Page';
+
+	Log::addMessage('Article \''.stripslashes($title).'\' added to \''.$page_title.'\'');
+}
+
+/**
  * delete_article - Deletes one or more news articles
  * @global object $acl
  * @global db $db
