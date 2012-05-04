@@ -207,7 +207,7 @@ $end = $_POST['year'].'-'.$_POST['month'].'-'.cal_days_in_month(CAL_GREGORIAN, $
 $date_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
 	WHERE `start` >= \''.$start.'\'
 	AND `start` <= \''.$end.'\'
-	ORDER BY `start` DESC,`end` DESC';
+	ORDER BY `start` ASC,`end` DESC';
 $date_handle = $db->sql_query($date_query);
 if ($db->sql_num_rows($date_handle) == 0) {
 	$tab_content['manage'] .= '<tr><td colspan="6" class="row1">There are no dates in this month.</td></tr>';
