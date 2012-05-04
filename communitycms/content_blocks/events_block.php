@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2009-2010 Stephen Just
+ * @copyright Copyright (C) 2009-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -22,18 +22,16 @@ switch($event_block->attribute['mode']) {
 		break;
 	case 'upcoming':
 		$event_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-			WHERE (year = '.date('Y').' AND month = '.date('m').' AND day >= '.date('d').') OR
-			(year = '.date('Y').' AND month > '.date('m').') OR (year > '.date('Y').')
-			ORDER BY year ASC, month ASC, day ASC LIMIT '.$event_block->attribute['num'];
+			WHERE `start` >= \''.date('Y-m-d 00:00:00').'\'
+			ORDER BY start ASC LIMIT '.$event_block->attribute['num'];
 		$event_widget->setTitle('Upcoming Events');
 		$template_events = new template;
 		$template_events->load_file('mini_events_upcoming');
 		break;
 	case 'past':
 		$event_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-			WHERE (year = '.date('Y').' AND month = '.date('m').' AND day < '.date('d').') OR
-			(year = '.date('Y').' AND month < '.date('m').') OR (year < '.date('Y').')
-			ORDER BY year DESC, month DESC, day DESC LIMIT '.$event_block->attribute['num'];
+			WHERE `start` < \''.date('Y-m-d 00:00:00').'\'
+			ORDER BY `start` DESC LIMIT '.$event_block->attribute['num'];
 		$event_widget->setTitle('Past Events');
 		$template_events = new template;
 		$template_events->load_file('mini_events_past');
@@ -61,7 +59,7 @@ for($i = 1; $i <= $db->sql_num_rows($event_handle); $i++) {
 	}
 	$template_single_event = clone $template_events;
 	$template_single_event->template = $bl_single_event;
-	$bl_date = $event['day'].'/'.$event['month'].'/'.$event['year'];
+	$bl_date = date('d/m/Y',strtotime($event['start']));
 	$template_single_event->event_date = $bl_date;
 	$template_single_event->event_heading = $event_heading;
 	$bl_all_events .= $template_single_event;

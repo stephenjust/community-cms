@@ -1,7 +1,7 @@
 <?php
 /**
  * Community CMS
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -71,12 +71,14 @@ switch ($view) {
 // ----------------------------------------------------------------------------
 
 		// Load all events for the current month
+		$month_start = $month_cal->year.'-'.$month_cal->month.'-01 00:00:00';
+		$month_end = $month_cal->year.'-'.$month_cal->month.'-'.cal_days_in_month(CAL_GREGORIAN, $month_cal->month, $month_cal->year).' 23:59:59';
 		$cal_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . ' date
 			LEFT JOIN '.CALENDAR_CATEGORY_TABLE.' cat
 			ON date.category = cat.cat_id
-			WHERE date.month = \''.$month_cal->month.'\'
-			AND date.year = \''.$month_cal->year.'\'
-			ORDER BY `date`.`day` ASC, `date`.`starttime` ASC';
+			WHERE date.start >= \''.$month_start.'\'
+			AND date.start <= \''.$month_end.'\'
+			ORDER BY `date`.`start` ASC, `date`.`end` DESC';
 		$cal_info_handle = $db->sql_query($cal_info_query);
 		if ($db->error[$cal_info_handle] === 1) {
 			$content .= 'Failed to read dates from database.<br />';
@@ -120,7 +122,8 @@ switch ($view) {
 				if (!isset($cal_info_result)) {
 					$cal_info_result = $db->sql_fetch_assoc($cal_info_handle);
 				}
-				if ($cal_info_result['day'] == $counter_day) {
+				$event_start = strtotime($cal_info_result['start']);
+				if (date('d',$event_start) == $counter_day) {
 					// There's at least one event on this day
 					$current_day->day_number = '<a href="?'.Page::$url_reference
 						.'&amp;view=day&amp;m='.$month_cal->month.'&amp;y='.$month_cal->year.'&amp;d='
@@ -146,10 +149,8 @@ switch ($view) {
 				}
 				// Show event start time if configured to do so
 				if (get_config('calendar_month_show_stime') == 1
-						&& $cal_info_result['starttime'] != $cal_info_result['endtime']) {
-					$stime_tmp = explode(':',$cal_info_result['starttime']);
-					$stime_tmp = mktime($stime_tmp[0],$stime_tmp[1]);
-					$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$stime_tmp).'</span>'.get_config('calendar_month_time_sep');
+						&& $cal_info_result['start'] != $cal_info_result['end']) {
+					$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$event_start).'</span>'.get_config('calendar_month_time_sep');
 				}
 				$dates .= stripslashes($cal_info_result['header']).'</a><br />'."\n";
 				$current_event_count++;
@@ -203,9 +204,12 @@ switch ($view) {
 		if ($day < 1 || $day > 31) { $day = 1; }
 		$page_content = NULL;
 		// Get events for current day from database
+		$event_day_s = $year.'-'.$month.'-'.$day.' 00:00:00';
+		$event_day_e = $year.'-'.$month.'-'.$day.' 23:59:59';
 		$day_events_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-			WHERE year = '.$year.' AND month = '.$month.' AND day = '.$day.'
-			ORDER BY starttime ASC';
+			WHERE `start` >= \''.$event_day_s.'\'
+			AND `start` <= \''.$event_day_e.'\'
+			ORDER BY `start` ASC, `end` DESC';
 		$day_events_handle = $db->sql_query($day_events_query);
 		$page_content .= '<a href="?'.Page::$url_reference.'&amp;view=month&amp;m='.$month.
 			'&amp;y='.$year.'">Back to month view</a><br />'."\n";
@@ -230,10 +234,8 @@ switch ($view) {
 		unset($day_template_head);
 		for ($i = 1; $db->sql_num_rows($day_events_handle) >= $i; $i++) {
 			$day_events = $db->sql_fetch_assoc($day_events_handle);
-			$event_stime = explode(':',$day_events['starttime']);
-			$event_etime = explode(':',$day_events['endtime']);
-			$event_start = mktime($event_stime[0],$event_stime[1],0,$month,$day,$year);
-			$event_end = mktime($event_etime[0],$event_etime[1],0,$month,$day,$year);
+			$event_start = strtotime($day_events['start']);
+			$event_end = strtotime($day_events['end']);
 			if ($event_start == $event_end) {
 				$event_time = 'All day';
 			} else {

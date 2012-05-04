@@ -228,7 +228,9 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 		<td><a href="admin.php?module=calendar_edit_date&amp;id='.$cal['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
 		height="16px" border="0px" /></a></td>
-		<td><a href="javascript:confirm_delete(\'admin.php?module=calendar&amp;action=delete&amp;date_del='.$cal['id'].'&amp;month='.$cal['month'].'&amp;year='.$cal['year'].'\')">
+		<td><a href="javascript:confirm_delete(\'admin.php?module=calendar&amp;'.
+			'action=delete&amp;date_del='.$cal['id'].'&amp;month='.
+			date('m',strtotime($cal['start'])).'&amp;year='.date('Y',strtotime($cal['start'])).'\')">
 		<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px"
 		height="16px" border="0px" /></a></td></tr>';
 	if ($rowcount == 1) {
@@ -337,7 +339,7 @@ if ($acl->check_permission('calendar_settings')) {
 	$tab_content['settings'] .= '<h1>Delete Old Entries</h1>'."\n";
 	$current_year = date('Y');
 	$old_year = $current_year - 3;
-	$num_old_query = 'SELECT `id` FROM `'.CALENDAR_TABLE.'` WHERE `year` <= '.$old_year;
+	$num_old_query = 'SELECT `id` FROM `'.CALENDAR_TABLE.'` WHERE `start` <= \''.$old_year.'-12-31 23:59:59\'';
 	$num_old_handle = $db->sql_query($num_old_query);
 	if ($db->error[$num_old_handle] === 1) {
 		$button_label = 'Error';

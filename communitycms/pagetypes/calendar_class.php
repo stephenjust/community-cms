@@ -1,7 +1,7 @@
 <?php
 /**
  * Community CMS
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -100,20 +100,17 @@ class calendar_event {
 			return;
 		}
 		$event_info = $db->sql_fetch_assoc($event_handle);
-		if($event_info['starttime'] == $event_info['endtime']) {
-			$event_start = mktime(0,0,0,$event_info['month'],$event_info['day'],$event_info['year']);
+		if($event_info['start'] == $event_info['end']) {
+			$event_start = strtotime($event_info['start']);
 			$event_time = 'All day, '.date('l, F j Y',$event_start);
 		} else {
-			$event_stime = explode(':',$event_info['starttime']);
-			$event_etime = explode(':',$event_info['endtime']);
-			$event_start = mktime($event_stime[0],$event_stime[1],0,$event_info['month'],$event_info['day'],$event_info['year']);
-			$event_end = mktime($event_etime[0],$event_etime[1],0,$event_info['month'],$event_info['day'],$event_info['year']);
+			$event_start = strtotime($event_info['start']);
+			$event_end = strtotime($event_info['end']);
 			$event_time = date(get_config('time_format').' -',$event_start).
 					date(' '.get_config('time_format'),$event_end)."<br />".date(' l, F j Y',$event_start);
-			unset($event_stime,$event_etime,$event_end);
+			unset($event_end);
 		}
 		$month_text = date('F',$event_start);
-		unset($event_start);
 		$template_event = new template;
 		$template_event->load_file('calendar_event');
 		$template_event->event_heading = stripslashes($event_info['header']);
@@ -138,16 +135,14 @@ class calendar_event {
 			$template_event->event_location_end = NULL;
 		}
 		$this->event_text .= "<a href='?".Page::$url_reference."&amp;view=month&amp;m=".
-			$event_info['month']."&amp;y=".$event_info['year']."'>Back to month
+			date('m',$event_start)."&amp;y=".date('Y',$event_start)."'>Back to month
 			view</a><br />";
 		$this->event_text .= "<a href='?".Page::$url_reference."&amp;view=day&amp;d=".
-			$event_info['day']."&amp;m=".$event_info['month']."&amp;y=".$event_info['year'].
+			date('d',$event_start)."&amp;m=".date('m',$event_start)."&amp;y=".date('Y',$event_start).
 			"'>Back to day view</a><br />";
 		$this->event_text .= $template_event;
 		unset($template_event);
-		Page::$title .= ' - '.stripslashes($event_info['header']).' - '
-				.$month_text.' '.$event_info['day'].', '.$event_info['year'];
-		unset($event);
+		Page::$title .= ' - '.stripslashes($event_info['header']).' - '.date('M d, Y',$event_start);
 		return;
 	}
 }
