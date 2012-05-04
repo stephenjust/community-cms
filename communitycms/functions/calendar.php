@@ -61,8 +61,6 @@ function event_create($title,$description,$author,$start_time,$end_time,
 
 	if ($start_time == "" || $end_time == "" || $year == "" || $title == "") 
 		throw new Exception('One or more required fields was left blank.');
-	$stime = explode('-',$start_time);
-	$etime = explode('-',$end_time);
 	$start_time = parse_time($start_time);
 	$end_time = parse_time($end_time);
 	if (!$start_time || !$end_time || $start_time > $end_time)
@@ -76,8 +74,7 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
 		(category,start,end,starttime,endtime,year,month,day,
 		header,description,location,author,image,hidden)
-		VALUES ("'.$category.'","'.$start.'","'.$end.'","'.$start_time.'","'.$end_time.'",
-		'.$year.','.$month.','.$day.',"'.$title.'","'.$description.'",
+		VALUES ("'.$category.'","'.$start.'","'.$end.'","'.$title.'","'.$description.'",
 		"'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
 	$create_date = $db->sql_query($create_date_query);
 	if ($db->error[$create_date] === 1)
@@ -303,8 +300,6 @@ function event_edit($id,$title,$description,$author,$start,$end,$category,$locat
 
 	$edit_date_query = 'UPDATE ' . CALENDAR_TABLE . "
 		SET category='$category',start='$start_t',end='$end_t',
-		starttime='$start_time',
-		endtime='$end_time',year='$year',month='$month',day='$day',
 		header='$title',description='$description',location='$location',
 		author='$author',image='$image',hidden='$hide' WHERE id = $id LIMIT 1";
 	$edit_date = $db->sql_query($edit_date_query);

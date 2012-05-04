@@ -22,11 +22,8 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`id` int(11) NOT NULL auto_increment,
 	`category` int(11) NOT NULL,
-	`starttime` time NOT NULL,
-	`endtime` time NOT NULL,
-	`year` int(4) NOT NULL,
-	`month` int(2) NOT NULL,
-	`day` int(2) NOT NULL,
+	`start` datetime NOT NULL,
+	`end` datetime NOT NULL,
 	`header` text NOT NULL,
 	`description` text,
 	`location` text,
@@ -35,7 +32,8 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`hidden` tinyint(1) NOT NULL,
 	`imported` text default NULL,
 	PRIMARY KEY  (`id`),
-	KEY `category` (`category`)
+	KEY `category` (`category`),
+	INDEX (`start`, `end`)
 ) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (

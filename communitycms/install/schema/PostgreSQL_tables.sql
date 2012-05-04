@@ -41,11 +41,8 @@ CREATE SEQUENCE "<!-- $DB_PREFIX$ -->calendar_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->calendar" (
 	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->calendar_id_seq'),
 	"category" integer NOT NULL,
-	"starttime" timestamp NOT NULL,
-	"endtime" timestamp NOT NULL,
-	"year" integer NOT NULL,
-	"month" integer NOT NULL,
-	"day" integer NOT NULL,
+	"start" timestamp NOT NULL,
+	"end" timestamp NOT NULL,
 	"header" text NOT NULL,
 	"description" text,
 	"location" text,
