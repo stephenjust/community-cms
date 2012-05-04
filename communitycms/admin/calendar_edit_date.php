@@ -25,133 +25,82 @@ include('./functions/calendar.php');
 $content = NULL;
 switch ($_GET['action']) {
 	case 'edit':
-		$title = (isset($_POST['title'])) ? addslashes($_POST['title']) : NULL;
-		$author = (isset($_POST['author'])) ? addslashes($_POST['author']) : NULL;
-		$category = (isset($_POST['category'])) ? $_POST['category'] : NULL;
-		$start_time = (isset($_POST['stime'])) ? $_POST['stime'] : NULL;
-		$end_time = (isset($_POST['etime'])) ? $_POST['etime'] : NULL;
-		$date = (isset($_POST['date'])) ? (int)$_POST['date'] : NULL;
-		$location = (isset($_POST['location'])) ? $_POST['location'] : NULL;
-
-		// Save location
 		try {
-			location_save($location);
+			// Format date for insertion...
+			$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
+			if (!preg_match('#^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$#i',$event_date))
+				throw new Exception('Invalid date. Must be formatted DD/MM/YYYY');
+			$event_date_parts = explode('/',$event_date);
+			$year = $event_date_parts[2];
+			$month = $event_date_parts[0];
+			$day = $event_date_parts[1];
+			$start_time = parse_time($_POST['stime']);
+			$end_time = parse_time($_POST['etime']);
+			if (!$start_time || !$end_time || $start_time > $end_time)
+				throw new Exception('You did not fill out one or more of the times properly. Please fix the problem and resubmit.');
+			// Generate new start/end string
+			$start = $year.'-'.$month.'-'.$day.' '.$start_time;
+			$end = $year.'-'.$month.'-'.$day.' '.$end_time;
+			$hide = (isset($_POST['hide'])) ? (boolean)$_POST['hide'] : false;
+			event_edit($_POST['id'], $_POST['title'],
+					$_POST['content'], $_POST['author'],
+					$start, $end, $_POST['category'],
+					$_POST['location'], $_POST['image'], $hide);
+			$content = 'Successfully edited date information.<br />';
+			$content .= '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
 		}
 		catch (Exception $e) {
 			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
-		}
-
-		// Format date for insertion...
-		$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
-		if (!preg_match('#^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$#i',$event_date)) {
-			$content .= 'Invalidly formatted date. Use MM/DD/YYYY format.<br />'."\n";
-			break;
-		}
-		$event_date_parts = explode('/',$event_date);
-		$year = $event_date_parts[2];
-		$month = $event_date_parts[0];
-		$day = $event_date_parts[1];
-		if (strlen($month) == 1) {
-			$month = '0'.(string)$month;
-		}
-		if (strlen($day) == 1) {
-			$day = '0'.(string)$day;
-		}
-
-		$ar_content = (isset($_POST['content'])) ? addslashes(remove_comments($_POST['content'])) : NULL;
-		$hide = (isset($_POST['hide'])) ? checkbox($_POST['hide']) : 0;
-		$image = (isset($_POST['image'])) ? $_POST['image'] : NULL;
-		$id = (int)$_POST['id'];
-		if ($start_time == "" || $end_time == "" || $year == "" || $title == "") {
-			$content = 'One or more fields was not filled out. Please complete the fields marked with a star and resubmit.<br />'."\n";
-			break;
-		}
-		$stime = explode('-',$start_time);
-		$etime = explode('-',$end_time);
-		$start_time = parse_time($start_time);
-		$end_time = parse_time($end_time);
-		if (!$start_time || !$end_time || $start_time > $end_time) {
-			$content .= "You did not fill out one or more of the times properly. Please fix the problem and resubmit.";
-			break;
-		}
-		$edit_date_query = 'UPDATE ' . CALENDAR_TABLE . "
-			SET category='$category',starttime='$start_time',
-			endtime='$end_time',year='$year',month='$month',day='$day',
-			header='$title',description='$ar_content',location='$location',
-			author='$author',image='$image',hidden='$hide' WHERE id = $id LIMIT 1";
-		$edit_date = $db->sql_query($edit_date_query);
-		if ($db->error[$edit_date] === 1) {
-			$content = 'Failed to edit date information.<br />';
-		} else {
-			$content = 'Successfully edited date information.<br />';
-			Log::addMessage('Edited date entry on '.$day.'/'.$month.'/'.$year.' \''.stripslashes($title).'\'');
-			$content .= '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
 		}
 		break;
 
 // ----------------------------------------------------------------------------
 
 	default:
-		$get_date_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-			WHERE id = '.(int)$_GET['id'].' LIMIT 1';
-		$get_date_handle = $db->sql_query($get_date_query);
-		if ($db->sql_num_rows($get_date_handle) == 0) {
-			$content = 'Could not find the requested calendar entry.<br />'."\n";
-			break;
-		}
-		$date = $db->sql_fetch_assoc($get_date_handle);
-		$content = '<form method="POST" action="?module=calendar_edit_date&action=edit">
-			<h1>Edit Calendar Date</h1>
-			<table class="admintable">
-			<input type="hidden" name="author" value="'.stripslashes($_SESSION['name']).'" />
-			<input type="hidden" name="id" value="'.stripslashes($_GET['id']).'" />
-			<tr><td width="150" class="row1">*Heading:</td><td class="row1">
-			<input type="text" name="title" value="'.stripslashes($date['header']).'" /></td></tr>
-			<tr><td width="150" class="row2">Category:</td><td class="row2">
-			<select name="category">';
-		$category_list_query = 'SELECT cat_id,label FROM ' . CALENDAR_CATEGORY_TABLE . '
-			ORDER BY cat_id ASC';
-		$category_list_handle = $db->sql_query($category_list_query);
-		if ($db->error[$category_list_handle]) {
-			$content .= '<option value="error" >'.$db->_print_error_query($category_list_handle).'</option>';
-		}
-		for ($b = 1; $b <= $db->sql_num_rows($category_list_handle); $b++) {
-			$category_list = $db->sql_fetch_assoc($category_list_handle);
-			if ($date['category'] == $category_list['cat_id']) {
-				$content .= '<option value="'.$category_list['cat_id'].'" selected />'
-					.stripslashes($category_list['label']).'</option>';
-			} else {
-				$content .= '<option value="'.$category_list['cat_id'].'" />'
-					.stripslashes($category_list['label']).'</option>';
+		try {
+			$event = event_get($_GET['id']);
+			$form = new form;
+			$form->set_method('post');
+			$form->set_target('admin.php?module=calendar_edit_date&amp;action=edit');
+			$form->add_hidden('author',htmlspecialchars($_SESSION['name']));
+			$form->add_hidden('id',$event['id']);
+			$form->add_textbox('title', '*Heading:', $event['header']);
+			
+			// Get category list
+			$category_list_query = 'SELECT `cat_id`,`label`
+				FROM `'.CALENDAR_CATEGORY_TABLE.'`
+				ORDER BY `cat_id` ASC';
+			$category_list_handle = $db->sql_query($category_list_query);
+			if ($db->error[$category_list_handle])
+				throw new Exception('Failed to read category list.');
+			$category_names = array();
+			$category_ids = array();
+			for ($b = 1; $b <= $db->sql_num_rows($category_list_handle); $b++) {
+				$category_list = $db->sql_fetch_assoc($category_list_handle);
+				$category_names[] = $category_list['label'];
+				$category_ids[] = $category_list['cat_id'];
 			}
+			$form->add_select('category', 'Category:',
+					$category_ids, $category_names, $event['category']);
+			$start = strtotime($event['start']);
+			$end = strtotime($event['end']);
+			$form->add_textbox('stime', '*Start Time:',
+					date(get_config('time_format'),$start));
+			$form->add_textbox('etime', '*End Time:',
+					date(get_config('time_format'),$end));
+			$form->add_date_cal('date', '*Date:', date('m/d/Y',$start));
+			$form->add_textarea('content','Description:',$event['description'],'rows="25"');
+			$form->add_textbox('location','Location:',$event['location']);
+			$form->add_icon_list('image', 'Image:', 'newsicons', $event['image']);
+			$form->add_checkbox('hide','Hidden:',$event['hidden']);
+			$form->add_submit('submit','Save Event');
+			$content = '<h1>Edit Calendar Date</h1>';
+			$content .= $form;
 		}
-		$temp = explode(':',$date['starttime']);
-		$start_time_temp = mktime((int)$temp[0],(int)$temp[1]);
-		$starttime = date(get_config('time_format'),$start_time_temp);
-		unset($start_time_temp);
-		$temp = explode(':',$date['endtime']);
-		$end_time_temp = mktime((int)$temp[0],(int)$temp[1]);
-		$endtime = date(get_config('time_format'),$end_time_temp);
-		unset($end_time_temp);
-		$hidden = checkbox($date['hidden'],1);
-		unset($temp);
-		$content .= '</select></td></tr>
-			<tr><td width="150" class="row1">*Start Time:</td>
-			<td class="row1"><input type="text" name="stime"
-			value="'.$starttime.'" /></td></tr>
-			<tr><td width="150" class="row2">*End Time:</td>
-			<td class="row2"><input type="text" name="etime"
-			value="'.$endtime.'" /></td></tr>
-			<tr><td width="150" class="row1">*Date:</td>
-			<td class="row1"><input type="text" name="date" class="datepicker" value="'.$date['month'].'/'.$date['day'].'/'.$date['year'].'" maxlength="10" /></td></tr>
-			<tr><td class="row2" valign="top">Description:</td>
-			<td class="row2"><textarea name="content" rows="30">'.stripslashes($date['description']).'</textarea></td></tr>
-			<tr><td width="150" class="row1">Location:</td><td class="row1"><input type="text" name="location" id="_location" value="'.stripslashes($date['location']).'" /></td></tr>
-			<tr><td width="150" valign="top" class="row2">Image:</td><td class="row2"><div class="admin_image_list">'.file_list('newsicons',2,$date['image']).'</div></td></tr>
-			<tr><td width="150" class="row1">Hidden:</td><td class="row1"><input type="checkbox" name="hide" '.$hidden.' /></td></tr>
-			<tr><td width="150" class="row2">&nbsp;</td><td class="row2"><input type="submit" value="Submit" /></td></tr>
-			</table>
-			</form>';
+		catch (Exception $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		}
+
 		break;
 }
 ?>

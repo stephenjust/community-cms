@@ -2,7 +2,7 @@
 /**
  * Community CMS Installer
  *
- * @copyright Copyright (C) 2009-2011 Stephen Just
+ * @copyright Copyright (C) 2009-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.install
  */
@@ -304,6 +304,19 @@ switch ($db_version) {
 		// Make sure files 'type' field has a default value
 		$query[] = 'ALTER TABLE `'.FILE_TABLE.'`
 			CHANGE `type` `type` int NULL default 0';
+		
+		// Create new calendar table field
+		$query[] = 'ALTER TABLE `'.CALENDAR_TABLE.'`
+			ADD `start` DATETIME NOT NULL AFTER `category`
+			ADD `end` DATETIME NOT NULL AFTER `start`,
+			ADD INDEX (`start`,`end`)';
+		// Populate new fields with info
+		$query[] = 'UPDATE `'.CALENDAR_TABLE.'`
+			SET `start` = CONCAT(`year`,\'-\',
+				`month`,\'-\',`day`,\' \',`starttime`)';
+		$query[] = 'UPDATE `'.CALENDAR_TABLE.'`
+			SET `end` = CONCAT(`year`,\'-\',
+				`month`,\'-\',`day`,\' \',`endtime`)';
 		
 		// Move news config into global config table (and add new config values)
 		$query[] = 'INSERT INTO `'.CONFIG_TABLE.'` (\'config_name\',\'config_value\')

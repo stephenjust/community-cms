@@ -68,11 +68,15 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	if (!$start_time || !$end_time || $start_time > $end_time)
 		throw new Exception('Invalid start or end time. Your event cannot end before it begins.');
 	
+	// Generate start/end dates for new system
+	$start = $year.'-'.$month.'-'.$day.' '.$start_time;
+	$end = $year.'-'.$month.'-'.$day.' '.$end_time;
+	
 	// Create event entry
 	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
-		(category,starttime,endtime,year,month,day,header,description,
-		location,author,image,hidden)
-		VALUES ("'.$category.'","'.$start_time.'","'.$end_time.'",
+		(category,start,end,starttime,endtime,year,month,day,
+		header,description,location,author,image,hidden)
+		VALUES ("'.$category.'","'.$start.'","'.$end.'","'.$start_time.'","'.$end_time.'",
 		'.$year.','.$month.','.$day.',"'.$title.'","'.$description.'",
 		"'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
 	$create_date = $db->sql_query($create_date_query);
@@ -247,6 +251,97 @@ function event_delete($id) {
 			return true;
 		}
 	}
+}
+
+/**
+ * Edit an event entry
+ * @global acl $acl
+ * @global db $db
+ * @param integer $id
+ * @param string $title
+ * @param string $description
+ * @param string $author
+ * @param date $start
+ * @param date $end
+ * @param integer $category
+ * @param string $location
+ * @param string $image
+ * @param boolean $hide
+ * @throws Exception 
+ */
+function event_edit($id,$title,$description,$author,$start,$end,$category,$location,$image,$hide) {
+	global $acl;
+	global $db;
+
+	if (!$acl->check_permission('acl_calendar_edit_date'))
+		throw new Exception('You are now allowed to edit calendar events.');
+
+	// Sanitize Inputs
+	$id = (int)$id;
+	$title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
+	$description = $db->sql_escape_string(remove_comments($description));
+	$author = $db->sql_escape_string(htmlspecialchars(strip_tags($author)));
+	$category = (int)$category;
+	$start = strtotime($start);
+	$end = strtotime($end);
+	$location = $db->sql_escape_string(htmlspecialchars(strip_tags($location)));
+	$image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
+	$hide = ($hide === true) ? 1 : 0;
+	
+	location_save(stripslashes($location));
+
+	// Legacy date calculations (to be removed)
+	$year = date('Y',$start);
+	$month = date('m',$start);
+	$day = date('d',$start);
+
+	// Generate new start/end string
+	$start_t = date('Y-m-d H:i:s',$start);
+	$end_t = date('Y-m-d H:i:s',$end);
+	$start_time = date('H:i:s',$start);
+	$end_time = date('H:i:s',$end);
+
+	$edit_date_query = 'UPDATE ' . CALENDAR_TABLE . "
+		SET category='$category',start='$start_t',end='$end_t',
+		starttime='$start_time',
+		endtime='$end_time',year='$year',month='$month',day='$day',
+		header='$title',description='$description',location='$location',
+		author='$author',image='$image',hidden='$hide' WHERE id = $id LIMIT 1";
+	$edit_date = $db->sql_query($edit_date_query);
+	if ($db->error[$edit_date] === 1)
+		throw new Exception('An error occurred while updating the event record.');
+
+	Log::addMessage('Edited date entry on '.date('Y-m-d',$start).' \''.stripslashes($title).'\'');
+}
+
+/**
+ * Get information of an event
+ * @global db $db
+ * @param integer $id
+ * @return array
+ * @throws Exception 
+ */
+function event_get($id) {
+	global $db;
+
+	// Sanitize inputs
+	$id = (int)$id;
+	if ($id < 1)
+		throw new Exception('An invalid event ID was given.');
+
+	// Get event record
+	$query = 'SELECT `id`,`category`,`start`,`end`,`header`,
+		`description`,`location`,`author`,`image`,`hidden`
+		FROM `'.CALENDAR_TABLE.'`
+		WHERE `id` = '.$id.' LIMIT 1';
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1)
+		throw new Exception('Failed to retrieve calendar event.');
+	if ($db->sql_num_rows($handle) == 0)
+		throw new Exception('The requested event does not exist.');
+
+	$event = $db->sql_fetch_assoc($handle);
+	return $event;
 }
 
 // ----------------------------------------------------------------------------
