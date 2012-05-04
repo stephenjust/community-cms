@@ -85,10 +85,10 @@ switch ($_GET['action']) {
 			$start = strtotime($event['start']);
 			$end = strtotime($event['end']);
 			$form->add_textbox('stime', '*Start Time:',
-					date(get_config('time_format'),$start));
+					date(get_config('time_format'),$start),'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"');
 			$form->add_textbox('etime', '*End Time:',
-					date(get_config('time_format'),$end));
-			$form->add_date_cal('date', '*Date:', date('m/d/Y',$start));
+					date(get_config('time_format'),$end),'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
+			$form->add_date_cal('date', '*Date:', date('m/d/Y',$start),'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
 			$form->add_textarea('content','Description:',$event['description'],'rows="25"');
 			$form->add_textbox('location','Location:',$event['location']);
 			$form->add_icon_list('image', 'Image:', 'newsicons', $event['image']);

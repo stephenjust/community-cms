@@ -202,9 +202,12 @@ $tab_content['manage'] .= '</select><input type="text" name="year" maxlength="4"
 $tab_content['manage'] .= '<table class="admintable">
 <tr><th>Date</th><th>Start Time</th><th>End Time</th><th>Heading</th><th colspan="2" width="40px"></th></tr>';
 $rowcount = 1;
+$start = $_POST['year'].'-'.$_POST['month'].'-01 00:00:00';
+$end = $_POST['year'].'-'.$_POST['month'].'-'.cal_days_in_month(CAL_GREGORIAN, $_POST['month'], $_POST['year']).' 23:59:59';
 $date_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-	WHERE year = '.$_POST['year'].' AND month = '.$_POST['month'].'
-	ORDER BY day,starttime ASC';
+	WHERE `start` >= \''.$start.'\'
+	AND `start` <= \''.$end.'\'
+	ORDER BY `start` DESC,`end` DESC';
 $date_handle = $db->sql_query($date_query);
 if ($db->sql_num_rows($date_handle) == 0) {
 	$tab_content['manage'] .= '<tr><td colspan="6" class="row1">There are no dates in this month.</td></tr>';
@@ -214,21 +217,13 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 	$cal = $db->sql_fetch_assoc($date_handle);
 
 	// Format start time and end time
-	$temp = explode(':',$cal['starttime']);
-	$start_time_temp = mktime((int)$temp[0],(int)$temp[1]);
-	$starttime = date(get_config('time_format'),$start_time_temp);
-	$temp = explode(':',$cal['endtime']);
-	$end_time_temp = mktime((int)$temp[0],(int)$temp[1]);
-	$endtime = date(get_config('time_format'),$end_time_temp);
-	unset($temp);
-	unset($start_time_temp);
-	unset($end_time_temp);
+	$starttime = strtotime($cal['start']);
+	$endtime = strtotime($cal['end']);
 
-	$cal_time = mktime(0,0,0,$cal['month'],$cal['day'],$cal['year']);
 	$tab_content['manage'] .= '<tr class="row'.$rowcount.'">
-		<td>'.date('M d, Y',$cal_time).'</td>
-		<td>'.$starttime.'</td>
-		<td>'.$endtime.'</td>
+		<td>'.date('M d, Y',$starttime).'</td>
+		<td>'.date(get_config('time_format'),$starttime).'</td>
+		<td>'.date(get_config('time_format'),$endtime).'</td>
 		<td>'.$cal['header'].'</td>
 		<td><a href="admin.php?module=calendar_edit_date&amp;id='.$cal['id'].'">
 		<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
