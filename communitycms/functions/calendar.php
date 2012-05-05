@@ -72,8 +72,8 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	
 	// Create event entry
 	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
-		(category,start,end,starttime,endtime,year,month,day,
-		header,description,location,author,image,hidden)
+		(`category`,`start`,`end`,`header`,
+		`description`,`location`,`author`,`image`,`hidden`)
 		VALUES ("'.$category.'","'.$start.'","'.$end.'","'.$title.'","'.$description.'",
 		"'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
 	$create_date = $db->sql_query($create_date_query);
