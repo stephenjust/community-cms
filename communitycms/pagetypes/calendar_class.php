@@ -146,4 +146,213 @@ class calendar_event {
 		return;
 	}
 }
+
+class calendar_month extends calendar {
+	private $event_array = array();
+	private $template;
+	private $template_week;
+	private $template_day;
+	private $template_day_empty;
+	private $template_day_today;
+	private $day_grid;
+
+	/**
+	 * Generate an array to hold all of the events listed in the calendar 
+	 */
+	public function setup() {
+		// Make sure the event array has the sane number of entries as the
+		// number of days in the month
+		for ($i = 1; $i <= $this->month_days; $i++) {
+			$this->event_array[$i] = array();
+		}
+		
+		$this->load_events();
+		$this->load_template();
+		$this->build_grid();
+		$this->generate_html();
+	}
+	
+	/**
+	 * Add an event to the month's event list
+	 * @param integer $id
+	 * @param integer $day
+	 * @param string $heading
+	 * @param integer $start In unix time
+	 * @param integer $end In unix time
+	 * @param string $category
+	 * @param string $cat_image 
+	 */
+	public function add_event($id,$day,$heading,$start,$end,$category,$cat_image) {
+		$event = array('id' => $id,
+			'heading' => $heading,
+			'start' => $start,
+			'end' => $end,
+			'cat_label' => $category,
+			'cat_image' => $cat_image);
+		if ($event['cat_image'] == NULL)
+			$event['cat_image'] = 'unknown.png';
+		$this->event_array[$day][] = $event;
+	}
+	
+	private function load_events() {
+		global $db;
+
+		// Fetch records from the database
+		$month_start = $this->year.'-'.$this->month.'-01 00:00:00';
+		$month_end = $this->year.'-'.$this->month.'-'.$this->month_days.' 23:59:59';
+		$query = 'SELECT `date`.*, `cat`.`label`,`cat`.`colour`
+			FROM `'.CALENDAR_TABLE.'` `date`
+			LEFT JOIN `'.CALENDAR_CATEGORY_TABLE.'` `cat`
+			ON `date`.`category` = `cat`.`cat_id`
+			WHERE `date`.`start` >= \''.$month_start.'\'
+			AND `date`.`start` <= \''.$month_end.'\'
+			ORDER BY `date`.`start` ASC, `date`.`end` DESC';
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle] === 1) 
+			throw new Exception('An error occurred while reading dates from the calendar.');
+		$num_events = $db->sql_num_rows($handle);
+
+		// Add each record to the event array
+		for ($i = 1; $i <= $num_events; $i++) {
+			$event = $db->sql_fetch_assoc($handle);
+			$start = strtotime($event['start']);
+			$end = strtotime($event['end']);
+			
+			$this->add_event($event['id'], date('j',$start), $event['header'], $start, $end, $event['label'], $event['colour'].'.png');
+		}
+	}
+	
+	private function load_template() {
+		$this->template = new template;
+		$this->template->load_file('calendar_month');
+
+		// Replace template placeholders that should not be altered
+		// beyond this point
+		$this->template->current_month_name = date('F Y',$this->first_day_ts);
+		$this->template->current_month = $this->month;
+		$this->template->current_year = $this->year;
+		$this->template->prev_month = $this->prev_month;
+		$this->template->prev_year = $this->prev_year;
+		$this->template->next_month = $this->next_month;
+		$this->template->next_year = $this->next_year;
+
+		// Replace day of week placeholders
+		monthcal_day_strings($this->template);
+		
+		// Week template
+		$template_week = new template;
+		$template_week->path = $this->template->path;
+		$template_week->template = $this->template->get_range('week');
+
+		// Extract templates for each type of day
+		$template_empty_day = $this->template->get_range('empty_day');
+		$template_day = $this->template->get_range('day');
+		$template_today = $this->template->get_range('today');
+
+		// Remove day templates
+		$template_week->replace_range('empty_day','');
+		$template_week->replace_range('day','<!-- $DAY$ -->');
+		$template_week->replace_range('today','');
+		
+		$this->template_week = $template_week;
+		$this->template_day = $template_day;
+		$this->template_day_empty = $template_empty_day;
+		$this->template_day_today = $template_today;
+	}
+	
+	private function build_grid() {
+		// Day of week: 0 - 6 = Sunday - Saturday
+		$week = 0;
+		$grid = array();
+		// Precede the first day with blank days
+		for ($day_of_week = 0; $day_of_week < $this->first_day_dow; $day_of_week++) {
+			$grid[$week][$day_of_week] = 0;
+		}
+		for ($day = 1; $day <= $this->month_days; $day++) {
+			$grid[$week][$day_of_week++] = $day;
+			
+			if ($day_of_week == 7) {
+				$day_of_week = 0;
+				$week++;
+			}
+		}
+		// Fill out the rest of the last week with blank days
+		for ($day_of_week; $day_of_week <= 6; $day_of_week++) {
+			if ($day_of_week == 0)
+				break;
+			$grid[$week][$day_of_week] = 0;
+		}
+		
+		$this->day_grid = $grid;
+	}
+	
+	private function generate_html() {
+		// Iterate through each week and generate those html chunks
+		$all_weeks = NULL;
+		for ($i = 0; $i < count($this->day_grid); $i++) {
+			$current_week = clone($this->template_week);
+			// Load each of the weekdays
+			$week_html = NULL;
+			for ($day = 0; $day <= 6; $day++) {
+				$day_number = $this->day_grid[$i][$day];
+				// Insert blank days
+				if ($day_number === 0) {
+					$day_template = $this->template_day_empty;
+					$week_html .= $day_template;
+					continue;
+				}
+
+				// Choose which template to use for the day
+				$day_template = new template;
+				$day_template->path = $current_week->path;
+				if ($day_number == date('j')
+						&& $this->month == date('n')
+						&& $this->year == date('Y'))
+					$day_template->template = $this->template_day_today;
+				else
+					$day_template->template = $this->template_day;
+				
+				// Replace day number with either a static number or a link
+				if (count($this->event_array[$day_number]) > 0) {
+					// There's at least one event on this day
+					$day_template->day_number = '<a href="?'.Page::$url_reference
+						.'&amp;view=day&amp;m='.$this->month.'&amp;y='.$this->year.'&amp;d='
+						.$day_number.'" class="day_number">'.$day_number.'</a>';
+					
+					// Loop through day's events and add them in to the template
+					$event_html = NULL;
+					for ($e = 0; $e < count($this->event_array[$day_number]); $e++) {
+						// Create the link to the event page
+						$event_html .= '<a href="?'.Page::$url_reference.'&amp;view=event&amp;'
+							.'a='.$this->event_array[$day_number][$e]['id'].'" class="calendar_event">';
+						// Show icon if configured to do so
+						if (get_config('calendar_month_show_cat_icons') == 1) {
+							$event_html .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$this->event_array[$day_number][$e]['cat_image'].'"'
+							.' width="10px" height="10px" alt="'.$this->event_array[$day_number][$e]['cat_label'].'" border="0px" /> ';
+						}
+						// Show event start time if configured to do so
+						if (get_config('calendar_month_show_stime') == 1
+								&& $this->event_array[$day_number][$e]['start'] != $this->event_array[$day_number][$e]['end']) {
+							$event_html .= '<span class="calendar_event_starttime">'.date('g:ia',$this->event_array[$day_number][$e]['start']).'</span>'.get_config('calendar_month_time_sep');
+						}
+						$event_html .= $this->event_array[$day_number][$e]['heading'].'</a><br />'."\n";
+					}
+					$day_template->day_events = $event_html;
+				} else {
+					// Either no more dates on this day or none at all. Exit.
+					$day_template->day_number = $day_number;
+				}
+				$week_html .= (string)$day_template;
+			}
+			$current_week->day = $week_html;
+			$all_weeks .= (string)$current_week;
+		}
+		
+		$this->template->replace_range('week',$all_weeks);
+	}
+	
+	public function __toString() {
+		return (string)$this->template;
+	}
+}
 ?>

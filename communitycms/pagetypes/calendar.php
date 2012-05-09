@@ -27,157 +27,16 @@ if ($view == NULL) {
 if ($view != 'month' && $view != 'day' && $view != 'event') {
 	$view = get_config('calendar_default_view');
 }
+
 switch ($view) {
 	// MONTH VIEW
 	case "month":
-		$month_cal = new calendar($month,$year);
-		unset($month);
-		unset($year);
-		$page_content = NULL;
-		$template_month = new template;
-		$template_month->load_file('calendar_month');
+		$month_cal = new calendar_month($month,$year);
+		$month_cal->setup();
+		$page_content = (string)$month_cal;
 
 		// Add month and year to page title
 		Page::$title .= ' - '.date('F Y',$month_cal->first_day_ts);
-
-		// Replace template placeholders that should not be altered
-		// beyond this point
-		$template_month->current_month_name = date('F Y',$month_cal->first_day_ts);
-		$template_month->current_month = $month_cal->month;
-		$template_month->current_year = $month_cal->year;
-		$template_month->prev_month = $month_cal->prev_month;
-		$template_month->prev_year = $month_cal->prev_year;
-		$template_month->next_month = $month_cal->next_month;
-		$template_month->next_year = $month_cal->next_year;
-
-		// Replace day of week placeholders
-		monthcal_day_strings($template_month);
-
-		// Week template
-		$template_week = new template;
-		$template_week->path = $template_month->path;
-		$template_week->template = $template_month->get_range('week');
-
-		// Extract templates for each type of day
-		$template_empty_day = $template_month->get_range('empty_day');
-		$template_day = $template_month->get_range('day');
-		$template_today = $template_month->get_range('today');
-
-		// Remove day templates
-		$template_week->replace_range('empty_day','');
-		$template_week->replace_range('day','<!-- $DAY$ -->');
-		$template_week->replace_range('today','');
-
-// ----------------------------------------------------------------------------
-
-		// Load all events for the current month
-		$month_start = $month_cal->year.'-'.$month_cal->month.'-01 00:00:00';
-		$month_end = $month_cal->year.'-'.$month_cal->month.'-'.cal_days_in_month(CAL_GREGORIAN, $month_cal->month, $month_cal->year).' 23:59:59';
-		$cal_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . ' date
-			LEFT JOIN '.CALENDAR_CATEGORY_TABLE.' cat
-			ON date.category = cat.cat_id
-			WHERE date.start >= \''.$month_start.'\'
-			AND date.start <= \''.$month_end.'\'
-			ORDER BY `date`.`start` ASC, `date`.`end` DESC';
-		$cal_info_handle = $db->sql_query($cal_info_query);
-		if ($db->error[$cal_info_handle] === 1) {
-			$content .= 'Failed to read dates from database.<br />';
-		}
-		$num_events = $db->sql_num_rows($cal_info_handle);
-		$current_event_count = 1;
-
-		// Start drawing the calendar
-		$counter_dow = 0; // Day of week in loop, 0=Sunday, 1=Monday...6=Saturday
-		$all_weeks = NULL;
-		for ($counter_day = 1; $counter_day <= $month_cal->month_days; $counter_day++) {
-			if ($counter_dow == 0) { // If it's the first day of the week
-				$current_week_days = NULL; // Clear the week.
-			}
-			while ($counter_dow < $month_cal->first_day_dow && $counter_day == 1) {
-				$current_week_days .= $template_empty_day;
-				// On the first day of the month, insert blank cells to
-				// make sure that we start on the right day of the week
-				$counter_dow++;
-			}
-			unset($current_day);
-			$current_day = new template;
-			$current_day->path = $template_week->path;
-			if ($counter_day == date('j') && $month_cal->month == date('n') && $month_cal->year == date('Y')) {
-				$current_day->template = $template_today;
-			} else {
-				$current_day->template = $template_day;
-			}
-			$dates = NULL;
-
-			// If there's no events left to check, make sure the day numbers
-			// are filled in
-			if ($current_event_count > $num_events) {
-				$current_day->day_number = $counter_day;
-			}
-
-			// Only look for new events while there are still unchecked rows
-			while ($current_event_count <= $num_events) {
-				// If $cal_info_result isn't set, then we've used the
-				// last entry already
-				if (!isset($cal_info_result)) {
-					$cal_info_result = $db->sql_fetch_assoc($cal_info_handle);
-				}
-				$event_start = strtotime($cal_info_result['start']);
-				if (date('d',$event_start) == $counter_day) {
-					// There's at least one event on this day
-					$current_day->day_number = '<a href="?'.Page::$url_reference
-						.'&amp;view=day&amp;m='.$month_cal->month.'&amp;y='.$month_cal->year.'&amp;d='
-						.$counter_day.'" class="day_number">'.$counter_day.'</a>';
-				} else {
-					// Either no more dates on this day or none at all. Exit.
-					$current_day->day_number = $counter_day;
-					break;
-				}
-
-				// Give broken categories a default colour of red
-				if ($cal_info_result['colour'] == NULL) {
-					$cal_info_result['colour'] = 'unknown';
-				}
-
-				// Create the link to the event page
-				$dates .= '<a href="?'.Page::$url_reference.'&amp;view=event&amp;'
-					.'a='.$cal_info_result['id'].'" class="calendar_event">';
-				// Show icon if configured to do so
-				if (get_config('calendar_month_show_cat_icons') == 1) {
-					$dates .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$cal_info_result['colour'].'.png"'
-					.' width="10px" height="10px" alt="'.stripslashes($cal_info_result['label']).'" border="0px" /> ';
-				}
-				// Show event start time if configured to do so
-				if (get_config('calendar_month_show_stime') == 1
-						&& $cal_info_result['start'] != $cal_info_result['end']) {
-					$dates .= '<span class="calendar_event_starttime">'.date('g:ia',$event_start).'</span>'.get_config('calendar_month_time_sep');
-				}
-				$dates .= stripslashes($cal_info_result['header']).'</a><br />'."\n";
-				$current_event_count++;
-				unset($cal_info_result);
-			}
-
-			$current_day->day_events = $dates;
-			$current_week_days .= $current_day->template;
-			$counter_dow++;
-			while ($counter_dow < 7 && $counter_day == $month_cal->month_days) { // At the end of the month,
-				$current_week_days .= $template_empty_day;                 // fill any empty calendar cells with empty cells
-				$counter_dow++;
-			}
-			if ($counter_dow == 7) { // When you reach the end of the week...
-				$current_week = new template;
-				$current_week->template = $template_week->template;
-				$current_week->path = $template_week->path;
-				$current_week->day = $current_week_days;
-				$counter_dow = 0; // Set the day back to Sunday,
-				$all_weeks .= $current_week->template; // Add the full week to the page.
-				unset($current_week);
-			}
-			unset($current_day);
-			unset($day_info);
-		}
-		$template_month->replace_range('week',$all_weeks);
-		$page_content .= $template_month;
 		break;
 
 // ----------------------------------------------------------------------------
