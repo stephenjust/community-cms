@@ -114,14 +114,23 @@ class calendar_event {
 		$template_event = new template;
 		$template_event->load_file('calendar_event');
 		$template_event->event_heading = stripslashes($event_info['header']);
-		$template_event->event_author = stripslashes($event_info['author']);
+		
+		// Insert event author
+		if (get_config('calendar_show_author')) {
+			$template_event->event_author_start = NULL;
+			$template_event->event_author_end = NULL;
+			$template_event->event_author = stripslashes($event_info['author']);
+		} else
+			$template_event->replace_range('event_author',NULL);
+
 		$template_event->event_time = $event_time;
 		if (strlen($event_info['image']) > 0) {
 			$im_info = get_file_info($event_info['image']);
+			$template_event->event_image_start = NULL;
+			$template_event->event_image_end = NULL;
 			$template_event->event_image = '<img src="'.stripslashes($event_info['image']).'" class="calendar_event_image" alt="'.$im_info['label'].'" />';
-		} else {
-			$template_event->event_image = NULL;
-		}
+		} else
+			$template_event->replace_range('event_image',NULL);
 		$event_category = ($event_info['label'] == NULL) ? 'Unknown Category' : $event_info['label'];
 		$template_event->event_category = $event_category;
 		$template_event->event_description = stripslashes($event_info['description']);
@@ -194,6 +203,11 @@ class calendar_month extends calendar {
 		$this->event_array[$day][] = $event;
 	}
 	
+	/**
+	 * Pull all of the event records for the current month from the database
+	 * @global db $db
+	 * @throws Exception 
+	 */
 	private function load_events() {
 		global $db;
 
@@ -218,10 +232,17 @@ class calendar_month extends calendar {
 			$start = strtotime($event['start']);
 			$end = strtotime($event['end']);
 			
-			$this->add_event($event['id'], date('j',$start), $event['header'], $start, $end, $event['label'], $event['colour'].'.png');
+			$this->add_event($event['id'],
+					date('j',$start), $event['header'],
+					$start, $end,
+					$event['label'],
+					$event['colour'].'.png');
 		}
 	}
 	
+	/**
+	 * Load calendar template file and do initial string replacements 
+	 */
 	private function load_template() {
 		$this->template = new template;
 		$this->template->load_file('calendar_month');
@@ -260,6 +281,9 @@ class calendar_month extends calendar {
 		$this->template_day_today = $template_today;
 	}
 	
+	/**
+	 * Generate a 2-d array in the form of a standard calendar grid 
+	 */
 	private function build_grid() {
 		// Day of week: 0 - 6 = Sunday - Saturday
 		$week = 0;
@@ -315,16 +339,19 @@ class calendar_month extends calendar {
 				// Replace day number with either a static number or a link
 				if (count($this->event_array[$day_number]) > 0) {
 					// There's at least one event on this day
-					$day_template->day_number = '<a href="?'.Page::$url_reference
-						.'&amp;view=day&amp;m='.$this->month.'&amp;y='.$this->year.'&amp;d='
-						.$day_number.'" class="day_number">'.$day_number.'</a>';
+					$day_template->day_number =
+							sprintf('<a href="?%s&amp;view=day&amp;m=%u&amp;y=%u&amp;d=%u" class="day_number">%u</a>',
+									Page::$url_reference,
+									$this->month,$this->year,$day_number,$day_number);
 					
 					// Loop through day's events and add them in to the template
 					$event_html = NULL;
 					for ($e = 0; $e < count($this->event_array[$day_number]); $e++) {
 						// Create the link to the event page
-						$event_html .= '<a href="?'.Page::$url_reference.'&amp;view=event&amp;'
-							.'a='.$this->event_array[$day_number][$e]['id'].'" class="calendar_event">';
+						$event_html .=
+								sprintf('<a href="?%s&amp;view=event&amp;a=%u" class="calendar_event">',
+										Page::$url_reference,
+										$this->event_array[$day_number][$e]['id']);
 						// Show icon if configured to do so
 						if (get_config('calendar_month_show_cat_icons') == 1) {
 							$event_html .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$this->event_array[$day_number][$e]['cat_image'].'"'

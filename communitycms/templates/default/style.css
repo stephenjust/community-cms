@@ -924,12 +924,6 @@ table.calendar a.calendar_event {
 table.calendar span.calendar_event_starttime {
 	font-weight: normal;
 }
-img.calendar_event_image {
-	border: 0px;
-	float: left;
-	margin-top: 1em;
-	padding: 5px;
-}
 table.calendar_day {
 	border: 0px;
 	width: 100%;
@@ -981,6 +975,34 @@ table.calendar_nav td a {
 table.calendar_nav td a:hover {
 	background: #CCEEFF;
 	border: 1px solid #003366;
+}
+
+/* Calendar event view */
+h1.cal_event-heading {
+	border-bottom: 1px solid #CCCCCC;
+	border-bottom-style: dotted;
+	font-size: 1.5em;
+	font-weight: normal;
+}
+div.cal_event-image {
+	float: left;
+	margin: 0px 0.5em 0.5em 0.5em;
+	padding: 0px 0.5em 0px 0px;
+}
+div.cal_event-image img {
+	border: 0px;
+}
+div.cal_event-content {
+	float: left;
+}
+p.cal_event-author {
+	color: #333333;
+	font-size: small;
+	margin-top: 0px;
+}
+p.cal_event-time {
+	font-style: italic;
+	margin-top: 0px;
 }
 
 span.newsletter_year {

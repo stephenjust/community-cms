@@ -125,13 +125,15 @@ switch ($_GET['action']) {
 			$new_fields['month_day_format'] = (int)$_POST['month_day_format'];
 			$new_fields['month_time_sep'] = $_POST['month_time_sep'];
 			$new_fields['default_location'] = $_POST['default_location'];
+			$new_fields['cal_show_author'] = (isset($_POST['cal_show_author'])) ? checkbox($_POST['cal_show_author']) : 0;
 			if (set_config('calendar_default_view',$new_fields['default_view']) &&
 				set_config('calendar_month_show_stime',$new_fields['month_show_stime']) &&
 				set_config('calendar_month_show_cat_icons',$new_fields['month_show_cat_icons']) &&
 				set_config('calendar_month_day_format',$new_fields['month_day_format']) &&
 				set_config('calendar_save_locations',$new_fields['save_locations']) &&
 				set_config('calendar_month_time_sep',$new_fields['month_time_sep']) &&
-				set_config('calendar_default_location',$new_fields['default_location']))
+				set_config('calendar_default_location',$new_fields['default_location']) &&
+				set_config('calendar_show_author',$new_fields['cal_show_author']))
 			{
 				$content .= 'Updated calendar settings.<br />'."\n";
 				Log::addMessage('Updated calendar settings');
@@ -292,6 +294,7 @@ if ($acl->check_permission('calendar_settings')) {
 	$settings_form->add_select('month_day_format','Label Days on Month Calendar as',array(1,2),array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'),get_config('calendar_month_day_format'));
 	$settings_form->add_checkbox('save_locations','Save Location Entries',get_config('calendar_save_locations'));
 	$settings_form->add_textbox('default_location','Default Event Location',get_config('calendar_default_location'),'');
+	$settings_form->add_checkbox('cal_show_author','Show Event Author',get_config('calendar_show_author'));
 	$settings_form->add_submit('submit','Save Changes');
 	$tab_content['settings'] .= $settings_form;
 	unset($settings_form);
