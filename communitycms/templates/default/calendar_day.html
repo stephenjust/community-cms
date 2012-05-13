@@ -1,13 +1,18 @@
-<table class='calendar_day'>
-	<tr>
-		<th>Time</th>
-		<th>Heading</th>
-		<th>Description</th>
-	</tr>
-	<!-- $EVENT_START$ --><tr>
-		<td class='time'><!-- $EVENT_TIME$ --></td>
-		<td class='head'><a href='?id=<!-- $PAGE_ID$ -->&view=event&a=<!-- $EVENT_ID$ -->'><!-- $EVENT_HEADING$ --></a></td>
-		<td class='description'><!-- $EVENT_DESCRIPTION$ --></td>
-	</tr>
-<!-- $EVENT_END$ -->
+<h1 class="cal_day-heading"><!-- $DAY_HEADING$ --></h1>
+<table class="cal_day-table" cellspacing="0">
+	<thead>
+		<tr>
+			<th>Time</th>
+			<th>Heading</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- $EVENT_START$ --><tr>
+			<td class='time'><!-- $EVENT_TIME$ --></td>
+			<td class='head'><a href='?id=<!-- $PAGE_ID$ -->&view=event&a=<!-- $EVENT_ID$ -->'><!-- $EVENT_HEADING$ --></a></td>
+			<td class='description'><!-- $EVENT_DESCRIPTION$ --></td>
+		</tr>
+		<!-- $EVENT_END$ -->
+	</tbody>
 </table>

@@ -19,35 +19,6 @@ include(ROOT.'functions/files_class.php');
 // ----------------------------------------------------------------------------
 
 /**
- * Load template file
- * @deprecated
- * @global db $db Database object
- * @param string $filename Name of template file
- * @return array Template file ['contents'] and ['template_path']
- */
-function load_template_file($filename = 'index.html') {
-	global $db; // Needed for db query
-	$template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
-		WHERE id = '.get_config('site_template');
-	$template_handle = $db->sql_query($template_query);
-	if ($db->error[$template_handle] === 1) {
-		echo 'Failed to read template information.';
-		return;
-	} else {
-		$template = $db->sql_fetch_assoc($template_handle);
-	}
-	$template_path = $template['path'];
-	$template_file = $template_path.$filename;
-	$handle = fopen($template_file, "r");
-	$tpl_file['contents'] = fread($handle, filesize($template_file));
-	$tpl_file['template_path'] = $template_path;
-	fclose($handle);
-	return $tpl_file;
-}
-
-// ----------------------------------------------------------------------------
-
-/**
  * file_upload_box - Create a file upload form
  * @global object $acl
  * @param integer $show_dirs

@@ -70,8 +70,9 @@ switch ($view) {
 			AND `start` <= \''.$event_day_e.'\'
 			ORDER BY `start` ASC, `end` DESC';
 		$day_events_handle = $db->sql_query($day_events_query);
-		$page_content .= '<a href="?'.Page::$url_reference.'&amp;view=month&amp;m='.$month.
-			'&amp;y='.$year.'">Back to month view</a><br />'."\n";
+		$page_content .=
+				sprintf('<a href="?%s&amp;view=month&amp;m=%u&amp;y=%u">Back to month view</a><br />'."\n",
+						Page::$url_reference,$month,$year);
 		if ($db->error[$day_events_handle] === 1) {
 			$page_content .= 'Failed to read list of events from the database.';
 			break;
@@ -81,16 +82,15 @@ switch ($view) {
 			$page_content .= 'There are no events to display.';
 			break;
 		}
-		$day_template = load_template_file('calendar_day.html');
-		$day_template_temp = explode('<!-- $EVENT_START$ -->',$day_template['contents']);
-		$day_template_head = $day_template_temp[0];
-		$day_template_temp = explode('<!-- $EVENT_END$ -->',$day_template_temp[1]);
-		$event_template = $day_template_temp[0];
-		$day_template_foot = $day_template_temp[1];
-		unset($day_template);
-		unset($day_template_temp);
-		$page_content .= $day_template_head;
-		unset($day_template_head);
+		$day_template = new template;
+		$day_template->load_file('calendar_day');
+		$day_template->day_heading = date('l, F j',strtotime($event_day_s));
+		$event_template = new template;
+		$event_template->path = $day_template->path;
+		$event_template->template = $day_template->get_range('event');
+		$day_template->replace_range('event','<!-- $EVENT$ -->');
+
+		$event_rows = NULL;
 		for ($i = 1; $db->sql_num_rows($day_events_handle) >= $i; $i++) {
 			$day_events = $db->sql_fetch_assoc($day_events_handle);
 			$event_start = strtotime($day_events['start']);
@@ -101,20 +101,15 @@ switch ($view) {
 				$event_time = date(get_config('time_format'),$event_start).' - '.
 						date(get_config('time_format'),$event_end);
 			}
-			$current_event = $event_template;
-			$current_event = str_replace('<!-- $EVENT_ID$ -->',$day_events['id'],$current_event);
-			$current_event = str_replace('<!-- $EVENT_TIME$ -->',$event_time,$current_event);
-			$current_event = str_replace('<!-- $EVENT_HEADING$ -->',stripslashes($day_events['header']),$current_event);
-			$current_event = str_replace('<!-- $EVENT_DESCRIPTION$ -->',stripslashes(truncate(strip_tags($day_events['description']),100)),$current_event);
-			$page_content .= $current_event;
+			$current_event = clone $event_template;
+			$current_event->event_id = $day_events['id'];
+			$current_event->event_time = $event_time;
+			$current_event->event_heading = $day_events['header'];
+			$current_event->event_description = truncate(strip_tags($day_events['description']),100);
+			$event_rows .= (string)$current_event;
 		}
-		$month_temp = $event_start;
-		$page_content .= $day_template_foot;
-		unset($day_template_foot);
-		unset($event_template);
-		unset($day_events_query);
-		unset($day_events_handle);
-		unset($day_events);
+		$day_template->event = $event_rows;
+		$page_content .= $day_template;
 		$month_text = date('F',$event_start);
 		Page::$title .= ' - '.$month_text.' '.$day.', '.$year;
 		break;

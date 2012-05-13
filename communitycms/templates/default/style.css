@@ -924,28 +924,6 @@ table.calendar a.calendar_event {
 table.calendar span.calendar_event_starttime {
 	font-weight: normal;
 }
-table.calendar_day {
-	border: 0px;
-	width: 100%;
-}
-table.calendar_day td {
-	vertical-align: top;
-}
-table.calendar_day td.time {
-	height: 20px;
-	width: 140px;
-}
-table.calendar_day td.head {
-	height: 20px;
-	width: 200px;
-	overflow: hidden;
-	table-layout: fixed;
-}
-table.calendar_day td.description {
-	height: 20px;
-	overflow: hidden;
-	table-layout: fixed;
-}
 table.calendar_nav {
 	float: right;
 }
@@ -979,8 +957,7 @@ table.calendar_nav td a:hover {
 
 /* Calendar event view */
 h1.cal_event-heading {
-	border-bottom: 1px solid #CCCCCC;
-	border-bottom-style: dotted;
+	border-bottom: 1px dotted #CCCCCC;
 	font-size: 1.5em;
 	font-weight: normal;
 }
@@ -1003,6 +980,42 @@ p.cal_event-author {
 p.cal_event-time {
 	font-style: italic;
 	margin-top: 0px;
+}
+
+/* Calendar day view */
+h1.cal_day-heading {
+	border-bottom: 1px dotted #CCCCCC;
+	font-size: 1.5em;
+	font-weight: normal;
+}
+.cal_day-table {
+	border: 1px solid #CCCCCC;
+	width: 100%;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+.cal_day-table thead {
+	background: #CCCCCC;
+}
+.cal_day-table td {
+	border-top: 1px solid #CCCCCC;
+	vertical-align: top;
+}
+.cal_day-table td.time {
+	height: 20px;
+	width: 140px;
+}
+.cal_day-table td.head {
+	height: 20px;
+	width: 200px;
+	overflow: hidden;
+	table-layout: fixed;
+}
+.cal_day-table td.description {
+	height: 20px;
+	overflow: hidden;
+	table-layout: fixed;
 }
 
 span.newsletter_year {
