@@ -956,6 +956,10 @@ table.calendar_nav td a:hover {
 }
 
 /* Calendar event view */
+div.cal_event {
+	position: relative;
+	width: 100%;
+}
 h1.cal_event-heading {
 	border-bottom: 1px dotted #CCCCCC;
 	font-size: 1.5em;

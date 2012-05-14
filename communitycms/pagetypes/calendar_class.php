@@ -79,7 +79,9 @@ class calendar_event {
 		return;
 	}
 	function get_event($id) {
+		global $acl;
 		global $db;
+
 		$this->event_query = 'SELECT `cal`.*, `cat`.`label`
 			FROM `'.CALENDAR_TABLE.'` cal
 			LEFT JOIN `'.CALENDAR_CATEGORY_TABLE.'` cat
@@ -114,6 +116,17 @@ class calendar_event {
 		$template_event = new template;
 		$template_event->load_file('calendar_event');
 		$template_event->event_heading = stripslashes($event_info['header']);
+		
+		// Insert edit bar
+		$editbar = new editbar;
+		$editbar->set_label('Event');
+		if (!$acl->check_permission('adm_calendar_edit_date'))
+			$editbar->visible = false;
+		$editbar->add_control('admin.php?module=calendar_edit_date&id='.$event_info['id'],
+				'edit.png',
+				'Edit',
+				array('adm_calendar_edit_date','admin_access'));
+		$template_event->edit_bar = $editbar;
 		
 		// Insert event author
 		if (get_config('calendar_show_author')) {
