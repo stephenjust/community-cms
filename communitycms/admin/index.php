@@ -11,18 +11,19 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-$content = NULL;
+global $acl;
 
 if ($_GET['action'] == 'new_log') {
-	if (!$acl->check_permission('log_post_custom_message')) {
-		$content .= 'You are not authorized to post custom log messages.<br />';
-	} else {
+	try {
+		if (!$acl->check_permission('log_post_custom_message'))
+			throw new Exception('You are not authorized to post custom log messages.');
 		$log_message = strip_tags($_POST['message']);
-		if (strlen($log_message) > 5) {
-			Log::addMessage($log_message);
-		} else {
-			$content .= 'The log message you entered was too short.<br />';
-		}
+		if (strlen($log_message) <= 5)
+			throw new Exception('The log message you entered was too short.');
+		Log::addMessage($log_message);
+	}
+	catch (Exception $e) {
+		echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 	}
 } // IF 'new_log'
 
@@ -66,5 +67,5 @@ $tab['users'] = $tab_layout->add_tab('User Summary',$tab_content['user']);
 $tab_content['database'] = 'Database Content Version: '.get_config('db_version').'<br />
 	Database Software Version: '.$db->sql_server_info();
 $tab['database'] = $tab_layout->add_tab('Database Summary',$tab_content['database']);
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

@@ -12,17 +12,12 @@
  *
  * @package CommunityCMS.admin
  */
-class admin_page extends Page {
+class AdminPage extends Page {
 	/**
 	 * Module
 	 * @var string
 	 */
-	public $module = "";
-
-	public function __construct($module) {
-		// FIXME: Stub
-		return;
-	}
+	public static $module = "";
 
 	/**
 	 * display_header - Print the page header
@@ -160,6 +155,28 @@ class admin_page extends Page {
 		unset($template);
 	}
 
+	public static function display_admin() {
+		global $CONFIG;
+		global $db;
+		global $acl;
+
+		$template_page = new template;
+		$template_page->load_admin_file();
+
+		$template_page->nav_bar = '<div id="menu">'.admin_nav().'</div>';
+		$template_page->nav_login = Page::display_login_box();
+		$template_page_bottom = $template_page->split('content');
+		echo $template_page;
+		unset($template_page);
+		$content = NULL;
+		ob_start();
+		include(ROOT.'admin/'.AdminPage::$module.'.php');
+		$content .= ob_get_clean();
+		$template_page_bottom->content = $content;
+		echo $template_page_bottom;
+		unset($template_page_bottom);
+	}
+	
 	public static function display_debug() {
 		global $db;
 		global $debug;
@@ -178,6 +195,16 @@ class admin_page extends Page {
 		$template->load_admin_file('footer');
 		$template->footer = 'Powered by Community CMS';
 		echo $template;
+	}
+	
+	public static function setModule($module) {
+		if ($module === NULL) $module = 'index';
+		if (!preg_match('/^[a-z_]+$/i',$module))
+			throw new Exception('Invalid admin module.');
+		if (!file_exists(ROOT.'admin/'.$module.'.php')) 
+			throw new Expcetion('Admin module '.$module.' does not exist.');
+		
+		AdminPage::$module = $module;
 	}
 }
 ?>
