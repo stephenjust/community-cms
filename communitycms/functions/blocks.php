@@ -43,51 +43,128 @@ function get_block($block_id = NULL) {
 }
 
 /**
- * delete_block - Delete a block
- * @global object $acl Permission object
- * @global db $db Database connection object
- * @global Debug $debug Debug object
- * @param integer $id Block ID
- * @return string Response message
+ * Create a new block record
+ * @global acl $acl
+ * @global db $db
+ * @param string $type
+ * @param string $attributes Comma separated list
+ * @throws Exception 
  */
-function delete_block($id) {
+function block_create($type, $attributes) {
 	global $acl;
 	global $db;
-	global $debug;
-	$message = NULL;
 
-	if (!$acl->check_permission('block_delete')) {
-		$message = '<span class="errormessage">You do not have the necessary permissions to delete a block.</span><br />';
-		return $message;
-	}
+	if (!$acl->check_permission('block_create'))
+		throw new Exception('You are not allowed to create blocks.');
 
-	// Check data types
-	if (!is_numeric($id)) {
-		$message .= 'Malformed block ID provided.<br />'."\n";
-		return $message;
+	// Sanitize inputs
+	$type = $db->sql_escape_string($type);
+	if (strlen($type) == 0)
+		throw new Exception('Invalid block type.');
+	$attributes = explode(',',$attributes);
+	$attb_count = count($attributes);
+
+	// Construct attribute string
+	$attributes_final = array();
+	for ($i = 0; $i < $attb_count; $i++) {
+		if ($attributes[$i] == NULL) continue;
+		if (!isset($_POST[$attributes[$i]])) $_POST[$attributes[$i]] = NULL;
+		$attributes_final[] = $attributes[$i].'='.$_POST[$attributes[$i]];
 	}
-	$block_exists_query = 'SELECT * FROM `' . BLOCK_TABLE . '`
-		WHERE `id` = '.$id.' LIMIT 1';
+	$attb_string = $db->sql_escape_string(implode(',',$attributes_final));
+	
+	// Create record
+	$query = 'INSERT INTO `'.BLOCK_TABLE."`
+		(`type`,`attributes`)
+		VALUES
+		('$type','$attb_string')";
+	$handle = $db->sql_query($query);
+	if($db->error[$handle] === 1)
+		throw new Exception('An error occurred while creating the block.');
+
+	Log::addMessage('Created block \''.stripslashes($type).' ('.stripslashes($attb_string).')\'');
+}
+
+/**
+ * Edit a block entry
+ * @global acl $acl
+ * @global db $db
+ * @param integer $id Block ID
+ * @param string $attributes Comma separated list
+ * @throws Exception 
+ */
+function block_edit($id,$attributes) {
+	global $acl;
+	global $db;
+	
+	if (!$acl->check_permission('block_edit'))
+		throw new Exception('You are not allowed to edit content blocks.');
+
+	// Validate inputs
+	$id = (int)$id;
+	if ($id < 1)
+		throw new Exception('Invalid block ID.');
+	$attributes = explode(',',$attributes);
+	$attb_count = count($attributes);
+
+	// Generate a string of attributes
+	$attributes_final = array();
+	for ($i = 0; $i < $attb_count; $i++) {
+		if ($attributes[$i] == NULL) continue;
+		if (!isset($_POST[$attributes[$i]])) $_POST[$attributes[$i]] = NULL;
+		$attributes_final[] = $attributes[$i].'='.$_POST[$attributes[$i]];
+	}
+	$attb_string = $db->sql_escape_string(implode(',',$attributes_final));
+
+	// Update the block record
+	$query = 'UPDATE `'.BLOCK_TABLE."`
+		SET `attributes` = '$attb_string'
+		WHERE `id` = $id";
+	$handle = $db->sql_query($query);
+	if($db->error[$handle] === 1)
+		throw new Exception('An error occurred while editing the block.');
+	Log::addMessage('Edited block \''.$id.' ('.stripslashes($attb_string).')\'');
+}
+
+/**
+ * Delete a block record
+ * @global acl $acl Permission object
+ * @global db $db Database connection object
+ * @param integer $id Block ID
+ * @throws Exception
+ */
+function block_delete($id) {
+	global $acl;
+	global $db;
+
+	if (!$acl->check_permission('block_delete'))
+		throw new Exception('You are not allowed to delete blocks.');
+
+	// Sanitize inputs
+	$id = (int)$id;
+	if ($id < 1)
+		throw new Exception('Invalid block ID.');
+
+	// Check that block exists
+	$block_exists_query = 'SELECT `type`,`attributes`
+		FROM `'.BLOCK_TABLE.'`
+		WHERE `id` = '.$id.'
+		LIMIT 1';
 	$block_exists_handle = $db->sql_query($block_exists_query);
-	if($db->error[$block_exists_handle] === 1) {
-		$message .= 'Failed to read block information.<br />'."\n";
-	} else {
-		if ($db->sql_num_rows($block_exists_handle) == 1) {
-			$delete_block_query = 'DELETE FROM `' . BLOCK_TABLE . '`
-				WHERE `id` = '.$id;
-			$delete_block = $db->sql_query($delete_block_query);
-			if (!$db->error[$delete_block] === 1) {
-				$message .= 'Failed to delete block.<br />'."\n";
-			} else {
-				$block_exists = $db->sql_fetch_assoc($block_exists_handle);
-				Log::addMessage('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
-				$message .= 'Successfully deleted block.<br />'."\n";
-			}
-		} else {
-			$message .= 'Could not find the block you are trying to delete.<br />'."\n";
-		}
-		return $message;
-	}
+	if($db->error[$block_exists_handle] === 1)
+		throw new Exception('An error occurred while checking if the block exists.');
+	if ($db->sql_num_rows($block_exists_handle) === 0)
+		throw new Exception('The block you are trying to delete does not exist.');
+
+	// Delete the block record
+	$delete_block_query = 'DELETE FROM `' . BLOCK_TABLE . '`
+		WHERE `id` = '.$id;
+	$delete_block = $db->sql_query($delete_block_query);
+	if (!$db->error[$delete_block] === 1)
+		throw new Exception('An error occurred while deleting the block.');
+	
+	$block_exists = $db->sql_fetch_assoc($block_exists_handle);
+	Log::addMessage('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
 }
 
 /**

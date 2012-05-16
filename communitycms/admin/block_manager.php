@@ -11,47 +11,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-/**
- * Edit a block entry
- * @global acl $acl
- * @global db $db
- * @param integer $id Block ID
- * @param string $attributes Comma separated list
- * @throws Exception 
- */
-function block_edit($id,$attributes) {
-	global $acl;
-	global $db;
-	
-	if (!$acl->check_permission('block_edit'))
-		throw new Exception('You are not allowed to edit content blocks.');
-
-	// Validate inputs
-	$id = (int)$id;
-	if ($id < 1)
-		throw new Exception('Invalid block ID.');
-	$attributes = explode(',',$attributes);
-	$attb_count = count($attributes);
-
-	// Generate a string of attributes
-	$attributes_final = array();
-	for ($i = 0; $i < $attb_count; $i++) {
-		if (!isset($_POST[$attributes[$i]])) $_POST[$attributes[$i]] = NULL;
-		$attributes_final[] = $attributes[$i].'='.$_POST[$attributes[$i]];
-	}
-	$attb_string = $db->sql_escape_string(implode(',',$attributes_final));
-
-	// Update the block record
-	$query = 'UPDATE `'.BLOCK_TABLE."`
-		SET `attributes` = '$attb_string'
-		WHERE `id` = $id";
-	$handle = $db->sql_query($query);
-	if($db->error[$handle] === 1)
-		throw new Exception('An error occurred while editing the block.');
-	Log::addMessage('Edited block \''.$id.' ('.stripslashes($attb_string).')\'');
-}
-
-
 global $acl;
 
 if (!$acl->check_permission('adm_block_manager'))
@@ -64,39 +23,25 @@ switch ($_GET['action']) {
 		break;
 
 	case 'delete':
-		echo delete_block($_GET['id']);
+		try {
+			block_delete($_GET['id']);
+			echo 'Successfully deleted block.<br />';
+		}
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		}
 		break;
 
 	case 'new':
-		if (!$acl->check_permission('block_create')) {
-			echo '<span class="errormessage">You do not have the permissions required to create a new block.</span><br />';
-			break;
+		try {
+			if (!isset($_POST['type'])) $_POST['type'] = NULL;
+			if (!isset($_POST['attributes'])) $_POST['attributes'] = NULL;
+			block_create($_POST['type'], $_POST['attributes']);
+			echo 'Successfully created block.<br />';
 		}
-		$type = addslashes($_POST['type']);
-		$attributes = addslashes($_POST['attributes']);
-		if(strlen($attributes) > 0) {
-			$attributes = explode(',',$attributes);
-			$attb_count = count($attributes);
-		} else {
-			$attb_count = 0;
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
-		$attributes_final = NULL;
-		for ($i = 0; $i < $attb_count; $i++) {
-			$attributes_final .= $attributes[$i].'='.addslashes($_POST[$attributes[$i]]);
-			if ($i + 1 != $attb_count) {
-				$attributes_final .= ',';
-			}
-		} // FOR
-		$new_query = 'INSERT INTO ' . BLOCK_TABLE . ' (type,attributes)
-			VALUES (\''.$type.'\',\''.$attributes_final.'\')';
-		$new_handle = $db->sql_query($new_query);
-		if($db->error[$new_handle] === 1) {
-			echo 'Failed to create block.';
-			break;
-		}
-		echo 'Successfully created block.<br />'."\n";
-		Log::addMessage('Created block \''.$type.' ('.$attributes_final.')\'');
-		unset($type);
 		break;
 
 // ----------------------------------------------------------------------------
@@ -147,26 +92,26 @@ switch ($_GET['action']) {
 
 // ----------------------------------------------------------------------------
 
-$block_list_query = 'SELECT * FROM `' . BLOCK_TABLE . '` ORDER BY `id` DESC';
+$block_list_query = 'SELECT `id`,`type`,`attributes`
+	FROM `'.BLOCK_TABLE.'`
+	ORDER BY `type` ASC';
 $block_list_handle = $db->sql_query($block_list_query);
 $block_list_rows = array();
 for ($i = 1; $i <= $db->sql_num_rows($block_list_handle); $i++) {
 	$block_list = $db->sql_fetch_assoc($block_list_handle);
 	$attribute_list = ($block_list['attributes'] == '') ? NULL : ' ('.$block_list['attributes'].')';
-	if ($acl->check_permission('block_delete')) {
-		$block_list_rows[] = array($block_list['type'].$attribute_list,
-			'<a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a>',
-			'<a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>');
-	} else {
-		$block_list_rows[] = array($block_list['type'].$attribute_list,
-			'<a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>');
-	}
+	$current_row = array($block_list['type'].$attribute_list);
+	if ($acl->check_permission('block_delete'))
+		$current_row[] = '<a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a>';
+	if ($acl->check_permission('block_edit'))
+		$current_row[] = '<a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>';
+	$block_list_rows[] = $current_row;
 }
 $heading_list = array('Info');
-if ($acl->check_permission('block_delete')) {
+if ($acl->check_permission('block_delete'))
 	$heading_list[] = 'Delete';
-}
-$heading_list[] = 'Edit';
+if ($acl->check_permission('block_edit'))
+	$heading_list[] = 'Edit';
 $tab_content['manage'] = create_table($heading_list, $block_list_rows);
 $tabs['manage'] = $tab_layout->add_tab('Manage Blocks',$tab_content['manage']);
 
