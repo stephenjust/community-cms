@@ -91,6 +91,7 @@ function err_page($code = 0) {
 }
 
 // Add special exception classes
+class AdminException extends Exception {}
 class GalleryException extends Exception {}
 class PageException extends Exception {}
 class PollException extends Exception {}

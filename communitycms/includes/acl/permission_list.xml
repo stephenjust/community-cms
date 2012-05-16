@@ -60,6 +60,9 @@
 		<key name="block_delete"
 			 title="Delete Blocks"
 			 description="Allow a user to delete blocks" />
+		<key name="block_edit"
+			 title="Edit Blocks"
+			 description="Allow a user to edit blocks" />
 	</category>
 	<category name="Calendar">
 		<key name="adm_calendar"

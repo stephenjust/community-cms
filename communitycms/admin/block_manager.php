@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,12 +11,51 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-$content = NULL;
+/**
+ * Edit a block entry
+ * @global acl $acl
+ * @global db $db
+ * @param integer $id Block ID
+ * @param string $attributes Comma separated list
+ * @throws Exception 
+ */
+function block_edit($id,$attributes) {
+	global $acl;
+	global $db;
+	
+	if (!$acl->check_permission('block_edit'))
+		throw new Exception('You are not allowed to edit content blocks.');
 
-if (!$acl->check_permission('adm_block_manager')) {
-	$content .= 'You do not have the necessary permissions to access this module.';
-	return true;
+	// Validate inputs
+	$id = (int)$id;
+	if ($id < 1)
+		throw new Exception('Invalid block ID.');
+	$attributes = explode(',',$attributes);
+	$attb_count = count($attributes);
+
+	// Generate a string of attributes
+	$attributes_final = array();
+	for ($i = 0; $i < $attb_count; $i++) {
+		if (!isset($_POST[$attributes[$i]])) $_POST[$attributes[$i]] = NULL;
+		$attributes_final[] = $attributes[$i].'='.$_POST[$attributes[$i]];
+	}
+	$attb_string = $db->sql_escape_string(implode(',',$attributes_final));
+
+	// Update the block record
+	$query = 'UPDATE `'.BLOCK_TABLE."`
+		SET `attributes` = '$attb_string'
+		WHERE `id` = $id";
+	$handle = $db->sql_query($query);
+	if($db->error[$handle] === 1)
+		throw new Exception('An error occurred while editing the block.');
+	Log::addMessage('Edited block \''.$id.' ('.stripslashes($attb_string).')\'');
 }
+
+
+global $acl;
+
+if (!$acl->check_permission('adm_block_manager'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 $tab_layout = new tabs;
 
@@ -25,12 +64,12 @@ switch ($_GET['action']) {
 		break;
 
 	case 'delete':
-		$content .= delete_block($_GET['id']);
+		echo delete_block($_GET['id']);
 		break;
 
 	case 'new':
 		if (!$acl->check_permission('block_create')) {
-			$content .= '<span class="errormessage">You do not have the permissions required to create a new block.</span><br />';
+			echo '<span class="errormessage">You do not have the permissions required to create a new block.</span><br />';
 			break;
 		}
 		$type = addslashes($_POST['type']);
@@ -52,10 +91,10 @@ switch ($_GET['action']) {
 			VALUES (\''.$type.'\',\''.$attributes_final.'\')';
 		$new_handle = $db->sql_query($new_query);
 		if($db->error[$new_handle] === 1) {
-			$content .= 'Failed to create block.';
+			echo 'Failed to create block.';
 			break;
 		}
-		$content .= 'Successfully created block.<br />'."\n";
+		echo 'Successfully created block.<br />'."\n";
 		Log::addMessage('Created block \''.$type.' ('.$attributes_final.')\'');
 		unset($type);
 		break;
@@ -64,11 +103,11 @@ switch ($_GET['action']) {
 
 	case 'edit':
 		if (!isset($_GET['id'])) {
-			$content .= 'No block to edit.<br />'."\n";
+			echo 'No block to edit.<br />'."\n";
 			break;
 		}
 		if (!is_numeric($_GET['id'])) {
-			$content .= 'Invalid block ID.<br />'."\n";
+			echo 'Invalid block ID.<br />'."\n";
 			break;
 		}
 		$edit_id = (int)$_GET['id'];
@@ -94,39 +133,15 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'edit_save':
-		if (!isset($_POST['id'])) {
-			$content .= 'No block to save.<br />'."\n";
-			break;
+		try {
+			if (!isset($_POST['id'])) $_POST['id'] = NULL;
+			if (!isset($_POST['attributes'])) $_POST['attributes'] = NULL;
+			block_edit($_POST['id'],$_POST['attributes']);
+			echo 'Successfully edited block.<br />'."\n";
 		}
-		if (!is_numeric($_POST['id'])) {
-			$content .= 'Invalid block ID.<br />'."\n";
-			break;
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
-		if (!isset($_POST['attributes'])) {
-			$content .= 'No attributes to save.<br />'."\n";
-			break;
-		}
-		$attributes = explode(',',$_POST['attributes']);
-		unset($_POST['attributes']);
-		$attb_count = count($attributes);
-
-		$attributes_final = NULL;
-		for ($i = 0; $i < $attb_count; $i++) {
-			$attributes_final .= $attributes[$i].'='.addslashes($_POST[$attributes[$i]]);
-			if ($i + 1 != $attb_count) {
-				$attributes_final .= ',';
-			}
-		} // FOR
-		$new_query = 'UPDATE `' . BLOCK_TABLE . '`
-			SET `attributes` = \''.$attributes_final.'\'
-			WHERE `id` = '.(int)$_POST['id'].'';
-		$new_handle = $db->sql_query($new_query);
-		if($db->error[$new_handle] === 1) {
-			$content .= 'Failed to edit block.';
-			break;
-		}
-		$content .= 'Successfully edited block.<br />'."\n";
-		Log::addMessage('Edited block \''.$_POST['id'].' ('.$attributes_final.')\'');
 		break;
 }
 
@@ -197,5 +212,5 @@ if ($acl->check_permission('block_create')) {
 	$tab_layout->add_tab('Create Block',$tab_content['create']);
 }
 
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

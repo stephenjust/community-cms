@@ -170,7 +170,12 @@ class AdminPage extends Page {
 		unset($template_page);
 		$content = NULL;
 		ob_start();
-		include(ROOT.'admin/'.AdminPage::$module.'.php');
+		try {
+			include(ROOT.'admin/'.AdminPage::$module.'.php');
+		}
+		catch (AdminException $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		}
 		$content .= ob_get_clean();
 		$template_page_bottom->content = $content;
 		echo $template_page_bottom;
