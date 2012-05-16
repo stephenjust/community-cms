@@ -64,10 +64,8 @@ function pagemessage_edit($id,$page,$content,$start,$end,$expire) {
 	Log::addMessage('Edited page message for page \''.$page_name['title'].'\'');
 }
 
-if (!$acl->check_permission('adm_page_message_edit')) {
-	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+if (!$acl->check_permission('adm_page_message_edit'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 $content = NULL;
 if ($_GET['action'] == 'edit') {

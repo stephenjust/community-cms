@@ -11,10 +11,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_gallery_settings')) {
-	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+if (!$acl->check_permission('adm_gallery_settings'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 $content = NULL;
 

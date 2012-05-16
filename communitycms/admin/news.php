@@ -13,10 +13,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 $content = NULL;
 include(ROOT.'functions/news.php');
 
-if (!$acl->check_permission('adm_news')) {
-	$content .= '<span class="errormessage">You do not have the necessary permissions to access this module.</span>';
-	return true;
-}
+if (!$acl->check_permission('adm_news'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 // ----------------------------------------------------------------------------
 

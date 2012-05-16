@@ -11,10 +11,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_user')) {
-	$content .= '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+if (!$acl->check_permission('adm_user'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 $content = NULL;
 switch ($_GET['action']) {

@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2009-2011 Stephen Just
+ * @copyright Copyright (C) 2009-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,12 +11,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_contacts_manage')) {
-	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+global $acl;
 
-$content = NULL;
+if (!$acl->check_permission('adm_contacts_manage'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
+
 include(ROOT.'functions/contacts.php');
 $tab_layout = new tabs;
 
@@ -61,13 +60,13 @@ switch ($_GET['action']) {
 		break;
 	case 'delete':
 		if (!$acl->check_permission('contact_delete')) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to delete a contact.</span><br />'."\n";
+			echo '<span class="errormessage">You do not have the necessary permissions to delete a contact.</span><br />'."\n";
 			break;
 		}
 		if (delete_contact($_GET['id'])) {
-			$content .= 'Successfully deleted contact.<br />';
+			echo 'Successfully deleted contact.<br />';
 		} else {
-			$content .= '<span class="errormessage">Failed to delete contact.</span><br />'."\n";
+			echo '<span class="errormessage">Failed to delete contact.</span><br />'."\n";
 		}
 		break;
 
@@ -86,7 +85,7 @@ switch ($_GET['action']) {
 			// Remove special characters that may be used in a phone number
 			$phone = str_replace(array('-','(',')',' ','.','+'),NULL,$phone);
 			if (!is_numeric($phone)) {
-				$content .= 'Invalid telephone number.<br />'."\n";
+				echo 'Invalid telephone number.<br />'."\n";
 				break;
 			}
 		} else {
@@ -96,7 +95,7 @@ switch ($_GET['action']) {
 		// Verify email address
 		if ($email != "") {
 			if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
-				$content .= 'Invalid E-Mail address.<br />'."\n";
+				echo 'Invalid E-Mail address.<br />'."\n";
 				break;
 			}
 		}
@@ -107,11 +106,11 @@ switch ($_GET['action']) {
 				WHERE `username` = \''.$uname.'\'';
 			$username_handle = $db->sql_query($username_query);
 			if ($db->error[$username_handle] === 1) {
-				$content .= 'Failed to check if you entered a valid username.<br />'."\n";
+				echo 'Failed to check if you entered a valid username.<br />'."\n";
 				break;
 			}
 			if ($db->sql_num_rows($username_handle) == 0) {
-				$content .= 'This contact will not be associated with the chosen
+				echo 'This contact will not be associated with the chosen
 					username because that user does not exist.<br />'."\n";
 				$uid = 0;
 			} else {
@@ -130,10 +129,10 @@ switch ($_GET['action']) {
 			'.$phone.',\''.$email.'\',\''.$address.'\')';
 		$new_contact_handle = $db->sql_query($new_contact_query);
 		if ($db->error[$new_contact_handle] === 1) {
-			$content .= 'Failed to create contact.<br />'."\n";
+			echo 'Failed to create contact.<br />'."\n";
 			break;
 		}
-		$content .= 'Successfully created contact.<br />'."\n";
+		echo 'Successfully created contact.<br />'."\n";
 		Log::addMessage('New contact \''.$name.'\'');
 		break;
 
@@ -142,7 +141,7 @@ switch ($_GET['action']) {
 	case 'edit':
 		// Validate ID
 		if (!is_numeric($_GET['id'])) {
-			$content .= 'Invalid contact ID.<br />'."\n";
+			echo 'Invalid contact ID.<br />'."\n";
 			break;
 		}
 		$id = (int)$_GET['id'];
@@ -150,11 +149,11 @@ switch ($_GET['action']) {
 			WHERE `id` = '.$id.' LIMIT 1';
 		$get_info_handle = $db->sql_query($get_info_query);
 		if ($db->error[$get_info_handle] === 1) {
-			$content .= 'Failed to read contact information.<br />'."\n";
+			echo 'Failed to read contact information.<br />'."\n";
 			break;
 		}
 		if ($db->sql_num_rows($get_info_handle) != 1) {
-			$content .= 'Contact not found.<br />'."\n";
+			echo 'Contact not found.<br />'."\n";
 			break;
 		}
 		$contact = $db->sql_fetch_assoc($get_info_handle);
@@ -165,11 +164,11 @@ switch ($_GET['action']) {
 				WHERE `id` = '.$contact['user_id'].' LIMIT 1';
 			$username_handle = $db->sql_query($username_query);
 			if ($db->error[$username_handle] === 1) {
-				$content .= 'Failed to look up username.<br />'."\n";
+				echo 'Failed to look up username.<br />'."\n";
 				$uname['username'] = NULL;
 			} else {
 				if ($db->sql_num_rows($username_handle) != 1) {
-					$content .= 'User associated with this contact no longer exists.<br />'."\n";
+					echo 'User associated with this contact no longer exists.<br />'."\n";
 					$uname['username'] = NULL;
 				} else {
 					$uname = $db->sql_fetch_assoc($username_handle);
@@ -213,7 +212,7 @@ switch ($_GET['action']) {
 			// Remove special characters
 			$phone = str_replace(array('-','(',')',' ','.','+'),NULL,$phone);
 			if (!is_numeric($phone)) {
-				$content .= 'Invalid telephone number.<br />'."\n";
+				echo 'Invalid telephone number.<br />'."\n";
 				break;
 			}
 		} else {
@@ -223,7 +222,7 @@ switch ($_GET['action']) {
 		// Verify email address
 		if ($email != '') {
 			if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
-				$content .= 'Invalid E-Mail address.<br />'."\n";
+				echo 'Invalid E-Mail address.<br />'."\n";
 				break;
 			}
 		}
@@ -234,11 +233,11 @@ switch ($_GET['action']) {
 				WHERE `username` = \''.$uname.'\'';
 			$username_handle = $db->sql_query($username_query);
 			if ($db->error[$username_handle] === 1) {
-				$content .= 'Failed to check if you entered a valid username.<br />'."\n";
+				echo 'Failed to check if you entered a valid username.<br />'."\n";
 				break;
 			}
 			if ($db->sql_num_rows($username_handle) == 0) {
-				$content .= 'This contact will not be associated with the chosen
+				echo 'This contact will not be associated with the chosen
 					username because that user does not exist.<br />'."\n";
 				$uid = 0;
 			} else {
@@ -256,10 +255,10 @@ switch ($_GET['action']) {
 			WHERE `id` = '.(int)$_GET['id'];
 		$new_contact_handle = $db->sql_query($new_contact_query);
 		if ($db->error[$new_contact_handle] === 1) {
-			$content .= 'Failed to edit contact.<br />'."\n";
+			echo 'Failed to edit contact.<br />'."\n";
 			break;
 		}
-		$content .= 'Successfully edited contact.<br />'."\n";
+		echo 'Successfully edited contact.<br />'."\n";
 		Log::addMessage('Edited contact \''.stripslashes($name).'\'');
 		break;
 
@@ -267,9 +266,9 @@ switch ($_GET['action']) {
 	case 'settings_save':
 		$display_mode = addslashes($_POST['display_mode']);
 		if (set_config('contacts_display_mode',$display_mode)) {
-			$content .= 'Saved settings.<br />';
+			echo 'Saved settings.<br />';
 		} else {
-			$content .= '<span class="errormessage">Failed to save settings.</span><br />';
+			echo '<span class="errormessage">Failed to save settings.</span><br />';
 		}
 		break;
 }
@@ -366,6 +365,6 @@ $settings_form->add_select('display_mode','Display Mode',
 $settings_form->add_submit('submit','Submit');
 $tab_layout->add_tab('Settings',$settings_form);
 
-$content .= $tab_layout;
+echo $tab_layout;
 
 ?>

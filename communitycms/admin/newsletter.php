@@ -11,10 +11,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_newsletter')) {
-	$content = 'You do not have the necessary permissions to access this module.<br />';
-	return true;
-}
+if (!$acl->check_permission('adm_newsletter'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 /**
  * Delete newsletter entry from the database

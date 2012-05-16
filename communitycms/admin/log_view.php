@@ -14,10 +14,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 $content = NULL;
 $view_all = false;
 
-if (!$acl->check_permission('adm_log_view')) {
-	$content .= 'You do not have the necessary permissions to access this module.';
-	return true;
-}
+if (!$acl->check_permission('adm_log_view'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 switch ($_GET['action']) {
 	case 'delete':

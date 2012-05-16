@@ -15,10 +15,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
  */
 include (ROOT.'functions/calendar.php');
 
-if (!$acl->check_permission('adm_calendar_import')) {
-	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+if (!$acl->check_permission('adm_calendar_import'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 echo '<h1>Import Events</h1>'."\n";
 if (!isset($_GET['id'])) {

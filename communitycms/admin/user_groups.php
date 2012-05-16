@@ -25,10 +25,8 @@ function perm_list($group = 0) {
 }
 
 $content = NULL;
-if (!$acl->check_permission('adm_user_groups')) {
-	$content .= '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+if (!$acl->check_permission('adm_user_groups'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 if ($_GET['action'] == 'delete') {
 	if ($_GET['id'] == 1) {

@@ -11,12 +11,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_calendar')) {
-	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+global $acl;
 
-$content = NULL;
+if (!$acl->check_permission('adm_calendar'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
+
 global $debug;
 
 /**
@@ -54,10 +53,10 @@ switch ($_GET['action']) {
 					$_POST['location'],
 					$image,
 					$hide);
-			$content .= 'Successfully created event.<br />';
+			echo 'Successfully created event.<br />';
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 
 		// Parse the event date so that 'manage' tab can default to the
@@ -78,9 +77,9 @@ switch ($_GET['action']) {
 
 	case 'delete':
 		if (event_delete($_GET['date_del'])) {
-			$content .= 'Successfully deleted date entry.<br />'."\n";
+			echo 'Successfully deleted date entry.<br />'."\n";
 		} else {
-			$content .= 'Failed to delete date entry.<br />'."\n";
+			echo 'Failed to delete date entry.<br />'."\n";
 		}
 		break;
 	case 'delete_old_entries':
@@ -90,30 +89,30 @@ switch ($_GET['action']) {
 			WHERE `year` <= '.$old_year;
 		$delete_old_handle = $db->sql_query($delete_old_query);
 		if ($db->error[$delete_old_handle] === 1) {
-			$content .= 'Failed to delete old calendar entries.<br />'."\n";
+			echo 'Failed to delete old calendar entries.<br />'."\n";
 		} else {
 			Log::addMessage('Deleted old calendar entries ('.$old_year.' and previous)');
-			$content .= 'Successfully deleted old calendar entries.<br />'."\n";
+			echo 'Successfully deleted old calendar entries.<br />'."\n";
 		}
 		break;
 	case 'create_category':
 		$cat_name = $_POST['category_name'];
 		$cat_icon = (isset($_POST['colour'])) ? $_POST['colour'] : NULL;
 		if (event_cat_create($cat_name,$cat_icon)) {
-			$content .= 'Successfully created event category.<br />'."\n";
+			echo 'Successfully created event category.<br />'."\n";
 		} else {
-			$content .= '<span class="errormessage">Failed to create new event category.</span><br />'."\n";
+			echo '<span class="errormessage">Failed to create new event category.</span><br />'."\n";
 		}
 		break;
 	case 'delete_category':
 		if (!isset($_POST['delete_category_id'])) {
-			$content .= 'No category selected to delete.<br />'."\n";
+			echo 'No category selected to delete.<br />'."\n";
 			break;
 		}
 		if (event_cat_delete($_POST['delete_category_id'])) {
-			$content .= 'Successfully deleted category entry.<br />'."\n";
+			echo 'Successfully deleted category entry.<br />'."\n";
 		} else {
-			$content .= 'Failed to delete category entry.<br />'."\n";
+			echo 'Failed to delete category entry.<br />'."\n";
 		}
 		break;
 	case 'save_settings':
@@ -135,10 +134,10 @@ switch ($_GET['action']) {
 				set_config('calendar_default_location',$new_fields['default_location']) &&
 				set_config('calendar_show_author',$new_fields['cal_show_author']))
 			{
-				$content .= 'Updated calendar settings.<br />'."\n";
+				echo 'Updated calendar settings.<br />'."\n";
 				Log::addMessage('Updated calendar settings');
 			} else  {
-				$content .= 'Failed to save settings.<br />'."\n";
+				echo 'Failed to save settings.<br />'."\n";
 			}
 		}
 		break;
@@ -151,10 +150,10 @@ switch ($_GET['action']) {
 			(`desc`,`url`) VALUES (\''.$desc.'\',\''.$url.'\')';
 		$new_src_handle = $db->sql_query($new_src_query);
 		if ($db->error[$new_src_handle] === 1) {
-			$content .= 'Failed to add calendar source.<br />'."\m";
+			echo 'Failed to add calendar source.<br />'."\m";
 		} else {
 			Log::addMessage('Added calendar source \''.stripslashes($desc).'\'');
-			$content .= 'Added calendar source.<br />'."\n";
+			echo 'Added calendar source.<br />'."\n";
 		}
 		break;
 	case 'delete_source':
@@ -409,5 +408,5 @@ if ($acl->check_permission('adm_calendar_import')) {
 	$tab_layout->add_tab('Import Entries',$tab_content['import']);
 }
 
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

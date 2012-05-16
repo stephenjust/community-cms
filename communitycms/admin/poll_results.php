@@ -11,10 +11,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_poll_results')) {
-	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+if (!$acl->check_permission('adm_poll_results'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 $content = '<h1>Poll Results</h1>';
 $question_query = 'SELECT * FROM ' . POLL_QUESTION_TABLE . '

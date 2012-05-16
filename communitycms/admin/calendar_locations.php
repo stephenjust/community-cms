@@ -11,18 +11,14 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_calendar_locations')) {
-	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+global $acl;
+
+if (!$acl->check_permission('adm_calendar_locations'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 // This module does not work with PostgreSQL
-if ($db->dbms == 'postgresql') {
-	$content = '<span class="errormessage">The locations feature does not work with the PostgreSQL database engine</span>'."\n";
-	return true;
-}
-
-$content = NULL;
+if ($db->dbms == 'postgresql')
+	throw new AdminException('The locations feature does not work with the PostgreSQL database engine.');
 
 /**
  * Include functions necessary to perform operations on this page
@@ -38,15 +34,15 @@ switch ($_GET['action']) {
 
 	case 'new':
 		if (!isset($_POST['location'])) {
-			$content .= '<span class="errormessage">No location given.</span><br />'."\n";
+			echo '<span class="errormessage">No location given.</span><br />'."\n";
 			break;
 		}
 		try {
 			location_save($_POST['location']);
-			$content .= 'Successfully created new location entry.<br />'."\n";
+			echo 'Successfully created new location entry.<br />'."\n";
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
 
@@ -54,16 +50,16 @@ switch ($_GET['action']) {
 
 	case 'delete':
 		if (!isset($_POST['loc_del'])) {
-			$content .= 'There is no location selected for deletion.<br />'."\n";
+			echo 'There is no location selected for deletion.<br />'."\n";
 			break;
 		}
 		$del_query = 'DELETE FROM `'.LOCATION_TABLE.'` WHERE `id` = '.(int)$_POST['loc_del'];
 		$del_handle = $db->sql_query($del_query);
 		if ($db->error[$del_handle] === 1) {
-			$content .= 'Failed to delete location.<br />'."\n";
+			echo 'Failed to delete location.<br />'."\n";
 			break;
 		}
-		$content .= 'Deleted location.<br />'."\n";
+		echo 'Deleted location.<br />'."\n";
 		Log::addMessage('Deleted location');
 		break;
 }
@@ -108,5 +104,5 @@ $tab_layout->add_tab('Manage Locations',$tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

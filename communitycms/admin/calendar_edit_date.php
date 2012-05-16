@@ -11,18 +11,16 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-if (!$acl->check_permission('adm_calendar_edit_date')) {
-	$content = '<span class="errormessage">You do not have the necessary permissions to use this module.</span><br />';
-	return true;
-}
+global $acl;
 
-global $debug;
+if (!$acl->check_permission('adm_calendar_edit_date'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
+
 /**
  * Include functions necessary for calendar operations
  */
 include('./functions/calendar.php');
 
-$content = NULL;
 switch ($_GET['action']) {
 	case 'edit':
 		try {
@@ -46,11 +44,11 @@ switch ($_GET['action']) {
 					$_POST['content'], $_POST['author'],
 					$start, $end, $_POST['category'],
 					$_POST['location'], $_POST['image'], $hide);
-			$content = 'Successfully edited date information.<br />';
-			$content .= '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
+			echo 'Successfully edited date information.<br />';
+			echo '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 
@@ -94,11 +92,11 @@ switch ($_GET['action']) {
 			$form->add_icon_list('image', 'Image:', 'newsicons', $event['image']);
 			$form->add_checkbox('hide','Hidden:',$event['hidden']);
 			$form->add_submit('submit','Save Event');
-			$content = '<h1>Edit Calendar Date</h1>';
-			$content .= $form;
+			echo '<h1>Edit Calendar Date</h1>';
+			echo $form;
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 
 		break;
