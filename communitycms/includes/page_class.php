@@ -84,6 +84,16 @@ class Page {
 	 * @var integer
 	 */
 	public static $page_group = 0;
+//	/**
+//	 * Contains the hierarchial structure of page IDs
+//	 * @var array
+//	 */
+//	private static $page_hierarchy = array();
+	/**
+	 * Contains various properties about pages that need to be accessed repeatedly
+	 * @var array 
+	 */
+	private static $page_properties = array();
 	
 	/**
 	 * Set type of page to load for pages without ID
@@ -407,7 +417,7 @@ class Page {
 			$item_template->menu_item_id = 'menuitem_'.$nav_menu_item['id'];
 			// Generate hidden child div
 			if ($haschild == 1) {
-				$item_template->child_placeholder = display_child_menu($nav_menu_item['id']);
+				$item_template->child_placeholder = Page::nav_child_menu($nav_menu_item['id']);
 			} else {
 				$item_template->child_placeholder = NULL;
 			}
@@ -417,6 +427,128 @@ class Page {
 		$menu_template->menu_placeholder = $menu;
 		return $menu_template;
 	}
+
+	private static function nav_child_menu($parent) {
+		global $db;
+
+		if (!is_numeric($parent) || is_array($parent)) {
+			return false;
+		}
+		$parent = (int)$parent;
+		$return = NULL;
+
+		$items_query = 'SELECT * FROM `'.PAGE_TABLE.'`
+			WHERE `parent` = '.$parent.' AND `menu` = 1 ORDER BY `list` ASC';
+		$items_handle = $db->sql_query($items_query);
+		if ($db->error[$items_handle] == 1) {
+			return false;
+		}
+		if ($db->sql_num_rows($items_handle) == 0) {
+			return false;
+		}
+
+		// Read template
+		$template = new template();
+		$template->load_file('nav_bar');
+		// Grab the sub-menu part of the template
+		$sub_template = $template->split_range('nav_submenu');
+		unset($template);
+
+		// Pull out the styles for the types of items contained within
+		$item_temp = $sub_template->split_range('menu_item');
+		$currentitem_temp = $sub_template->split_range('current_menu_item');
+		$itemchild_temp = $sub_template->split_range('menu_item_with_child');
+		$currentitemchild_temp = $sub_template->split_range('current_menu_item_with_child');
+
+		$sub_template->nav_menu_id = 'nav-menu-sub-'.$parent;
+
+		// Populate the menu with items
+		$menu_items = NULL;
+		for ($i = 1; $i <= $db->sql_num_rows($items_handle); $i++) {
+			$items_result = $db->sql_fetch_assoc($items_handle);
+			$haschild = 0;
+			$extra_text = NULL;
+			// Select the proper template
+			if (Page::has_children($items_result['id']) === true && Page::$id !== $items_result['id']) {
+				$this_item = clone $itemchild_temp;
+				$this_item->child_placeholder = Page::nav_child_menu($items_result['id']);
+			} elseif (Page::has_children($items_result['id']) === true && Page::$id === $items_result['id']) {
+				$this_item = clone $currentitemchild_temp;
+				$this_item->child_placeholder = Page::nav_child_menu($items_result['id']);
+			} elseif (Page::has_children($items_result['id']) === false && Page::$id !== $items_result['id'])
+				$this_item = clone $item_temp;
+			else
+				$this_item = clone $currentitem_temp;
+
+			$this_item->menu_item_id = 'menuitem_'.$items_result['id'];
+			if ($items_result['type'] == 0) {
+				$link = explode('<LINK>',$items_result['title']); // Check if menu entry is a link
+				$link_path = $link[1];
+				$link_name = $link[0];
+				unset($link);
+			} else {
+				if(strlen($items_result['text_id']) > 0) {
+					$link_path = "index.php?page=".$items_result['text_id'];
+				} else {
+					$link_path = "index.php?id=".$items_result['id'];
+				}
+				$link_name = $items_result['title'];
+			} // IF is link
+			$this_item->menu_item_url = $link_path;
+			$this_item->menu_item_label = $link_name;
+			$menu_items .= (string)$this_item;
+			unset($this_item);
+		}
+		$sub_template->menu_placeholder = $menu_items;
+
+		// Output the template
+		return $sub_template;
+	}
+
+	/**
+	* Test if there are any children to the given page
+	* @global db $db Database connection object
+	* @param integer $id Page ID of page to test
+	* @param boolean $visible_children_only Only consider items that will appear in the menu
+	* @return boolean
+	*/
+	public static function has_children($id, $visible_children_only = false) {
+		global $db;
+
+		if (!is_numeric($id) || is_array($id)) {
+			return false;
+		}
+		$id = (int)$id;
+
+		if (isset(Page::$page_properties[$id]['haschild']) && !$visible_children_only) {
+			return Page::$page_properties[$id]['haschild'];
+		} elseif (isset(Page::$page_properties[$id]['haschild_vis']) && $visible_children_only) {
+			return Page::$page_properties[$id]['haschild_vis'];
+		}
+		
+		$visible = NULL;
+		if ($visible_children_only == true) {
+			$visible = 'AND `menu` = 1 ';
+		}
+
+		$query = 'SELECT * FROM `'.PAGE_TABLE.'`
+			WHERE `parent` = '.$id.' '.$visible.'LIMIT 1';
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle] === 1) {
+			return false;
+		}
+		if ($db->sql_num_rows($handle) == 0)
+			$return = false;
+		else
+			$return = true;
+
+		if (!$visible_children_only)
+			Page::$page_properties[$id]['haschild'] = $return;
+		else
+			Page::$page_properties[$id]['haschild_vis'] = $return;
+		return $return;
+	}
+
 	public static function display_left() {
 		$template = new template;
 		$template->load_file('left');
@@ -548,5 +680,62 @@ class Page {
 		echo $template;
 		unset($template);
 	}
+	
+//	private static function get_page_hierarchy() {
+//		global $db;
+//		global $debug;
+//
+//		$query = 'SELECT `id`,`parent` FROM `'.PAGE_TABLE.'`
+//			ORDER BY `parent` ASC';
+//		$handle = $db->sql_query($query);
+//		if ($db->error[$handle] === 1)
+//			throw new Exception();
+//		if ($db->sql_num_rows($handle) === 0)
+//			throw new Exception();
+//
+//		$ids = array();
+//		$parents = array();
+//		for ($i = 1; $i <= $db->sql_num_rows($handle); $i++) {
+//			$result = $db->sql_fetch_assoc($handle);
+//			$ids[] = $result['id'];
+//			$parents[] = $result['parent'];
+//		}
+//
+//		// Check that there are no pages whose parent page does not exist.
+//		// If a parent page does not exist, promote the page to top-level.
+//		for ($i = 0; $i < count($parents); $i++) {
+//			$search = array_search($parents[$i],$ids);
+//			if ($search === false) {
+//				$parents[$i] = 0;
+//				$debug->addMessage('Page \''.$ids[$i].'\' has a parent page which does not exist.',true);
+//			}
+//		}
+//
+//		// Group pages by parent
+//		$direct_structure = array();
+//		for ($i = 0; $i < count($parents); $i++) {
+//			if (!array_key_exists($i,$direct_structure)) $direct_structure[$i] = array();
+//			$direct_structure[$parents[$i]][] = $ids[$i];
+//		}
+//		
+//		// Shift arrays into hierarchy
+//		for ($i = max(array_keys($direct_structure)); $i >= 0; $i--) {
+//			if (!array_key_exists($i, $direct_structure)) 
+//				continue;
+//
+//			$subpages = array();
+//			for ($j = 0; $j < count($direct_structure[$i]); $j++) {
+//				$subpages[] = $direct_structure[$i][$j];
+//			}
+//			$direct_structure[$i] = array();
+//			for ($j = 0; $j < count($subpages); $j++) {
+//				if (!array_key_exists($subpages[$j], $direct_structure))
+//					$direct_structure[$subpages[$j]] = array();
+//				$direct_structure[$i][$subpages[$j]] = $direct_structure[$subpages[$j]];
+//			}
+//		}
+//
+//		Page::$page_hierarchy = $direct_structure[0];
+//	}
 }
 ?>

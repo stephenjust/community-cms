@@ -347,7 +347,7 @@ function adm_page_manage_list_row($id) {
 		$return .= '<td>&nbsp;</td><td>&nbsp;</td>';
 	}
 	$return .= '</tr>';
-	if (page_has_children($page_info['id']) == true) {
+	if (Page::has_children($page_info['id']) == true) {
 		$children_query = 'SELECT * FROM `'.PAGE_TABLE.'`
 			WHERE `parent` = '.$page_info['id'].' ORDER BY `list` ASC';
 		$children_handle = $db->sql_query($children_query);

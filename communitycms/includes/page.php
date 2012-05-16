@@ -376,41 +376,9 @@ function page_list($parent = 0, $visible_only = false) {
 		$result = $db->sql_fetch_assoc($handle);
 
 		$page_list[$i] = $result;
-		$page_list[$i]['has_children'] = page_has_children($page_list[$i]['id'],$visible_only);
+		$page_list[$i]['has_children'] = Page::has_children($page_list[$i]['id'],$visible_only);
 	}
 	return $page_list;
-}
-
-/**
- * Test if there are any children to the given page
- * @global db $db Database connection object
- * @param integer $id Page ID of page to test
- * @param boolean $visible_children_only Only consider items that will appear in the menu
- * @return boolean
- */
-function page_has_children($id, $visible_children_only = false) {
-	global $db;
-
-	if (!is_numeric($id) || is_array($id)) {
-		return false;
-	}
-	$id = (int)$id;
-
-	$visible = NULL;
-	if ($visible_children_only == true) {
-		$visible = 'AND `menu` = 1 ';
-	}
-
-	$query = 'SELECT * FROM `'.PAGE_TABLE.'`
-		WHERE `parent` = '.$id.' '.$visible.'LIMIT 1';
-	$handle = $db->sql_query($query);
-	if ($db->error[$handle] === 1) {
-		return false;
-	}
-	if ($db->sql_num_rows($handle) == 0) {
-		return false;
-	}
-	return true;
 }
 
 /**
