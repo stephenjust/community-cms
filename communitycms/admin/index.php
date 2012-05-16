@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -51,9 +51,11 @@ $tab['activity'] = $tab_layout->add_tab('Recent Activity',$tab_content['activity
 
 // ----------------------------------------------------------------------------
 
-$user_query = 'SELECT * FROM ' . USER_TABLE . ' ORDER BY id DESC';
+$user_query = 'SELECT `username`
+	FROM `'.USER_TABLE.'`
+	ORDER BY `id` DESC';
 $user_handle = $db->sql_query($user_query);
-if ($user_handle) {
+if ($db->error[$user_handle] !== 1) {
 	$user = $db->sql_fetch_assoc($user_handle);
 	$tab_content['user'] = 'Number of users: '.$db->sql_num_rows($user_handle).'<br />
 		Newest user: '.$user['username'];

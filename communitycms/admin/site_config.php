@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -10,12 +10,10 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
-$content = NULL;
+global $acl;
 
-if (!$acl->check_permission('adm_site_config')) {
-	$content .= 'You do not have the necessary permissions to access this module.';
-	return true;
-}
+if (!$acl->check_permission('adm_site_config'))
+	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 if ($_GET['action'] == 'save') {
 	// We don't really need to escape any of this because the set_config()
@@ -42,10 +40,10 @@ if ($_GET['action'] == 'save') {
 		set_config('tel_format',$tel_format) &&
 		set_config('footer',$_POST['footer']))
 	{
-		$content .= 'Successfully edited site information.<br />'."\n";
+		echo 'Successfully edited site information.<br />'."\n";
 		Log::addMessage('Updated site information.');
 	} else {
-		$content .= 'Failed to update site information.<br />'."\n";
+		echo 'Failed to update site information.<br />'."\n";
 	}
 } // IF 'save'
 
@@ -85,6 +83,6 @@ $form->add_checkbox('active','Site Active',get_config('site_active'));
 $form->add_submit('submit','Save Configuration');
 $tab_content['config'] .= $form;
 $tab['config'] = $tab_layout->add_tab('Configuration',$tab_content['config']);
-$content .= $tab_layout;
+echo $tab_layout;
 
 ?>
