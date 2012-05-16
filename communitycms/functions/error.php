@@ -41,7 +41,7 @@ function err_page($code = 0) {
 			break;
 		case 12:
 			$errormesg = "This Community CMS powered site is currently disabled.<br />";
-			$errormesg .= display_login_box();
+			$errormesg .= Page::display_login_box();
 			break;
 		case 15:
 			$errormesg = "Your config file is out of date. Please run the installer.";

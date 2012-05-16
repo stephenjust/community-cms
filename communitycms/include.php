@@ -31,9 +31,6 @@ require(ROOT . 'includes/editbar_class.php');
 if(!include_once(ROOT.'classes.php')) {
     err_page(2001);
 }
-if(!include_once(ROOT.'functions/display.php')) {
-    err_page(2001);
-}
 if(!include_once(ROOT.'functions/blocks.php')) {
     err_page(2001);
 }
