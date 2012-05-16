@@ -86,8 +86,11 @@
 			 title="Contacts Module"
 			 description="Allow a user to access the contacts manager module" />
 		<key name="contacts_edit_lists"
-			 title="Edit contact lists"
+			 title="Edit Contact Lists"
 			 description="Allow a user to change the entries on contact lists" />
+		<key name="contacts_create"
+			 title="Create Contacts"
+			 description="Allow a user to create contact records" />
 	</category>
 	<category name="Files">
 		<key name="adm_filemanager"

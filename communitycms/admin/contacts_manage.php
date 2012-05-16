@@ -56,145 +56,55 @@ function contact_list($page = '*') {
 
 switch ($_GET['action']) {
 	default:
-
 		break;
+
 	case 'delete':
-		if (!$acl->check_permission('contact_delete')) {
-			echo '<span class="errormessage">You do not have the necessary permissions to delete a contact.</span><br />'."\n";
-			break;
-		}
-		if (delete_contact($_GET['id'])) {
+		try {
+			contact_delete($_GET['id']);
 			echo 'Successfully deleted contact.<br />';
-		} else {
-			echo '<span class="errormessage">Failed to delete contact.</span><br />'."\n";
+		}
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
-
-// ----------------------------------------------------------------------------
 
 	case 'create':
-		$name = addslashes($_POST['name']);
-		$uname = addslashes($_POST['username']);
-		$title = addslashes($_POST['title']);
-		$phone = $_POST['phone'];
-		$address = addslashes($_POST['address']);
-		$email = addslashes($_POST['email']);
-
-		// Format phone number for storage
-		if ($phone != "") {
-			// Remove special characters that may be used in a phone number
-			$phone = str_replace(array('-','(',')',' ','.','+'),NULL,$phone);
-			if (!is_numeric($phone)) {
-				echo 'Invalid telephone number.<br />'."\n";
-				break;
-			}
-		} else {
-			$phone = 'NULL';
+		try {
+			contact_create($_POST['name'],
+					$_POST['title'],
+					$_POST['phone'],
+					$_POST['address'],
+					$_POST['email'],
+					$_POST['username']);
+			echo 'Successfully created contact.<br />'."\n";
 		}
-		
-		// Verify email address
-		if ($email != "") {
-			if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
-				echo 'Invalid E-Mail address.<br />'."\n";
-				break;
-			}
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
-
-		// Verify username and get user ID
-		if ($uname != '') {
-			$username_query = 'SELECT `id` FROM `'.USER_TABLE.'`
-				WHERE `username` = \''.$uname.'\'';
-			$username_handle = $db->sql_query($username_query);
-			if ($db->error[$username_handle] === 1) {
-				echo 'Failed to check if you entered a valid username.<br />'."\n";
-				break;
-			}
-			if ($db->sql_num_rows($username_handle) == 0) {
-				echo 'This contact will not be associated with the chosen
-					username because that user does not exist.<br />'."\n";
-				$uid = 0;
-			} else {
-				$username = $db->sql_fetch_assoc($username_handle);
-				$uid = $username['id'];
-			}
-		} else {
-			$uid = 0;
-		}
-
-		// Create contact
-		$new_contact_query = 'INSERT INTO `'.CONTACTS_TABLE.'`
-			(`name`,`user_id`,`title`,`phone`,`email`,
-			`address`)
-			VALUES (\''.$name.'\','.$uid.',\''.$title.'\',
-			'.$phone.',\''.$email.'\',\''.$address.'\')';
-		$new_contact_handle = $db->sql_query($new_contact_query);
-		if ($db->error[$new_contact_handle] === 1) {
-			echo 'Failed to create contact.<br />'."\n";
-			break;
-		}
-		echo 'Successfully created contact.<br />'."\n";
-		Log::addMessage('New contact \''.$name.'\'');
 		break;
 
-// ----------------------------------------------------------------------------
-
 	case 'edit':
-		// Validate ID
-		if (!is_numeric($_GET['id'])) {
-			echo 'Invalid contact ID.<br />'."\n";
-			break;
-		}
-		$id = (int)$_GET['id'];
-		$get_info_query = 'SELECT * FROM `'.CONTACTS_TABLE.'`
-			WHERE `id` = '.$id.' LIMIT 1';
-		$get_info_handle = $db->sql_query($get_info_query);
-		if ($db->error[$get_info_handle] === 1) {
-			echo 'Failed to read contact information.<br />'."\n";
-			break;
-		}
-		if ($db->sql_num_rows($get_info_handle) != 1) {
-			echo 'Contact not found.<br />'."\n";
-			break;
-		}
-		$contact = $db->sql_fetch_assoc($get_info_handle);
+		try {
+			$contact = contact_get($_GET['id']);
 
-		// Check for username
-		if ($contact['user_id'] != 0) {
-			$username_query = 'SELECT `username` FROM `'.USER_TABLE.'`
-				WHERE `id` = '.$contact['user_id'].' LIMIT 1';
-			$username_handle = $db->sql_query($username_query);
-			if ($db->error[$username_handle] === 1) {
-				echo 'Failed to look up username.<br />'."\n";
-				$uname['username'] = NULL;
-			} else {
-				if ($db->sql_num_rows($username_handle) != 1) {
-					echo 'User associated with this contact no longer exists.<br />'."\n";
-					$uname['username'] = NULL;
-				} else {
-					$uname = $db->sql_fetch_assoc($username_handle);
-				}
-			}
-		} else {
-			$uname['username'] = NULL;
+			// Create form
+			$edit_form = new form;
+			$edit_form->set_method('post');
+			$edit_form->set_target('admin.php?module=contacts_manage&amp;action=editsave&amp;id='.$contact['id']);
+			$edit_form->add_textbox('name','Name',$contact['name']);
+			$edit_form->add_textbox('username','Username (optional)',$contact['username']);
+			$edit_form->add_textbox('title','Title',$contact['title']);
+			$edit_form->add_textbox('phone','Telephone',format_tel($contact['phone']));
+			$edit_form->add_textbox('address','Address',$contact['address']);
+			$edit_form->add_textbox('email','E-Mail',$contact['email']);
+			$edit_form->add_submit('submit','Submit');
+
+			$tab_content['edit'] = $edit_form;
+			$tab_layout->add_tab('Edit Contact',$tab_content['edit']);
 		}
-
-		// Create form
-		$edit_form = new form;
-		$edit_form->set_method('post');
-		$edit_form->set_target('admin.php?module=contacts_manage&amp;action=editsave&amp;id='.$id);
-		$edit_form->add_textbox('name','Name',stripslashes($contact['name']));
-		$edit_form->add_textbox('username','Username (optional)',stripslashes($uname['username']));
-		$edit_form->add_textbox('title','Title',stripslashes($contact['title']));
-		$edit_form->add_textbox('phone','Telephone',format_tel($contact['phone']));
-		$edit_form->add_textbox('address','Address',stripslashes($contact['address']));
-		$edit_form->add_textbox('email','E-Mail',stripslashes($contact['email']));
-		$edit_form->add_submit('submit','Submit');
-
-		$tab_content['edit'] = $edit_form;
-		$tab_layout->add_tab('Edit Contact',$tab_content['edit']);
-		unset($uname);
-		unset($contact);
-		unset($id);
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		}
 		break;
 
 // ----------------------------------------------------------------------------

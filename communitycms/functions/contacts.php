@@ -2,62 +2,155 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2011 Stephen Just
+ * @copyright Copyright (C) 2011-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
+
+/**
+ * Create a contact record
+ * @global acl $acl
+ * @global db $db
+ * @param string $name
+ * @param string $title
+ * @param string $phone
+ * @param string $address
+ * @param string $email
+ * @param string $username
+ * @throws Exception 
+ */
+function contact_create($name,$title,$phone,$address,$email,$username) {
+	global $acl;
+	global $db;
+	
+	if (!$acl->check_permission('contacts_create'))
+		throw new Exception('You are not allowed to create contact records.');
+
+	// Sanitize inputs
+	$name = $db->sql_escape_string(htmlspecialchars($name));
+	$title = $db->sql_escape_string(htmlspecialchars($title));
+	$address = $db->sql_escape_string(htmlspecialchars($address));
+	$email = $db->sql_escape_string(htmlspecialchars($email));
+	$username = $db->sql_escape_string(htmlspecialchars($username));
+
+	// Format phone number for storage
+	if ($phone != "") {
+		// Remove special characters that may be used in a phone number
+		$phone = str_replace(array('-','(',')',' ','.','+'),NULL,$phone);
+		if (!is_numeric($phone))
+			throw new Exception('Invalid telephone number.');
+	}
+
+	// Verify email address
+	if ($email != "") {
+		if (!preg_match('/^[a-z0-9_\-\.\+]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email))
+			throw new Exception('Invalid email address.');
+	}
+
+	// Verify username and get user ID
+	if ($username != '') {
+		$username_query = 'SELECT `id`
+			FROM `'.USER_TABLE.'`
+			WHERE `username` = \''.$username.'\'';
+		$username_handle = $db->sql_query($username_query);
+		if ($db->error[$username_handle] === 1)
+			throw new Exception('An error occurred while looking up a username record.');
+		if ($db->sql_num_rows($username_handle) == 0) {
+			echo 'This contact will not be associated with the chosen
+				username because that user does not exist.<br />'."\n";
+			$uid = 0;
+		} else {
+			$uname = $db->sql_fetch_assoc($username_handle);
+			$uid = $uname['id'];
+		}
+	} else {
+		$uid = 0;
+	}
+
+	// Create contact
+	$query = 'INSERT INTO `'.CONTACTS_TABLE."`
+		(`name`,`user_id`,`title`,`phone`,`email`,`address`)
+		VALUES
+		('$name',$uid,'$title',$phone,'$email','$address')";
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1)
+		throw new Exception('An error occurred while creating the contact record.');
+
+	Log::addMessage('New contact \''.$name.'\'');
+}
 
 /**
  * Delete a contact entry from the database
  * @global acl $acl Permission object
  * @global db $db Database object
  * @param integer $id Contact ID
- * @return boolean Success
+ * @throws Exception
  */
-function delete_contact($id) {
+function contact_delete($id) {
 	global $acl;
 	global $db;
 
-	// Pre-execution checks
-	if (!$acl->check_permission('contact_delete')) {
-		return false;
-	}
-	if (!is_numeric($id)) {
-		return false;
-	}
+	if (!$acl->check_permission('contact_delete'))
+		throw new Exception('You are not allowed to delete contacts.');
+	
 	$id = (int)$id;
+	if ($id < 1)
+		throw new Exception('Invalid contact ID.');
 
 	// Get info for log message
-	$get_info_query = 'SELECT * FROM `'.CONTACTS_TABLE.'` WHERE
-		`id` = '.$id.' LIMIT 1';
-	$get_contact_info_handle = $db->sql_query($get_info_query);
-	if ($db->error[$get_contact_info_handle] === 1) {
-		return false;
-	}
-	if ($db->sql_num_rows($get_contact_info_handle) != 1) {
-		return false;
-	} else {
-		$contact_info = $db->sql_fetch_assoc($get_contact_info_handle);
-		unset($get_info_query);
-		unset($get_contact_info_handle);
-	}
+	$info_query = 'SELECT *
+		FROM `'.CONTACTS_TABLE.'`
+		WHERE `id` = '.$id.'
+		LIMIT 1';
+	$info_handle = $db->sql_query($info_query);
+	if ($db->error[$info_handle] === 1)
+		throw new Exception('An error occurred while reading contact information.');
+	if ($db->sql_num_rows($info_handle) != 1)
+		throw new Exception('The contact you want to delete does not exist.');
+	$contact_info = $db->sql_fetch_assoc($info_handle);
+
 	// Delete 'content' records
 	$del_cnt_query = 'DELETE FROM `'.CONTENT_TABLE.'`
 		WHERE `ref_id` = '.$id.'
 		AND `ref_type` = (SELECT `id` FROM `'.PAGE_TYPE_TABLE.'` WHERE `name` = \'Contacts\')';
 	$del_cnt_handle = $db->sql_query($del_cnt_query);
-	if ($db->error[$del_cnt_handle] === 1) {
-		return false;
-	}
+	if ($db->error[$del_cnt_handle] === 1)
+		throw new Exception('An error occurred while deleting the content record.');
+
 	// Delete record
 	$delete_query = 'DELETE FROM `' . CONTACTS_TABLE . '`
 		WHERE `id` = '.$id;
 	$delete_contact = $db->sql_query($delete_query);
-	if ($db->error[$delete_contact] === 1) {
-		return false;
-	}
-	Log::addMessage('Deleted contact \''.stripslashes($contact_info['name']).'\'');
-	return true;
+	if ($db->error[$delete_contact] === 1)
+		throw new Exception('An error occurred while deleting the contact record.');
+
+	Log::addMessage('Deleted contact \''.$contact_info['name'].'\'');
+}
+
+/**
+ * Fetch a single contact record
+ * @global db $db
+ * @param integer $id
+ * @return array
+ * @throws Exception 
+ */
+function contact_get($id) {
+	global $db;
+
+	$id = (int)$id;
+	$query = 'SELECT `c`.*, `u`.`username`
+		FROM `'.CONTACTS_TABLE.'` `c`
+		LEFT JOIN `'.USER_TABLE.'` `u`
+		ON `c`.`user_id` = `u`.`id`
+		WHERE `c`.`id` = '.$id.' LIMIT 1';
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1)
+		throw new Exception('An error occurred while retrieving contact information.');
+	if ($db->sql_num_rows($handle) != 1)
+		throw new Exception('The requested contact could not be found.');
+	$contact = $db->sql_fetch_assoc($handle);
+	
+	return $contact;
 }
 
 /**
