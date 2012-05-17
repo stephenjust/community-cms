@@ -91,6 +91,12 @@
 		<key name="contacts_create"
 			 title="Create Contacts"
 			 description="Allow a user to create contact records" />
+		<key name="contacts_edit"
+			 title="Edit Contacts"
+			 description="Allow a user to edit contact records" />
+		<key name="contacts_delete"
+			 title="Delete Contacts"
+			 description="Allow a user to delete contact records" />
 	</category>
 	<category name="Files">
 		<key name="adm_filemanager"

@@ -90,7 +90,7 @@ function contact_delete($id) {
 	global $acl;
 	global $db;
 
-	if (!$acl->check_permission('contact_delete'))
+	if (!$acl->check_permission('contacts_delete'))
 		throw new Exception('You are not allowed to delete contacts.');
 	
 	$id = (int)$id;
