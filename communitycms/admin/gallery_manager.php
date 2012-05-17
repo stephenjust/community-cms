@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -10,7 +10,8 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
-$content = NULL;
+
+global $acl;
 global $debug;
 
 if (!$acl->check_permission('adm_gallery_manager'))
@@ -19,7 +20,6 @@ if (!$acl->check_permission('adm_gallery_manager'))
 // ----------------------------------------------------------------------------
 
 function gallery_upload_box($gallery_id,$gallery_dir) {
-	global $db;
 	global $debug;
 
 	if (!is_numeric($gallery_id)) {
@@ -87,12 +87,10 @@ function gallery_photo_manager($gallery_id) {
 $tab_layout = new tabs;
 
 // Check to make sure a gallery application is selected
-if (get_config('gallery_app') == 'disabled' || get_config('gallery_app') == NULL) {
-	$content .= 'There is no image gallery application configured. Please copy
-		one of the supported image gallery applications to your server and use
-		the "Gallery Settings" page to configure it.';
-	return true;
-}
+if (get_config('gallery_app') == 'disabled' || get_config('gallery_app') == NULL)
+	throw new AdminException('There is no image gallery application configured. Please copy '.
+		'one of the supported image gallery applications to your server and use '.
+		'the "Gallery Settings" page to configure it.');
 
 // Process actions
 switch ($_GET['action']) {
@@ -102,13 +100,13 @@ switch ($_GET['action']) {
 		$image_dir = $_POST['image_dir'];
 		try {
 			$gallery = new Gallery(false,$title,$description,$image_dir);
-			$content .= 'Successfully created gallery.<br />'."\n";
+			echo 'Successfully created gallery.<br />'."\n";
 			$_GET['action'] = 'edit';
 			$_POST['gallery'] = $gallery->getID();
 			unset($gallery);
 		}
 		catch (GalleryException $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 
 	case 'edit':
@@ -118,7 +116,7 @@ switch ($_GET['action']) {
 			unset($_GET['id']);
 		}
 		if (!isset($_POST['gallery'])) {
-			$content .= '<span class="errormessage">No gallery selected.</span><br />'."\n";
+			echo '<span class="errormessage">No gallery selected.</span><br />'."\n";
 			break;
 		}
 		if (!isset($_GET['edit']))
@@ -139,18 +137,18 @@ switch ($_GET['action']) {
 				$gallery->setImageCaption(
 						$gallery->getImageID($_POST['file_name']),
 						$_POST['desc'], $_POST['file_name']);
-				$content .= 'Successfully edited image caption.<br />'."\n";
+				echo 'Successfully edited image caption.<br />'."\n";
 			} elseif ($_GET['edit'] === 'del') {
 				if (!isset($_POST['file_name']))
 					throw new GalleryException('Unable to delete image.');
 
 				// Delete image caption if it exists
 				$gallery->deleteImage($_POST['file_name']);
-				$content .= 'Successfully deleted image.<br />'."\n";
+				echo 'Successfully deleted image.<br />'."\n";
 			}
 		}
 		catch (GalleryException $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
+			echo '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
 		}
 
 		// Show gallery manager
@@ -165,17 +163,17 @@ switch ($_GET['action']) {
 
 	case 'delete':
 		if (!isset($_GET['id'])) {
-			$content .= 'No gallery selected.<br />'."\n";
+			echo 'No gallery selected.<br />'."\n";
 			break;
 		}
 		try {
 			$gallery = new Gallery($_GET['id']);
 			$gallery->delete();
 			unset($gallery);
-			$content .= 'Successfully deleted gallery.<br />'."\n";
+			echo 'Successfully deleted gallery.<br />'."\n";
 		}
 		catch (GalleryException $e) {
-			$content .= $e->getMessage();
+			echo $e->getMessage();
 		}
 		break;
 
@@ -187,7 +185,7 @@ switch ($_GET['action']) {
 
 switch (get_config('gallery_app')) {
 	default:
-		$content .= 'Unknown gallery application selected. Plase reconfigure your gallery.';
+		echo 'Unknown gallery application selected. Plase reconfigure your gallery.';
 		break;
 
 // ----------------------------------------------------------------------------
@@ -197,7 +195,7 @@ switch (get_config('gallery_app')) {
 		$gallery_dir = get_config('gallery_dir');
 		$gallery_file = ROOT.$gallery_dir.'/web/simpleviewer.swf';
 		if (!file_exists($gallery_file)) {
-			$content .= 'Could not find SimpleViewer application file. Please
+			echo 'Could not find SimpleViewer application file. Please
 				check your configuration settings. The current configuration
 				says to look here: '.$gallery_file;
 			return true;
@@ -214,7 +212,7 @@ switch (get_config('gallery_app')) {
 		$gallery_list_query = 'SELECT * FROM `'.GALLERY_TABLE.'` ORDER BY `id` DESC';
 		$gallery_list_handle = $db->sql_query($gallery_list_query);
 		if ($db->error[$gallery_list_handle] === 1) {
-			$content = 'Failed to read galleries table.';
+			echo 'Failed to read galleries table.';
 			return true;
 		}
 		if ($db->sql_num_rows($gallery_list_handle) == 0) {
@@ -254,7 +252,7 @@ switch (get_config('gallery_app')) {
 		$tab_content['create'] .= $create_form;
 		$tab_layout->add_tab('Create Gallery',$tab_content['create']);
 
-		$content .= $tab_layout;
+		echo $tab_layout;
 		break;
 }
 

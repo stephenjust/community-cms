@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,10 +11,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+global $acl;
+
 if (!$acl->check_permission('adm_filemanager'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-$content = NULL;
 function add_information($path, $label) {
 	global $db;
 	$new_info_query = 'INSERT INTO ' . FILE_TABLE . '
@@ -48,12 +49,12 @@ if ($_GET['action'] == 'saveinfo') {
 		WHERE `id` = \''.$id.'\' OR `path` = \''.$path.'\' LIMIT 1';
 	$check_if_info_exists_handle = $db->sql_query($check_if_info_exists_query);
 	if ($db->error[$check_if_info_exists_handle] === 1) {
-		$content .= 'Failed to check for existing entries in the database.';
+		echo 'Failed to check for existing entries in the database.';
 	} else {
 		if ($db->sql_num_rows($check_if_info_exists_handle) != 1) {
-			$content .= add_information($path,$label);
+			echo add_information($path,$label);
 		} else {
-			$content .= edit_information($id,$path,$label);
+			echo edit_information($id,$path,$label);
 		}
 	}
 	unset($_POST['path']);
@@ -64,10 +65,10 @@ if ($_GET['action'] == 'saveinfo') {
 // Upload file
 if (isset($_GET['upload'])) {
 	try {
-		$content .= file_upload($_POST['path']);
+		echo file_upload($_POST['path']);
 	}
 	catch (Exception $e) {
-		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+		echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 	}
 }
 
@@ -75,24 +76,24 @@ if (isset($_GET['upload'])) {
 if ($_GET['action'] == 'new_folder') {
 	try {
 		file_create_folder($_POST['new_folder_name']);
-		$content .= 'Successfully created directory.<br />';
+		echo 'Successfully created directory.<br />';
 	}
 	catch (Exception $e) {
-		$content .= '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
+		echo '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
 	}
 }
 
 // Delete files
 if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 	if (!isset($_GET['filename'])) {
-		$content .= 'No file was specified to delete.<br />';
+		echo 'No file was specified to delete.<br />';
 	} else {
 		try {
 			file_delete($_GET['filename']);
-			$content .= 'Suucessfully deleted "'.$_GET['filename'].'".<br />';
+			echo 'Suucessfully deleted "'.$_GET['filename'].'".<br />';
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 	}
 }
@@ -171,5 +172,5 @@ if ($acl->check_permission('file_upload')) {
 	}
 	$tab_layout->add_tab('Upload File',$tab_content['upload']);
 }
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

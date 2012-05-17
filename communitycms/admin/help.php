@@ -10,7 +10,7 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
-$content = '<h1>Help</h1>';
+echo '<h1>Help</h1>';
 if (!isset($_GET['page'])) {
 	$page = 'table_of_contents';
 } else {
@@ -19,5 +19,5 @@ if (!isset($_GET['page'])) {
 /**
  * Include the current help file
  */
-$content .= include(ROOT.'admin/help_pages/'.$page.'.php');
+echo include(ROOT.'admin/help_pages/'.$page.'.php');
 ?>

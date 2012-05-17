@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -10,8 +10,7 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
-
-$content = NULL;
+global $acl;
 $view_all = false;
 
 if (!$acl->check_permission('adm_log_view'))
@@ -20,13 +19,13 @@ if (!$acl->check_permission('adm_log_view'))
 switch ($_GET['action']) {
 	case 'delete':
 		if (!$acl->check_permission('log_clear')) {
-			$content .= '<span class="errormessage">You are not authorized to clear the log.</span><br />'."\n";
+			echo '<span class="errormessage">You are not authorized to clear the log.</span><br />'."\n";
 			break;
 		}
 		if (Log::clear()) {
-			$content .= 'Cleared log messages.<br />'."\n";
+			echo 'Cleared log messages.<br />'."\n";
 		} else {
-			$content .= '<span class="errormessage">Failed to clear log messages.</span><br />'."\n";
+			echo '<span class="errormessage">Failed to clear log messages.</span><br />'."\n";
 		}
 		break;
 	case 'viewall':
@@ -68,5 +67,5 @@ if ($acl->check_permission('log_clear')) {
 	$tab_layout->add_tab('Delete Log Messages',$tab_content['delete']);
 }
 
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

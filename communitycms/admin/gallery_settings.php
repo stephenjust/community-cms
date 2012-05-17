@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,10 +11,10 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+global $acl;
+
 if (!$acl->check_permission('adm_gallery_settings'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
-
-$content = NULL;
 
 // ----------------------------------------------------------------------------
 
@@ -41,6 +41,6 @@ $form->add_submit('submit','Save Configuration');
 $tab_content['settings'] = $form;
 $tab_content['settings'] .= '<div id="_gallery_dir_check_" style="display: none;"></div>';
 $tab_layout->add_tab('Gallery Settings',$tab_content['settings']);
-$content .= $tab_layout;
+echo $tab_layout;
 
 ?>
