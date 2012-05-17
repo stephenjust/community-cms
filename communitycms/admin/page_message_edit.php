@@ -64,10 +64,10 @@ function pagemessage_edit($id,$page,$content,$start,$end,$expire) {
 	Log::addMessage('Edited page message for page \''.$page_name['title'].'\'');
 }
 
+global $acl;
 if (!$acl->check_permission('adm_page_message_edit'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-$content = NULL;
 if ($_GET['action'] == 'edit') {
 	try {
 		$_POST['start_year'] = (isset($_POST['start_year'])) ? $_POST['start_year'] : 0;
@@ -81,10 +81,10 @@ if ($_GET['action'] == 'edit') {
 		$expire = (isset($_POST['expire'])) ? checkbox($_POST['expire']) : 0;
 		pagemessage_edit($_POST['id'], $_POST['page_id'],
 				$_POST['update_content'], $start_date, $end_date, (boolean)$expire);
-		$content .= 'Successfully edited page message.<br />';
+		echo 'Successfully edited page message.<br />';
 	}
 	catch (Exception $e) {
-		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 	}
 } else {
 	if (!isset($_GET['id']) || $_GET['id'] == '') {
@@ -110,39 +110,39 @@ if ($_GET['action'] == 'edit') {
 			'August','September','October','November','December');
 		$start_date = explode('-',$page_message['start_date']);
 		$end_date = explode('-',$page_message['end_date']);
-		$content .= 'Start:<br />';
+		echo 'Start:<br />';
 		$smonth = $start_date[1] - 1;
-		$content .= '<select name="start_month" value="'.$smonth.'" disabled>';
+		echo '<select name="start_month" value="'.$smonth.'" disabled>';
 		$mcount = 1;
 		for ($monthcount = 0; $monthcount < 12; $monthcount++) {
 			if ($start_date[1] == $monthcount) {
-				$content .= '<option value="'.$mcount.'" selected >'
+				echo '<option value="'.$mcount.'" selected >'
 					.$months[$monthcount].'</option>';
 			} else {
-				$content .= '<option value="'.$mcount.'">'
+				echo '<option value="'.$mcount.'">'
 					.$months[$monthcount].'</option>';
 			}
 			$mcount++;
 		}
-		$content .= '</select>
+		echo '</select>
 			<input type="text" name="start_day" maxlength="2" size="2" value="'.$start_date[2].'" disabled />
 			<input type="text" name="start_year" maxlength="4" size="4" value="'.$end_date[0].'" disabled /><br />
 			End:<br />';
 		$emonth = $end_date[1] - 1;
-		$content .= '<select name="end_month" value="'.$emonth.'" disabled>';
+		echo '<select name="end_month" value="'.$emonth.'" disabled>';
 		$mcount = 1;
 		for ($monthcount = 0; $monthcount < 12; $monthcount++) {
 			if ($start_date[1] == $monthcount) {
-				$content .= '<option value="'.$mcount.'" selected >'
+				echo '<option value="'.$mcount.'" selected >'
 					.$months[$monthcount].'</option>';
 			} else {
-				$content .= '<option value="'.$mcount.'">'
+				echo '<option value="'.$mcount.'">'
 					.$months[$monthcount].'</option>';
 			}
 			$mcount++;
 		}
 		$expire_checked = checkbox($page_message['end'], 1);
-		$content .= '</select>
+		echo '</select>
 			<input type="text" name="end_day" maxlength="2" size="2" value="'.$end_date[2].'" disabled />
 			<input type="text" name="end_year" maxlength="4" size="4" value="'.$end_date[0].'" disabled /></td></tr>
 			<tr><td width="150" class="row1">Expire:</td><td class="row1">
@@ -151,7 +151,7 @@ if ($_GET['action'] == 'edit') {
 			<input type="submit" value="Submit" /></td></tr>
 			</table>';
 	} else {
-		$content = 'Unable to find requested page message.';
+		echo 'Unable to find requested page message.';
 	}
 }
 ?>

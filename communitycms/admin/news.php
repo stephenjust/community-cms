@@ -10,7 +10,8 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
-$content = NULL;
+
+global $acl;
 include(ROOT.'functions/news.php');
 
 if (!$acl->check_permission('adm_news'))
@@ -50,9 +51,9 @@ switch ($_GET['action']) {
 	case 'multi':
 		if (isset($_POST['pri'])) {
 			if (save_priorities($_POST)) {
-				$content .= 'Updated priorities.<br />';
+				echo 'Updated priorities.<br />';
 			} else {
-				$content .= 'Failed to update priorities.<br />';
+				echo 'Failed to update priorities.<br />';
 			}
 			break;
 		}
@@ -60,13 +61,13 @@ switch ($_GET['action']) {
 
 		// Check if any items are selected
 		if (count($selected_items) == 0) {
-			$content .= 'No items are selected.<br />'."\n";
+			echo 'No items are selected.<br />'."\n";
 			break;
 		}
 
 		// Check if an action is selected
 		if (!isset($_POST['news_action'])) {
-			$content .= 'No action was selected.<br />'."\n";
+			echo 'No action was selected.<br />'."\n";
 			break;
 		}
 
@@ -75,25 +76,25 @@ switch ($_GET['action']) {
 			$_POST['news_action'] != 'move' &
 			$_POST['news_action'] != 'copy')
 		{
-			$content .= 'Invalid action.<br />'."\n";
+			echo 'Invalid action.<br />'."\n";
 			break;
 		}
 
 		if ($_POST['news_action'] == 'del') {
 			if (!delete_article($selected_items)) {
-				$content .= '<span class="errormessage">Failed to delete article(s)</span><br />'."\n";
+				echo '<span class="errormessage">Failed to delete article(s)</span><br />'."\n";
 			} else {
-				$content .= 'Successfully deleted article(s)<br />'."\n";
+				echo 'Successfully deleted article(s)<br />'."\n";
 			}
 			break;
 		}
 
 		if (!isset($_POST['where'])) {
-			$content .= 'No location provided.<br />'."\n";
+			echo 'No location provided.<br />'."\n";
 			break;
 		}
 		if (!is_numeric($_POST['where'])) {
-			$content .= 'Invalid location.<br />'."\n";
+			echo 'Invalid location.<br />'."\n";
 			break;
 		}
 		if ($_POST['news_action'] == 'move') {
@@ -108,9 +109,9 @@ switch ($_GET['action']) {
 
 	case 'delete':
 		if (!delete_article($_GET['id'])) {
-			$content .= 'Failed to delete article<br />'."\n";
+			echo 'Failed to delete article<br />'."\n";
 		} else {
-			$content .= 'Successfully deleted article<br />'."\n";
+			echo 'Successfully deleted article<br />'."\n";
 		}
 		break;
 
@@ -121,10 +122,10 @@ switch ($_GET['action']) {
 			news_create($_POST['title'], $_POST['content'],
 					$_POST['page'], $_POST['author'], $_POST['image'],
 					$_POST['publish'], $_POST['date_params']);
-			$content .= 'Successfully added article.<br />';
+			echo 'Successfully added article.<br />';
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 
@@ -132,31 +133,31 @@ switch ($_GET['action']) {
 
 	case 'publish':
 		if (!news_publish($_GET['id'])) {
-			$content .= '<span class="errormessage">Failed to publish article.</span><br />'."\n";
+			echo '<span class="errormessage">Failed to publish article.</span><br />'."\n";
 			break;
 		}
-		$content .= 'Successfully published article.<br />'."\n";
+		echo 'Successfully published article.<br />'."\n";
 		break;
 	case 'unpublish':
 		if (!news_publish($_GET['id'],false)) {
-			$content .= '<span class="errormessage">Failed to unpublish article</span><br />'."\n";
+			echo '<span class="errormessage">Failed to unpublish article</span><br />'."\n";
 			break;
 		}
-		$content .= 'Successfully unpublished article<br />'."\n";
+		echo 'Successfully unpublished article<br />'."\n";
 		break;
 
 // ----------------------------------------------------------------------------
 
 	case 'edit':
 		if (!$acl->check_permission('news_edit')) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
+			echo '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
 			break;
 		}
 		if (!isset($_GET['id'])) {
 			break;
 		}
 		if (!is_numeric($_GET['id'])) {
-			$content .= '<span class="errormessage">Invalid article ID.</span><br />';
+			echo '<span class="errormessage">Invalid article ID.</span><br />';
 			break;
 		}
 		$article_id = (int)$_GET['id'];
@@ -166,12 +167,12 @@ switch ($_GET['action']) {
 			WHERE id = '.$article_id.' LIMIT 1';
 		$edit_handle = $db->sql_query($edit_query);
 		if ($db->sql_num_rows($edit_handle) == 0) {
-			$content .= '<span class="errormessage">The article you are trying to edit does not exist.</span><br />';
+			echo '<span class="errormessage">The article you are trying to edit does not exist.</span><br />';
 			break;
 		}
 		$article_page_group = page_group_news($article_id);
 		if (!$acl->check_permission('pagegroupedit-'.$article_page_group)) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
+			echo '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
 			break;
 		}
 
@@ -197,10 +198,10 @@ switch ($_GET['action']) {
 			news_edit($_POST['id'], $_POST['title'],
 					$_POST['update_content'], $_POST['page'],
 					$_POST['image'], $_POST['date_params']);
-			$content .= 'Successfully edited article.<br />';
+			echo 'Successfully edited article.<br />';
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 }
@@ -311,5 +312,5 @@ if ($acl->check_permission('news_create')) {
 	$tab_layout->add_tab('Create Article',$tab_content['create']);
 }
 
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

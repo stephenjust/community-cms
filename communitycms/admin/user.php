@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,28 +11,28 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+global $acl;
 if (!$acl->check_permission('adm_user'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-$content = NULL;
 switch ($_GET['action']) {
 	case 'delete':
 		if (!$acl->check_permission('user_delete')) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to delete a user.</span><br />';
+			echo '<span class="errormessage">You do not have the necessary permissions to delete a user.</span><br />';
 			break;
 		}
 		if ($_GET['id'] == 1) {
-			$content .= '<span class="errormessage">Cannot delete Administrator.</span><br />';
+			echo '<span class="errormessage">Cannot delete Administrator.</span><br />';
 			break;
 		}
 		$delete_user_query = 'DELETE FROM ' . USER_TABLE . '
 			WHERE id = '.(int)$_GET['id'];
 		$delete_user = $db->sql_query($delete_user_query);
 		if ($db->error[$delete_user] === 1) {
-			$content .= 'Failed to delete user.<br />';
+			echo 'Failed to delete user.<br />';
 			break;
 		}
-		$content .= 'Successfully deleted user.<br />';
+		echo 'Successfully deleted user.<br />';
 		Log::addMessage('Deleted user #'.$_GET['id']);
 		break;
 
@@ -40,14 +40,14 @@ switch ($_GET['action']) {
 
 	case 'create':
 		if (!$acl->check_permission('user_create')) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to create a new user.</span><br />';
+			echo '<span class="errormessage">You do not have the necessary permissions to create a new user.</span><br />';
 			break;
 		}
 		if (!isset($_POST['username']) || !isset($_POST['pass']) ||
 				!isset($_POST['pass_conf']) || !isset($_POST['first_name']) ||
 				!isset($_POST['surname']) || !isset($_POST['telephone']) ||
 				!isset($_POST['address']) && isset($_POST['email'])) {
-			$content .= '<span class="errormessage">You did not fill out a required field.</span><br />';
+			echo '<span class="errormessage">You did not fill out a required field.</span><br />';
 			break;
 		}
 		$error = false;
@@ -55,11 +55,11 @@ switch ($_GET['action']) {
 		$pass = $_POST['pass'];
 		$pass_conf = $_POST['pass_conf'];
 		if (preg_match('/,/',$_POST['surname'])) {
-			$content .= '<span class="errormessage">You cannot have a comma in your surname.</span><br />';
+			echo '<span class="errormessage">You cannot have a comma in your surname.</span><br />';
 			$error = true;
 		}
 		if (preg_match('/,/',$_POST['first_name'])) {
-			$content .= '<span class="errormessage">You cannot have a comma in your first name.</span><br />';
+			echo '<span class="errormessage">You cannot have a comma in your first name.</span><br />';
 			$error = true;
 		}
 		$real_name = addslashes($_POST['surname']).', '.addslashes($_POST['first_name']);
@@ -73,34 +73,34 @@ switch ($_GET['action']) {
 		$address = addslashes($_POST['address']);
 		$email = addslashes($_POST['email']);
 		if (strlen($username) <= 5) {
-			$content .= '<span class="errormessage">Your user name should be at least six characters.</span><br />';
+			echo '<span class="errormessage">Your user name should be at least six characters.</span><br />';
 			$error = true;
 		}
 		if ($pass != $pass_conf || $pass == "" || $pass_conf == "") {
-			$content .= '<span class="errormessage">Your passwords do not match, or you did not fill in one or more of the password fields.</span><br />';
+			echo '<span class="errormessage">Your passwords do not match, or you did not fill in one or more of the password fields.</span><br />';
 			$error = true;
 		}
 		if (strlen($pass) <= 7) {
-			$content .= '<span class="errormessage">Your password must be at least eight characters.</span><br />';
+			echo '<span class="errormessage">Your password must be at least eight characters.</span><br />';
 			$error = true;
 		}
 		if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
-			$content .= '<span class="errormessage">You did not enter a valid email address.</span><br />';
+			echo '<span class="errormessage">You did not enter a valid email address.</span><br />';
 			$error = true;
 		}
 		if (strlen($telephone) <= 11 || !preg_match('/^[0-9\-]+\-[0-9]+\-[0-9]+$/',$telephone)) {
-			$content .= '<span class="errormessage">Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.</span><br />';
+			echo '<span class="errormessage">Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.</span><br />';
 			$error = true;
 		}
 		$check_user_query = 'SELECT * FROM ' . USER_TABLE . '
 			WHERE username = \''.$username.'\'';
 		$check_user_handle = $db->sql_query($check_user_query);
 		if ($db->error[$check_user_handle] === 1) {
-			$content .= '<span class="errormessage">Failed to check if your username is already taken.</span><br />';
+			echo '<span class="errormessage">Failed to check if your username is already taken.</span><br />';
 		}
 		$check_user_num_rows = $db->sql_num_rows($check_user_handle);
 		if ($check_user_num_rows != 0) {
-			$content .= '<span class="errormessage">Your username has already been taken. Please choose another.</span>';
+			echo '<span class="errormessage">Your username has already been taken. Please choose another.</span>';
 			$error = true;
 		}
 		if ($error == true) {
@@ -114,10 +114,10 @@ switch ($_GET['action']) {
 			'$title','$groups','$telephone','$email','$address')";
 		$create_user = $db->sql_query($create_user_query);
 		if ($db->error[$create_user] === 1) {
-			$content .= 'Your account could not be created.<br />';
+			echo 'Your account could not be created.<br />';
 			break;
 		}
-		$content .= "Thank you, $real_name, your account has been created.";
+		echo "Thank you, $real_name, your account has been created.";
 		Log::addMessage('New user \''.$real_name.'\'');
 		unset($username);
 		unset($pass);
@@ -208,5 +208,5 @@ if ($acl->check_permission('user_create')) {
 	$tab_layout->add_tab('Create User',$tab_content['create']);
 }
 
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

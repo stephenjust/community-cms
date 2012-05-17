@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -10,7 +10,6 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
-$content = NULL;
 
 // ----------------------------------------------------------------------------
 
@@ -25,9 +24,9 @@ if($_GET['action'] == 'save') {
 			!set_config('news_show_author',$show_author) ||
 			!set_config('news_show_edit_time',$show_edit) ||
 			!set_config('news_default_publish_value',$def_pub_val)) {
-		$content .= 'Failed to update configuration.<br />';
+		echo 'Failed to update configuration.<br />';
 	} else {
-		$content .= 'Successfully updated configuration.<br />';
+		echo 'Successfully updated configuration.<br />';
 		Log::addMessage('Updated news configuration');
 	}
 }
@@ -46,6 +45,6 @@ $form->add_checkbox('etime','Show Edit Time',get_config('news_show_edit_time'));
 $form->add_select('default_publish_value','Articles default to',array(0,1),array('Un-published','Published'),get_config('news_default_publish_value'));
 $form->add_submit('submit','Save Configuration');
 $tab_layout->add_tab('Configure Module',$form);
-$content .= $tab_layout;
+echo $tab_layout;
 
 ?>

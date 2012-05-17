@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2010 Stephen Just
+ * @copyright Copyright (C) 2010-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -168,7 +168,6 @@ class AdminPage extends Page {
 		$template_page_bottom = $template_page->split('content');
 		echo $template_page;
 		unset($template_page);
-		$content = NULL;
 		ob_start();
 		try {
 			include(ROOT.'admin/'.AdminPage::$module.'.php');
@@ -176,8 +175,7 @@ class AdminPage extends Page {
 		catch (AdminException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
-		$content .= ob_get_clean();
-		$template_page_bottom->content = $content;
+		$template_page_bottom->content = ob_get_clean();
 		echo $template_page_bottom;
 		unset($template_page_bottom);
 	}

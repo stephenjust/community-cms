@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -10,6 +10,8 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
+
+global $acl;
 
 if (!$acl->check_permission('adm_newsletter'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
@@ -78,6 +80,8 @@ function newsletter_create($entry_name,$entry_file,$page,$year,$month) {
 	$page = (int)$page;
 	$year = (int)$year;
 	$month = (int)$month;
+	if (strlen($entry_name) == 0)
+		throw new Exception('No label was given for the newsletter.');
 	if (strlen($entry_file) <= 3)
 		throw new Exception('No file was selected for the newsletter.');
 	if ($month > 12 || $month < 1)
@@ -108,7 +112,6 @@ function newsletter_create($entry_name,$entry_file,$page,$year,$month) {
 	Log::addMessage('Newsletter \''.$entry_name.'\' added to page '.$page_title);
 }
 
-$content = NULL;
 $months = array('January','February','March','April','May','June','July',
 	'August','September','October','November','December');
 $tab_layout = new tabs;
@@ -123,35 +126,35 @@ switch ($_GET['action']) {
 			newsletter_create($_POST['label'],
 					$_POST['file_list'],
 					$_POST['page'], $_POST['year'], $_POST['month']);
-			$content .= 'Successfully added newsletter entry.<br />';
+			echo 'Successfully added newsletter entry.<br />';
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
 	case 'delete':
 		try {
 			newsletter_delete($_GET['id']);
-			$content .= 'Successfully deleted newsletter entry.<br />'."\n";
+			echo 'Successfully deleted newsletter entry.<br />'."\n";
 		}
 		catch (Exception $e) {
-			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
 	case 'edit':
 		if (!is_numeric($_GET['id'])) {
-			$content .= 'Invalid newsletter ID.<br />'."\n";
+			echo 'Invalid newsletter ID.<br />'."\n";
 			break;
 		}
 		$newsletter_info_query = 'SELECT * FROM `'.NEWSLETTER_TABLE.'`
 			WHERE `id` = '.$_GET['id'].' LIMIT 1';
 		$newsletter_info_handle = $db->sql_query($newsletter_info_query);
 		if ($db->error[$newsletter_info_handle] === 1) {
-			$content .= 'Failed to load newsletter information.<br />'."\n";
+			echo 'Failed to load newsletter information.<br />'."\n";
 			break;
 		}
 		if ($db->sql_num_rows($newsletter_info_handle) != 1) {
-			$content .= 'The newsletter you selected does not exist.<br />'."\n";
+			echo 'The newsletter you selected does not exist.<br />'."\n";
 			break;
 		}
 		$newsletter_info = $db->sql_fetch_assoc($newsletter_info_handle);
@@ -172,11 +175,11 @@ switch ($_GET['action']) {
 		break;
 	case 'editsave':
 		if (!is_numeric($_POST['id'])) {
-			$content .= 'Invalid newsletter entry.<br />'."\n";
+			echo 'Invalid newsletter entry.<br />'."\n";
 			break;
 		}
 		if (!is_numeric($_POST['month']) || !is_numeric($_POST['year'])) {
-			$content .= 'Invalid newsletter date.<br />'."\n";
+			echo 'Invalid newsletter date.<br />'."\n";
 			break;
 		}
 		$edit_query = 'UPDATE `'.NEWSLETTER_TABLE.'`
@@ -186,11 +189,11 @@ switch ($_GET['action']) {
 			`page` = '.$_POST['page'].' WHERE `id` = '.$_POST['id'];
 		$edit_handle = $db->sql_query($edit_query);
 		if ($db->error[$edit_handle] === 1) {
-			$content .= 'Failed to edit newsletter entry.<br />'."\n";
+			echo 'Failed to edit newsletter entry.<br />'."\n";
 			break;
 		} else {
 			Log::addMessage('Edited newsletter \''.$_POST['label'].'\'');
-			$content .= 'Updated newsletter entry.<br />'."\n";
+			echo 'Updated newsletter entry.<br />'."\n";
 		}
 		break;
 }
@@ -254,5 +257,5 @@ if ($acl->check_permission('newsletter_create')) {
 	$tab_content['create'] = $form;
 	$tab_layout->add_tab('Create Newsletter',$tab_content['create']);
 }
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

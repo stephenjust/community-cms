@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -24,21 +24,21 @@ function perm_list($group = 0) {
 	return $return;
 }
 
-$content = NULL;
+global $acl;
 if (!$acl->check_permission('adm_user_groups'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 if ($_GET['action'] == 'delete') {
 	if ($_GET['id'] == 1) {
-		$content .= '<span class="errormessage">Cannot delete Administrator group.</span><br />';
+		echo '<span class="errormessage">Cannot delete Administrator group.</span><br />';
 	} else {
 		$delete_group_query = 'DELETE FROM ' . USER_GROUPS_TABLE . '
 			WHERE id = '.(int)$_GET['id'];
 		$delete_group = $db->sql_query($delete_group_query);
 		if($db->error[$delete_group] === 1) {
-			$content .= '<span class="errormessage">Failed to delete group.</span><br />';
+			echo '<span class="errormessage">Failed to delete group.</span><br />';
 		} else {
-			$content .= 'Successfully deleted group.<br />';
+			echo 'Successfully deleted group.<br />';
 			Log::addMessage('Deleted group #'.(int)$_GET['id']);
 		}
 	}
@@ -49,16 +49,16 @@ if ($_GET['action'] == 'delete') {
 if ($_GET['action'] == 'new') {
 	if ($acl->check_permission('group_create')) {
 		if (strlen($_POST['group_name']) < 2) {
-			$content .= '<span class="errormessage">Error: Your group name was too short.</span><br />';
+			echo '<span class="errormessage">Error: Your group name was too short.</span><br />';
 		} else {
 			$create_group_query = 'INSERT INTO ' . USER_GROUPS_TABLE . '
 				(`name`, `label_format`) VALUES
 				(\''.addslashes($_POST['group_name']).'\',\''.addslashes($_POST['label_format']).'\')';
 			$create_group_handle = $db->sql_query($create_group_query);
 			if($db->error[$create_group_handle] === 1) {
-				$content .= '<span class="errormessage">Error: Failed to create group.</span><br />';
+				echo '<span class="errormessage">Error: Failed to create group.</span><br />';
 			} else {
-				$content .= 'Created group \''.$_POST['group_name'].'\'.<br />';
+				echo 'Created group \''.$_POST['group_name'].'\'.<br />';
 				Log::addMessage('Created user group \''.addslashes($_POST['group_name']).'\'');
 			}
 		}
@@ -70,7 +70,7 @@ if ($_GET['action'] == 'new') {
 if ($_GET['action'] == 'permsave') {
 	$set_perm_error = 0;
 	if (!isset($_POST['id']) || !isset($_POST['var_list'])) {
-		$content .= '<span class="errormessage">Failed to update permissions.</span><br />';
+		echo '<span class="errormessage">Failed to update permissions.</span><br />';
 	} else {
 		$var_list = csv2array($_POST['var_list']);
 		$id = (int)$_POST['id'];
@@ -95,10 +95,10 @@ if ($_GET['action'] == 'permsave') {
 		unset($form_var);
 		unset($form_var_value);
 		if ($set_perm_error == 0) {
-			$content .= 'Updated permissions for group.<br />';
+			echo 'Updated permissions for group.<br />';
 			Log::addMessage('Updated group permissions');
 		} else {
-			$content .= '<span class="errormessage">Failed to update permissions.</span><br />';
+			echo '<span class="errormessage">Failed to update permissions.</span><br />';
 		}
 	}
 	// in_array($string,$array)
@@ -170,5 +170,5 @@ if ($acl->check_permission('group_create')) {
 	$tab['create'] = $tab_layout->add_tab('Create Group',$tab_content['create']);
 }
 
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

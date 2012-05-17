@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,10 +11,10 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+global $acl;
 if (!$acl->check_permission('adm_poll_manager'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-$content = NULL;
 $tab_layout = new tabs;
 
 switch ($_GET['action']) {
@@ -22,7 +22,7 @@ switch ($_GET['action']) {
 		break;
 	case 'new':
 		if (!$acl->check_permission('poll_create')) {
-			$content .= '<span class="errormessage">You do not have the necessary permissions to create a new poll.</span><br />'."\n";
+			echo '<span class="errormessage">You do not have the necessary permissions to create a new poll.</span><br />'."\n";
 		}
 		$question = addslashes($_POST['question']);
 		$short_name = addslashes($_POST['short_name']);
@@ -30,7 +30,7 @@ switch ($_GET['action']) {
 		$answer_array = explode("\n",$answers);
 		$num_answers = count($answer_array);
 		if ($num_answers < 2) {
-			$content .= '<span class="errormessage">Not enough answer choices.</span><br />'."\n";
+			echo '<span class="errormessage">Not enough answer choices.</span><br />'."\n";
 			break;
 		}
 		$i = 1;
@@ -38,7 +38,7 @@ switch ($_GET['action']) {
 			(question,short_name) VALUES ('$question','$short_name')";
 		$new_question_handle = $db->sql_query($new_question_query);
 		if ($db->error[$new_question_handle] === 1) {
-			$content .= '<span class="errormessage">Failed to create poll question.</span><br />'."\n";
+			echo '<span class="errormessage">Failed to create poll question.</span><br />'."\n";
 			break;
 		}
 		$question_check_query = 'SELECT * FROM ' . POLL_QUESTION_TABLE . '
@@ -52,28 +52,28 @@ switch ($_GET['action']) {
 					(question_id,answer,answer_order) VALUES ('.$question_check['question_id'].',\''.$current_answer.'\','.$i.')';
 				$new_answer_handle = $db->sql_query($new_answer_query);
 				if ($db->error[$new_answer_handle] === 1) {
-					$content .= '<span class="errormessage">Failed to create poll answer.</span><br />'."\n";
+					echo '<span class="errormessage">Failed to create poll answer.</span><br />'."\n";
 				}
 			}
 			$i++;
 		}
-		$content .= 'Created poll.<br />'."\n";
+		echo 'Created poll.<br />'."\n";
 		Log::addMessage('Created poll question \''.$question.'\'');
 		break;
 }
 if ($_GET['action'] == 'del') {
-	$content .= 'Are you sure you want to really delete this poll, all related poll answer choices, and respones?<br />';
-	$content .= '<form method="post" action="admin.php?module=poll_manager&action=really_delete">
+	echo 'Are you sure you want to really delete this poll, all related poll answer choices, and respones?<br />';
+	echo '<form method="post" action="admin.php?module=poll_manager&action=really_delete">
 		<input type="hidden" name="question_id" value="'.addslashes($_GET['id']).'" />
 		<input type="submit" value="Delete Poll" /></form>';
 } elseif ($_GET['action'] == 'really_delete') {
 	try {
 		$poll = new Poll($_POST['question_id']);
 		$result = $poll->delete();
-		$content .= 'Deleted '.$result['responses'].' poll respones, '.$result['answers'].' poll answer choices, and the poll question.<br />';
+		echo 'Deleted '.$result['responses'].' poll respones, '.$result['answers'].' poll answer choices, and the poll question.<br />';
 	}
 	catch (PollException $e) {
-		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 	}
 }
 
@@ -120,5 +120,5 @@ if ($acl->check_permission('poll_create')) {
 	$tab_layout->add_tab('Create Poll',$tab_content['create']);
 }
 
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

@@ -11,6 +11,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+global $acl;
+
 if (!$acl->check_permission('adm_page_message'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
@@ -54,14 +56,13 @@ function pagemessage_delete($id) {
 	Log::addMessage('Deleted page message on page \''.$read_message['title'].'\'');
 }
 
-$content = NULL;
 if ($_GET['action'] == 'delete') {
 	try {
 		pagemessage_delete($_GET['id']);
-		$content .= 'Successfully deleted page message.<br />';
+		echo 'Successfully deleted page message.<br />';
 	}
 	catch (Exception $e) {
-		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 	}
 }
 
@@ -101,5 +102,5 @@ $tab_content['manage'] .= '<script type="text/javascript">update_page_message_li
 
 $tab_content['manage'] .= '<input type="submit" value="New Page Message" /></form>';
 $tab_layout->add_tab('Manage Page Messages',$tab_content['manage']);
-$content .= $tab_layout;
+echo $tab_layout;
 ?>

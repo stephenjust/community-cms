@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,7 +11,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-$content = NULL;
+global $acl;
 global $debug;
 
 if (!$acl->check_permission('adm_page'))
@@ -31,10 +31,10 @@ if ($_GET['action'] == 'new') {
 			$show_menu,
 			$_POST['parent'],
 			$_POST['page_group']);
-		$content .= 'Successfully added page.<br />'."\n";
+		echo 'Successfully added page.<br />'."\n";
 	}
 	catch (Exception $e) {
-		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+		echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 	}
 }
 
@@ -53,16 +53,16 @@ if ($_GET['action'] == 'new_link') {
 				(title,parent,type,menu) VALUES ("'.$title.'",'.$parent.',0,1)';
 			$new_page = $db->sql_query($new_page_query);
 			if ($db->error[$new_page] === 1) {
-				$content .= 'Failed to create link to external page.<br />';
+				echo 'Failed to create link to external page.<br />';
 			} else {
-				$content .= 'Successfully created link to external page.<br />'."\n";
+				echo 'Successfully created link to external page.<br />'."\n";
 				Log::addMessage('New menu link to external page \''.$_POST['title'].'\'');
 			}
 		} else {
-			$content .= 'Failed to create link to external page. Invalid link name.<br />';
+			echo 'Failed to create link to external page. Invalid link name.<br />';
 		}
 	} else {
-		$content .= 'Failed to create link to external page. Invalid address.<br />';
+		echo 'Failed to create link to external page. Invalid address.<br />';
 	}
 } // IF 'new_link'
 
@@ -74,9 +74,9 @@ switch ($_GET['action']) {
 
 	case 'home':
 		if (page_set_home($page_id)) {
-			$content .= 'Changed home page.<br />'."\n";
+			echo 'Changed home page.<br />'."\n";
 		} else {
-			$content .= 'Failed to change home page.<br />'."\n";
+			echo 'Failed to change home page.<br />'."\n";
 		}
 		break; // case 'home'
 
@@ -87,42 +87,42 @@ switch ($_GET['action']) {
 			break;
 		}
 		if (!page_delete($page_id)) {
-			$content .= 'An error occured when attempting to delete the page.<br />'."\n";
+			echo 'An error occured when attempting to delete the page.<br />'."\n";
 		} else {
-			$content .= 'Successfully deleted the page.<br />'."\n";
+			echo 'Successfully deleted the page.<br />'."\n";
 		}
 		break; // case 'del'
 
 	case 'new_page_group':
 		if (!isset($_POST['page_group_name'])) {
-			$content .= 'Invalid page group name.<br />'."\n";
+			echo 'Invalid page group name.<br />'."\n";
 		}
 		if (page_add_group($_POST['page_group_name'])) {
-			$content = 'Successfully created new page group.<br />'."\n";
+			echo 'Successfully created new page group.<br />'."\n";
 		} else {
-			$content .= '<span class="errormessage">Failed to create page group.</span><br />'."\n";
+			echo '<span class="errormessage">Failed to create page group.</span><br />'."\n";
 		}
 		break; // case 'new_page_group'
 
 	case 'delete_page_group':
 		if (!isset($_GET['id'])) {
-			$content .= 'No page group specified to delete.<br />'."\n";
+			echo 'No page group specified to delete.<br />'."\n";
 		}
 		switch (page_delete_group((int)$_GET['id'])) {
 			default:
-				$content .= '<span class="errormessage">Failed to delete page group.</span><br />'."\n";
+				echo '<span class="errormessage">Failed to delete page group.</span><br />'."\n";
 				break;
 			case 2:
-				$content .= '<span class="errormessage">The page group you are trying to delete is not empty. Please reassign any pages assigned to this page group to another page group.</span><br />'."\n";
+				echo '<span class="errormessage">The page group you are trying to delete is not empty. Please reassign any pages assigned to this page group to another page group.</span><br />'."\n";
 				break;
 			case 3:
-				$content .= '<span class="errormessage">Failed to delete user permission records associated with this page group.</span><br />'."\n";
+				echo '<span class="errormessage">Failed to delete user permission records associated with this page group.</span><br />'."\n";
 				break;
 			case 4:
-				$content .= '<span class="errormessage">Failed to delete permission key associated with this page group.</span><br />'."\n";
+				echo '<span class="errormessage">Failed to delete permission key associated with this page group.</span><br />'."\n";
 				break;
 			case true:
-				$content .= 'Successfully deleted page group.<br />'."\n";
+				echo 'Successfully deleted page group.<br />'."\n";
 				break;
 		}
 		break; // case 'delete_page_group'
@@ -162,10 +162,10 @@ switch ($_GET['action']) {
 			WHERE id = $page_id";
 		$save_handle = $db->sql_query($save_query);
 		if ($db->error[$save_handle] === 1) {
-			$content .= '<span class="errormessage">Failed to edit page.</span><br />'."\n";
+			echo '<span class="errormessage">Failed to edit page.</span><br />'."\n";
 			break;
 		}
-		$content .= 'Updated page information.<br />'."\n";
+		echo 'Updated page information.<br />'."\n";
 		Log::addMessage('Updated information for page \''.stripslashes($title).'\'');
 		break;
 }
@@ -178,18 +178,18 @@ page_clean_order();
 // Move page down if requested.
 if ($_GET['action'] == 'move_down') {
 	if (page_move_down($page_id)) {
-		$content .= 'Successfully moved page down.';
+		echo 'Successfully moved page down.';
 	} else {
-		$content .= 'Failed to move page down.';
+		echo 'Failed to move page down.';
 	}
 }
 
 // Move page up if requested.
 if ($_GET['action'] == 'move_up') {
 	if (page_move_up($page_id)) {
-		$content .= 'Successfully moved page up.';
+		echo 'Successfully moved page up.';
 	} else {
-		$content .= 'Failed to move page up.';
+		echo 'Failed to move page up.';
 	}
 }
 
@@ -516,6 +516,6 @@ if ($db->error[$page_group_list_handle] === 1) {
 }
 // FIXME: Finish page group support.
 $tab_layout->add_tab('Page Groups',$tab_content['page_groups']);
-$content .= $tab_layout;
+echo $tab_layout;
 
 ?>

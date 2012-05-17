@@ -11,6 +11,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+global $acl;
 if (!$acl->check_permission('page_message_new'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
@@ -63,7 +64,6 @@ function pagemessage_create($page,$content,$start,$end,$expire) {
 	Log::addMessage('Created page message for page \''.$page_name['title'].'\'');
 }
 
-$content = NULL;
 if ($_GET['action'] == 'save') {
 	try {
 		$_POST['start_year'] = (isset($_POST['start_year'])) ? $_POST['start_year'] : 0;
@@ -77,12 +77,12 @@ if ($_GET['action'] == 'save') {
 		$expire = (isset($_POST['expire'])) ? checkbox($_POST['expire']) : 0;
 		pagemessage_create($_POST['page_id'],
 				$_POST['text'], $start, $end, (boolean)$expire);
-		$content .= 'Successfully created page message.<br />';
-		$content .= '<a href="admin.php?module=page_message&amp;page='.$_POST['page_id'].'">
+		echo 'Successfully created page message.<br />';
+		echo '<a href="admin.php?module=page_message&amp;page='.$_POST['page_id'].'">
 			Return to previous page</a><br />';
 	}
 	catch (Exception $e) {
-		$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 	}
 } else {
 	if (!isset($_POST['page']) || $_POST['page'] == '') {
@@ -98,6 +98,6 @@ if ($_GET['action'] == 'save') {
 	$form->add_date('end','End Date','MDY',NULL,"disabled");
 	$form->add_checkbox('expire','Expire',NULL,"disabled");
 	$form->add_submit('submit','Save');
-	$content .= '<h1>Create New Page Message</h1>'.$form;
+	echo '<h1>Create New Page Message</h1>'.$form;
 }
 ?>

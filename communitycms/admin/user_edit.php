@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,10 +11,10 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+global $acl;
 if (!$acl->check_permission('adm_user_edit'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-$content = NULL;
 if(!isset($_GET['edit'])) {
 	$_GET['edit'] = NULL;
 }
@@ -25,7 +25,7 @@ $current_data_query = 'SELECT * FROM ' . USER_TABLE . '
 	WHERE id = '.(int)$_GET['id'].' LIMIT 1';
 $current_data_handle = $db->sql_query($current_data_query);
 if ($db->sql_num_rows($current_data_handle) == 0) {
-	$content .= 'Unable to find the specified user in the database.<br />';
+	echo 'Unable to find the specified user in the database.<br />';
 } else {
 	$current_data = $db->sql_fetch_assoc($current_data_handle);
 	if ($_GET['edit'] != "") {
@@ -36,15 +36,15 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 					`password_date` = '.time().' WHERE `id` = '.(int)$_GET['edit'];
 				$change_password_handle = $db->sql_query($change_password_query);
 				if ($db->error[$change_password_handle] === 1) {
-					$content .= 'Failed to change password.<br />';
+					echo 'Failed to change password.<br />';
 				} else {
-					$content .= 'Password changed.<br />';
+					echo 'Password changed.<br />';
 				}
 			} else {
-				$content .= 'Password not changed.<br />';
+				echo 'Password not changed.<br />';
 			}
 		} else {
-			$content .= 'Password not changed.<br />';
+			echo 'Password not changed.<br />';
 		}
 		$telephone = addslashes($_POST['telephone']);
 		$email = addslashes($_POST['email']);
@@ -53,11 +53,11 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 			? array2csv($_POST['groups']) : NULL;
 		$error = 0;
 		if (strlen($telephone) <= 11 || !preg_match('/^[0-9\-]+\-[0-9]+\-[0-9]+$/i',$telephone)) {
-			$content .= 'Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.<br />';
+			echo 'Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.<br />';
 			$error = 1;
 		}
 		if (!preg_match('/^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/i',$email)) {
-			$content .= 'You did not enter a valid email address.<br />';
+			echo 'You did not enter a valid email address.<br />';
 			$error = 1;
 		}
 		if ($_POST['surname'] == '' || $_POST['first_name'] == '') {
@@ -73,9 +73,9 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 				WHERE id = '.(int)$_GET['edit'];
 			$edit_handle = $db->sql_query($edit_query);
 			if($db->error[$edit_handle] === 1) {
-				$content .= 'Failed to update user information. ';
+				echo 'Failed to update user information. ';
 			} else {
-				$content .= 'Successfully updated user information.';
+				echo 'Successfully updated user information.';
 			}
 		}
 	} else { // IF 'edit'
@@ -118,7 +118,7 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
 		$form->add_submit('submit','Edit User');
 		$tab_content['edit'] = $form;
 		$tab_layout->add_tab('Edit User',$tab_content['edit']);
-		$content .= $tab_layout;
+		echo $tab_layout;
 	}
 }
 ?>
