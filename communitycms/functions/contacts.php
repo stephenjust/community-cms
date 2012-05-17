@@ -127,6 +127,66 @@ function contact_delete($id) {
 	Log::addMessage('Deleted contact \''.$contact_info['name'].'\'');
 }
 
+function contact_edit($id,$name,$title,$phone,$address,$email,$username) {
+	global $acl;
+	global $db;
+	
+	if (!$acl->check_permission('contacts_edit'))
+		throw new Exception('You are not allowed to edit contact records.');
+
+	// Sanitize inputs
+	$name = $db->sql_escape_string(htmlspecialchars($name));
+	$title = $db->sql_escape_string(htmlspecialchars($title));
+	$address = $db->sql_escape_string(htmlspecialchars($address));
+	$email = $db->sql_escape_string(htmlspecialchars($email));
+	$username = $db->sql_escape_string(htmlspecialchars($username));
+
+	// Format phone number for storage
+	if ($phone != "") {
+		// Remove special characters that may be used in a phone number
+		$phone = str_replace(array('-','(',')',' ','.','+'),NULL,$phone);
+		if (!is_numeric($phone))
+			throw new Exception('Invalid telephone number.');
+	}
+
+	// Verify email address
+	if ($email != "") {
+		if (!preg_match('/^[a-z0-9_\-\.\+]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email))
+			throw new Exception('Invalid email address.');
+	}
+
+	// Verify username and get user ID
+	if ($username != '') {
+		$username_query = 'SELECT `id`
+			FROM `'.USER_TABLE.'`
+			WHERE `username` = \''.$username.'\'';
+		$username_handle = $db->sql_query($username_query);
+		if ($db->error[$username_handle] === 1)
+			throw new Exception('An error occurred while looking up a username record.');
+		if ($db->sql_num_rows($username_handle) == 0) {
+			echo 'This contact will not be associated with the chosen
+				username because that user does not exist.<br />'."\n";
+			$uid = 0;
+		} else {
+			$uname = $db->sql_fetch_assoc($username_handle);
+			$uid = $uname['id'];
+		}
+	} else {
+		$uid = 0;
+	}
+
+	// Update contact record
+	$query = 'UPDATE `'.CONTACTS_TABLE."`
+		SET `name`='$name',`user_id`=$uid,`title`='$title',
+		`phone`=$phone,`email`='$email',`address`='$address'
+		WHERE `id` = $id";
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1)
+		throw new Exception('An error occurred while updating the contact record.');
+
+	Log::addMessage('Edited contact \''.stripslashes($name).'\'');
+}
+
 /**
  * Fetch a single contact record
  * @global db $db

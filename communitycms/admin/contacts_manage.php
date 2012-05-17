@@ -110,66 +110,19 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'editsave':
-		$name = addslashes($_POST['name']);
-		$uname = addslashes($_POST['username']);
-		$title = addslashes($_POST['title']);
-		$phone = $_POST['phone'];
-		$address = addslashes($_POST['address']);
-		$email = addslashes($_POST['email']);
-
-		// Format phone number for storage
-		if ($phone != '') {
-			// Remove special characters
-			$phone = str_replace(array('-','(',')',' ','.','+'),NULL,$phone);
-			if (!is_numeric($phone)) {
-				echo 'Invalid telephone number.<br />'."\n";
-				break;
-			}
-		} else {
-			$phone = 'NULL';
+		try {
+			contact_edit($_GET['id'],
+					$_POST['name'],
+					$_POST['title'],
+					$_POST['phone'],
+					$_POST['address'],
+					$_POST['email'],
+					$_POST['username']);
+			echo 'Successfully edited contact.<br />'."\n";
 		}
-
-		// Verify email address
-		if ($email != '') {
-			if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
-				echo 'Invalid E-Mail address.<br />'."\n";
-				break;
-			}
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
-
-		// Verify username and get user ID
-		if ($uname != '') {
-			$username_query = 'SELECT `id` FROM `'.USER_TABLE.'`
-				WHERE `username` = \''.$uname.'\'';
-			$username_handle = $db->sql_query($username_query);
-			if ($db->error[$username_handle] === 1) {
-				echo 'Failed to check if you entered a valid username.<br />'."\n";
-				break;
-			}
-			if ($db->sql_num_rows($username_handle) == 0) {
-				echo 'This contact will not be associated with the chosen
-					username because that user does not exist.<br />'."\n";
-				$uid = 0;
-			} else {
-				$username = $db->sql_fetch_assoc($username_handle);
-				$uid = $username['id'];
-			}
-		} else {
-			$uid = 0;
-		}
-
-		// Create contact
-		$new_contact_query = 'UPDATE `'.CONTACTS_TABLE.'`
-			SET `name`=\''.$name.'\',`user_id`='.$uid.',`title`=\''.$title.'\',
-			`phone`='.$phone.',`email`=\''.$email.'\',`address`=\''.$address.'\'
-			WHERE `id` = '.(int)$_GET['id'];
-		$new_contact_handle = $db->sql_query($new_contact_query);
-		if ($db->error[$new_contact_handle] === 1) {
-			echo 'Failed to edit contact.<br />'."\n";
-			break;
-		}
-		echo 'Successfully edited contact.<br />'."\n";
-		Log::addMessage('Edited contact \''.stripslashes($name).'\'');
 		break;
 
 // ----------------------------------------------------------------------------
