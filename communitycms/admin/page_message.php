@@ -11,62 +11,12 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+require_once(ROOT.'functions/pagemessage.php');
+
 global $acl;
 
 if (!$acl->check_permission('adm_page_message'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
-
-/**
- * Deletes a page message entry
- * @global acl $acl Permission object
- * @global db $db Database object
- * @param integer $id Page message ID
- * @throws Exception
- */
-function pagemessage_delete($id) {
-	global $acl;
-	global $db;
-
-	// Run pre-execution checks
-	if (!$acl->check_permission('page_message_delete'))
-		throw new Exception('You are not allowed to delete page messages.');
-	$id = (int)$id;
-	if ($id < 1)
-		throw new Exception('The given message ID is invalid.');
-
-	// Read page message information
-	$read_message_query = 'SELECT `p`.`title`
-		FROM `'.PAGE_MESSAGE_TABLE.'` `m`, `'.PAGE_TABLE.'` `p`
-		WHERE `m`.`message_id` = '.$id.' AND `m`.`page_id` = `p`.`id`
-		LIMIT 1';
-	$read_message_handle = $db->sql_query($read_message_query);
-	if ($db->error[$read_message_handle] === 1)
-		throw new Exception('An error occurred when reading the page message you asked to delete.');
-	if ($db->sql_num_rows($read_message_handle) != 1)
-		throw new Exception('The page message you are trying to delete does not exist.');
-	
-	// Delete page message record
-	$delete_message_query = 'DELETE FROM `'.PAGE_MESSAGE_TABLE.'`
-		WHERE `message_id` = '.$id.' LIMIT 1';
-	$delete_message = $db->sql_query($delete_message_query);
-	if ($db->error[$delete_message] === 1)
-		throw new Exception('An error occurred while deleting the page message.');
-
-	$read_message = $db->sql_fetch_assoc($read_message_handle);
-	Log::addMessage('Deleted page message on page \''.$read_message['title'].'\'');
-}
-
-if ($_GET['action'] == 'delete') {
-	try {
-		pagemessage_delete($_GET['id']);
-		echo 'Successfully deleted page message.<br />';
-	}
-	catch (Exception $e) {
-		echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
-	}
-}
-
-// ----------------------------------------------------------------------------
 
 // Get current page ID
 if (!isset($_POST['page']) && !isset($_GET['page'])) {
@@ -79,8 +29,39 @@ if (!isset($_POST['page']) && !isset($_GET['page'])) {
 	unset($_POST['page']);
 }
 
+try {
+	switch ($_GET['action']) {
+		default: break;
+
+		case 'delete':
+			pagemessage_delete($_GET['id']);
+			echo 'Successfully deleted page message.<br />';
+			break;
+		
+		case 'create':
+			$_POST['start_year'] = (isset($_POST['start_year'])) ? $_POST['start_year'] : 0;
+			$_POST['start_month'] = (isset($_POST['start_month'])) ? $_POST['start_month'] : 0;
+			$_POST['start_day'] = (isset($_POST['start_day'])) ? $_POST['start_day'] : 0;
+			$_POST['end_year'] = (isset($_POST['end_year'])) ? $_POST['end_year'] : 0;
+			$_POST['end_month'] = (isset($_POST['end_month'])) ? $_POST['end_month'] : 0;
+			$_POST['end_day'] = (isset($_POST['end_day'])) ? $_POST['end_day'] : 0;
+			$start = $_POST['start_year'].'-'.$_POST['start_month'].'-'.$_POST['start_day'];
+			$end = $_POST['end_year'].'-'.$_POST['end_month'].'-'.$_POST['end_day'];
+			$expire = (isset($_POST['expire'])) ? checkbox($_POST['expire']) : 0;
+			pagemessage_create($page_id,
+					$_POST['text'], $start, $end, (boolean)$expire);
+			echo 'Successfully created page message.<br />';
+			break;
+	}
+}
+catch (Exception $e) {
+	echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+}
+
+// ----------------------------------------------------------------------------
+
 $tab_layout = new tabs;
-$tab_content['manage'] = '<form method="post" action="?module=page_message_new">
+$tab_content['manage'] = '
 	<select id="adm_page_message_page_list" name="page" onChange="update_page_message_list(\'-\')">';
 $page_query = 'SELECT * FROM ' . PAGE_TABLE . ' ORDER BY list ASC';
 $page_query_handle = $db->sql_query($page_query);
@@ -99,8 +80,22 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
 $tab_content['manage'] .= '</select><br />'."\n";
 $tab_content['manage'] .= '<div id="adm_page_message_list">Loading...</div>'."\n";
 $tab_content['manage'] .= '<script type="text/javascript">update_page_message_list(\''.$page_id.'\');</script>';
-
-$tab_content['manage'] .= '<input type="submit" value="New Page Message" /></form>';
 $tab_layout->add_tab('Manage Page Messages',$tab_content['manage']);
+
+// Form to create new page message
+if ($acl->check_permission('page_message_new')) {
+	$form = new form;
+	$form->set_target('admin.php?module=page_message&amp;action=create');
+	$form->set_method('post');
+	$form->add_textarea('text','Content',NULL,'rows="30"');
+	$form->add_page_list('page', 'Page');
+	$form->add_date('start','Start Date','MDY',NULL,"disabled");
+	$form->add_date('end','End Date','MDY',NULL,"disabled");
+	$form->add_checkbox('expire','Expire',NULL,"disabled");
+	$form->add_submit('submit','Save');
+	$create_form = $form;
+	$tab_layout->add_tab('Create Page Message',$create_form);
+}
+
 echo $tab_layout;
 ?>

@@ -30,7 +30,6 @@
 	<category name="Pages">
 		<link label="Pages" module="page" acl="adm_page"></link>
 		<link label="Page Messages" module="page_message" acl="adm_page_message"></link>
-		<link label="Create Page Message" module="page_message_new" acl="adm_page_message_new" hide="1"></link>
 		<link label="Edit Page Message" module="page_message_edit" acl="adm_page_message_edit" hide="1"></link>
 	</category>
 	<category name="Blocks">

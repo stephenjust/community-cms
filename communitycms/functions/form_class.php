@@ -319,8 +319,12 @@ class form {
 	function add_page_list($name, $label, $pagetype = '*', $nopageallowed = 0,
 		$value = NULL, $props = NULL) {
 		global $db;
-		$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
-			WHERE type = '.$pagetype.' ORDER BY `title` ASC';
+		if ($pagetype == '*')
+			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
+				ORDER BY `title` ASC';
+		else
+			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
+				WHERE type = '.$pagetype.' ORDER BY `title` ASC';
 		$page_query_handle = $db->sql_query($page_query);
 		$options = NULL;
 		for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {

@@ -62,6 +62,46 @@ function pagemessage_create($page,$content,$start,$end,$expire) {
 }
 
 /**
+ * Deletes a page message entry
+ * @global acl $acl Permission object
+ * @global db $db Database object
+ * @param integer $id Page message ID
+ * @throws Exception
+ */
+function pagemessage_delete($id) {
+	global $acl;
+	global $db;
+
+	// Run pre-execution checks
+	if (!$acl->check_permission('page_message_delete'))
+		throw new Exception('You are not allowed to delete page messages.');
+	$id = (int)$id;
+	if ($id < 1)
+		throw new Exception('The given message ID is invalid.');
+
+	// Read page message information
+	$read_message_query = 'SELECT `p`.`title`
+		FROM `'.PAGE_MESSAGE_TABLE.'` `m`, `'.PAGE_TABLE.'` `p`
+		WHERE `m`.`message_id` = '.$id.' AND `m`.`page_id` = `p`.`id`
+		LIMIT 1';
+	$read_message_handle = $db->sql_query($read_message_query);
+	if ($db->error[$read_message_handle] === 1)
+		throw new Exception('An error occurred when reading the page message you asked to delete.');
+	if ($db->sql_num_rows($read_message_handle) != 1)
+		throw new Exception('The page message you are trying to delete does not exist.');
+	
+	// Delete page message record
+	$delete_message_query = 'DELETE FROM `'.PAGE_MESSAGE_TABLE.'`
+		WHERE `message_id` = '.$id.' LIMIT 1';
+	$delete_message = $db->sql_query($delete_message_query);
+	if ($db->error[$delete_message] === 1)
+		throw new Exception('An error occurred while deleting the page message.');
+
+	$read_message = $db->sql_fetch_assoc($read_message_handle);
+	Log::addMessage('Deleted page message on page \''.$read_message['title'].'\'');
+}
+
+/**
  * Change the content of a page message record
  * @global acl $acl
  * @global db $db
