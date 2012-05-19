@@ -241,6 +241,13 @@ switch ($db_version) {
 					`ref_id` INT NOT NULL default 0,
 					`order` INT NOT NULL default 0
 					) ENGINE=MYISAM CHARACTER SET=utf8';
+				$query[] = 'CREATE TABLE `'.DIR_PROP_TABLE.'` (
+					`directory` VARCHAR(255) NOT NULL,
+					`property` VARCHAR(255) NOT NULL,
+					`value` int(4) UNSIGNED default 0,
+					INDEX (`directory`),
+					INDEX (`property`)
+					) ENGINE=MYISAM CHARACTER SET=utf8';
 				break;
 			case 'postgresql':
 				$query[] = 'ALTER TABLE `'.PAGE_TABLE.'` ADD `page_group` integer NOT NULL DEFAULT \'1\' AFTER `menu`';
@@ -272,8 +279,15 @@ switch ($db_version) {
 					PRIMARY KEY ("id")
 					)';
 				$query[] = 'SELECT setval(\''.CONTENT_TABLE.'_id_seq\', (SELECT max("id") FROM "'.CONTENT_TABLE.'"))';
+				$query[] = 'CREATE TABLE "<!-- $DB_PREFIX$ -->dir_props" (
+					"directory" text NOT NULL,
+					"property" text NOT NULL,
+					"value" integer UNSIGNED default 0
+					)';
 				break;
 		}
+		$query[] = 'INSERT INTO `'.DIR_PROPS_TABLE.'` (`directory`, `property`, `value`) VALUES
+			(\'newsicons\',\'icons_only\',1)';
 		$query[] = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
 			VALUES (\'Default Group\')';
 

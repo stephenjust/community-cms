@@ -41,45 +41,59 @@ function edit_information($id, $path, $label) {
 	}
 	return 'Edited information.';
 }
-if ($_GET['action'] == 'saveinfo') {
-	$id = (int)$_POST['id'];
-	$path = addslashes($db->sql_escape_string($_POST['path']));
-	$label = addslashes($_POST['label']);
-	$check_if_info_exists_query = 'SELECT * FROM ' . FILE_TABLE . '
-		WHERE `id` = \''.$id.'\' OR `path` = \''.$path.'\' LIMIT 1';
-	$check_if_info_exists_handle = $db->sql_query($check_if_info_exists_query);
-	if ($db->error[$check_if_info_exists_handle] === 1) {
-		echo 'Failed to check for existing entries in the database.';
-	} else {
-		if ($db->sql_num_rows($check_if_info_exists_handle) != 1) {
-			echo add_information($path,$label);
-		} else {
-			echo edit_information($id,$path,$label);
-		}
+
+try {
+	switch ($_GET['action']) {
+		default: break;
+
+		case 'saveinfo':
+			$id = (int)$_POST['id'];
+			$path = addslashes($db->sql_escape_string($_POST['path']));
+			$label = addslashes($_POST['label']);
+			$check_if_info_exists_query = 'SELECT * FROM ' . FILE_TABLE . '
+				WHERE `id` = \''.$id.'\' OR `path` = \''.$path.'\' LIMIT 1';
+			$check_if_info_exists_handle = $db->sql_query($check_if_info_exists_query);
+			if ($db->error[$check_if_info_exists_handle] === 1) {
+				echo 'Failed to check for existing entries in the database.';
+			} else {
+				if ($db->sql_num_rows($check_if_info_exists_handle) != 1) {
+					echo add_information($path,$label);
+				} else {
+					echo edit_information($id,$path,$label);
+				}
+			}
+			unset($_POST['path']);
+			break;
+
+		// Create new subfolder
+		case 'new_folder':
+			file_create_folder($_POST['new_folder_name']);
+			echo 'Successfully created directory.<br />';
+			break;
+
+		// Save folder property
+		case 'save_folder_prop':
+			folder_set_property($_GET['dir'], $_GET['prop'], $_GET['value']);
+			echo 'Saved folder properties.<br />';
+			break;
 	}
-	unset($_POST['path']);
 }
+catch (Exception $e) {
+	echo '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
+}
+
 
 // ----------------------------------------------------------------------------
 
 // Upload file
 if (isset($_GET['upload'])) {
 	try {
+		if (!isset($_POST['path']))
+			throw new Exception('No path was given. This may occur if the uploaded file is too big.');
 		echo file_upload($_POST['path']);
 	}
 	catch (Exception $e) {
 		echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
-	}
-}
-
-// Create new subfolder
-if ($_GET['action'] == 'new_folder') {
-	try {
-		file_create_folder($_POST['new_folder_name']);
-		echo 'Successfully created directory.<br />';
-	}
-	catch (Exception $e) {
-		echo '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
 	}
 }
 
@@ -172,5 +186,25 @@ if ($acl->check_permission('file_upload')) {
 	}
 	$tab_layout->add_tab('Upload File',$tab_content['upload']);
 }
+
+// Folder settings panel
+$fs_table_columns = array('Folder','Icons Only');
+$fs_folders = folder_get_list();
+$fs_rows = array();
+for ($i = 0; $i < count($fs_folders); $i++) {
+	if (folder_get_property($fs_folders[$i],'icons_only')) {
+		$fs_dir_prop_icons = '<a href="admin.php?module=filemanager&amp;action=save_folder_prop&amp;dir='.$fs_folders[$i].'&amp;prop=icons_only&amp;value=0">
+			<img src="<!-- $IMAGE_PATH$ -->tick.png" alt="yes" width="16" height="16" border="0" />
+			</a>';
+	} else {
+		$fs_dir_prop_icons = '<a href="admin.php?module=filemanager&amp;action=save_folder_prop&amp;dir='.$fs_folders[$i].'&amp;prop=icons_only&amp;value=1">
+			<img src="<!-- $IMAGE_PATH$ -->cross.png" alt="no" width="16" height="16" border="0" />
+			</a>';
+	}
+	$fs_rows[] = array($fs_folders[$i],$fs_dir_prop_icons);
+}
+$fs_tab = create_table($fs_table_columns, $fs_rows); 
+$tab_layout->add_tab('Folder Settings',$fs_tab);
+
 echo $tab_layout;
 ?>

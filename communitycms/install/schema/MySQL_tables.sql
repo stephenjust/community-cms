@@ -75,6 +75,14 @@ CREATE TABLE `<!-- $DB_PREFIX$ -->content` (
 	`order` INT NOT NULL default 0
 ) ENGINE=MYISAM CHARACTER SET=utf8;
 
+CREATE TABLE `<!-- $DB_PREFIX$ -->dir_props` (
+	`directory` VARCHAR(255) NOT NULL,
+	`property` VARCHAR(255) NOT NULL,
+	`value` int(4) UNSIGNED default 0,
+	INDEX (`directory`),
+	INDEX (`property`)
+) ENGINE=MYISAM CHARACTER SET=utf8;
+
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
 	`id` int(11) NOT NULL auto_increment,
 	`type` int(11) NOT NULL default 0,

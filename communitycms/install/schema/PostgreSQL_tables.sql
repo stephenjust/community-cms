@@ -119,6 +119,15 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->content" (
 SELECT setval('<!-- $DB_PREFIX$ -->content_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->content"));
 
 -- ----------------------------------------------------------------------------
+-- comcms_dir_props
+-- ----------------------------------------------------------------------------
+CREATE TABLE "<!-- $DB_PREFIX$ -->dir_props" (
+	"directory" text NOT NULL,
+	"property" text NOT NULL,
+	"value" integer UNSIGNED default 0
+);
+
+-- ----------------------------------------------------------------------------
 -- comcms_files
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->files_id_seq";

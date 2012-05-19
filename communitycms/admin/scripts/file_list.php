@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -30,10 +30,9 @@ if (!isset($_GET['directory'])) {
 }
 
 // Show special info about newsicons folder
-if ($dir == 'newsicons') {
+if (folder_get_property($dir,'icons_only')) {
 	echo '<div class="info">
-		The \'newsicons\' folder contains all of the icons that can be used
-		with news articles or event listings. All of the images must be in PNG
+		This folder can only contain icons. All of the images must be in PNG
 		or Jpeg format. Images uploaded to this folder will automatically be
 		resized to match your current icon size setting (default 100x100).
 		</div><br />';

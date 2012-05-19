@@ -37,7 +37,7 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 	$query_string = preg_replace('/action=.+\&?/i',NULL,$query_string);
 	$return = '<form enctype="multipart/form-data"
 		action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&amp;'.
-		$query_string.'" method="POST">
+		$query_string.'" method="post">
 		<!-- Limit file size to 64MB -->
 		<input type="hidden" name="MAX_FILE_SIZE" value="67108864" />
 		Please choose a file: <input name="upload" type="file" /><br />'.
@@ -95,20 +95,6 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	global $acl;
 	if (!$acl->check_permission('file_upload'))
 		throw new Exception('You are not allowed to upload files.');
-	if ($path != "") {
-		$path .= '/';
-	}
-	$target = ROOT.$path;
-	$filename = stripslashes(basename($_FILES['upload']['name']));
-	$target .= $filename;
-	$target = replace_file_special_chars($target);
-	$filename = replace_file_special_chars($filename);
-	
-	// Check if a file by that name already exists
-	if (file_exists($target))
-		throw new Exception('A file by that name already exists.<br />'.
-			'Please use a different file name or delete the old file before '.
-			'attempting to upload the file again.');
 
 	// Handle file upload errors sooner rather than later
 	if ($_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
@@ -144,8 +130,23 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 		throw new Exception($err);
 	}
 
-	// Handle uploads to 'newsicons'
-	if (basename($path) == 'newsicons') {
+	if ($path != "") {
+		$path .= '/';
+	}
+	$target = ROOT.$path;
+	$filename = stripslashes(basename($_FILES['upload']['name']));
+	$target .= $filename;
+	$target = replace_file_special_chars($target);
+	$filename = replace_file_special_chars($filename);
+	
+	// Check if a file by that name already exists
+	if (file_exists($target))
+		throw new Exception('A file by that name already exists.<br />'.
+			'Please use a different file name or delete the old file before '.
+			'attempting to upload the file again.');
+
+	// Handle icon uploads
+	if (folder_get_property(basename($path),'icons_only')) {
 		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
 			@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
 			if (generate_thumbnail($target,$target,1,1,100,100)) {
@@ -156,8 +157,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 			}
 			return $return;
 		} else {
-			throw new Exception('The \'newsicons\' folder can '.
-				'only contain PNG and Jpeg images.');
+			throw new Exception('This folder can only contain PNG and Jpeg images.');
 		}
 	}
 
@@ -225,6 +225,93 @@ function folder_list($directory = "",$current = "",$type = 0,$name='folder_list'
 		$return .= '</select>';
 	}
 	return $return;
+}
+
+/**
+ * Get the subdirectories of the files tree
+ * @return array
+ */
+function folder_get_list() {
+	$directory = FILES_ROOT;
+	$files = scandir($directory);
+	$subdirs = array();
+	for ($i = 0; $i < count($files); $i++) {
+		if (!is_dir($directory.$files[$i]))
+			continue;
+		if ($files[$i] == '.' || $files[$i] == '..')
+			continue;
+		$subdirs[] = $files[$i];
+	}
+	return $subdirs;
+}
+
+/**
+ * Get the value of a folder property
+ * @global db $db
+ * @param string $directory Directory relative to the files tree
+ * @param string $property Property name
+ * @return mixed
+ */
+function folder_get_property($directory, $property) {
+	global $db;
+
+	$directory = $db->sql_escape_string($directory);
+	$property = $db->sql_escape_string($property);
+	
+	$query = 'SELECT `value`
+		FROM `'.DIR_PROP_TABLE."`
+		WHERE `directory` = '$directory'
+		AND `property` = '$property'
+		LIMIT 1";
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1)
+		throw new Exception();
+	if ($db->sql_num_rows($handle) == 0)
+		return 0;
+	$result = $db->sql_fetch_row($handle);
+	return $result[0];
+}
+
+/**
+ * Set the value of a folder property
+ * @global db $db
+ * @param string $directory Directory relative to the files tree
+ * @param string $property Property name
+ * @param mixed $value Property value
+ */
+function folder_set_property($directory, $property, $value) {
+	global $db;
+
+	$directory = $db->sql_escape_string($directory);
+	$property = $db->sql_escape_string($property);
+	$value = $db->sql_escape_string($value);
+
+	// Check if a value is already set
+	$query = 'SELECT `value`
+		FROM `'.DIR_PROP_TABLE."`
+		WHERE `directory` = '$directory'
+		AND `property` = '$property'
+		LIMIT 1";
+	$handle = $db->sql_query($query);
+	if ($db->error[$handle] === 1)
+		throw new Exception();
+	if ($db->sql_num_rows($handle) == 0)
+		$set_query = 'INSERT INTO `'.DIR_PROP_TABLE."`
+			(`directory`,`property`,`value`)
+			VALUES
+			('$directory', '$property', '$value')";
+	else
+		$set_query = 'UPDATE `'.DIR_PROP_TABLE."`
+			SET `value` = '$value'
+			WHERE `directory` = '$directory'
+			AND `property` = '$property'
+			LIMIT 1";
+	$set_handle = $db->sql_query($set_query);
+	if ($db->error[$set_handle] === 1)
+		throw new Exception();
+	
+	Log::addMessage('Set directory property \''.stripslashes($property)
+			.'\' to \''.stripslashes($value).'\' for \''.stripslashes($directory).'\'');
 }
 
 // ----------------------------------------------------------------------------

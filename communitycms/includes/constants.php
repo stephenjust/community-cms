@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -16,6 +16,7 @@ if (!defined('SECURITY')) {
 
 define('COMCMS_VERSION', 'SVN');
 define('DATABASE_VERSION', 0.05);
+define('FILES_ROOT',ROOT.'files/');
 
 /**
  * Enable debugging
@@ -56,6 +57,7 @@ define('CALENDAR_SOURCES_TABLE', $CONFIG['db_prefix'] . 'calendar_sources');
 define('CONFIG_TABLE', $CONFIG['db_prefix'] . 'config');
 define('CONTACTS_TABLE', $CONFIG['db_prefix'] . 'contacts');
 define('CONTENT_TABLE', $CONFIG['db_prefix'] . 'content');
+define('DIR_PROP_TABLE', $CONFIG['db_prefix'] . 'dir_props');
 define('FILE_TABLE', $CONFIG['db_prefix'] . 'files');
 define('GALLERY_TABLE', $CONFIG['db_prefix'] . 'galleries');
 define('GALLERY_IMAGE_TABLE', $CONFIG['db_prefix'] . 'gallery_images');
