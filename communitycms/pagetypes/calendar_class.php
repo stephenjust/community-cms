@@ -137,6 +137,7 @@ class calendar_event {
 			$template_event->replace_range('event_author',NULL);
 
 		$template_event->event_time = $event_time;
+		$template_event->event_start_date = date('Y-m-d', $event_start);
 		if (strlen($event_info['image']) > 0) {
 			$im_info = get_file_info($event_info['image']);
 			$template_event->event_image_start = NULL;

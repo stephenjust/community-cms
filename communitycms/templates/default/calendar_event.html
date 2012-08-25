@@ -1,6 +1,6 @@
-<div class="cal_event">
+<div class="cal_event" itemscope itemtype="http://schema.org/Event">
 	<!-- $EDIT_BAR$ -->
-	<h1 class="cal_event-heading"><!-- $EVENT_HEADING$ --></h1>
+	<h1 class="cal_event-heading" itemprop="name"><!-- $EVENT_HEADING$ --></h1>
 	<!-- $EVENT_IMAGE_START$ -->
 	<div class="cal_event-image">
 	<!-- $EVENT_IMAGE$ -->
@@ -11,10 +11,11 @@
 		<p class="cal_event-author">Posted by <!-- $EVENT_AUTHOR$ --></p>
 		<!-- $EVENT_AUTHOR_END$ -->
 		<p class="cal_event-time"><!-- $EVENT_TIME$ --></p>
+		<meta itemprop="startDate" content="<!-- $EVENT_START_DATE$ -->" />
 		<strong>Event category:</strong> <!-- $EVENT_CATEGORY$ --><br />
 		<br />
-		<!-- $EVENT_DESCRIPTION$ --><br />
+		<span itemprop="description"><!-- $EVENT_DESCRIPTION$ --></span><br />
 		<br />
-		<!-- $EVENT_LOCATION_START$ --><strong>Location:</strong> <!-- $EVENT_LOCATION$ --><!-- $EVENT_LOCATION_END$ -->
+		<!-- $EVENT_LOCATION_START$ --><strong>Location:</strong> <span itemprop="location"><!-- $EVENT_LOCATION$ --></span><!-- $EVENT_LOCATION_END$ -->
 	</div>
 </div>
