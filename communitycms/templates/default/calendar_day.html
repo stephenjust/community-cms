@@ -8,9 +8,10 @@
 		</tr>
 	</thead>
 	<tbody>
-		<!-- $EVENT_START$ --><tr>
-			<td class='time'><!-- $EVENT_TIME$ --></td>
-			<td class='head'><a href='?id=<!-- $PAGE_ID$ -->&view=event&a=<!-- $EVENT_ID$ -->'><!-- $EVENT_HEADING$ --></a></td>
+		<!-- $EVENT_START$ --><tr itemscope itemtype="http://schema.org/Event">
+			<td class='time'><!-- $EVENT_TIME$ -->
+			<meta itemprop="startDate" content="<!-- $EVENT_START_DATE$ -->" /></td>
+			<td class='head' itemprop="name"><a itemprop="url" href='?id=<!-- $PAGE_ID$ -->&view=event&a=<!-- $EVENT_ID$ -->'><!-- $EVENT_HEADING$ --></a></td>
 			<td class='description'><!-- $EVENT_DESCRIPTION$ --></td>
 		</tr>
 		<!-- $EVENT_END$ -->

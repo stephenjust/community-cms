@@ -104,6 +104,7 @@ switch ($view) {
 			$current_event = clone $event_template;
 			$current_event->event_id = $day_events['id'];
 			$current_event->event_time = $event_time;
+			$current_event->event_start_date = date('Y-m-d', $event_start);
 			$current_event->event_heading = $day_events['header'];
 			$current_event->event_description = truncate(strip_tags($day_events['description']),100);
 			$event_rows .= (string)$current_event;
