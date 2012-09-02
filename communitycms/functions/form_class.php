@@ -86,6 +86,10 @@ class form {
 		$this->form .= $form_var;
 	}
 
+	function add_heading($text) {
+		$this->form .= '<h4>'.HTML::schars($text).'</h4>';
+	}
+	
 	/**
 	 * add_hidden - Add a hidden field to a form
 	 * @param string $name Name of form var

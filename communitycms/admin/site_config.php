@@ -28,6 +28,11 @@ if ($_GET['action'] == 'save') {
 	$password_expire = addslashes($_POST['password_expire']);
 	$time_format = addslashes($_POST['time_format']);
 	$tel_format = addslashes($_POST['tel_format']);
+	$num_articles = (int)$_POST['num_articles'];
+	$def_date = (int)$_POST['date'];
+	$show_author = (isset($_POST['author'])) ? checkbox($_POST['author']) : 0;
+	$show_edit = (isset($_POST['etime'])) ? checkbox($_POST['etime']) : 0;
+	$def_pub_val = (int)$_POST['default_publish_value'];
 	if (set_config('site_name',$site_name) &&
 		set_config('site_url',$site_url) &&
 		set_config('admin_email',$admin_email) &&
@@ -38,7 +43,14 @@ if ($_GET['action'] == 'save') {
 		set_config('password_expire',$password_expire) &&
 		set_config('time_format',$time_format) &&
 		set_config('tel_format',$tel_format) &&
-		set_config('footer',$_POST['footer']))
+		set_config('footer',$_POST['footer']) &&
+		set_config('news_num_articles',$num_articles) &&
+		set_config('news_default_date_setting',$def_date) &&
+		set_config('news_show_author',$show_author) &&
+		set_config('news_show_edit_time',$show_edit) &&
+		set_config('news_default_publish_value',$def_pub_val) &&
+		set_config('gallery_app',$_POST['gallery_app']) &&
+		set_config('gallery_dir',$_POST['gallery_dir']))
 	{
 		echo 'Successfully edited site information.<br />'."\n";
 		Log::addMessage('Updated site information.');
@@ -55,10 +67,14 @@ $tab_content['config'] = NULL;
 $form = new form;
 $form->set_target('admin.php?module=site_config&amp;action=save');
 $form->set_method('post');
+$form->add_heading('General Settings');
 $form->add_textbox('site_name','Site Name',get_config('site_name'));
 $form->add_textbox('site_desc','Site Description',get_config('comment'));
 $form->add_textbox('site_url','Site URL',get_config('site_url'));
+$form->add_checkbox('active','Site Active',get_config('site_active'));
 $form->add_textbox('admin_email','Admin E-Mail Address',get_config('admin_email'));
+$form->add_heading('General Display Settings');
+$form->add_textarea('footer','Footer Text',get_config('footer'));
 $form->add_select('time_format','Time Format',
 		array('g:i a','g:i A','h:i a','h:i A','G:i','H:i'),
 		array('4:05 am','4:05 AM','04:05 am','04:05 AM','4:05','04:05'),
@@ -71,15 +87,34 @@ $form->add_select('tel_format','Telephone Number Format',
 			'555-555-1234',
 			'555.555.1234'),
 		get_config('tel_format'));
+$form->add_heading('User Settings');
 $form->add_select('password_expire','Password Expire Time',
 		array('0','1209600','2592000','7776000','15552000','31104000'),
 		array('No Expiration','2 Weeks','1 Month','3 Months','6 Months','1 Year'),
 		get_config('password_expire'));
-$form->add_textarea('footer','Footer Text',stripslashes(get_config('footer')));
+$form->add_heading('Cookie Settings');
 $form->add_textbox('cookie_name','Cookie Name',get_config('cookie_name'));
 $form->add_textbox('cookie_path','Cookie Path',get_config('cookie_path'));
-$form->add_checkbox('active','Site Active',get_config('site_active'));
 // TODO: template, disable messaging
+
+$form->add_heading('News Settings');
+$form->add_textbox('num_articles','# Articles per Page',get_config('news_num_articles'),'size="3" maxlength="3"');
+$form->add_select('date','Default Date View',array(0,1,2),array('Hide Date',
+	'Show Date','Show Mini'),get_config('news_default_date_setting'));
+$form->add_checkbox('author','Show Author',get_config('news_show_author'));
+$form->add_checkbox('etime','Show Edit Time',get_config('news_show_edit_time'));
+$form->add_select('default_publish_value','Articles default to',array(0,1),array('Un-published','Published'),get_config('news_default_publish_value'));
+
+$form->add_heading('Gallery Settings');
+$form->add_select('gallery_app',
+		'Gallery Type',
+		array('built-in','simpleviewer'),
+		array('Built-In','SimpleViewer'),
+		get_config('gallery_app'));
+$form->add_textbox('gallery_dir',
+		'Gallery Directory',
+		get_config('gallery_dir'));
+
 $form->add_submit('submit','Save Configuration');
 $tab_content['config'] .= $form;
 $tab['config'] = $tab_layout->add_tab('Configuration',$tab_content['config']);

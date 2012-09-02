@@ -21,8 +21,6 @@
 		<link label="Image Galleries" module="gallery_manager" acl="adm_gallery_manager"></link>
 		<link label="Polls" module="poll_manager" acl="adm_poll_manager"></link>
 		<link label="Files" module="filemanager" acl="adm_filemanager"></link>
-		<link label="News Settings" module="news_settings" acl="adm_news_settings"></link>
-		<link label="Gallery Settings" module="gallery_settings" acl="adm_gallery_settings"></link>
 		<link label="Edit Date" module="calendar_edit_date" acl="adm_calendar_edit_date" hide="1"></link>
 		<link label="Import Events" module="calendar_import" acl="adm_calendar_import" hide="1"></link>
 		<link label="Poll Results" module="poll_results" acl="adm_poll_results" hide="1"></link>

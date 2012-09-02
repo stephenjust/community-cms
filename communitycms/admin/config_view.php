@@ -31,8 +31,8 @@ $num_entries = $db->sql_num_rows($config_handle);
 $config_table_values = array();
 for ($i = 1; $i <= $num_entries; $i++) {
 	$next_row = $db->sql_fetch_row($config_handle);
-	$next_row[0] = stripslashes($next_row[0]);
-	$next_row[1] = htmlspecialchars($next_row[1]);
+	$next_row[0] = HTML::schars($next_row[0]);
+	$next_row[1] = HTML::schars($next_row[1]);
 	$config_table_values[] = $next_row;
 }
 
