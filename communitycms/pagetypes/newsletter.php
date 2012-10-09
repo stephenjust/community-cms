@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -27,7 +27,7 @@ if($db->sql_num_rows($newsletter_handle) == 0) {
 			$return .= "<span class='newsletter_year'>".$currentyear."</span><br />\n";
 		}
 		if ($newsletter['hidden'] != 1) {
-			$return .= '<a href="'.$newsletter['path'].'">'.$newsletter['label']."</a><br />\n";
+			$return .= HTML::link($newsletter['path'], $newsletter['label'])."<br />\n";
 		} else {
 			$return .= $newsletter['label']."<br />\n";
 		}

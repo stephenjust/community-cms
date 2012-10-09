@@ -60,9 +60,9 @@ switch ($_GET['action']) {
 			$form = new form;
 			$form->set_method('post');
 			$form->set_target('admin.php?module=calendar_edit_date&amp;action=edit');
-			$form->add_hidden('author',htmlspecialchars($_SESSION['name']));
+			$form->add_hidden('author',HTML::schars($_SESSION['name']));
 			$form->add_hidden('id',$event['id']);
-			$form->add_textbox('title', '*Heading:', $event['header']);
+			$form->add_textbox('title', '*Heading:', HTML::schars($event['header']));
 			
 			// Get category list
 			$category_list_query = 'SELECT `cat_id`,`label`

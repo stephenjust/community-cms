@@ -360,9 +360,7 @@ function monthcal_get_date($day,$month,$year,$template) {
 		return 'Error';
 	}
 	if ($db->sql_num_rows($dates_handle) > 0) {
-		$template->day_number = '<a href="?'.Page::$url_reference
-			.'&amp;view=day&amp;m='.$month.'&amp;y='.$year.'&amp;d='
-			.$day.'" class="day_number">'.$day.'</a>';
+		$template->day_number = HTML::link('index.php?'.Page::$url_reference.'&view=day&m='.$month.'&y='.$year.'&d='.$day, $day, 'day_number');
 	} else {
 		$template->day_number = $day;
 	}

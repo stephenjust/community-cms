@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -56,14 +56,14 @@ function pagination($start, $num, $all_elements) {
 		} else {
 			$prev_offset = $start - $num;
 		}
-		$template->prev_page = '<a href="index.php?'.Page::$url_reference.'&amp;start='.$prev_offset.'" class="prev_page" id="prev_page">Previous Page</a>';
+		$template->prev_page = HTML::link('index.php?'.Page::$url_reference.'&start='.$prev_offset, 'Previous Page', 'prev_page', 'prev_page');
 	} else {
 		$template->prev_page = '';
 	}
 	// If there's another page...
 	if ($start + $num - 1 < count($all_elements)) {
 		$next_offset = $start + $num;
-		$template->next_page = '<a href="index.php?'.Page::$url_reference.'&amp;start='.$next_offset.'" class="next_page" id="next_page">Next Page</a>';
+		$template->next_page = HTML::link('index.php?'.Page::$url_reference.'&start='.$next_offset, 'Next Page', 'next_page', 'next_page');
 	} else {
 		$template->next_page = '';
 	}

@@ -55,7 +55,7 @@ for($i = 1; $i <= $db->sql_num_rows($event_handle); $i++) {
 	// Create a link to the event, if we're on calendar page
 	if (Page::$type == 'calendar.php') {
 		$event_url = 'index.php?'.Page::$url_reference.'&amp;view=event&amp;a='.$event['id'];
-		$event_heading = '<a href="'.$event_url.'">'.$event_heading.'</a>';
+		$event_heading = HTML::link($event_url, $event_heading);
 	}
 	$template_single_event = clone $template_events;
 	$template_single_event->template = $bl_single_event;
