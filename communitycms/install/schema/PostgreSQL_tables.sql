@@ -273,6 +273,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->pagetypes" (
 	"description" text NOT NULL,
 	"author" text NOT NULL,
 	"filename" text NOT NULL,
+	"class" text NOT NULL,
 	PRIMARY KEY ("id")
 );
 SELECT setval('<!-- $DB_PREFIX$ -->pagetypes_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->pagetypes"));

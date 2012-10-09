@@ -41,12 +41,12 @@ INSERT INTO `<!-- $DB_PREFIX$ -->pages` (text_id, title, meta_desc, type, menu, 
 ('newsletters', 'Newsletters', '', 2, 1, 2, 0);;
 INSERT INTO `<!-- $DB_PREFIX$ -->page_groups` (`label`) VALUES
 ('Default Group');;
-INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (id, name, description, author, filename) VALUES
-(1, 'News', 'A simple news posting system that acts as the main content distribution system for Community CMS', 'stephenjust', 'news.php'),
-(2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by timestamp. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php'),
-(3, 'Calendar', 'A complex timestamp management system supporting a full month view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php'),
-(4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php'),
-(5, 'Tabs', 'A page with tabs that display sub-pages to the current page', 'stephenjust', 'tabs.php');;
+INSERT INTO `<!-- $DB_PREFIX$ -->pagetypes` (`id`, `name`, `description`, `author`, `filename`, `class`) VALUES
+(1, 'News', 'A simple news posting system that acts as the main content distribution system for Community CMS', 'stephenjust', 'news.php', 'NewsPage'),
+(2, 'Newsletter List', 'This pagetype creates a dynamic list of newsletters, sorted by timestamp. It is most useful for a monthly newsletter scenario.', 'stephenjust', 'newsletter.php', 'GenericPage'),
+(3, 'Calendar', 'A complex timestamp management system supporting a full month view, day view, and an event view. This pagetype by default displays the current month.', 'stephenjust', 'calendar.php', 'GenericPage'),
+(4, 'Contacts', 'A page where all users whose information is set to be visible will be shown', 'stephenjust', 'contacts.php', 'GenericPage'),
+(5, 'Tabs', 'A page with tabs that display sub-pages to the current page', 'stephenjust', 'tabs.php', 'GenericPage');;
 INSERT INTO `<!-- $DB_PREFIX$ -->templates` (`id`, `path`, `name`, `description`, `author`) VALUES
 (1, 'templates/default/', 'Community CMS Default Template', 'Default template.', 'Stephen J');;
 INSERT INTO `<!-- $DB_PREFIX$ -->user_groups`

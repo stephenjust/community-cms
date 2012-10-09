@@ -198,6 +198,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
 	`description` text NOT NULL,
 	`author` tinytext NOT NULL,
 	`filename` tinytext NOT NULL,
+	`class` VARCHAR(16) NOT NULL DEFAULT 'GenericPage',
 	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 

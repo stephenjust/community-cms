@@ -344,6 +344,7 @@ switch ($db_version) {
 			(\'password_expire\',\'0\'),
 			(\'tel_format\',\'(###) ###-####\')';
 		$query[] = 'DROP TABLE `'.NEWS_SETTINGS_TABLE.'`';
+		// FIXME: Add column for class to pagetypes
 		execute_queries($query);
 		set_config('db_version','0.05');
 		$query = array();
