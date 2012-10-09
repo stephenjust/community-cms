@@ -340,7 +340,7 @@ class form {
 			}
 		}
 		if ($nopageallowed == 1) {
-			if ($value === 0) {
+			if ($value === '0') {
 				$options .= '<option value="0" selected>No Page</option>'."\n";
 			} else {
 				$options .= '<option value="0">No Page</option>'."\n";
