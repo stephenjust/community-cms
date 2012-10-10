@@ -150,7 +150,7 @@ class calendar_event {
 		$template_event->event_description = stripslashes($event_info['description']);
 
 		// Check if we need to fill the location field
-		if (strlen($event_info['location']) < 1) {
+		if (strlen($event_info['location']) < 1 || $event_info['location_hide'] == 1) {
 			$template_event->replace_range('event_location',NULL);
 		} else {
 			$template_event->event_location = stripslashes($event_info['location']);

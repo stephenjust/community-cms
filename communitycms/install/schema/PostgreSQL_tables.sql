@@ -46,6 +46,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->calendar" (
 	"header" text NOT NULL,
 	"description" text,
 	"location" text,
+	"location_hide" integer NOT NULL default 0,
 	"author" text,
 	"image" text default NULL,
 	"hidden" integer NOT NULL,

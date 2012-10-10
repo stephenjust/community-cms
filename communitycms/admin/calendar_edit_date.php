@@ -25,6 +25,7 @@ switch ($_GET['action']) {
 	case 'edit':
 		try {
 			// Format date for insertion...
+			if (!isset($_POST['location_check'])) $_POST['location_check'] = NULL;
 			$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
 			if (!preg_match('#^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$#i',$event_date))
 				throw new Exception('Invalid date. Must be formatted DD/MM/YYYY');
@@ -34,6 +35,7 @@ switch ($_GET['action']) {
 			$day = $event_date_parts[1];
 			$start_time = parse_time($_POST['stime']);
 			$end_time = parse_time($_POST['etime']);
+			$loc_hide = checkbox($_POST['location_check']);
 			if (!$start_time || !$end_time || $start_time > $end_time)
 				throw new Exception('You did not fill out one or more of the times properly. Please fix the problem and resubmit.');
 			// Generate new start/end string
@@ -43,7 +45,7 @@ switch ($_GET['action']) {
 			event_edit($_POST['id'], $_POST['title'],
 					$_POST['content'], $_POST['author'],
 					$start, $end, $_POST['category'],
-					$_POST['location'], $_POST['image'], $hide);
+					$_POST['location'], $loc_hide, $_POST['image'], $hide);
 			echo 'Successfully edited date information.<br />';
 			echo '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
 		}
@@ -88,7 +90,7 @@ switch ($_GET['action']) {
 					date(get_config('time_format'),$end),'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
 			$form->add_date_cal('date', '*Date:', date('m/d/Y',$start),'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
 			$form->add_textarea('content','Description:',$event['description'],'rows="25"');
-			$form->add_textbox('location','Location:',$event['location']);
+			$form->add_textbox('location','Location:',$event['location'], NULL, 'Hide', $event['location_hide']);
 			$form->add_icon_list('image', 'Image:', 'newsicons', $event['image']);
 			$form->add_checkbox('hide','Hidden:',$event['hidden']);
 			$form->add_submit('submit','Save Event');

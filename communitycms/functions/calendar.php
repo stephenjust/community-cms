@@ -24,11 +24,12 @@ if (@SECURITY != 1) {
  * @param string $date
  * @param integer $category
  * @param string $location
+ * @param boolean $location_hide
  * @param string $image
  * @param boolean $hide
  */
 function event_create($title,$description,$author,$start_time,$end_time,
-		$date,$category,$location,$image,$hide) {
+		$date,$category,$location,$location_hide,$image,$hide) {
 	global $acl;
 	global $db;
 
@@ -73,9 +74,9 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	// Create event entry
 	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
 		(`category`,`start`,`end`,`header`,
-		`description`,`location`,`author`,`image`,`hidden`)
+		`description`,`location`,`location_hide`,`author`,`image`,`hidden`)
 		VALUES ("'.$category.'","'.$start.'","'.$end.'","'.$title.'","'.$description.'",
-		"'.$location.'","'.$author.'","'.$image.'",'.$hide.')';
+		"'.$location.'","'.(int)$location_hide.'","'.$author.'","'.$image.'",'.$hide.')';
 	$create_date = $db->sql_query($create_date_query);
 	if ($db->error[$create_date] === 1)
 		throw new Exception('An error occurred while creating the calendar event.');
@@ -266,7 +267,7 @@ function event_delete($id) {
  * @param boolean $hide
  * @throws Exception 
  */
-function event_edit($id,$title,$description,$author,$start,$end,$category,$location,$image,$hide) {
+function event_edit($id,$title,$description,$author,$start,$end,$category,$location,$location_hide,$image,$hide) {
 	global $acl;
 	global $db;
 
@@ -282,6 +283,7 @@ function event_edit($id,$title,$description,$author,$start,$end,$category,$locat
 	$start = strtotime($start);
 	$end = strtotime($end);
 	$location = $db->sql_escape_string(htmlspecialchars(strip_tags($location)));
+	$location_hide = ($location_hide == true) ? 1 : 0;
 	$image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
 	$hide = ($hide === true) ? 1 : 0;
 	
@@ -300,7 +302,8 @@ function event_edit($id,$title,$description,$author,$start,$end,$category,$locat
 
 	$edit_date_query = 'UPDATE ' . CALENDAR_TABLE . "
 		SET category='$category',start='$start_t',end='$end_t',
-		header='$title',description='$description',location='$location',
+		header='$title',description='$description',
+		`location`='$location', `location_hide`='$location_hide',
 		author='$author',image='$image',hidden='$hide' WHERE id = $id LIMIT 1";
 	$edit_date = $db->sql_query($edit_date_query);
 	if ($db->error[$edit_date] === 1)
@@ -326,7 +329,7 @@ function event_get($id) {
 
 	// Get event record
 	$query = 'SELECT `id`,`category`,`start`,`end`,`header`,
-		`description`,`location`,`author`,`image`,`hidden`
+		`description`,`location`,`location_hide`,`author`,`image`,`hidden`
 		FROM `'.CALENDAR_TABLE.'`
 		WHERE `id` = '.$id.' LIMIT 1';
 	$handle = $db->sql_query($query);

@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`header` text NOT NULL,
 	`description` text,
 	`location` text,
+	`location_hide` tinyint(1) NOT NULL default 0,
 	`author` text,
 	`image` text default NULL,
 	`hidden` tinyint(1) NOT NULL,

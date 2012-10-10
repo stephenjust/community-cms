@@ -33,6 +33,7 @@ $_POST['etime'] = (isset($_POST['etime'])) ? $_POST['etime'] : NULL;
 $_POST['date'] = (isset($_POST['date'])) ? $_POST['date'] : NULL;
 $_POST['content'] = (isset($_POST['content'])) ? $_POST['content'] : NULL;
 $_POST['location'] = (isset($_POST['location'])) ? $_POST['location'] : NULL;
+$_POST['location_check'] = (isset($_POST['location_check'])) ? checkbox($_POST['location_check']) : 0;
 $hide = (isset($_POST['hide'])) ? checkbox($_POST['hide']) : 0;
 $image = (isset($_POST['image'])) ? $_POST['image'] : NULL;
 
@@ -51,6 +52,7 @@ switch ($_GET['action']) {
 					$_POST['date'],
 					$_POST['category'],
 					$_POST['location'],
+					$_POST['location_check'],
 					$image,
 					$hide);
 			echo 'Successfully created event.<br />';
@@ -272,7 +274,7 @@ $form_create->add_textbox('stime','Start Time*',$_POST['stime'],'onChange="valid
 $form_create->add_textbox('etime','End Time*',$_POST['etime'],'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
 $form_create->add_date_cal('date','Date',$_POST['date'],'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
 $form_create->add_textarea('content','Description',$_POST['content']);
-$form_create->add_textbox('location','Location',$new_location);
+$form_create->add_textbox('location','Location',$new_location, NULL, 'Hide', $_POST['location_check']);
 $form_create->add_icon_list('image','Image','newsicons',$image);
 $form_create->add_checkbox('hide','Hidden',$hide);
 $form_create->add_submit('submit','Create Event');

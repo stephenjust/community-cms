@@ -323,6 +323,7 @@ switch ($db_version) {
 		$query[] = 'ALTER TABLE `'.CALENDAR_TABLE.'`
 			ADD `start` DATETIME NOT NULL AFTER `category`
 			ADD `end` DATETIME NOT NULL AFTER `start`,
+			ADD `location_hide` int NOT NULL default 0 AFTER `location`,
 			ADD INDEX (`start`,`end`)';
 		// Populate new fields with info
 		$query[] = 'UPDATE `'.CALENDAR_TABLE.'`
