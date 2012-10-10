@@ -62,12 +62,19 @@ class form {
 	 * @param string $label Text displayed beside field
 	 * @param string $value Default value of field
 	 * @param string $props Extra HTML properties for field
+	 * @param string $check Add checkbox with label
+	 * @param boolean $checkval Checkbox state
 	 */
-	function add_textbox($name, $label, $value = NULL, $props = NULL) {
+	function add_textbox($name, $label, $value = NULL, $props = NULL, $check = NULL, $checkval = NULL) {
+		if ($check != NULL) {
+			$checkval = ($checkval) ? 'checked' : NULL;
+			$check = ' '.$check.'<input type="checkbox" id="_'.$name.'_check" name="'.$name.'_check" '.$checkval.' />';
+		}
+		
 		$form_var = '<div class="admin_form_element">
 			<label for="_'.$name.'">'.$label.'</label>
 			<input type="text" name="'.$name.'" id="_'.$name.'"
-			value="'.$value.'" '.$props.' /></div><br />';
+			value="'.$value.'" '.$props.' />'.$check.'</div><br />';
 		$this->form .= $form_var;
 	}
 
@@ -330,25 +337,18 @@ class form {
 			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
 				WHERE type = '.$pagetype.' ORDER BY `title` ASC';
 		$page_query_handle = $db->sql_query($page_query);
-		$options = NULL;
+		$options = new HTML_Select($name, '_'.$name);
 		for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
 			$page = $db->sql_fetch_assoc($page_query_handle);
-			if ($value == $page['id']) {
-				$options .= '<option value="'.$page['id'].'" selected>'.$page['title'].'</option>'."\n";
-			} else {
-				$options .= '<option value="'.$page['id'].'" >'.$page['title'].'</option>'."\n";
-			}
+			$options->addOption($page['id'], $page['title']);
 		}
 		if ($nopageallowed == 1) {
-			if ($value === '0') {
-				$options .= '<option value="0" selected>No Page</option>'."\n";
-			} else {
-				$options .= '<option value="0">No Page</option>'."\n";
-			}
+			$options->addOption(0, 'No Page');
 		}
+		if ($value !== NULL)
+			$options->setChecked($value);
 		$form_var = '<div class="admin_form_element"><label for="_'.$name.'">'.$label.'</label>
-			<select name="'.$name.'" id="_'.$name.'" '.$props.'>
-			'.$options.'</select></div><br />';
+			'.(string)$options.'</div><br />';
 		$this->form .= $form_var;
 	}
 

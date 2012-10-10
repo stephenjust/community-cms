@@ -7,6 +7,8 @@
  * @package CommunityCMS.main
  */
 
+require_once(ROOT.'includes/HTML_Select.class.php');
+
 /**
  * Helper class for generating HTML strings 
  */
