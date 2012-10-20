@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2008-2010 Stephen Just
+ * @copyright Copyright (C) 2008-2012 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -130,24 +130,29 @@ class form {
 	 * @param array $values Array of values for each entry
 	 * @param array $strings Array of labels for each entry
 	 * @param int $selected Entry selected by default (numerical, starts at 1)
-	 * @param string $props Extra HTML properties for field
+	 * @param string $props Extra HTML properties for field - UNUSED
+	 * @param string $check
+	 * @param boolean $checkval
 	 * @return void
 	 */
-	function add_select($name, $label, $values, $strings, $selected = 0, $props = NULL) {
+	function add_select($name, $label, $values, $strings, $selected = 0, $props = NULL, $check = NULL, $checkval = false) {
 		if (count((array)$values) != count((array)$strings)) {
 			return;
 		}
-		$options = NULL;
-		for ($i = 1; $i <= count((array)$values); $i++) {
-			$select_this = NULL;
-			if ($selected == $values[$i - 1]) {
-				$select_this = 'selected';
-			}
-			$options .= '<option value="'.$values[$i - 1].'" '.$select_this.'>'.$strings[$i - 1].'</option>'."\n";
+		
+		if ($check != NULL) {
+			$checkval = ($checkval) ? 'checked' : NULL;
+			$check = ' '.$check.'<input type="checkbox" id="_'.$name.'_check" name="'.$name.'_check" '.$checkval.' />';
 		}
+		
+		$options = new HTML_SELECT($name, '_'.$name);
+		for ($i = 0; $i < count((array)$values); $i++) {
+			$options->addOption($values[$i], $strings[$i]);
+		}
+		$options->setChecked($selected);
 		$form_var = '<div class="admin_form_element">
 			<label for="_'.$name.'">'.$label.'</label>
-			<select name="'.$name.'" id="_'.$name.'" '.$props.'>'.$options.'</select>
+			'.(string)$options.' '.$check.'
 			</div><br />';
 		$this->form .= $form_var;
 	}

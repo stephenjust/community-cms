@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`id` int(11) NOT NULL auto_increment,
 	`category` int(11) NOT NULL,
+	`category_hide` tinyint(1) NOT NULL default 0,
 	`start` datetime NOT NULL,
 	`end` datetime NOT NULL,
 	`header` text NOT NULL,

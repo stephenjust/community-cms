@@ -25,6 +25,7 @@ switch ($_GET['action']) {
 	case 'edit':
 		try {
 			// Format date for insertion...
+			if (!isset($_POST['category_check'])) $_POST['category_check'] = NULL;
 			if (!isset($_POST['location_check'])) $_POST['location_check'] = NULL;
 			$event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
 			if (!preg_match('#^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$#i',$event_date))
@@ -35,6 +36,7 @@ switch ($_GET['action']) {
 			$day = $event_date_parts[1];
 			$start_time = parse_time($_POST['stime']);
 			$end_time = parse_time($_POST['etime']);
+			$cat_hide = checkbox($_POST['category_check']);
 			$loc_hide = checkbox($_POST['location_check']);
 			if (!$start_time || !$end_time || $start_time > $end_time)
 				throw new Exception('You did not fill out one or more of the times properly. Please fix the problem and resubmit.');
@@ -44,7 +46,7 @@ switch ($_GET['action']) {
 			$hide = (isset($_POST['hide'])) ? (boolean)$_POST['hide'] : false;
 			event_edit($_POST['id'], $_POST['title'],
 					$_POST['content'], $_POST['author'],
-					$start, $end, $_POST['category'],
+					$start, $end, $_POST['category'], $cat_hide,
 					$_POST['location'], $loc_hide, $_POST['image'], $hide);
 			echo 'Successfully edited date information.<br />';
 			echo '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
@@ -81,7 +83,7 @@ switch ($_GET['action']) {
 				$category_ids[] = $category_list['cat_id'];
 			}
 			$form->add_select('category', 'Category:',
-					$category_ids, $category_names, $event['category']);
+					$category_ids, $category_names, $event['category'], NULL, 'Hide', $event['category_hide']);
 			$start = strtotime($event['start']);
 			$end = strtotime($event['end']);
 			$form->add_textbox('stime', '*Start Time:',

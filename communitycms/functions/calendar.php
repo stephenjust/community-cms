@@ -23,13 +23,14 @@ if (@SECURITY != 1) {
  * @param string $end_time
  * @param string $date
  * @param integer $category
+ * @param boolean $category_hide
  * @param string $location
  * @param boolean $location_hide
  * @param string $image
  * @param boolean $hide
  */
 function event_create($title,$description,$author,$start_time,$end_time,
-		$date,$category,$location,$location_hide,$image,$hide) {
+		$date,$category,$category_hide, $location,$location_hide,$image,$hide) {
 	global $acl;
 	global $db;
 
@@ -73,9 +74,9 @@ function event_create($title,$description,$author,$start_time,$end_time,
 	
 	// Create event entry
 	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
-		(`category`,`start`,`end`,`header`,
+		(`category`,`category_hide`,`start`,`end`,`header`,
 		`description`,`location`,`location_hide`,`author`,`image`,`hidden`)
-		VALUES ("'.$category.'","'.$start.'","'.$end.'","'.$title.'","'.$description.'",
+		VALUES ("'.$category.'","'.(int)$category_hide.'","'.$start.'","'.$end.'","'.$title.'","'.$description.'",
 		"'.$location.'","'.(int)$location_hide.'","'.$author.'","'.$image.'",'.$hide.')';
 	$create_date = $db->sql_query($create_date_query);
 	if ($db->error[$create_date] === 1)
@@ -262,12 +263,14 @@ function event_delete($id) {
  * @param date $start
  * @param date $end
  * @param integer $category
+ * @param boolean $category_hide
  * @param string $location
+ * @param boolean $location_hide
  * @param string $image
  * @param boolean $hide
  * @throws Exception 
  */
-function event_edit($id,$title,$description,$author,$start,$end,$category,$location,$location_hide,$image,$hide) {
+function event_edit($id,$title,$description,$author,$start,$end,$category,$category_hide,$location,$location_hide,$image,$hide) {
 	global $acl;
 	global $db;
 
@@ -282,6 +285,7 @@ function event_edit($id,$title,$description,$author,$start,$end,$category,$locat
 	$category = (int)$category;
 	$start = strtotime($start);
 	$end = strtotime($end);
+	$category_hide = ($category_hide == true) ? 1 : 0;
 	$location = $db->sql_escape_string(htmlspecialchars(strip_tags($location)));
 	$location_hide = ($location_hide == true) ? 1 : 0;
 	$image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
@@ -301,8 +305,9 @@ function event_edit($id,$title,$description,$author,$start,$end,$category,$locat
 	$end_time = date('H:i:s',$end);
 
 	$edit_date_query = 'UPDATE ' . CALENDAR_TABLE . "
-		SET category='$category',start='$start_t',end='$end_t',
-		header='$title',description='$description',
+		SET `category`='$category', `category_hide`='$category_hide',
+		`start`='$start_t', `end`='$end_t',
+		`header`='$title', `description`='$description',
 		`location`='$location', `location_hide`='$location_hide',
 		author='$author',image='$image',hidden='$hide' WHERE id = $id LIMIT 1";
 	$edit_date = $db->sql_query($edit_date_query);
@@ -328,7 +333,7 @@ function event_get($id) {
 		throw new Exception('An invalid event ID was given.');
 
 	// Get event record
-	$query = 'SELECT `id`,`category`,`start`,`end`,`header`,
+	$query = 'SELECT `id`,`category`,`category_hide`,`start`,`end`,`header`,
 		`description`,`location`,`location_hide`,`author`,`image`,`hidden`
 		FROM `'.CALENDAR_TABLE.'`
 		WHERE `id` = '.$id.' LIMIT 1';

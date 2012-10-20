@@ -28,6 +28,7 @@ include (ROOT.'functions/calendar.php');
 // Save form information from previously created entry
 $_POST['title'] = (isset($_POST['title'])) ? $_POST['title'] : NULL;
 $category = (isset($_POST['category'])) ? $_POST['category'] : NULL;
+$_POST['category_check'] = (isset($_POST['category_check'])) ? checkbox($_POST['category_check']) : 0;
 $_POST['stime'] = (isset($_POST['stime'])) ? $_POST['stime'] : NULL;
 $_POST['etime'] = (isset($_POST['etime'])) ? $_POST['etime'] : NULL;
 $_POST['date'] = (isset($_POST['date'])) ? $_POST['date'] : NULL;
@@ -51,6 +52,7 @@ switch ($_GET['action']) {
 					$_POST['etime'],
 					$_POST['date'],
 					$_POST['category'],
+					$_POST['category_check'],
 					$_POST['location'],
 					$_POST['location_check'],
 					$image,
@@ -269,7 +271,7 @@ if (!isset($_POST['location'])) {
 } else {
 	$new_location = addslashes($_POST['location']);
 }
-$form_create->add_select('category','Category',$category_ids,$category_names,$category);
+$form_create->add_select('category','Category',$category_ids,$category_names,$category, NULL, 'Hide', $_POST['category_check']);
 $form_create->add_textbox('stime','Start Time*',$_POST['stime'],'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"');
 $form_create->add_textbox('etime','End Time*',$_POST['etime'],'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
 $form_create->add_date_cal('date','Date',$_POST['date'],'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');

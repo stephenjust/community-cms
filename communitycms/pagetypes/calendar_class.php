@@ -145,8 +145,13 @@ class calendar_event {
 			$template_event->event_image = '<img src="'.stripslashes($event_info['image']).'" class="calendar_event_image" alt="'.$im_info['label'].'" />';
 		} else
 			$template_event->replace_range('event_image',NULL);
-		$event_category = ($event_info['label'] == NULL) ? 'Unknown Category' : $event_info['label'];
-		$template_event->event_category = $event_category;
+		if ($event_info['category_hide'] || $event_info['label'] == NULL) {
+			$template_event->replace_range('event_category', NULL);
+		} else {
+			$template_event->event_category_start = NULL;
+			$template_event->event_category_end = NULL;
+			$template_event->event_category = $event_info['label'];
+		}
 		$template_event->event_description = stripslashes($event_info['description']);
 
 		// Check if we need to fill the location field
