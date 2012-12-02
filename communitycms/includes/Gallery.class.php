@@ -277,18 +277,19 @@ class Gallery {
 			throw new GalleryException('Invalid image ID.');
 		
 		$caption = $db->sql_escape_string($caption);
+		$file_name = $db->sql_escape_string($file_name);
 		
 		if ($image_id === false) {
 			// Create new entry
-			$query = 'INSERT INTO `'.GALLERY_IMAGE_TABLE.'`
+			$query = 'INSERT INTO `'.GALLERY_IMAGE_TABLE."`
 				(`gallery_id`,`file`,`caption`)
 				VALUES
-				('.$this->id.',\''.$db->sql_escape_string($file_name).'\',\''.$db->sql_escape_string($caption).'\')';
+				({$this->id},'$file_name','$caption')";
 		} else {
 			// Update existing entry
-			$query = 'UPDATE `'.GALLERY_IMAGE_TABLE.'`
-				SET `caption` = \''.$db->sql_escape_string($caption).'\'
-				WHERE `id` = '.$image_id;
+			$query = 'UPDATE `'.GALLERY_IMAGE_TABLE."`
+				SET `caption` = '$caption'
+				WHERE `id` = $image_id";
 		}
 
 		// Execute query
