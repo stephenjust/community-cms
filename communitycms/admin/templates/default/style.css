@@ -50,8 +50,10 @@ div.iconbar {
 	text-align: right;
 	top: 2px;
 	z-index: 1000;
+	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
 }
 /* Fix for underlined spaces in certain browsers (eg. Chrome) */
 div.iconbar > a {
@@ -154,8 +156,10 @@ span.errormessage {
 	width: 100%;
 	border: 1px solid #e78f08;
 	background: #f6a828;
+	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
 }
 .admintable th {
 	text-align: left;
@@ -174,8 +178,10 @@ span.errormessage {
 	border: 1px solid #dddddd;
 	background: #eeeeee url(../../../scripts/jquery-ui/images/ui-bg_highlight-soft_100_eeeeee_1x100.png) 50% top repeat-x;
 	color: #333333;
+	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
 }
 .admintable td.empty {
 	border: 0px;
@@ -190,8 +196,10 @@ span.errormessage {
 	margin: 1em 0.5em 0.5em 0.5em;
 	padding: 0.2em 0.2em 0.2em 0.5em;
 	text-shadow: #e78f08 0px 2px 3px;
+	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
 }
 
 div.importable_event {
@@ -201,8 +209,10 @@ div.importable_event {
 	overflow: hidden;
 	padding: 3px;
 	width: 450px;
+	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
 }
 
 table.log_messages th {
@@ -228,8 +238,10 @@ div.info {
 	border: 1px solid #AABBDD;
 	font-size: small;
 	font-style: italic;
+	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
 }
 div.admin_form_element {
     display: block;
@@ -262,8 +274,10 @@ div.admin_image_list_item {
 	height: 128px;
 	width: 110px;
 	padding: 3px;
+	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
 }
 div.admin_image_list_item:hover {
 	background: #fdaf2f;

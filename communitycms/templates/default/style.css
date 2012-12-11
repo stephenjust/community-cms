@@ -177,8 +177,10 @@ div.nav_menu a {
 div.notification {
 	width: 100%;
 	margin: 3px;
+	border-radius: 0.2em;
 	-webkit-border-radius: 0.2em;
 	-moz-border-radius: 0.2em;
+	-khtml-border-radius: 0.2em;
 	text-align: center;
 	font-size: x-large;
 	background: #FFCCCC;
@@ -221,8 +223,10 @@ div.edit_bar {
 	right: 3px;
 	top: 3px;
 	vertical-align: middle;
+	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
 }
 div.edit_bar img {
 	border: 0px;
@@ -779,8 +783,10 @@ span.news_not_published_label {
 	font-family: Arial, sans-serif;
 	padding-left: 2px;
 	padding-right: 2px;
+	border-radius: 2px;
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
+	-khtml-border-radius: 2px;
 }
 
 /* CONTACTS */
@@ -883,8 +889,10 @@ div.events_upcoming_block table.events {
 /* CALENDAR */
 table.calendar {
 	background-color: #4499CC;
+	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
 	border: 0px;
 	width: 100%;
 	overflow: hidden;
@@ -949,6 +957,7 @@ table.calendar_nav td a {
 	text-shadow: none;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
 }
 table.calendar_nav td a:hover {
 	background: #CCEEFF;
@@ -998,6 +1007,7 @@ h1.cal_day-heading {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
 }
 .cal_day-table thead {
 	background: #CCCCCC;
