@@ -69,7 +69,7 @@ function gallery_photo_manager($gallery_id) {
 			<input type="hidden" name="file_name" value="'.$gallery_images[$i]['file'].'" />';
 		$image_manager .= '<tr><td style="vertical-align: middle;"><a href="'.$image_path.$gallery_images[$i]['file'].'">
 			<img src="'.$thumbs_path.$gallery_images[$i]['file'].'" border="0px" /></a></td>
-			<td><textarea class="mceNoEditor mceSimple" name="desc">'.htmlentities($gallery_images[$i]['caption']).'</textarea></td>
+			<td><textarea class="mceNoEditor mceSimple" name="desc" id="caption-'.$i.'">'.htmlentities($gallery_images[$i]['caption']).'</textarea></td>
 			<td style="vertical-align: middle;"><input type="submit" value="Save Description" /><br /></form></td>
 			<td style="vertical-align: middle;">
 			<form method="post" action="?module=gallery_manager&amp;action=edit&amp;id='.$gallery->getID().'&amp;edit=del">
