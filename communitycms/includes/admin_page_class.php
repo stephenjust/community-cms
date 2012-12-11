@@ -48,8 +48,6 @@ class AdminPage extends Page {
 			src="./scripts/ajax.js"></script>
 			<script language="javascript" type="text/javascript"
 			src="./admin/scripts/admin.js?t='.$admin_js_mtime.'"></script>
-			<!--<script language="javascript" type="text/javascript"
-			src="./scripts/jquery-autocomplete.js"></script>-->
 			<script language="javascript" type="text/javascript"
 			src="./scripts/jquery-custom.js"></script>';
 		$template->scripts = $scripts;

@@ -55,11 +55,11 @@ window.onload=$(function(){
 
 	// AutoComplete location box
 	$('#_location').autocomplete({
-		serviceUrl:'./admin/scripts/location_ac.php',
+		source:'./admin/scripts/location_ac.php',
 		width:200
 	});
 	$('#_default_location').autocomplete({
-		serviceUrl:'./admin/scripts/location_ac.php',
+		source:'./admin/scripts/location_ac.php',
 		width:200
 	});
 

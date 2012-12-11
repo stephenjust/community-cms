@@ -9,7 +9,7 @@
 
 header("Content-type: text/plain");
 
-if (!isset($_GET['query'])) {
+if (!isset($_GET['term'])) {
 	exit;
 }
 /**#@+
@@ -29,7 +29,7 @@ if ($db->dbms != 'mysqli') {
 	exit;
 }
 
-$query = addslashes($_GET['query']);
+$query = addslashes($_GET['term']);
 $sql_query = 'SELECT * FROM `'.LOCATION_TABLE.'` WHERE `value` LIKE \''.$query.'%\' LIMIT 10';
 $sql_handle = $db->sql_query($sql_query);
 if ($db->error[$sql_handle] === 1) {
@@ -43,8 +43,7 @@ for ($i = 1; $i <= $db->sql_num_rows($sql_handle); $i++) {
 	$result_set = $db->sql_fetch_assoc($sql_handle);
 	$suggestions[] = $result_set['value'];
 }
-$result = array('query'=>stripslashes($query),'suggestions'=>$suggestions);
-$json_result = json_encode($result);
+$json_result = json_encode($suggestions);
 echo $json_result;
 clean_up();
 ?>
