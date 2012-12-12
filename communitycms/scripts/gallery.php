@@ -81,6 +81,7 @@ END;
 END;
 		$gallery_images = $gallery->getImages();
 		for ($i = 0; $i < count($gallery_images); $i++) {
+			$gallery_images[$i]['caption'] = htmlspecialchars($gallery_images[$i]['caption']);
 			echo <<< END
 <image imageURL="$galleryImageDir/{$gallery_images[$i]['file']}"
 	thumbURL="$galleryImageDir/thumbs/{$gallery_images[$i]['file']}" linkURL="" linkTarget="" >
