@@ -136,7 +136,36 @@ class Newsletter {
 		
 		return new Newsletter($insert_id);
 	}
-	
+
+	/**
+	 * Get an array of all newsletters
+	 * from most recent to oldest
+	 * @global db $db
+	 * @return \Newsletter
+	 * @throws NewsletterException
+	 */
+	public static function getAll() {
+		global $db;
+		
+		$return = array();
+		
+		$query = 'SELECT `id`
+			FROM `'.NEWSLETTER_TABLE.'`
+			ORDER BY year desc, month desc';
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle])
+			throw new NewsletterException('Failed to lookup newsletters.');
+		
+		$num_records = $db->sql_num_rows($handle);
+		
+		// Populate array of newsletters
+		for ($i = 0; $i < $num_records; $i++) {
+			$record = $db->sql_fetch_assoc($handle);
+			$return[] = new Newsletter($record['id']);
+		}
+		return $return;
+	}
+
 	/**
 	 * Get an array of newsletters on the specified page
 	 * from most recent to oldest
@@ -184,6 +213,18 @@ class Newsletter {
 	}
 	
 	/**
+	 * Get ID
+	 * @return int
+	 * @throws NewsletterException
+	 */
+	public function getId() {
+		if (!$this->mExists)
+			throw new NewsletterException('Newsletter does not exist!');
+		
+		return $this->mId;
+	}
+	
+	/**
 	 * Get label
 	 * @return string
 	 * @throws NewsletterException
@@ -193,6 +234,32 @@ class Newsletter {
 			throw new NewsletterException('Newsletter does not exist!');
 		
 		return HTML::schars($this->mLabel);
+	}
+	
+	/**
+	 * Get month
+	 * @return int
+	 * @throws NewsletterException
+	 */
+	public function getMonth() {
+		if (!$this->mExists)
+			throw new NewsletterException('Newsletter does not exist!');
+		
+		return $this->mMonth;
+	}
+	
+	/**
+	 * Get month string
+	 * @return string
+	 * @throws NewsletterException
+	 */
+	public function getMonthString() {
+		if (!$this->mExists)
+			throw new NewsletterException('Newsletter does not exist!');
+		
+		$months = array('January','February','March','April','May','June','July',
+			'August','September','October','November','December');
+		return $months[$this->mMonth - 1];
 	}
 	
 	/**
