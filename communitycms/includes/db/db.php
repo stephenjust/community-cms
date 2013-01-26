@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.database
  */
@@ -15,7 +15,7 @@ if (@SECURITY != 1) {
  * Primary Data-Base Abstraction Layer class
  * @package CommunityCMS.database
  */
-class db {
+abstract class db {
     /**
      * Data-Base system to use
      */
@@ -63,47 +63,21 @@ class db {
 	}
 
 	/**#@+
-	 * Stub functions defined by child classes
+	 * Abstract functions defined by child classes
 	 */
-    function sql_connect() {
-		return false;
-    }
-	function sql_server_info() {
-		return false;
-	}
-	function sql_query($query) {
-		return false;
-	}
-	function sql_num_rows($query) {
-		return false;
-	}
-	function sql_affected_rows($query) {
-		return false;
-	}
-	function sql_fetch_assoc($query) {
-		return false;
-	}
-	function sql_fetch_row($query) {
-		return false;
-	}
-	function sql_escape_string($string) {
-		return false;
-	}
-	function sql_insert_id($table,$field) {
-		return false;
-	}
-	function sql_prepare($name,$query) {
-		return false;
-	}
-	function sql_prepare_exec($name,$variables,$datatypes) {
-		return false;
-	}
-	function sql_prepare_close($name) {
-		return false;
-	}
-    function sql_close() {
-        return false;
-    }
+    abstract function sql_connect();
+	abstract function sql_server_info();
+	abstract function sql_query($query);
+	abstract function sql_num_rows($query);
+	abstract function sql_affected_rows($query);
+	abstract function sql_fetch_assoc($query);
+	abstract function sql_fetch_row($query);
+	abstract function sql_escape_string($string);
+	abstract function sql_insert_id($table,$field);
+	abstract function sql_prepare($name,$query);
+	abstract function sql_prepare_exec($name,$variables,$datatypes);
+	abstract function sql_prepare_close($name);
+    abstract function sql_close();
 	/**#@-*/
 }
 
