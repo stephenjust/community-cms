@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,106 +11,12 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+require_once(ROOT.'includes/content/Newsletter.class.php');
+
 global $acl;
 
 if (!$acl->check_permission('adm_newsletter'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
-
-/**
- * Delete newsletter entry from the database
- * @global acl $acl Permission object
- * @global db $db Database connection object
- * @param integer $id Newsletter ID
- * @throws Exception
- */
-function newsletter_delete($id) {
-	global $acl;
-	global $db;
-
-	// Check permission
-	if (!$acl->check_permission('newsletter_delete'))
-		throw new Exception('You are not allowed to delete newsletters.');
-
-	// Validate parameters
-	if (!is_numeric($id))
-		throw new Exception('The newsletter you are trying to delete is invalid.');
-
-	// Get newsletter info
-	$newsletter_info_query = 'SELECT * FROM `'.NEWSLETTER_TABLE.'` WHERE
-		`id` = '.$id.' LIMIT 1';
-	$newsletter_info_handle = $db->sql_query($newsletter_info_query);
-	if ($db->error[$newsletter_info_handle] === 1)
-		throw new Exception('An error occurred when trying to locate the newsletter in the database.');
-	if ($db->sql_num_rows($newsletter_info_handle) != 1)
-		throw new Exception('The newsletter you are trying to delete does not exist.');
-	$newsletter_info = $db->sql_fetch_assoc($newsletter_info_handle);
-
-	// Delete newsletter entry
-	$delete_article_query = 'DELETE FROM `'.NEWSLETTER_TABLE.'`
-		WHERE `id` = '.$id;
-	$delete_article = $db->sql_query($delete_article_query);
-	if($db->error[$delete_article])
-		throw new Exception('An error occurred when deleting the newsletter entry.');
-
-	Log::addMessage('Deleted newsletter \''.$newsletter_info['label'].'\'');
-}
-
-/**
- * Create a newsletter record
- * @global acl $acl
- * @global db $db
- * @param string $entry_name
- * @param string $entry_file
- * @param integer $page Numeric Page ID
- * @param integer $year
- * @param integer $month
- * @throws Exception 
- */
-function newsletter_create($entry_name,$entry_file,$page,$year,$month) {
-	global $acl;
-	global $db;
-	
-	// Check permissions
-	if (!$acl->check_permission('newsletter_create'))
-		throw new Exception('You are not allowed to create newsletters.');
-
-	// Sanitize inputs
-	$entry_name = $db->sql_escape_string($entry_name);
-	$entry_file = $db->sql_escape_string($entry_file);
-	$page = (int)$page;
-	$year = (int)$year;
-	$month = (int)$month;
-	if (strlen($entry_name) == 0)
-		throw new Exception('No label was given for the newsletter.');
-	if (strlen($entry_file) <= 3)
-		throw new Exception('No file was selected for the newsletter.');
-	if ($month > 12 || $month < 1)
-		throw new Exception('An invalid month was selected for the newsletter.');
-	if ($year > 3000 || $year < 1000)
-		throw new Exception('An invalid year was selected for the newsletter.');
-
-	// Validate the newsletter page
-	$page_query = 'SELECT `title` FROM `'.PAGE_TABLE.'`
-		WHERE `id` = '.$page.' LIMIT 1';
-	$page_handle = $db->sql_query($page_query);
-	if ($db->error[$page_handle] === 1) 
-		throw new Exception('An error occurred when validating the given page information.');
-	if ($db->sql_num_rows($page_handle) === 0)
-		throw new Exception('The page given for the newsletter does not exist.');
-	$page_title = $db->sql_fetch_assoc($page_handle);
-	
-	// Create the new newsletter record
-	$new_article_query = 'INSERT INTO `'.NEWSLETTER_TABLE."`
-		(`label`,`page`,`year`,`month`,`path`) VALUES
-		('$entry_name',".$page.",".$year.",
-		".$month.",'".$entry_file."')";
-	$new_article = $db->sql_query($new_article_query);
-	if ($db->error[$new_article] === 1)
-		throw new Exception('An error occurred when creating the newsletter.');
-	
-	// Create the log entry
-	Log::addMessage('Newsletter \''.$entry_name.'\' added to page '.$page_title);
-}
 
 $months = array('January','February','March','April','May','June','July',
 	'August','September','October','November','December');
@@ -123,21 +29,22 @@ switch ($_GET['action']) {
 	case 'new':
 		$_POST['file_list'] = (isset($_POST['file_list'])) ? $_POST['file_list'] : NULL;
 		try {
-			newsletter_create($_POST['label'],
+			Newsletter::create($_POST['label'],
 					$_POST['file_list'],
 					$_POST['page'], $_POST['year'], $_POST['month']);
 			echo 'Successfully added newsletter entry.<br />';
 		}
-		catch (Exception $e) {
+		catch (NewsletterException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
 	case 'delete':
 		try {
-			newsletter_delete($_GET['id']);
+			$nl = new Newsletter($_GET['id']);
+			$nl->delete();
 			echo 'Successfully deleted newsletter entry.<br />'."\n";
 		}
-		catch (Exception $e) {
+		catch (NewsletterException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
