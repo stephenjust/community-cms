@@ -15,11 +15,6 @@ http://tinymce.moxiecode.com/
 GNU Lesser General Public License 2.1
 [ http://tinymce.moxiecode.com/license.php ]
 
-TinyMCE "Clean up syles plug-in"
-(C) Chad Killingsworth
-http://www.missouristate.edu/web/
-http://sourceforge.net/tracker/?func=detail&aid=2794601&group_id=103281&atid=738747
-
 PEAR Archive_Tar Plugin (./includes/Tar.php)
 Information available within file.
 
@@ -32,11 +27,6 @@ jQuery-UI
 (C) The jQuery-UI Team
 http://www.jqueryui.com/
 [ GNU General Public License / MIT License ]
-
-jQuery AutoComplete Plug-In
-(c) 2009 Tomas Kirda
-http://www.devbridge.com/projects/autocomplete/jquery/
-[ MIT-style License ]
 
 jQuery "multi-ddm" Plug-In
 (c) 2009 Corey Hart
