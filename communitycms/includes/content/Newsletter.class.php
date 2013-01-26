@@ -136,6 +136,88 @@ class Newsletter {
 		
 		return new Newsletter($insert_id);
 	}
+	
+	/**
+	 * Get an array of newsletters on the specified page
+	 * from most recent to oldest
+	 * @global db $db
+	 * @param int $page
+	 * @return \Newsletter
+	 * @throws NewsletterException
+	 */
+	public static function getByPage($page) {
+		global $db;
+		
+		// FIXME: Use page class to check if page is valid newsletter page
+		if (!is_numeric($page))
+			throw new NewsletterException('Invalid page!');
+		
+		$return = array();
+		
+		$query = 'SELECT `id`
+			FROM `'.NEWSLETTER_TABLE.'`
+			WHERE `page` = '.$page.' ORDER BY year desc, month desc';
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle])
+			throw new NewsletterException('Failed to lookup newsletters.');
+		
+		$num_records = $db->sql_num_rows($handle);
+		
+		// Populate array of newsletters
+		for ($i = 0; $i < $num_records; $i++) {
+			$record = $db->sql_fetch_assoc($handle);
+			$return[] = new Newsletter($record['id']);
+		}
+		return $return;
+	}
+	
+	/**
+	 * Get hidden state
+	 * @return boolean
+	 * @throws NewsletterException
+	 */
+	public function getHidden() {
+		if (!$this->mExists)
+			throw new NewsletterException('Newsletter does not exist!');
+		
+		return (boolean) $this->mHidden;
+	}
+	
+	/**
+	 * Get label
+	 * @return string
+	 * @throws NewsletterException
+	 */
+	public function getLabel() {
+		if (!$this->mExists)
+			throw new NewsletterException('Newsletter does not exist!');
+		
+		return HTML::schars($this->mLabel);
+	}
+	
+	/**
+	 * Get path
+	 * @return string
+	 * @throws NewsletterException
+	 */
+	public function getPath() {
+		if (!$this->mExists)
+			throw new NewsletterException('Newsletter does not exist!');
+		
+		return HTML::schars($this->mPath);
+	}
+	
+	/**
+	 * Get year
+	 * @return int
+	 * @throws NewsletterException
+	 */
+	public function getYear() {
+		if (!$this->mExists)
+			throw new NewsletterException('Newsletter does not exist!');
+		
+		return $this->mYear;
+	}
 }
 
 class NewsletterException extends Exception {}

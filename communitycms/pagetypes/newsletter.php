@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -10,31 +10,33 @@
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
+
+require_once(ROOT.'includes/content/Newsletter.class.php');
+
 $return = NULL;
-global $db;
-$newsletter_query = 'SELECT * FROM ' . NEWSLETTER_TABLE . '
-	WHERE page = '.Page::$id.' ORDER BY year desc, month desc LIMIT 30 OFFSET 0';
-$newsletter_handle = $db->sql_query($newsletter_query);
-if($db->sql_num_rows($newsletter_handle) == 0) {
-	$return .= "No newsletters to display";
-} else {
-	$newsletter = $db->sql_fetch_assoc($newsletter_handle);
-	$currentyear = $newsletter['year'];
-	$return .= "<div class='newsletter'><span class='newsletter_year'>".$currentyear."</span><br />\n";
-	for ($i = 1; $db->sql_num_rows($newsletter_handle) >= $i; $i++) {
-		if ($currentyear != $newsletter['year']) {
-			$currentyear = $newsletter['year'];
+
+try {
+	$newsletters = Newsletter::getByPage(Page::$id);
+	if (count($newsletters) == 0) {
+		$return .= "No newsletters to display";
+	} else {
+		$currentyear = $newsletters[0]->getYear();
+		$return .= "<div class='newsletter'><span class='newsletter_year'>".$currentyear."</span><br />\n";
+	}
+	foreach ($newsletters AS $newsletter) {
+		if ($currentyear != $newsletter->getYear()) {
+			$currentyear = $newsletter->getYear();
 			$return .= "<span class='newsletter_year'>".$currentyear."</span><br />\n";
 		}
-		if ($newsletter['hidden'] != 1) {
-			$return .= HTML::link($newsletter['path'], $newsletter['label'])."<br />\n";
+		if ($newsletter->getHidden() != 1) {
+			$return .= HTML::link($newsletter->getPath(), $newsletter->getLabel())."<br />\n";
 		} else {
-			$return .= $newsletter['label']."<br />\n";
-		}
-		if($i <= $db->sql_num_rows($newsletter_handle)) {
-			$newsletter = $db->sql_fetch_assoc($newsletter_handle);
+			$return .= $newsletter->getLabel()."<br />\n";
 		}
 	}
+}
+catch (NewsletterException $e) {
+	$return .= '<span class="errormessage">'.$e->getMessage().'</span>';
 }
 return $return."</div>";
 ?>
