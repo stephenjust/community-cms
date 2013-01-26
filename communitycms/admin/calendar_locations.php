@@ -24,6 +24,7 @@ if ($db->dbms == 'postgresql')
  * Include functions necessary to perform operations on this page
  */
 include (ROOT.'functions/calendar.php');
+require_once(ROOT.'includes/content/CalLocation.class.php');
 
 // ----------------------------------------------------------------------------
 
@@ -38,10 +39,10 @@ switch ($_GET['action']) {
 			break;
 		}
 		try {
-			location_save($_POST['location']);
+			CalLocation::save($_POST['location']);
 			echo 'Successfully created new location entry.<br />'."\n";
 		}
-		catch (Exception $e) {
+		catch (CalLocationException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
 		}
 		break;
@@ -53,14 +54,13 @@ switch ($_GET['action']) {
 			echo 'There is no location selected for deletion.<br />'."\n";
 			break;
 		}
-		$del_query = 'DELETE FROM `'.LOCATION_TABLE.'` WHERE `id` = '.(int)$_POST['loc_del'];
-		$del_handle = $db->sql_query($del_query);
-		if ($db->error[$del_handle] === 1) {
-			echo 'Failed to delete location.<br />'."\n";
-			break;
+		try {
+			CalLocation::delete($_POST['loc_del']);
+			echo 'Deleted location.<br />';
 		}
-		echo 'Deleted location.<br />'."\n";
-		Log::addMessage('Deleted location');
+		catch (CalLocationException $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+		}
 		break;
 }
 

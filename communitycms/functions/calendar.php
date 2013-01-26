@@ -10,81 +10,9 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
+require_once(ROOT.'includes/content/CalLocation.class.php');
+
 // ----------------------------------------------------------------------------
-
-/**
- * Create calendar event entry
- * @global acl $acl
- * @global db $db
- * @param string $title
- * @param string $description
- * @param string $author
- * @param string $start_time
- * @param string $end_time
- * @param string $date
- * @param integer $category
- * @param boolean $category_hide
- * @param string $location
- * @param boolean $location_hide
- * @param string $image
- * @param boolean $hide
- */
-function event_create($title,$description,$author,$start_time,$end_time,
-		$date,$category,$category_hide, $location,$location_hide,$image,$hide) {
-	global $acl;
-	global $db;
-
-	if (!$acl->check_permission('date_create'))
-		throw new Exception('You are not allowed to create calendar events.');
-
-	// Add location to list of saved locations
-	try {
-		location_save($location);
-	}
-	catch (Exception $e) {
-	}
-
-	// Sanitize inputs
-	$location = $db->sql_escape_string(strip_tags($location));
-	$title = $db->sql_escape_string(strip_tags($title));
-	$description = $db->sql_escape_string(remove_comments($description));
-	$author = $db->sql_escape_string(strip_tags($author));
-
-	// Determine date
-	if ($date == '') {
-		$date = date('d/m/Y');
-	}
-	if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#',$date))
-		throw new Exception('Your event\'s date was formatted invalidly. It should be in the format dd/mm/yyyy.');
-	$event_date_parts = explode('/',$date);
-	$year = $event_date_parts[2];
-	$month = $event_date_parts[0];
-	$day = $event_date_parts[1];
-
-	if ($start_time == "" || $end_time == "" || $year == "" || $title == "") 
-		throw new Exception('One or more required fields was left blank.');
-	$start_time = parse_time($start_time);
-	$end_time = parse_time($end_time);
-	if (!$start_time || !$end_time || $start_time > $end_time)
-		throw new Exception('Invalid start or end time. Your event cannot end before it begins.');
-	
-	// Generate start/end dates for new system
-	$start = $year.'-'.$month.'-'.$day.' '.$start_time;
-	$end = $year.'-'.$month.'-'.$day.' '.$end_time;
-	
-	// Create event entry
-	$create_date_query = 'INSERT INTO ' . CALENDAR_TABLE . '
-		(`category`,`category_hide`,`start`,`end`,`header`,
-		`description`,`location`,`location_hide`,`author`,`image`,`hidden`)
-		VALUES ("'.$category.'","'.(int)$category_hide.'","'.$start.'","'.$end.'","'.$title.'","'.$description.'",
-		"'.$location.'","'.(int)$location_hide.'","'.$author.'","'.$image.'",'.$hide.')';
-	$create_date = $db->sql_query($create_date_query);
-	if ($db->error[$create_date] === 1)
-		throw new Exception('An error occurred while creating the calendar event.');
-
-	Log::addMessage('New date entry on '.$day.'/'.$month.'/'
-		.$year.' \''.stripslashes($title).'\'');
-}
 
 /**
  * Create a calendar event category
@@ -120,48 +48,6 @@ function event_cat_create($label,$icon,$description = NULL) {
 	Log::addMessage('Created event category \''.stripslashes($label).'\'');
 	return true;
 }
-
-/**
- * Save a new location entry if it does not already exist
- * @global Debug $debug
- * @global db $db
- * @param string $location (unescaped)
- * @return void
- * @throws Exception 
- */
-function location_save($location) {
-	global $debug;
-	global $db;
-
-	if (get_config('calendar_save_locations') != 1)
-		return;
-
-	if (!isset($location) || strlen($location) < 2) {
-		$debug->addMessage('No location given',false);
-		return;
-	}
-	$location = $db->sql_escape_string($location);
-
-	// Check if the given location is already in the database
-	$check_dupe_query = 'SELECT `value` FROM `'.LOCATION_TABLE.'`
-		WHERE `value` = \''.$location.'\'';
-	$check_dupe_handle = $db->sql_query($check_dupe_query);
-	if ($db->error[$check_dupe_handle] === 1)
-		throw new Exception('An error occurred when reading the list of saved locations.');
-	if ($db->sql_num_rows($check_dupe_handle) == 1)
-		return;
-
-	// Create new location entry
-	$new_loc_query = 'INSERT INTO `'.LOCATION_TABLE.'`
-		(`value`) VALUES (\''.$location.'\')';
-	$new_loc_handle = $db->sql_query($new_loc_query);
-	if ($db->error[$new_loc_handle] === 1)
-		throw new Exception('An error occurred while attempting to save a new location entry.');
-
-	Log::addMessage('Created new location \''.stripslashes($location).'\'.');
-}
-
-// ----------------------------------------------------------------------------
 
 /**
  * Delete a calendar category entry
@@ -255,7 +141,7 @@ function event_edit($id,$title,$description,$author,$start,$end,$category,$categ
 	$image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
 	$hide = ($hide === true) ? 1 : 0;
 	
-	location_save(stripslashes($location));
+	CalLocation::save(stripslashes($location));
 
 	// Legacy date calculations (to be removed)
 	$year = date('Y',$start);

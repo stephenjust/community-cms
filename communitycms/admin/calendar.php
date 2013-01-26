@@ -23,6 +23,7 @@ global $debug;
  */
 include (ROOT.'functions/calendar.php');
 require_once(ROOT.'includes/content/CalEvent.class.php');
+require_once(ROOT.'includes/content/CalLocation.class.php');
 
 // ----------------------------------------------------------------------------
 
@@ -46,7 +47,7 @@ switch ($_GET['action']) {
 
 	case 'new':
 		try {
-			event_create($_POST['title'],
+			CalEvent::create($_POST['title'],
 					$_POST['content'],
 					$_POST['author'],
 					$_POST['stime'],
@@ -60,7 +61,7 @@ switch ($_GET['action']) {
 					$hide);
 			echo 'Successfully created event.<br />';
 		}
-		catch (Exception $e) {
+		catch (CalEventException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 
