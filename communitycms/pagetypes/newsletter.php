@@ -28,7 +28,7 @@ try {
 			$currentyear = $newsletter->getYear();
 			$return .= "<span class='newsletter_year'>".$currentyear."</span><br />\n";
 		}
-		if ($newsletter->getHidden() != 1) {
+		if (!$newsletter->getHidden()) {
 			$return .= HTML::link($newsletter->getPath(), $newsletter->getLabel())."<br />\n";
 		} else {
 			$return .= $newsletter->getLabel()."<br />\n";

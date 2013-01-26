@@ -18,8 +18,6 @@ global $acl;
 if (!$acl->check_permission('adm_newsletter'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-$months = array('January','February','March','April','May','June','July',
-	'August','September','October','November','December');
 $tab_layout = new tabs;
 
 switch ($_GET['action']) {
