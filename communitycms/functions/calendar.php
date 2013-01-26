@@ -217,42 +217,6 @@ function event_cat_delete($id) {
 // ----------------------------------------------------------------------------
 
 /**
- * Delete a calendar event entry
- * @global db $db
- * @global Debug $debug
- * @param integer $id
- * @return boolean
- */
-function event_delete($id) {
-	global $db;
-	global $debug;
-	// Validate parameters
-	if (!is_numeric($id)) {
-		$debug->addMessage('Invalid ID given',true);
-		return false;
-	}
-
-	$read_date_info_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-		WHERE `id` = '.$id;
-	$read_date_info_handle = $db->sql_query($read_date_info_query);
-	if ($db->error[$read_date_info_handle] === 1) {
-		$debug->addMessage('Failed to read date information. Does it exist?',false);
-		return false;
-	} else {
-		$del_query = 'DELETE FROM ' . CALENDAR_TABLE . '
-			WHERE `id` = '.$id;
-		$del_handle = $db->sql_query($del_query);
-		$read_date_info = $db->sql_fetch_assoc($read_date_info_handle);
-		if ($db->error[$del_handle] === 1) {
-			return false;
-		} else {
-			Log::addMessage('Deleted calendar date \''.$read_date_info['header'].'\'');
-			return true;
-		}
-	}
-}
-
-/**
  * Edit an event entry
  * @global acl $acl
  * @global db $db

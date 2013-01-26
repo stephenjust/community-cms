@@ -22,6 +22,7 @@ global $debug;
  * Include functions necessary for calendar operations
  */
 include (ROOT.'functions/calendar.php');
+require_once(ROOT.'includes/content/CalEvent.class.php');
 
 // ----------------------------------------------------------------------------
 
@@ -80,10 +81,13 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'delete':
-		if (event_delete($_GET['date_del'])) {
-			echo 'Successfully deleted date entry.<br />'."\n";
-		} else {
-			echo 'Failed to delete date entry.<br />'."\n";
+		try {
+			$ev = new CalEvent($_GET['date_del']);
+			$ev->delete();
+			echo 'Successfully deleted date entry.<br />';
+		}
+		catch (CalEventException $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 	case 'delete_old_entries':
