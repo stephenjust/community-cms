@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -19,7 +19,8 @@ if (!$acl->check_permission('adm_calendar_edit_date'))
 /**
  * Include functions necessary for calendar operations
  */
-include('./functions/calendar.php');
+require_once(ROOT.'functions/calendar.php');
+require_once(ROOT.'includes/content/CalEvent.class.php');
 
 switch ($_GET['action']) {
 	case 'edit':
@@ -44,14 +45,15 @@ switch ($_GET['action']) {
 			$start = $year.'-'.$month.'-'.$day.' '.$start_time;
 			$end = $year.'-'.$month.'-'.$day.' '.$end_time;
 			$hide = (isset($_POST['hide'])) ? (boolean)$_POST['hide'] : false;
-			event_edit($_POST['id'], $_POST['title'],
+			$ev = new CalEvent($_POST['id']);
+			$ev->edit($_POST['title'],
 					$_POST['content'], $_POST['author'],
 					$start, $end, $_POST['category'], $cat_hide,
 					$_POST['location'], $loc_hide, $_POST['image'], $hide);
 			echo 'Successfully edited date information.<br />';
 			echo '<a href="?module=calendar&amp;month='.$month.'&amp;year='.$year.'">Back to Event List</a>';
 		}
-		catch (Exception $e) {
+		catch (CalEventException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
@@ -60,30 +62,23 @@ switch ($_GET['action']) {
 
 	default:
 		try {
-			$event = event_get($_GET['id']);
+			$ev = new CalEvent($_GET['id']);
 			$form = new form;
 			$form->set_method('post');
 			$form->set_target('admin.php?module=calendar_edit_date&amp;action=edit');
 			$form->add_hidden('author',HTML::schars($_SESSION['name']));
-			$form->add_hidden('id',$event['id']);
-			$form->add_textbox('title', '*Heading:', HTML::schars($event['header']));
+			$form->add_hidden('id',$ev->getId());
+			$form->add_textbox('title', '*Heading:', $ev->getTitle());
 			
-			// Get category list
-			$category_list_query = 'SELECT `cat_id`,`label`
-				FROM `'.CALENDAR_CATEGORY_TABLE.'`
-				ORDER BY `cat_id` ASC';
-			$category_list_handle = $db->sql_query($category_list_query);
-			if ($db->error[$category_list_handle])
-				throw new Exception('Failed to read category list.');
+			$cat_list = CalEvent::getCategoryList();
 			$category_names = array();
 			$category_ids = array();
-			for ($b = 1; $b <= $db->sql_num_rows($category_list_handle); $b++) {
-				$category_list = $db->sql_fetch_assoc($category_list_handle);
-				$category_names[] = $category_list['label'];
-				$category_ids[] = $category_list['cat_id'];
+			foreach ($cat_list AS $cat) {
+				$category_names[] = $cat['label'];
+				$category_ids[] = $cat['id'];
 			}
 			$form->add_select('category', 'Category:',
-					$category_ids, $category_names, $event['category'], NULL, 'Hide', $event['category_hide']);
+					$category_ids, $category_names, $ev->getCategory(), NULL, 'Hide', $event['category_hide']);
 			$start = strtotime($event['start']);
 			$end = strtotime($event['end']);
 			$form->add_textbox('stime', '*Start Time:',

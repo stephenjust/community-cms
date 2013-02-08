@@ -33,6 +33,31 @@ class CalLocation {
 	}
 	
 	/**
+	 * Get all location entries
+	 * @global db $db
+	 * @return array
+	 * @throws CalLocationException
+	 */
+	public static function getAll() {
+		global $db;
+
+		$query = 'SELECT `id`, `value`
+			FROM `'.LOCATION_TABLE.'`
+			ORDER BY `value` ASC';
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle])
+			throw new CalLocationException('Error getting all location values.');
+		
+		$results = array();
+		for ($i = 0; $i < $db->sql_num_rows($handle); $i++) {
+			$row = $db->sql_fetch_assoc($handle);
+			$results[] = $row;
+		}
+		
+		return $results;
+	}
+	
+	/**
 	 * Save a new location entry if it does not already exist
 	 * @global Debug $debug
 	 * @global db $db
