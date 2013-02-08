@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -16,14 +16,13 @@ global $acl;
 if (!$acl->check_permission('adm_calendar'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-global $debug;
-
 /**
  * Include functions necessary for calendar operations
  */
 include (ROOT.'functions/calendar.php');
 require_once(ROOT.'includes/content/CalEvent.class.php');
 require_once(ROOT.'includes/content/CalLocation.class.php');
+require_once(ROOT.'includes/content/CalCategory.class.php');
 
 // ----------------------------------------------------------------------------
 
@@ -107,10 +106,11 @@ switch ($_GET['action']) {
 	case 'create_category':
 		$cat_name = $_POST['category_name'];
 		$cat_icon = (isset($_POST['colour'])) ? $_POST['colour'] : NULL;
-		if (event_cat_create($cat_name,$cat_icon)) {
-			echo 'Successfully created event category.<br />'."\n";
-		} else {
-			echo '<span class="errormessage">Failed to create new event category.</span><br />'."\n";
+		try {
+			CalCategory::create($cat_name, $cat_icon);
+			echo 'Created category '.HTML::schars($cat_name).'.';
+		} catch (CalCategoryException $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 	case 'delete_category':
@@ -118,10 +118,11 @@ switch ($_GET['action']) {
 			echo 'No category selected to delete.<br />'."\n";
 			break;
 		}
-		if (event_cat_delete($_POST['delete_category_id'])) {
-			echo 'Successfully deleted category entry.<br />'."\n";
-		} else {
-			echo 'Failed to delete category entry.<br />'."\n";
+		try {
+			CalCategory::delete($_POST['delete_category_id']);
+			echo 'Successfully deleted category entry.<br />';
+		} catch (CalCategoryException $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 	case 'save_settings':
@@ -336,7 +337,7 @@ if ($acl->check_permission('calendar_settings')) {
 		$cat = $db->sql_fetch_assoc($category_handle);
 		$tab_content['settings'] .= '<input type="radio" name="delete_category_id" value="'.$cat['cat_id'].'" />
 			<img src="./admin/templates/default/images/icon_'.$cat['colour'].'.png"
-			width="10px" height="10px" alt="'.$cat['colour'].'" /> '.stripslashes($cat['label']).'<br />';
+			width="10px" height="10px" alt="'.$cat['colour'].'" /> '.HTML::schars($cat['label']).'<br />';
 	}
 
 	$tab_content['settings'] .= '</td></tr>

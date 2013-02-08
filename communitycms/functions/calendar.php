@@ -1,7 +1,7 @@
 <?php
 /**
  * Community CMS
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -13,92 +13,6 @@ if (@SECURITY != 1) {
 require_once(ROOT.'includes/content/CalLocation.class.php');
 
 // ----------------------------------------------------------------------------
-
-/**
- * Create a calendar event category
- * @global db $db
- * @global Debug $debug
- * @param string $label Name of category
- * @param string $icon Name of PNG icon file (icon-________.png)
- * @param string $description Unused currently
- * @return boolean 
- */
-function event_cat_create($label,$icon,$description = NULL) {
-	global $db;
-	global $debug;
-
-	$label = addslashes($label);
-	if (strlen($label) < 1) {
-		$debug->addMessage('Category name is too short',true);
-		return false;
-	}
-	if (strlen($icon) < 1) {
-		$debug->addMessage('Icon selection is invalid',true);
-		return false;
-	}
-	$query = 'INSERT INTO `'.CALENDAR_CATEGORY_TABLE.'`
-		(`label`,`colour`)
-		VALUES
-		(\''.$label.'\',\''.$icon.'\')';
-	$handle = $db->sql_query($query);
-	if($db->error[$handle] === 1) {
-		$debug->addMessage('Failed to create category',true);
-		return false;
-	}
-	Log::addMessage('Created event category \''.stripslashes($label).'\'');
-	return true;
-}
-
-/**
- * Delete a calendar category entry
- * @global db $db
- * @global Debug $debug
- * @param integer $id
- * @return boolean
- */
-function event_cat_delete($id) {
-	global $db;
-	global $debug;
-	// Validate parameters
-	if (!is_numeric($id)) {
-		$debug->addMessage('Invalid ID given',true);
-		return false;
-	}
-
-	$check_if_last_query = 'SELECT * FROM `'.CALENDAR_CATEGORY_TABLE.'` LIMIT 2';
-	$check_if_last_handle = $db->sql_query($check_if_last_query);
-	if ($db->error[$check_if_last_handle] === 1) {
-		$debug->addMessage('Failed to check if you are trying to delete the last category',false);
-		return false;
-	}
-	if ($db->sql_num_rows($check_if_last_handle) == 1) {
-		$debug->addMessage('Cannot delete last entry',true);
-		return false;
-	}
-
-	$check_category_query = 'SELECT * FROM `'. CALENDAR_CATEGORY_TABLE .'`
-		WHERE `cat_id` = '.$id.' LIMIT 1';
-	$check_category_handle = $db->sql_query($check_category_query);
-	if ($db->error[$check_category_handle] === 1) {
-		$debug->addMessage('Failed to read category information. Does it exist?',false);
-		return false;
-	}
-	if ($db->sql_num_rows($check_category_handle) == 1) {
-		$delete_category_query = 'DELETE FROM `'.CALENDAR_CATEGORY_TABLE.'`
-			WHERE `cat_id` = '.$id;
-		$delete_category = $db->sql_query($delete_category_query);
-		if ($db->error[$delete_category] === 1) {
-			$debug->addMessage('Failed to perform delete operation',true);
-			return false;
-		} else {
-			$check_category = $db->sql_fetch_assoc($check_category_handle);
-			Log::addMessage('Deleted category \''.$check_category['label'].'\'');
-			return true;
-		}
-	} else {
-		return false;
-	}
-}
 
 /**
  * Get information of an event
