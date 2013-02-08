@@ -132,7 +132,7 @@ class Newsletter {
 		$insert_id = $db->sql_insert_id(NEWSLETTER_TABLE, 'id');
 
 		// Create the log entry
-		Log::addMessage('Newsletter \''.$entry_name.'\' added to page '.$page_title);
+		Log::addMessage('Newsletter \''.$entry_name.'\' added to page '.$page_title['title']);
 		
 		return new Newsletter($insert_id);
 	}
