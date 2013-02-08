@@ -91,34 +91,4 @@ function monthcal_get_date($day,$month,$year,$template) {
 	$template->day_events = $dates;
 	return (string)$template;
 }
-
-function monthcal_day_strings($template) {
-	if (!is_object($template)) {
-		return $template;
-	}
-
-	// Insert date labels
-	// Settings:
-	// calendar_month_day_format
-	// 1 - Use full name
-	// 0 - Use abbreviation
-	if (get_config('calendar_month_day_format') == 1) {
-		$template->cal_sunday = 'Sunday';
-		$template->cal_monday = 'Monday';
-		$template->cal_tuesday = 'Tuesday';
-		$template->cal_wednesday = 'Wednesday';
-		$template->cal_thursday = 'Thursday';
-		$template->cal_friday = 'Friday';
-		$template->cal_saturday = 'Saturday';
-	} else {
-		$template->cal_sunday = 'Sun';
-		$template->cal_monday = 'Mon';
-		$template->cal_tuesday = 'Tues';
-		$template->cal_wednesday = 'Wed';
-		$template->cal_thursday = 'Thurs';
-		$template->cal_friday = 'Fri';
-		$template->cal_saturday = 'Sat';
-	}
-	return $template;
-}
 ?>

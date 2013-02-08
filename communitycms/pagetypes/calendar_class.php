@@ -277,7 +277,28 @@ class calendar_month extends calendar {
 		$this->template->next_year = $this->next_year;
 
 		// Replace day of week placeholders
-		monthcal_day_strings($this->template);
+		// Insert date labels
+		// Settings:
+		// calendar_month_day_format
+		// 1 - Use full name
+		// 0 - Use abbreviation
+		if (get_config('calendar_month_day_format') == 1) {
+			$this->template->cal_sunday = 'Sunday';
+			$this->template->cal_monday = 'Monday';
+			$this->template->cal_tuesday = 'Tuesday';
+			$this->template->cal_wednesday = 'Wednesday';
+			$this->template->cal_thursday = 'Thursday';
+			$this->template->cal_friday = 'Friday';
+			$this->template->cal_saturday = 'Saturday';
+		} else {
+			$this->template->cal_sunday = 'Sun';
+			$this->template->cal_monday = 'Mon';
+			$this->template->cal_tuesday = 'Tues';
+			$this->template->cal_wednesday = 'Wed';
+			$this->template->cal_thursday = 'Thurs';
+			$this->template->cal_friday = 'Fri';
+			$this->template->cal_saturday = 'Sat';
+		}
 		
 		// Week template
 		$template_week = new template;
