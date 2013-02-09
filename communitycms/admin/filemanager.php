@@ -56,7 +56,7 @@ if (isset($_GET['upload'])) {
 	try {
 		if (!isset($_POST['path']))
 			throw new Exception('No path was given. This may occur if the uploaded file is too big.');
-		echo file_upload($_POST['path']);
+		echo File::upload($_POST['path']);
 	}
 	catch (Exception $e) {
 		echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";

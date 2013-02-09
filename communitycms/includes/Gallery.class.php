@@ -74,7 +74,7 @@ class Gallery {
 			$title = $db->sql_escape_string($title);
 			$caption = $db->sql_escape_string($caption);
 			$image_dir = $db->sql_escape_string(
-					replace_file_special_chars($image_dir));
+					File::replaceSpecialChars($image_dir));
 			if (!$title || !$caption || !$image_dir)
 				throw new GalleryException('You must fill out all of the fields to create an image gallery.');
 

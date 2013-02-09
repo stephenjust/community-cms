@@ -84,109 +84,6 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 // ----------------------------------------------------------------------------
 
 /**
- * file_upload - Handle files uploaded via a form
- * @global acl $acl Permission object
- * @param string $path Directory to store file - special case if = newsicons
- * @param boolean $contentfile File belongs in file/ heirarchy?
- * @param boolean $thumb Generate a thumbnail (75x75) and make original 800x800 (largest)
- * @return string
- */
-function file_upload($path = "", $contentfile = true, $thumb = false) {
-	global $acl;
-	if (!$acl->check_permission('file_upload'))
-		throw new Exception('You are not allowed to upload files.');
-
-	// Handle file upload errors sooner rather than later
-	if ($_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
-		$err = 'Sorry, there was a problem uploading your file.<br />';
-
-		// List of errors
-		switch ($_FILES['upload']['error']) {
-			case UPLOAD_ERR_INI_SIZE:
-				$err .= 'File is too large (limited by php.ini)<br />';
-				break;
-			case UPLOAD_ERR_FORM_SIZE:
-				$err .= 'File is too large (limited by form)<br />';
-				break;
-			case UPLOAD_ERR_PARTIAL:
-				$err .= 'File was only partially uploaded<br />';
-				break;
-			case UPLOAD_ERR_NO_FILE:
-				$err .= 'No file was uploaded<br />';
-				break;
-			case UPLOAD_ERR_NO_TMP_DIR:
-				$err .= 'Temporary folder does not exist<br />';
-				break;
-			case UPLOAD_ERR_CANT_WRITE:
-				$err .= 'Could not write to temporary folder<br />';
-				break;
-			case UPLOAD_ERR_EXTENSION:
-				$err .= 'A PHP extension prevented the upload<br />';
-				break;
-			default:
-				$err .= 'Error '.$_FILES['upload']['error'].'<br />';
-				break;
-		}
-		throw new Exception($err);
-	}
-
-	ob_start();
-	if ($path != "") {
-		$path .= '/';
-	}
-	$target = ROOT.'files/'.$path;
-	$filename = stripslashes(basename($_FILES['upload']['name']));
-	$target .= $filename;
-	$target = replace_file_special_chars($target);
-	$filename = replace_file_special_chars($filename);
-	
-	// Check if a file by that name already exists
-	if (file_exists($target))
-		throw new Exception('A file by that name already exists.<br />'.
-			'Please use a different file name or delete the old file before '.
-			'attempting to upload the file again.');
-
-	// Handle icon uploads
-	if (File::getDirProperty(basename($path),'icons_only')) {
-		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
-			@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
-			try {
-				$f = str_replace('./files/', NULL, $target);
-				$im = new Image($f);
-				$im->generateThumbnail($f, 1, 1, 100, 100);
-				echo "The file '$filename' has been uploaded.<br />";
-				Log::addMessage('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
-			} catch (FileException $e) {
-				echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
-			}
-			return;
-		} else {
-			throw new Exception('This folder can only contain PNG and Jpeg images.');
-		}
-	}
-
-	// Move temporary file to its new location
-	move_uploaded_file($_FILES['upload']['tmp_name'], $target);
-	echo "The file " . $filename . " has been uploaded. ";
-	Log::addMessage('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
-	if ($thumb == true) {
-		try {
-			$f = str_replace(array('../files/', './files/'), NULL, $target);
-			$im = new Image($f);
-			$im->generateThumbnail($f, 1, 1, 800, 800);
-			$tf = preg_replace('#^(.*)(/)(.+\.)(png|jpg|jpeg)$#i', '\1/thumbs/\3\4', $f);
-			$im->generateThumbnail($tf, 75, 75, 0, 0);
-			echo 'Generated thumbnail.<br />';
-		} catch (FileException $e) {
-			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
-		}
-	}
-	return ob_get_clean();
-}
-
-// ----------------------------------------------------------------------------
-
-/**
  * Generate a list of folders
  * @param string $directory
  * @param string $current
@@ -348,21 +245,6 @@ function dynamic_file_list($directory = '',$root = ROOT) {
 	// Generate file list
 	$return .= file_list($directory,1);
 	return $return;
-}
-
-/**
- * Replace special or problematic characters in file name with underscores
- * @param string $filename Filename to escape
- * @return string New filename
- */
-function replace_file_special_chars($filename) {
-	// Validate parameters
-	if (!is_string($filename)) {
-		return false;
-	}
-
-	$filename = str_replace(array('\'','"','?','+','@','#','$','!','^',' '),'_',$filename);
-	return $filename;
 }
 
 ?>

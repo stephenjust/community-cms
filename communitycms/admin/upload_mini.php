@@ -30,9 +30,9 @@ $content = NULL;
 if(isset($_GET['upload'])) {
 	try {
 		if (isset($_POST['thumbs'])) {
-			$content .= file_upload($_POST['path'],true,true);
+			$content .= File::upload($_POST['path'],true);
 		} else {
-			$content .= file_upload($_POST['path']);
+			$content .= File::upload($_POST['path']);
 		}
 	}
 	catch (Exception $e) {

@@ -26,7 +26,7 @@ if (!$acl->check_permission('adm_filemanager') || !$acl->check_permission('admin
 if (!isset($_GET['directory'])) {
 	die ('No page ID provided to script.');
 } else {
-	$dir = replace_file_special_chars($_GET['directory']);
+	$dir = File::replaceSpecialChars($_GET['directory']);
 }
 
 // Show special info about newsicons folder

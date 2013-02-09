@@ -182,6 +182,16 @@ class File {
 	}
 
 	/**
+	 * Remove problematic file name characters
+	 * @param string $filename
+	 * @return string
+	 */
+	public static function replaceSpecialChars($filename) {
+		$filename = str_replace(array('\'','"','?','+','@','#','$','!','^',' ','\\'),'_',$filename);
+		return $filename;
+	}
+	
+	/**
 	 * Set directory property
 	 * @global db $db
 	 * @param string $directory
@@ -244,6 +254,103 @@ class File {
 			throw new FileException('Failed to set file properties.');
 		
 		Log::addMessage('Edited file properties for file \''.$this->file.'\'');
+	}
+
+	/**
+	 * Upload a file
+	 * @global acl $acl
+	 * @param string $path
+	 * @param boolean $thumb
+	 * @return string
+	 * @throws FileException
+	 */
+	public static function upload($path, $thumb = false) {
+		global $acl;
+		if (!$acl->check_permission('file_upload'))
+			throw new FileException('You are not allowed to upload files.');
+
+		if (!isset($_FILES))
+			throw new FileException('Upload information not present.');
+		
+		// Handle file upload errors sooner rather than later
+		if ($_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
+			$err = 'Sorry, there was a problem uploading your file.<br />';
+
+			// List of errors
+			switch ($_FILES['upload']['error']) {
+				case UPLOAD_ERR_INI_SIZE:
+					$err .= 'File is too large (limited by php.ini)<br />';
+					break;
+				case UPLOAD_ERR_FORM_SIZE:
+					$err .= 'File is too large (limited by form)<br />';
+					break;
+				case UPLOAD_ERR_PARTIAL:
+					$err .= 'File was only partially uploaded<br />';
+					break;
+				case UPLOAD_ERR_NO_FILE:
+					$err .= 'No file was uploaded<br />';
+					break;
+				case UPLOAD_ERR_NO_TMP_DIR:
+					$err .= 'Temporary folder does not exist<br />';
+					break;
+				case UPLOAD_ERR_CANT_WRITE:
+					$err .= 'Could not write to temporary folder<br />';
+					break;
+				case UPLOAD_ERR_EXTENSION:
+					$err .= 'A PHP extension prevented the upload<br />';
+					break;
+				default:
+					$err .= 'Error '.$_FILES['upload']['error'].'<br />';
+					break;
+			}
+			throw new FileException($err);
+		}
+
+		ob_start();
+		$filename = File::replaceSpecialChars(basename($_FILES['upload']['name']));
+		$path .= '/'.$filename;
+		$path = File::replaceSpecialChars($path);
+
+		// Check if a file by that name already exists
+		if (file_exists(File::$file_root.$path))
+			throw new FileException('A file by that name already exists.<br />'.
+				'Please use a different file name or delete the old file before '.
+				'attempting to upload the file again.');
+
+		// Handle icon uploads
+		if (File::getDirProperty(basename($path),'icons_only')) {
+			if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
+				@move_uploaded_file($_FILES['upload']['tmp_name'], File::$file_root.$path);
+				try {
+					$im = new Image($path);
+					$im->generateThumbnail($path, 1, 1, 100, 100);
+					echo "The file '$filename' has been uploaded.<br />";
+					Log::addMessage('Uploaded icon '.File::replaceSpecialChars($_FILES['upload']['name']));
+				} catch (FileException $e) {
+					echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+				}
+				return;
+			} else {
+				throw new FileException('This folder can only contain PNG and Jpeg images.');
+			}
+		}
+
+		// Move temporary file to its new location
+		move_uploaded_file($_FILES['upload']['tmp_name'], File::$file_root.$path);
+		echo "The file " . $filename . " has been uploaded. ";
+		Log::addMessage('Uploaded file '.File::replaceSpecialChars($_FILES['upload']['name']));
+		if ($thumb == true) {
+			try {
+				$im = new Image($path);
+				$im->generateThumbnail($path, 1, 1, 800, 800);
+				$tf = preg_replace('#^(.*)(/)(.+\.)(png|jpg|jpeg)$#i', '\1/thumbs/\3\4', $path);
+				$im->generateThumbnail($tf, 75, 75, 0, 0);
+				echo 'Generated thumbnail.<br />';
+			} catch (FileException $e) {
+				echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+			}
+		}
+		return ob_get_clean();
 	}
 	
 }
