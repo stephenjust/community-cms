@@ -39,7 +39,7 @@ try {
 
 		// Save folder property
 		case 'save_folder_prop':
-			folder_set_property($_GET['dir'], $_GET['prop'], $_GET['value']);
+			File::setDirProperty($_GET['dir'], $_GET['prop'], $_GET['value']);
 			echo 'Saved folder properties.<br />';
 			break;
 	}

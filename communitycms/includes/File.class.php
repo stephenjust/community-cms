@@ -8,9 +8,9 @@
  */
 
 class File {
-	private static $file_root = FILES_ROOT;
+	protected static $file_root = FILES_ROOT;
 	
-	private $file;
+	protected $file;
 	
 	/**
 	 * Create a file instance
@@ -181,6 +181,50 @@ class File {
 		return $file_info;
 	}
 
+	/**
+	 * Set directory property
+	 * @global db $db
+	 * @param string $directory
+	 * @param string $property
+	 * @param string $value
+	 * @throws FileException
+	 */
+	public static function setDirProperty($directory, $property, $value) {
+		global $db;
+
+		$directory = $db->sql_escape_string($directory);
+		$property = $db->sql_escape_string($property);
+		$value = $db->sql_escape_string($value);
+
+		// Check if a value is already set
+		$query = 'SELECT `value`
+			FROM `'.DIR_PROP_TABLE."`
+			WHERE `directory` = '$directory'
+			AND `property` = '$property'
+			LIMIT 1";
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle] === 1)
+			throw new FileException('Error reading directory properties.');
+
+		if ($db->sql_num_rows($handle) == 0)
+			$set_query = 'INSERT INTO `'.DIR_PROP_TABLE."`
+				(`directory`,`property`,`value`)
+				VALUES
+				('$directory', '$property', '$value')";
+		else
+			$set_query = 'UPDATE `'.DIR_PROP_TABLE."`
+				SET `value` = '$value'
+				WHERE `directory` = '$directory'
+				AND `property` = '$property'
+				LIMIT 1";
+		$set_handle = $db->sql_query($set_query);
+		if ($db->error[$set_handle] === 1)
+			throw new FileException('Failed to set directory property.');
+
+		Log::addMessage('Set directory property \''.stripslashes($property)
+				.'\' to \''.stripslashes($value).'\' for \''.stripslashes($directory).'\'');
+	}
+	
 	/**
 	 * Set file information for open file
 	 * @global db $db

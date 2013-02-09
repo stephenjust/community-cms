@@ -31,6 +31,7 @@ require(ROOT . 'includes/Log.class.php');
 require(ROOT . 'includes/editbar_class.php');
 require_once(ROOT.'includes/AdminModule.class.php');
 require_once(ROOT.'includes/File.class.php');
+require_once(ROOT.'includes/Image.class.php');
 if(!include_once(ROOT.'classes.php')) {
     err_page(2001);
 }

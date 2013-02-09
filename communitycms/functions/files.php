@@ -57,13 +57,13 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 		$files = scandir($dir);
 		$num_files = count($files);
 		$return .= '<select name="path">
-			<option value="files">Default</option>';
+			<option value="">Default</option>';
 		for ($i = 1; $i < $num_files; $i++) {
 			if($files[$i] != '..' && is_dir(ROOT.'files/'.$files[$i])) {
 				if ($files[$i] == $current_dir) {
-					$return .= '<option value="files/'.$files[$i].'" selected>'.$files[$i].'</option>';
+					$return .= '<option value="'.$files[$i].'" selected>'.$files[$i].'</option>';
 				} else {
-					$return .= '<option value="files/'.$files[$i].'">'.$files[$i].'</option>';
+					$return .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
 				}
 			}
 		} // FOR
@@ -130,10 +130,11 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 		throw new Exception($err);
 	}
 
+	ob_start();
 	if ($path != "") {
 		$path .= '/';
 	}
-	$target = ROOT.$path;
+	$target = ROOT.'files/'.$path;
 	$filename = stripslashes(basename($_FILES['upload']['name']));
 	$target .= $filename;
 	$target = replace_file_special_chars($target);
@@ -149,13 +150,16 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 	if (File::getDirProperty(basename($path),'icons_only')) {
 		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
 			@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
-			if (generate_thumbnail($target,$target,1,1,100,100)) {
-				$return = "The file " . $filename . " has been uploaded. ";
+			try {
+				$f = str_replace('./files/', NULL, $target);
+				$im = new Image($f);
+				$im->generateThumbnail($f, 1, 1, 100, 100);
+				echo "The file '$filename' has been uploaded.<br />";
 				Log::addMessage('Uploaded icon '.replace_file_special_chars($_FILES['upload']['name']));
-			} else {
-				throw new Exception('Failed to generate thumbnail.');
+			} catch (FileException $e) {
+				echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 			}
-			return $return;
+			return;
 		} else {
 			throw new Exception('This folder can only contain PNG and Jpeg images.');
 		}
@@ -163,21 +167,21 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 
 	// Move temporary file to its new location
 	move_uploaded_file($_FILES['upload']['tmp_name'], $target);
-	$return = "The file " . $filename . " has been uploaded. ";
+	echo "The file " . $filename . " has been uploaded. ";
 	Log::addMessage('Uploaded file '.replace_file_special_chars($_FILES['upload']['name']));
 	if ($thumb == true) {
-		if (generate_thumbnail($target,NULL,75,75,0,0)) {
-			$return .= 'Generated thumbnail. ';
-		} else {
-			$return .= '<span class="errormessage">Failed to generate thumbnail.</span>';
-		}
-		if (generate_thumbnail($target,$target,1,1,800,800)) {
-			$return .= 'Resized original image. ';
-		} else {
-			$return .= '<span class="errormessage">Failed to resize original.</span>';
+		try {
+			$f = str_replace(array('../files/', './files/'), NULL, $target);
+			$im = new Image($f);
+			$im->generateThumbnail($f, 1, 1, 800, 800);
+			$tf = preg_replace('#^(.*)(/)(.+\.)(png|jpg|jpeg)$#i', '\1/thumbs/\3\4', $f);
+			$im->generateThumbnail($tf, 75, 75, 0, 0);
+			echo 'Generated thumbnail.<br />';
+		} catch (FileException $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 	}
-	return $return;
+	return ob_get_clean();
 }
 
 // ----------------------------------------------------------------------------
@@ -243,48 +247,6 @@ function folder_get_list() {
 		$subdirs[] = $files[$i];
 	}
 	return $subdirs;
-}
-
-/**
- * Set the value of a folder property
- * @global db $db
- * @param string $directory Directory relative to the files tree
- * @param string $property Property name
- * @param mixed $value Property value
- */
-function folder_set_property($directory, $property, $value) {
-	global $db;
-
-	$directory = $db->sql_escape_string($directory);
-	$property = $db->sql_escape_string($property);
-	$value = $db->sql_escape_string($value);
-
-	// Check if a value is already set
-	$query = 'SELECT `value`
-		FROM `'.DIR_PROP_TABLE."`
-		WHERE `directory` = '$directory'
-		AND `property` = '$property'
-		LIMIT 1";
-	$handle = $db->sql_query($query);
-	if ($db->error[$handle] === 1)
-		throw new Exception();
-	if ($db->sql_num_rows($handle) == 0)
-		$set_query = 'INSERT INTO `'.DIR_PROP_TABLE."`
-			(`directory`,`property`,`value`)
-			VALUES
-			('$directory', '$property', '$value')";
-	else
-		$set_query = 'UPDATE `'.DIR_PROP_TABLE."`
-			SET `value` = '$value'
-			WHERE `directory` = '$directory'
-			AND `property` = '$property'
-			LIMIT 1";
-	$set_handle = $db->sql_query($set_query);
-	if ($db->error[$set_handle] === 1)
-		throw new Exception();
-	
-	Log::addMessage('Set directory property \''.stripslashes($property)
-			.'\' to \''.stripslashes($value).'\' for \''.stripslashes($directory).'\'');
 }
 
 /**
@@ -401,101 +363,6 @@ function replace_file_special_chars($filename) {
 
 	$filename = str_replace(array('\'','"','?','+','@','#','$','!','^',' '),'_',$filename);
 	return $filename;
-}
-
-// ----------------------------------------------------------------------------
-
-/**
- * Resize an image
- * @global Debug $debug Debug object
- * @param string $original Path to original file
- * @param string $thumb_path Path to new file; if NULL, put it in /thumbs/ subdir
- * @param integer $min_w Minimum thumbnail width; cannot be 0
- * @param integer $min_h Minimum thumbnail height; cannot be 0
- * @param integer $max_w Maximum thumbnail width; 0 is no limit
- * @param integer $max_h Maximum thumbnail height; 0 is no limit
- * @return boolean Success
- */
-function generate_thumbnail($original,$thumb_path = NULL,$min_w = 1,$min_h = 1,$max_w = 0,$max_h = 0) {
-	global $debug;
-
-	if (!file_exists($original)) {
-		$debug->addMessage('Failed to find original file',true);
-		return false;
-	}
-	if ($min_w == 0 || $min_h == 0) {
-		$debug->addMessage('Cannot have minimum dimension of 0px',true);
-		return false;
-	}
-	if (preg_match('/\.png$/i',$original)) {
-		$image = imageCreateFromPNG($original);
-		$imagetype = 'png';
-	} elseif (preg_match('/\.(jpg|jpeg)$/i',$original)) {
-		$image = imageCreateFromJPEG($original);
-		$imagetype = 'jpg';
-	} else {
-		$debug->addMessage('A thumbnail cannot be created from '.$original,true);
-		return false;
-	}
-
-	if ($thumb_path == NULL) {
-		// Add /thumbs/ to the path (using the reverse, and only replacing the first slash
-		$reverse_path = strrev($original);
-		$reverse_path = str_replace_count('/','/sbmuht/',$reverse_path,1);
-		$thumb_path = strrev($reverse_path);
-	}
-
-	$image_x = imagesx($image);
-	$image_y = imagesy($image);
-
-	// If maximum dimensions are set
-	if ($max_h != 0 || $max_w != 0) {
-		if ($max_h == 0 && $max_w != 0 && $image_x > $max_w) {
-			$new_x = $max_w;
-			$new_y = $image_y * ($new_x / $image_x);
-		} elseif ($max_h != 0 && $max_w == 0 && $image_y > $max_h) {
-			$new_y = $max_h;
-			$new_x = $image_x * ($new_y / $image_y);
-		} else {
-			$new_x = $max_w;
-			$new_y = $image_y * ($new_x / $image_x);
-			if ($new_y > $max_w) {
-				$new_y = $max_h;
-				$new_x = $image_x * ($new_y / $image_y);
-			}
-		}
-		// Prevent stretching
-		if ($image_y < $new_y || $image_x < $new_x) {
-			$new_y = $image_y;
-			$new_x = $image_x;
-		}
-		// Handle minimum values
-		if ($new_x < $min_w) {
-			$new_x = $min_w;
-		}
-		if ($new_y < $min_h) {
-			$new_y = $min_h;
-		}
-	} else {
-		// No max value - one dimension has no upper limit
-		if ($image_y >= $image_x) {
-			$new_x = $min_w;
-			$new_y = $image_y * ($new_x / $image_x);
-		} else {
-			$new_y = $min_h;
-			$new_x = $image_x * ($new_y / $image_y);
-		}
-	}
-
-	$thumb_image = imageCreateTrueColor($new_x,$new_y);
-	imagecopyresampled($thumb_image, $image, 0, 0, 0, 0, $new_x, $new_y, $image_x, $image_y);
-	if ($imagetype == 'png') {
-		imagepng($thumb_image,$thumb_path);
-	} else {
-		imagejpeg($thumb_image,$thumb_path);
-	}
-	$debug->addMessage('Generated thumbnail',false);
-	return true;
 }
 
 ?>
