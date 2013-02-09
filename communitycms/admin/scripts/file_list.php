@@ -30,7 +30,7 @@ if (!isset($_GET['directory'])) {
 }
 
 // Show special info about newsicons folder
-if (folder_get_property($dir,'icons_only')) {
+if (File::getDirProperty($dir,'icons_only')) {
 	echo '<div class="info">
 		This folder can only contain icons. All of the images must be in PNG
 		or Jpeg format. Images uploaded to this folder will automatically be

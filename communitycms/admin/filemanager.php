@@ -16,58 +16,24 @@ global $acl;
 if (!$acl->check_permission('adm_filemanager'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-function add_information($path, $label) {
-	global $db;
-	$new_info_query = 'INSERT INTO ' . FILE_TABLE . '
-		(`label`, `path`) VALUES (\''.$label.'\',\''.$path.'\')';
-	$new_info_handle = $db->sql_query($new_info_query);
-	if($db->error[$new_info_handle] === 1) {
-		return 'Failed to update information.<br />';
-	}
-	return 'New Information.';
-}
-function edit_information($id, $path, $label) {
-	global $db;
-	if($id == 0) {
-		$update_query = 'UPDATE ' . FILE_TABLE . '
-			SET `label` = \''.$label.'\' WHERE `path` = \''.$path.'\' LIMIT 1';
-	} else {
-		$update_query = 'UPDATE ' . FILE_TABLE . '
-			SET `label` = \''.$label.'\' WHERE `id` = \''.$id.'\' AND `path` = \''.$path.'\' LIMIT 1';
-	}
-	$update_handle = $db->sql_query($update_query);
-	if($db->error[$update_handle] === 1) {
-		return 'Failed to update information.<br />';
-	}
-	return 'Edited information.';
-}
-
 try {
 	switch ($_GET['action']) {
 		default: break;
 
 		case 'saveinfo':
-			$id = (int)$_POST['id'];
-			$path = addslashes($db->sql_escape_string($_POST['path']));
-			$label = addslashes($_POST['label']);
-			$check_if_info_exists_query = 'SELECT * FROM ' . FILE_TABLE . '
-				WHERE `id` = \''.$id.'\' OR `path` = \''.$path.'\' LIMIT 1';
-			$check_if_info_exists_handle = $db->sql_query($check_if_info_exists_query);
-			if ($db->error[$check_if_info_exists_handle] === 1) {
-				echo 'Failed to check for existing entries in the database.';
-			} else {
-				if ($db->sql_num_rows($check_if_info_exists_handle) != 1) {
-					echo add_information($path,$label);
-				} else {
-					echo edit_information($id,$path,$label);
-				}
+			try {
+				$file = new File($_POST['path']);
+				$file->setInfo(array('label' => $_POST['label']));
+				echo 'Updated file info.<br />';
+			} catch (FileException $e) {
+				echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 			}
 			unset($_POST['path']);
 			break;
 
 		// Create new subfolder
 		case 'new_folder':
-			file_create_folder($_POST['new_folder_name']);
+			File::createDir($_POST['new_folder_name']);
 			echo 'Successfully created directory.<br />';
 			break;
 
@@ -103,10 +69,12 @@ if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 		echo 'No file was specified to delete.<br />';
 	} else {
 		try {
-			file_delete($_GET['filename']);
+			if ($_GET['path'] != NULL)
+				$_GET['path'] .= '/';
+			$file = new File($_GET['path'].$_GET['filename']);
+			$file->delete();
 			echo 'Suucessfully deleted "'.$_GET['filename'].'".<br />';
-		}
-		catch (Exception $e) {
+		} catch (FileException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 	}
@@ -117,19 +85,18 @@ if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 $tab_layout = new tabs;
 if ($_GET['action'] == 'edit') {
 	$tab_content['edit'] = NULL;
+	$file = $db->sql_escape_string($_GET['path'].'/'.$_GET['file']);
 	$file_info_query = 'SELECT * FROM ' . FILE_TABLE . '
-		WHERE `path` = \''.addslashes($db->sql_escape_string($_GET['file'])).'\' LIMIT 1';
+		WHERE `path` = \''.$file.'\' LIMIT 1';
 	$file_info_handle = $db->sql_query($file_info_query);
 	if ($db->error[$file_info_handle] === 1) {
 		$tab_content['edit'] .= 'Could not read file information from database.';
 		$file_info['label'] = NULL;
 		$file_info['id'] = NULL;
-		$file_info['path'] = $_GET['file'];
 	} else {
 		if ($db->sql_num_rows($file_info_handle) != 1) {
 			$file_info['label'] = NULL;
 			$file_info['id'] = NULL;
-			$file_info['path'] = $_GET['file'];
 		} else {
 			$file_info = $db->sql_fetch_assoc($file_info_handle);
 		}
@@ -138,7 +105,7 @@ if ($_GET['action'] == 'edit') {
 	$form->set_target('admin.php?module=filemanager&amp;action=saveinfo&amp;path='.$_GET['path']);
 	$form->set_method('post');
 	$form->add_hidden('id',$file_info['id']);
-	$form->add_hidden('path',$file_info['path']);
+	$form->add_hidden('path',$file);
 	$form->add_textbox('label','Label',$file_info['label']);
 	$form->add_submit('submit','Save');
 	$tab_content['edit'] .= $form;
@@ -189,10 +156,10 @@ if ($acl->check_permission('file_upload')) {
 
 // Folder settings panel
 $fs_table_columns = array('Folder','Icons Only');
-$fs_folders = folder_get_list();
+$fs_folders = File::getDirList();
 $fs_rows = array();
 for ($i = 0; $i < count($fs_folders); $i++) {
-	if (folder_get_property($fs_folders[$i],'icons_only')) {
+	if (File::getDirProperty($fs_folders[$i],'icons_only')) {
 		$fs_dir_prop_icons = '<a href="admin.php?module=filemanager&amp;action=save_folder_prop&amp;dir='.$fs_folders[$i].'&amp;prop=icons_only&amp;value=0">
 			<img src="<!-- $IMAGE_PATH$ -->tick.png" alt="yes" width="16" height="16" border="0" />
 			</a>';

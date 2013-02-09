@@ -102,8 +102,14 @@ class news_item {
 		if (!isset($article['image']) || $article['image'] == "") {
 			$picture = "";
 		} else {
-			$file_info = get_file_info($article['image']);
-			$picture = "<img src='".$article['image']."' alt='".$file_info['label']."' class='news_image' />";
+			try {
+				$im_file = new File(str_replace('./files/', NULL, $article['image']));
+				$file_info = $im_file->getInfo();
+				$picture = "<img src='".$article['image']."' alt='".$file_info['label']."' class='news_image' />";
+			} catch (FileException $e) {
+				$debug->addTrace('Image error: '.$e->getMessage(), true);
+				$picture = NULL;
+			}
 		}
 
 		$date = substr($article['date'],0,10);
@@ -113,7 +119,7 @@ class news_item {
 		$date_day = $date_parts[2];
 		$date_unix = mktime(0,0,0,$date_month,$date_day,$date_year);
 		$date_month_text = date('M',$date_unix);
-		$image_path = NULL;
+
 		if ($article['showdate'] == 1) {
 			$template_article->full_date_start = '';
 			$template_article->full_date_end = '';
@@ -136,8 +142,7 @@ class news_item {
 				array('news_edit','adm_news','admin_access'));
 
 		// Get current url
-		$query_string = $_SERVER['QUERY_STRING'];
-		$query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', NULL, $query_string);
+		$query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', NULL, $_SERVER['QUERY_STRING']);
 		if ($article['publish'] == '1') {
 			// Currently published
 			$editbar->add_control('index.php?'.$query_string.'&amp;unpublish='.$article['id'],

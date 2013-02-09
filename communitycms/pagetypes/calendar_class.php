@@ -81,6 +81,7 @@ class calendar_event {
 	function get_event($id) {
 		global $acl;
 		global $db;
+		global $debug;
 
 		$this->event_query = 'SELECT `cal`.*, `cat`.`label`
 			FROM `'.CALENDAR_TABLE.'` cal
@@ -139,10 +140,16 @@ class calendar_event {
 		$template_event->event_time = $event_time;
 		$template_event->event_start_date = date('Y-m-d', $event_start);
 		if (strlen($event_info['image']) > 0) {
-			$im_info = get_file_info($event_info['image']);
+			try {
+				$im_file = new File(str_replace('./files/', NULL, $event_info['image']));
+				$im_info = $im_file->getInfo();
+				$template_event->event_image = '<img src="'.stripslashes($event_info['image']).'" class="calendar_event_image" alt="'.$im_info['label'].'" />';
+			} catch (FileException $e) {
+				$debug->add_trace('Image error: '.$e->getMessage(), true);
+				$template_event->event_image = NULL;
+			}
 			$template_event->event_image_start = NULL;
 			$template_event->event_image_end = NULL;
-			$template_event->event_image = '<img src="'.stripslashes($event_info['image']).'" class="calendar_event_image" alt="'.$im_info['label'].'" />';
 		} else
 			$template_event->replace_range('event_image',NULL);
 		if ($event_info['category_hide'] || $event_info['label'] == NULL) {

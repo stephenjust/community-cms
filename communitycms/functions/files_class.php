@@ -70,19 +70,25 @@ class file_list {
         $return = '<table class="admintable">'."\n<tr>\n<th>File Name</th>
             <th>Label</th><th colspan='$num_cols'></th></tr>\n";
         $display_count = 0;
-        for ($i = 1; $i <= $num_files; $i++) {
-            if (!is_dir($this->folder.'/'.$this->file_array[$i - 1]) &&
-                !preg_match('#^\.|\.$#',$this->file_array[$i - 1])) {
-                $file_info = get_file_info($this->script_folder.'/'.$this->file_array[$i - 1]);
+        for ($i = 0; $i < $num_files; $i++) {
+            if (!is_dir($this->folder.'/'.$this->file_array[$i]) &&
+                !preg_match('#^\.|\.$#',$this->file_array[$i])) {
+				try {
+					$f_path = str_replace('./files/', NULL, $this->script_folder.'/'.$this->file_array[$i]);
+					$im_file = new File($f_path);
+					$file_info = $im_file->getInfo();
+				} catch (FileException $e) {
+					$file_info['label'] = $e->getMessage();
+				}
                 $return .= '<tr><td><a href="'.$this->script_folder.'/'
-                    .$this->file_array[$i - 1].'">'.$this->file_array[$i - 1].'
-                    </a></td><td>'.$file_info['label'].'</td><td><a href="admin.php?module='.$_GET['module'].'&amp;'.
-					'action=edit&amp;file='.$this->script_folder.'/'.$this->file_array[$i - 1].'&amp;path='.
+                    .$this->file_array[$i].'">'.$this->file_array[$i].'
+                    </a></td><td>'.HTML::schars($file_info['label']).'</td><td><a href="admin.php?module='.$_GET['module'].'&amp;'.
+					'action=edit&amp;file='.$this->file_array[$i].'&amp;path='.
 					$_POST['folder_list'].'"><img src="./admin/templates/default/images/edit.png"
                     alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td>';
 				if ($acl->check_permission('file_delete')) {
 					$return .= '<td><a href="admin.php?module='.$_GET['module'].'&amp;action=delete&amp;filename='.
-                    $this->script_folder.'/'.$this->file_array[$i - 1].'&amp;path='.$_POST['folder_list'].'">
+                    $this->file_array[$i].'&amp;path='.$_POST['folder_list'].'">
                     <img src="./admin/templates/default/images/delete.png" width="16px" height="16px" border="0px"></a></td>';
 				}
 				$return .= '</tr>';

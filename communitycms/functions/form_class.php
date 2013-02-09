@@ -366,6 +366,8 @@ class form {
 	 * @return null
 	 */
 	function add_icon_list($name,$label,$folder,$selected = NULL) {
+		global $debug;
+		
 		if (preg_match('/[.]/',$folder)) {
 			return;
 		}
@@ -378,17 +380,23 @@ class form {
 		for ($i = 1; $i <= $num_icons; $i++) {
 			if (preg_match('#\.png|\.jpg$#i',$icon_list[$i - 1]) == 1) {
 				$options .= '<div class="admin_image_list_item">';
-				$file_info = get_file_info($relative_path.'/'.$icon_list[$i - 1]);
-				if ($relative_path.'/'.$icon_list[$i - 1] == $selected) {
-					$options .= '<input type="radio" name="image"
-						value="'.$app_path.'/'.$icon_list[$i - 1].'" checked />
-						<br /><img src="'.$relative_path.'/'.$icon_list[$i - 1].'"
-						alt="'.$file_info['label'].'" />';
-				} else {
-					$options .= '<input type="radio" name="image"
-						value="'.$app_path.'/'.$icon_list[$i - 1].'" />
-						<br /><img src="'.$relative_path.'/'.$icon_list[$i - 1].'"
-						alt="'.$file_info['label'].'" />';
+				try {
+					$im_file = new File(str_replace('./files/', NULL, $relative_path.'/'.$icon_list[$i - 1]));
+					$file_info = $im_file->getInfo();
+					
+					if ($relative_path.'/'.$icon_list[$i - 1] == $selected) {
+						$options .= '<input type="radio" name="image"
+							value="'.$app_path.'/'.$icon_list[$i - 1].'" checked />
+							<br /><img src="'.$relative_path.'/'.$icon_list[$i - 1].'"
+							alt="'.$file_info['label'].'" />';
+					} else {
+						$options .= '<input type="radio" name="image"
+							value="'.$app_path.'/'.$icon_list[$i - 1].'" />
+							<br /><img src="'.$relative_path.'/'.$icon_list[$i - 1].'"
+							alt="'.$file_info['label'].'" />';
+					}
+				} catch (FileException $e) {
+					$debug->add_trace('Image error: '.$e->getMessage());
 				}
 				$options .= '</div>';
 			}

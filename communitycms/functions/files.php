@@ -146,7 +146,7 @@ function file_upload($path = "", $contentfile = true, $thumb = false) {
 			'attempting to upload the file again.');
 
 	// Handle icon uploads
-	if (folder_get_property(basename($path),'icons_only')) {
+	if (File::getDirProperty(basename($path),'icons_only')) {
 		if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
 			@move_uploaded_file($_FILES['upload']['tmp_name'], $target);
 			if (generate_thumbnail($target,$target,1,1,100,100)) {
@@ -246,33 +246,6 @@ function folder_get_list() {
 }
 
 /**
- * Get the value of a folder property
- * @global db $db
- * @param string $directory Directory relative to the files tree
- * @param string $property Property name
- * @return mixed
- */
-function folder_get_property($directory, $property) {
-	global $db;
-
-	$directory = $db->sql_escape_string($directory);
-	$property = $db->sql_escape_string($property);
-	
-	$query = 'SELECT `value`
-		FROM `'.DIR_PROP_TABLE."`
-		WHERE `directory` = '$directory'
-		AND `property` = '$property'
-		LIMIT 1";
-	$handle = $db->sql_query($query);
-	if ($db->error[$handle] === 1)
-		throw new Exception();
-	if ($db->sql_num_rows($handle) == 0)
-		return 0;
-	$result = $db->sql_fetch_row($handle);
-	return $result[0];
-}
-
-/**
  * Set the value of a folder property
  * @global db $db
  * @param string $directory Directory relative to the files tree
@@ -314,68 +287,6 @@ function folder_set_property($directory, $property, $value) {
 			.'\' to \''.stripslashes($value).'\' for \''.stripslashes($directory).'\'');
 }
 
-// ----------------------------------------------------------------------------
-
-/**
- * Create a subdirectory in the files/ tree
- * @global acl $acl
- * @param string $folder_name
- * @throws Exception 
- */
-function file_create_folder($folder_name) {
-	global $acl;
-	if (!$acl->check_permission('file_create_folder'))
-		throw new Exception('You are not allowed to create folders.');
-
-	$folder_name = trim($folder_name);
-	// Validate folder name
-	if (strlen($folder_name) > 30
-			|| strlen($folder_name) < 4
-			|| !preg_match('#^[a-z0-9\_]+$#i',$folder_name))
-		throw new Exception('New folder name must be between 4 and 30 '.
-				'characters long and can only contain letters, numbers, and _.');
-
-	// Don't create subdirectories called 'files', that will cause issues
-	if(file_exists(ROOT.'files/'.$folder_name) || $folder_name == 'files')
-		throw new Exception('A file or folder with that name already exists.');
-
-	mkdir(ROOT.'files/'.$folder_name);
-	Log::addMessage('Created new directory \'files/'.$folder_name.'\'');
-}
-
-/**
- * Delete an uploaded file
- * @global acl $acl
- * @global db $db
- * @param type $filename
- * @throws Exception 
- */
-function file_delete($filename) {
-	global $acl;
-	global $db;
-
-	if (!$acl->check_permission('file_delete'))
-		throw new Exception('You are not allowed to delete files.');
-	if (!file_exists($filename))
-		throw new Exception('The file you are trying to delete does not exist.');
-	if (preg_match('/^\.\.|\.\./',$filename) || !preg_match('#^\./files/#i',$filename))
-		throw new Exception('The file you are trying to delete is invalid.');
-
-	// Attempt to delete file from disk
-	$del = unlink($filename);
-	if(!$del)
-		throw new Exception('The file "'.$filename.'" could not be deleted.');
-
-	// Attempt to delete database record associated with file
-	$delete_info_query = 'DELETE FROM `'.FILE_TABLE.'`
-		WHERE `path` = \''.$db->sql_escape_string($filename).'\'';
-	$delete_info_handle = $db->sql_query($delete_info_query);
-	if($db->error[$delete_info_handle] === 1)
-		throw new Exception('The database record for file "'.$filename.'" could not be deleted.');
-
-	Log::addMessage('Deleted file \''.$filename.'\'');
-}
-
 /**
  * Generate a list of files
  * @param string $directory
@@ -411,7 +322,8 @@ function file_list($directory = "", $type = 0, $selected = "") {
 			} elseif ($type == 2) {
 				if (preg_match('#\.png|\.jpg$#i',$files[$i]) == 1) {
 					$return .= '<div class="admin_image_list_item">';
-					$file_info = get_file_info($folder_open_short.'/'.$files[$i]);
+					$f = new File($directory.'/'.$files[$i]);
+					$file_info = $f->getInfo();
 					if ($folder_open.'/'.$files[$i] == $selected) {
 						$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" checked /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$file_info['label'].'" />';
 					} else {
@@ -474,31 +386,6 @@ function dynamic_file_list($directory = '',$root = ROOT) {
 	// Generate file list
 	$return .= file_list($directory,1);
 	return $return;
-}
-
-// ----------------------------------------------------------------------------
-
-/**
- * get_file_info - Look up file information in the database
- * @global db $db Database connection object
- * @param string $file Path to file
- * @return array
- */
-function get_file_info($file) {
-	global $db;
-	$file_info_query = 'SELECT * FROM ' . FILE_TABLE . '
-		WHERE path = \''.addslashes($db->sql_escape_string($file)).'\' LIMIT 1';
-	$file_info_handle = $db->sql_query($file_info_query);
-	if ($db->error[$file_info_handle] === 1) {
-		$file_info['label'] = 'Could not read information.';
-		return $file_info;
-	}
-	if ($db->sql_num_rows($file_info_handle) != 1) {
-		$file_info['label'] = NULL;
-	} else {
-		$file_info = $db->sql_fetch_assoc($file_info_handle);
-	}
-	return $file_info;
 }
 
 /**
