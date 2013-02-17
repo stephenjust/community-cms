@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -84,126 +84,54 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 // ----------------------------------------------------------------------------
 
 /**
- * Generate a list of folders
- * @param string $directory
+ * Generate an html list of folders
  * @param string $current
- * @param integer $type
  * @param string $name
  * @param string $extra
  * @return string
  */
-function folder_list($directory = "",$current = "",$type = 0,$name='folder_list',$extra='') {
-	$folder_root = './files/';
-	if (preg_match('#.#',$directory)) {
-		return 'Error retreiving folder list.<br />'."\n";
-	}
-	$folder_open = $folder_root.$directory;
-	$files = scandir($folder_open);
-	$num_files = count($files);
-	$return = NULL;
-	if ($num_files == 0) {
-		$return .= 'There are no files to display in this folder.';
-	}
-	if ($type == 1) { // Start listbox if that is the view mode specified.
-		$return .= '<select name="'.$name.'" id="'.$name.'" '.$extra.'>
-<option value="">Default</option>';
-	}
-	for ($i = 1; $i < $num_files; $i++) {
-		if ($files[$i] == '..' || !is_dir($folder_open.'/'.$files[$i])) {
-			continue;
-		}
-		if ($type == 0) {
-			$return .= $files[$i].'<br />';
-		} elseif ($type == 1) {
-			if ($current == $files[$i]) {
-				$return .= '<option value="'.$files[$i].'" selected>'.$files[$i].'</option>';
-			} else {
-				$return .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
-			}
+function folder_list($current = "",$name='folder_list',$extra='') {
+	$dir_list = File::getDirList();
+
+	// Start listbox if that is the view mode specified.
+	$return = sprintf('<select name="%1$s" id="%1$s" %2$s>', $name, $extra);
+	$return .= '<option value="">Default</option>';
+	for ($i = 0; $i < count($dir_list); $i++) {
+		if ($current == $dir_list[$i]) {
+			$return .= '<option value="'.$dir_list[$i].'" selected>'.$dir_list[$i].'</option>';
+		} else {
+			$return .= '<option value="'.$dir_list[$i].'">'.$dir_list[$i].'</option>';
 		}
 	}
-	if ($type == 1) { // End folder listbox if that was the view mode specified.
-		$return .= '</select>';
-	}
+	// End folder listbox if that was the view mode specified.
+	$return .= '</select>';
 	return $return;
 }
 
 /**
- * Get the subdirectories of the files tree
- * @return array
- */
-function folder_get_list() {
-	$directory = FILES_ROOT;
-	$files = scandir($directory);
-	$subdirs = array();
-	for ($i = 0; $i < count($files); $i++) {
-		if (!is_dir($directory.$files[$i]))
-			continue;
-		if ($files[$i] == '.' || $files[$i] == '..')
-			continue;
-		$subdirs[] = $files[$i];
-	}
-	return $subdirs;
-}
-
-/**
- * Generate a list of files
+ * Generate an html list of files
  * @param string $directory
- * @param integer $type
- * @param string $selected
  * @return string
  */
-function file_list($directory = "", $type = 0, $selected = "") {
+function file_list($directory = "") {
 	$return = NULL;
-	$folder_root = ROOT.'files/';
-	if (!preg_match('/[.]/',$directory) == 0) {
-		return 'Error retrieving file list.<br />'."\n";
+	try {
+		$files = File::getDirFiles($directory);
+	} catch (FileException $e) {
+		$return .= $e->getMessage().'<br />';
 	}
-	$folder_open = $folder_root.$directory;
-	$folder_open_short = './files/'.$directory;
-	$files = scandir($folder_open);
 	$num_files = count($files);
-	$j = 0;
-	if ($type == 1) {
-		$return .= '<select name="file_list">';
-	} elseif ($type == 2) {
-		// If type = 2, display icons for images, and display radio buttons
-		// next to each icon. If it is not an image, do not display it. Add
-		// a 'No image' link as well.
-		$return .= '<input type="radio" name="image" value="" checked>No Image<br />';
-		$j++; // Make sure this is displayed even if there's no files.
-	}
-	for ($i = 1; $i < $num_files; $i++) {
-		if (!is_dir($folder_open.'/'.$files[$i])) {
-			if ($type == 1) {
-				$return .= '<option value="'.$folder_open_short.'/'.$files[$i].'" />'.$files[$i].'</option>';
-				$j++;
-			} elseif ($type == 2) {
-				if (preg_match('#\.png|\.jpg$#i',$files[$i]) == 1) {
-					$return .= '<div class="admin_image_list_item">';
-					$f = new File($directory.'/'.$files[$i]);
-					$file_info = $f->getInfo();
-					if ($folder_open.'/'.$files[$i] == $selected) {
-						$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" checked /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$file_info['label'].'" />';
-					} else {
-						$return .= '<input type="radio" name="image" value="'.$folder_open_short.'/'.$files[$i].'" /><br /><img src="'.$folder_open.'/'.$files[$i].'" alt="'.$file_info['label'].'" />';
-					}
-					$return .= '</div>';
-					$j++;
-				}
-			} else {
-				$return .= '<a href="'.$folder_open_short.'/'.$files[$i].'">'.$files[$i].'</a><br />';
-				$j++; // Count files that were displayed.
-			}
-		}
-	}
-	if ($type == 1) {
-		$return .= '</select>';
-	}
+	
 	// Check if any files were displayed
-	if ($j == 0) {
-		$return = 'There are no files to display.';
+	if ($num_files == 0) {
+		return 'There are no files to display.';
 	}
+	
+	$return .= '<select name="file_list">';
+	for ($i = 0; $i < $num_files; $i++) {
+		$return .= '<option value="'.$directory.'/'.$files[$i].'" />'.$files[$i].'</option>';
+	}
+	$return .= '</select>';
 	return $return;
 }
 
@@ -243,7 +171,7 @@ function dynamic_file_list($directory = '',$root = ROOT) {
 	</select><br />';
 
 	// Generate file list
-	$return .= file_list($directory,1);
+	$return .= file_list($directory);
 	return $return;
 }
 

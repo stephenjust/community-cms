@@ -121,7 +121,7 @@ if (!isset($_POST['folder_list']) && !isset($_POST['path'])) {
 	$_POST['folder_list'] = $_POST['path'];
 }
 $tab_content['list'] = '<form method="POST" action="admin.php?module=filemanager">
-'.folder_list('',basename($_POST['folder_list']),1,'adm_file_dir_list','onChange="update_file_list(\'-\')"'); // Create listbox with folder names and a form to navigate folders.
+'.folder_list(basename($_POST['folder_list']),'adm_file_dir_list','onChange="update_file_list(\'-\')"'); // Create listbox with folder names and a form to navigate folders.
 $tab_content['list'] .= '</form>
 <br />
 <div id="adm_file_list">Loading...</div>

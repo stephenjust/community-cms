@@ -41,6 +41,10 @@ class Newsletter {
 			$this->mYear = $info['year'];
 			$this->mMonth = $info['month'];
 			$this->mLabel = $info['label'];
+			
+			// Backwards compatibility fix
+			if (substr($info['path'], 0, 7) != './files/') $info['path'] = './files/'.$info['path'];
+			
 			$this->mPath = $info['path'];
 			$this->mHidden = $info['hidden'];
 		}

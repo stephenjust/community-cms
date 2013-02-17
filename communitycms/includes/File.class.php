@@ -91,6 +91,26 @@ class File {
 		$this->file = false;
 	}
 	
+	public static function getDirFiles($directory) {
+		$directory = File::replaceSpecialChars($directory);
+		if (preg_match('#\.\./?#', $directory))
+			throw new FileException('Invalid directory.');
+		$search_base = File::$file_root.$directory;
+		
+		$files = array();
+		
+		$f_search = scandir($search_base);
+		$num_files = count($f_search);
+		for ($i = 0; $i < $num_files; $i++) {
+			// Exclude directories
+			if (is_dir($search_base.'/'.$f_search[$i])) continue;
+			
+			$files[] = $f_search[$i];
+		}
+		
+		return $files;
+	}
+	
 	/**
 	 * Get an array of all file directories
 	 * @return array
@@ -318,7 +338,7 @@ class File {
 				'attempting to upload the file again.');
 
 		// Handle icon uploads
-		if (File::getDirProperty(basename($path),'icons_only')) {
+		if (File::getDirProperty(dirname($path),'icons_only')) {
 			if (preg_match('/(\.png|\.jp[e]?g)$/i',$filename)) {
 				@move_uploaded_file($_FILES['upload']['tmp_name'], File::$file_root.$path);
 				try {
