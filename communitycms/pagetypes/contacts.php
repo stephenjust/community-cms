@@ -9,16 +9,14 @@
 if (@SECURITY != 1) {
 	die('You cannot access this page directly.');
 }
+
+require_once(ROOT.'includes/content/Contact.class.php');
+
 global $db;
+
+$c_list = Contact::getList(Page::$id);
+
 $content = NULL;
-$current_contact = NULL;
-$contact_list_query = 'SELECT `contacts`.*
-	FROM `'.CONTACTS_TABLE.'` `contacts`, `'.CONTENT_TABLE.'` `content`
-	WHERE `content`.`page_id` = '.Page::$id.'
-	AND `content`.`ref_id` = `contacts`.`id`
-	ORDER BY `content`.`order` ASC, `contacts`.`id` ASC';
-$contact_list_handle = $db->sql_query($contact_list_query);
-$contact_list_num_rows = $db->sql_num_rows($contact_list_handle);
 if (!isset($_GET['message'])) {
 	$_GET['message'] = '';
 }
@@ -54,7 +52,7 @@ if($_GET['action'] == 'send') {
 		}
 	}
 }
-if ($contact_list_num_rows == 0) {
+if (count($c_list) == 0) {
 	$content .= 'There are no contacts.';
 	return $content;
 }
@@ -75,38 +73,38 @@ unset($contact_template);
 $contact_template_foot = $contact_template_body->split('contact_entry_end');
 $contact_template_foot->contact_entry_end = NULL;
 
-for ($i = 1; $contact_list_num_rows >= $i; $i++) {
-	$contact_info = $db->sql_fetch_assoc($contact_list_handle);
+for ($i = 0; $i < count($c_list); $i++) {
+	$contact = new Contact($c_list[$i]);
 
 	// Prepare contact information
-	if ($contact_info['user_id'] != 0) {
-		$realname = '<a href="index.php?'.Page::$url_reference.'&message='.$contact_info['user_id'].'">'.stripslashes($contact_info['name']).'</a>';
+	if ($contact->getUserId() != 0) {
+		$realname = '<a href="index.php?'.Page::$url_reference.'&message='.$contact->getUserId().'">'.$contact->getName().'</a>';
 	} else {
-		$realname = stripslashes($contact_info['name']);
+		$realname = $contact->getName();
 	}
-	$contact_title = stripslashes($contact_info['title']);
-	if (strlen($contact_info['email']) == 0) {
+	$contact_title = $contact->getTitle();
+	if (strlen($contact->getEmail()) == 0) {
 		$contact_email = NULL;
 	} else {
-		$contact_email = $contact_info['email'];
+		$contact_email = $contact->getEmail();
 	}
-	if ($contact_info['phone'] == NULL) {
+	if ($contact->getPhone() == NULL) {
 		$contact_telephone = NULL;
 	} else {
-		$contact_telephone = format_tel($contact_info['phone']);
+		$contact_telephone = $contact->getPhone();
 	}
-	if (strlen($contact_info['address']) == 0) {
+	if (strlen($contact->getAddress()) == 0) {
 		$contact_address = NULL;
 	} else {
-		$contact_address = $contact_info['address'];
+		$contact_address = $contact->getAddress();
 	}
 
 	$template_contact = clone $contact_template_body;
 	$template_contact->contact_name = $realname;
 	$template_contact->contact_title = $contact_title;
-	$template_contact->contact_email = stripslashes($contact_email);
-	$template_contact->contact_telephone = stripslashes($contact_telephone);
-	$template_contact->contact_address = stripslashes($contact_address);
+	$template_contact->contact_email = $contact_email;
+	$template_contact->contact_telephone = $contact_telephone;
+	$template_contact->contact_address = $contact_address;
 	if ($contact_email == NULL) {
 		$template_contact->replace_range('contact_email','');
 	} else {
@@ -125,7 +123,7 @@ for ($i = 1; $contact_list_num_rows >= $i; $i++) {
 		$template_contact->contact_address_start = '';
 		$template_contact->contact_address_end = '';
 	}
-	if ($contact_info['title'] == '' || $contact_info['title'] == NULL) {
+	if ($contact->getTitle() == '' || $contact->getTitle() == NULL) {
 		$template_contact->replace_range('contact_title','');
 	} else {
 		$template_contact->contact_title_start = '';

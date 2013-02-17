@@ -16,7 +16,7 @@ global $acl;
 if (!$acl->check_permission('adm_contacts_manage'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-include(ROOT.'functions/contacts.php');
+require_once(ROOT.'includes/content/Contact.class.php');
 $tab_layout = new tabs;
 
 // ----------------------------------------------------------------------------
@@ -60,17 +60,18 @@ switch ($_GET['action']) {
 
 	case 'delete':
 		try {
-			contact_delete($_GET['id']);
+			$c = new Contact($_GET['id']);
+			$c->delete();
 			echo 'Successfully deleted contact.<br />';
 		}
-		catch (Exception $e) {
+		catch (ContactException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 
 	case 'create':
 		try {
-			contact_create($_POST['name'],
+			Contact::create($_POST['name'],
 					$_POST['title'],
 					$_POST['phone'],
 					$_POST['address'],
@@ -78,31 +79,31 @@ switch ($_GET['action']) {
 					$_POST['username']);
 			echo 'Successfully created contact.<br />'."\n";
 		}
-		catch (Exception $e) {
+		catch (ContactException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 
 	case 'edit':
 		try {
-			$contact = contact_get($_GET['id']);
+			$c = new Contact($_GET['id']);
 
 			// Create form
 			$edit_form = new form;
 			$edit_form->set_method('post');
-			$edit_form->set_target('admin.php?module=contacts_manage&amp;action=editsave&amp;id='.$contact['id']);
-			$edit_form->add_textbox('name','Name',$contact['name']);
-			$edit_form->add_textbox('username','Username (optional)',$contact['username']);
-			$edit_form->add_textbox('title','Title',$contact['title']);
-			$edit_form->add_textbox('phone','Telephone',format_tel($contact['phone']));
-			$edit_form->add_textbox('address','Address',$contact['address']);
-			$edit_form->add_textbox('email','E-Mail',$contact['email']);
+			$edit_form->set_target('admin.php?module=contacts_manage&amp;action=editsave&amp;id='.$c->getId());
+			$edit_form->add_textbox('name','Name',$c->getName());
+			$edit_form->add_textbox('username','Username (optional)',$c->getUsername());
+			$edit_form->add_textbox('title','Title',$c->getTitle());
+			$edit_form->add_textbox('phone','Telephone',$c->getPhone());
+			$edit_form->add_textbox('address','Address',$c->getAddress());
+			$edit_form->add_textbox('email','E-Mail',$c->getEmail());
 			$edit_form->add_submit('submit','Submit');
 
 			$tab_content['edit'] = $edit_form;
 			$tab_layout->add_tab('Edit Contact',$tab_content['edit']);
 		}
-		catch (Exception $e) {
+		catch (ContactException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
@@ -111,16 +112,16 @@ switch ($_GET['action']) {
 
 	case 'editsave':
 		try {
-			contact_edit($_GET['id'],
-					$_POST['name'],
+			$c = new Contact($_GET['id']);
+			$c->edit($_POST['name'],
 					$_POST['title'],
 					$_POST['phone'],
 					$_POST['address'],
 					$_POST['email'],
 					$_POST['username']);
-			echo 'Successfully edited contact.<br />'."\n";
+			echo 'Successfully edited contact.<br />';
 		}
-		catch (Exception $e) {
+		catch (ContactException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;

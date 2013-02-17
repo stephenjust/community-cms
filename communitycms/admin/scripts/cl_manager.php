@@ -18,7 +18,7 @@ $content = NULL;
 include (ROOT . 'config.php');
 include (ROOT . 'include.php');
 include (ROOT . 'functions/admin.php');
-include (ROOT . 'functions/contacts.php');
+require_once(ROOT.'includes/content/Contact.class.php');
 
 initialize('ajax');
 
@@ -43,34 +43,30 @@ switch ($_GET['action']) {
 	default:
 		break;
 	case 'add':
-		if ($_GET['id'] == 0) {
-			$content .= '<span class="errormessage">Error: No contact to add</span><br />'."\n";
-			break;
-		}
-		if (contact_add_to_list($_GET['id'],$page_id)) {
-			$content .= 'Successfully added contact to the list.<br />'."\n";
-		} else {
-			$content .= '<span class="errormessage">Error: Failed to add the contact to the list.</span><br />'."\n";
+		try {
+			$c = new Contact($_GET['id']);
+			$c->addToList($page_id);
+			$content .= 'Successfully added contact to the list.<br />';
+		} catch (ContactException $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 	case 'remove':
-		if ($_GET['id'] == 0) {
-			$content .= '<span class="errormessage">Error: No contact to delete</span><br />'."\n";
-			break;
-		}
-		if (contact_remove_from_list($_GET['id'])) {
-			$content .= 'Successfully removed contact from the list.<br />'."\n";
-		} else {
-			$content .= '<span class="errormessage">Error: Failed to remove the contact from the list.</span><br />'."\n";
+		try {
+			$c = new Contact($_GET['id']);
+			$c->deleteFromList($page_id);
+			$content .= 'Successfully removed contact from the list.<br />';
+		} catch (ContactException $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
 	case 'order':
-		if ($_GET['id'] == 0) {
-			$content .= '<span class="errormessage">Error: No contact to reorder.</span><br />'."\n";
-			break;
-		}
-		if (!contact_order_list($_GET['id'], $_GET['order'])) {
-			$content .= '<span class="errormessage">Error: Failed to change contact order.</span><br />'."\n";
+		try {
+			$c = new Contact($_GET['id']);
+			$c->setListOrder($_GET['order'], $page_id);
+			$content .= 'Saved list order.<br />';
+		} catch (ContactException $e) {
+			$content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 }
 
@@ -91,10 +87,10 @@ for ($i = 1; $i <= $contact_list_rows; $i++) {
 	$current_row[] = $contact_list['id'];
 	$current_row[] = $contact_list['name'];
 	if ($acl->check_permission('contacts_edit_lists')) {
-		$current_row[] = '<a href="javascript:update_cl_manager_remove(\''.$contact_list['cnt_id'].'\')">Remove</a>';
+		$current_row[] = '<a href="javascript:update_cl_manager_remove(\''.$contact_list['id'].'\')">Remove</a>';
 	}
 
-	$current_row[] = '<input type="text" size="3" maxlength="11" id="cl_order_'.$contact_list['cnt_id'].'" value="'.$contact_list['order'].'" onBlur="update_cl_manager_order(\''.$contact_list['cnt_id'].'\')" />';
+	$current_row[] = '<input type="text" size="3" maxlength="11" id="cl_order_'.$contact_list['id'].'" value="'.$contact_list['order'].'" onBlur="update_cl_manager_order(\''.$contact_list['id'].'\')" />';
 	$list_rows[] = $current_row;
 } // FOR
 
