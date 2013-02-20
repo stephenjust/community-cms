@@ -145,7 +145,7 @@ class form {
 			$check = ' '.$check.'<input type="checkbox" id="_'.$name.'_check" name="'.$name.'_check" '.$checkval.' />';
 		}
 		
-		$options = new HTML_SELECT($name, '_'.$name);
+		$options = new UISelect(array('name' => $name, 'id' => '_'.$name));
 		for ($i = 0; $i < count((array)$values); $i++) {
 			$options->addOption($values[$i], $strings[$i]);
 		}
@@ -342,7 +342,7 @@ class form {
 			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
 				WHERE type = '.$pagetype.' ORDER BY `title` ASC';
 		$page_query_handle = $db->sql_query($page_query);
-		$options = new HTML_Select($name, '_'.$name);
+		$options = new UISelect(array('name' => $name, 'id' => '_'.$name));
 		for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
 			$page = $db->sql_fetch_assoc($page_query_handle);
 			$options->addOption($page['id'], $page['title']);
