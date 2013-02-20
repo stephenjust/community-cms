@@ -55,22 +55,10 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 			$current_dir = '';
 		}
 		$return .= 'Where would you like to save the file?<br />';
-		$dir = ROOT.'files';
-		$files = scandir($dir);
-		$num_files = count($files);
-		$return .= '<select name="path">
-			<option value="">Default</option>';
-		for ($i = 1; $i < $num_files; $i++) {
-			if($files[$i] != '..' && is_dir(ROOT.'files/'.$files[$i])) {
-				if ($files[$i] == $current_dir) {
-					$return .= '<option value="'.$files[$i].'" selected>'.$files[$i].'</option>';
-				} else {
-					$return .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
-				}
-			}
-		} // FOR
+		$dir_list = new UISelectDirList(array('name' => 'path'));
+		$dir_list->setChecked($current_dir);
+		$return .= $dir_list.'<br />'."\n";
 	}
-	$return .= '</select><br />'."\n";
 	if (is_array($extra_vars)) {
 		for ($i = 0; $i < count($extra_vars); $i++) {
 			$return .= '<input type="hidden" name="'.key($extra_vars).'" value="'.current($extra_vars).'" />'."\n";
