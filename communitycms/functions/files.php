@@ -10,6 +10,8 @@
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
+
+require_once(ROOT.'includes/ui/UISelectDirList.class.php');
 include(ROOT.'functions/files_class.php');
 
 // Include PEAR class required for tar file extraction
@@ -81,33 +83,6 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
 	return $return;
 }
 
-// ----------------------------------------------------------------------------
-
-/**
- * Generate an html list of folders
- * @param string $current
- * @param string $name
- * @param string $extra
- * @return string
- */
-function folder_list($current = "",$name='folder_list',$extra='') {
-	$dir_list = File::getDirList();
-
-	// Start listbox if that is the view mode specified.
-	$return = sprintf('<select name="%1$s" id="%1$s" %2$s>', $name, $extra);
-	$return .= '<option value="">Default</option>';
-	for ($i = 0; $i < count($dir_list); $i++) {
-		if ($current == $dir_list[$i]) {
-			$return .= '<option value="'.$dir_list[$i].'" selected>'.$dir_list[$i].'</option>';
-		} else {
-			$return .= '<option value="'.$dir_list[$i].'">'.$dir_list[$i].'</option>';
-		}
-	}
-	// End folder listbox if that was the view mode specified.
-	$return .= '</select>';
-	return $return;
-}
-
 /**
  * Generate an html list of files
  * @param string $directory
@@ -143,32 +118,21 @@ function file_list($directory = "") {
  * @param string $root
  * @return string
  */
-function dynamic_file_list($directory = '',$root = ROOT) {
+function dynamic_file_list($directory = '') {
 	// Write folder list
 	$current = $directory;
-	$dropdown_box_options = '<option value="">Default</option>';
-	$folder_root = $root.'files/';
+
 	if (preg_match('#./#',$directory)) {
 		return 'Error retrieving folder list.';
 	}
-	$folder_open = $folder_root;
-	$files = scandir($folder_open);
-	$num_files = count($files);
 	$return = NULL;
-	$dropdown_box_options = NULL;
-	for ($i = 1; $i < $num_files; $i++) {
-		if ($files[$i] == '..' || !is_dir($folder_open.'/'.$files[$i])) {
-			continue;
-		}
-		if ($current == $files[$i]) {
-			$dropdown_box_options .= '<option value="'.$files[$i].'" selected>'.$files[$i].'</option>';
-		} else {
-			$dropdown_box_options .= '<option value="'.$files[$i].'">'.$files[$i].'</option>';
-		}
-	}
-	$return .= '<select name="folder_dropdown_box" id="dynamic_folder_dropdown_box" onChange="update_dynamic_file_list(\''.$root.'\')">
-	<option value="">Default</option>'.$dropdown_box_options.'
-	</select><br />';
+	$dir_dropdown = new UISelectDirList(
+			array('name' => 'folder_dropdown_box',
+				'id' => 'dynamic_folder_dropdown_box',
+				'onChange' => 'update_dynamic_file_list()'));
+	$dir_dropdown->setChecked($current);
+
+	$return .= $dir_dropdown.'<br />';
 
 	// Generate file list
 	$return .= file_list($directory);

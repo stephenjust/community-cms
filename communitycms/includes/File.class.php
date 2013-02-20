@@ -138,7 +138,7 @@ class File {
 		$sorted_dirs = array();
 		
 		foreach ($dirs as $dir) {
-			$dir_category = File::getDirProperty($dir);
+			$dir_category = File::getDirProperty($dir, 'category');
 			if ($dir_category === false) {
 				$sorted_dirs['Uncategorized'][] = $dir;
 			} else {
@@ -159,6 +159,8 @@ class File {
 	 */
 	public static function getDirProperty($directory, $property) {
 		global $db;
+		
+		assert($property != NULL);
 
 		$directory = $db->sql_escape_string($directory);
 		$property = $db->sql_escape_string($property);
@@ -170,7 +172,7 @@ class File {
 			LIMIT 1";
 		$handle = $db->sql_query($query);
 		if ($db->error[$handle] === 1)
-			throw new FileException('Failed to read directory properties.');
+			throw new FileException('Failed to read directory properties. Query: '.$query);
 		if ($db->sql_num_rows($handle) == 0)
 			return false;
 		$result = $db->sql_fetch_row($handle);

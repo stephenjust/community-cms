@@ -11,6 +11,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
+require_once(ROOT.'includes/ui/UISelectDirList.class.php');
+
 global $acl;
 
 if (!$acl->check_permission('adm_filemanager'))
@@ -120,9 +122,15 @@ if (!isset($_POST['folder_list']) && !isset($_POST['path'])) {
 } elseif (!isset($_POST['folder_list']) && isset($_POST['path'])) {
 	$_POST['folder_list'] = $_POST['path'];
 }
+
+$dir_list = new UISelectDirList(
+	array(
+		'id' => 'adm_file_dir_list',
+		'onChange' => 'update_file_list(\'-\')'
+	));
+$dir_list->setChecked(basename($_POST['folder_list']));
 $tab_content['list'] = '<form method="POST" action="admin.php?module=filemanager">
-'.folder_list(basename($_POST['folder_list']),'adm_file_dir_list','onChange="update_file_list(\'-\')"'); // Create listbox with folder names and a form to navigate folders.
-$tab_content['list'] .= '</form>
+'.$dir_list.'</form>
 <br />
 <div id="adm_file_list">Loading...</div>
 <script type="text/javascript">

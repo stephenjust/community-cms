@@ -30,7 +30,7 @@ class db_mysqli extends db {
 		return mysqli_get_server_info($this->connect).' (mysqli)';
 	}
 	function sql_query($query) {
-		if ($this->connect === (false || true)) {
+		if (is_bool($this->connect)) {
 			$this->error[$this->query_count] = 1;
 		}
 		$this->query[$this->query_count] = mysqli_query($this->connect,$query);
@@ -56,6 +56,7 @@ class db_mysqli extends db {
 		return mysqli_fetch_row($this->query[$query]);
 	}
 	function sql_escape_string($string) {
+		assert($this->connect);
 		return mysqli_real_escape_string($this->connect,$string);
 	}
 	function sql_insert_id($table,$field) {

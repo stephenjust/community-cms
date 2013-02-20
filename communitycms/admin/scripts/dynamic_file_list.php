@@ -17,9 +17,9 @@ header("Pragma: no-cache"); // HTTP/1.0
 define('SECURITY',1);
 define('ROOT','../../');
 /**#@-*/
-$fileroot = (isset($_GET['root'])) ? $_GET['root'] : '../../';
 include(ROOT.'config.php');
 include(ROOT.'include.php');
+initialize('ajax');
 $referer = $_SERVER['HTTP_REFERER'];
 if(preg_match('#/$#',$referer)) {
 	$referer .= 'index';
@@ -34,7 +34,7 @@ $referer_dir_root = str_replace('/scripts/tiny_mce/plugins/comcmslink',NULL,$ref
 
 if($current_directory == $referer_dir_root.'/admin/scripts') {
 	if ($referer_dir_root != $referer_directory) {
-		echo dynamic_file_list($_GET['newfolder'],$fileroot);
+		echo dynamic_file_list($_GET['newfolder']);
 	} else {
 		echo dynamic_file_list($_GET['newfolder']);
 	}

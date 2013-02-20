@@ -30,8 +30,11 @@ class HTML_Select {
 	}
 	
 	public function __toString() {
-		$result = '<select name="'.$this->name.'"';
-		if ($this->id != NULL) $result .= ' id="'.$this->id.'"';
+		$result = '<select ';
+		if ($this->name)
+			$result .= 'name="'.$this->name.'" ';
+		if ($this->id)
+			$result .= 'id="'.$this->id.'" ';
 		$result .= ">\n";
 		
 		foreach ($this->options AS $option) {
