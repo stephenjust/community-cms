@@ -7,6 +7,8 @@
  * @package CommunityCMS.main
  */
 
+require_once(ROOT.'includes/ui/UISelectPageList.class.php');
+
 /**
  * Generate a form
  * 
@@ -334,19 +336,11 @@ class form {
 	 */
 	function add_page_list($name, $label, $pagetype = '*', $nopageallowed = 0,
 		$value = NULL, $props = NULL) {
-		global $db;
-		if ($pagetype == '*')
-			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
-				ORDER BY `title` ASC';
-		else
-			$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
-				WHERE type = '.$pagetype.' ORDER BY `title` ASC';
-		$page_query_handle = $db->sql_query($page_query);
-		$options = new UISelect(array('name' => $name, 'id' => '_'.$name));
-		for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
-			$page = $db->sql_fetch_assoc($page_query_handle);
-			$options->addOption($page['id'], $page['title']);
-		}
+		
+		$props = array('name' => $name, 'id' => '_'.$name);
+		if ($pagetype != '*') $props['pagetype'] = $pagetype;
+		$options = new UISelectPageList($props);
+
 		if ($nopageallowed == 1) {
 			$options->addOption(0, 'No Page');
 		}

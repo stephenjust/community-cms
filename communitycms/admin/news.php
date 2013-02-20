@@ -12,7 +12,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 }
 
 global $acl;
-include(ROOT.'functions/news.php');
+require_once(ROOT.'functions/news.php');
+require_once(ROOT.'includes/ui/UISelectPageList.class.php');
 
 if (!$acl->check_permission('adm_news'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
@@ -208,46 +209,17 @@ switch ($_GET['action']) {
 
 // ----------------------------------------------------------------------------
 
-$page_list = '<select name="page" id="adm_article_page_list" onChange="update_article_list(\'-\')">';
-$page_query = 'SELECT * FROM `' . PAGE_TABLE . '`
-    WHERE `type` = 1 ORDER BY `title` ASC';
-$page_query_handle = $db->sql_query($page_query);
-for ($i = 1; $i <= $db->sql_num_rows($page_query_handle); $i++) {
-    $page = $db->sql_fetch_assoc($page_query_handle);
-    if (!isset($_POST['page'])) {
-		if (isset($_GET['page'])) {
-			$_POST['page'] = $_GET['page'];
-		} else {
-			$home_info = page_get_info(get_config('home'),array('type'));
-			if ($home_info['type'] == 1) {
-				$_POST['page'] = get_config('home');
-			} else {
-				$_POST['page'] = $page['id'];
-			}
-		}
-	}
-	if ($page['id'] == $_POST['page']) {
-		$page_list .= '<option value="'.$page['id'].'" selected />'.
-			stripslashes($page['title']).'</option>';
-	} else {
-		$page_list .= '<option value="'.$page['id'].'" />'.
-			stripslashes($page['title']).'</option>';
-	}
-	$pages[$i] = $page['id'];
-} // FOR $i
-if ($_POST['page'] == 0) {
-    $no_page = 'selected';
-} else {
-    $no_page = NULL;
-}
-if ($_POST['page'] == '*') {
-    $all_page = 'selected';
-} else {
-    $all_page = NULL;
-}
-$page_list .= '<option value="0" '.$no_page.'>No Page</option>
-    <option value="*" '.$all_page.'>All Pages</option>
-    </select>';
+$page_list = new UISelectPageList(
+		array(
+			'name' => 'page',
+			'id' => 'adm_article_page_list',
+			'onChange' => 'update_article_list(\'-\')',
+			'pagetype' => 1 // News pages
+			));
+$page_list->addOption('0', 'No Page');
+$page_list->addOption('*', 'All Pages');
+$cur_page = (array_key_exists('page', $_POST)) ? $_POST['page'] : get_config('home');
+$page_list->setChecked($cur_page);
 
 // Change page form
 $tab_content['manage'] = $page_list;
@@ -256,20 +228,10 @@ $tab_content['manage'] = $page_list;
 $tab_content['manage'] .= '<form method="post" action="admin.php?module=news&amp;action=multi">';
 
 $tab_content['manage'] .= '<div id="adm_news_article_list">Loading...</div>'."\n";
-$tab_content['manage'] .= '<script type="text/javascript">update_article_list(\''.$_POST['page'].'\');</script>';
+$tab_content['manage'] .= '<script type="text/javascript">update_article_list(\''.$cur_page.'\');</script>';
 
-$a_page_list = '<select name="where" id="a_where">';
-$a_page_query = 'SELECT * FROM `' . PAGE_TABLE . '`
-    WHERE `type` = 1 ORDER BY `title` ASC';
-$a_page_query_handle = $db->sql_query($a_page_query);
-for ($i = 1; $i <= $db->sql_num_rows($a_page_query_handle); $i++) {
-    $a_page = $db->sql_fetch_assoc($a_page_query_handle);
-	$a_page_list .= '<option value="'.$a_page['id'].'" />'.
-		$a_page['title'].'</option>';
-    $a_pages[$i] = $a_page['id'];
-} // FOR $i
-$a_page_list .= '<option value="0">No Page</option>
-    </select>';
+$a_page_list = new UISelectPageList(array('name' => 'where', 'id' => 'a_where', 'pagetype' => 1));
+$a_page_list->addOption(0, 'No Page');
 
 $tab_content['manage'] .= '<input type="submit" name="pri" value="Update Priorities" /><br /><br />'."\n".
 	'With selected:<br />'."\n";
