@@ -44,6 +44,10 @@ try {
 			File::setDirProperty($_GET['dir'], $_GET['prop'], $_GET['value']);
 			echo 'Saved folder properties.<br />';
 			break;
+		case 'save_cat':
+			File::setDirProperty($_GET['dir'], 'category', $_POST['category']);
+			echo 'Saved folder category.<br />';
+			break;
 	}
 }
 catch (Exception $e) {
@@ -163,7 +167,7 @@ if ($acl->check_permission('file_upload')) {
 }
 
 // Folder settings panel
-$fs_table_columns = array('Folder','Icons Only');
+$fs_table_columns = array('Folder', 'Icons Only', 'Category');
 $fs_folders = File::getDirList();
 $fs_rows = array();
 for ($i = 0; $i < count($fs_folders); $i++) {
@@ -176,7 +180,9 @@ for ($i = 0; $i < count($fs_folders); $i++) {
 			<img src="<!-- $IMAGE_PATH$ -->cross.png" alt="no" width="16" height="16" border="0" />
 			</a>';
 	}
-	$fs_rows[] = array($fs_folders[$i],$fs_dir_prop_icons);
+	$fs_cat = '<form method="post" action="admin.php?module=filemanager&amp;action=save_cat&amp;dir='.HTML::schars($fs_folders[$i]).'">
+		<input type="text" name="category" value="'.HTML::schars(File::getDirProperty($fs_folders[$i], 'category')).'" /><input type="submit" value="Save" /></form>';
+	$fs_rows[] = array($fs_folders[$i], $fs_dir_prop_icons, $fs_cat);
 }
 $fs_tab = create_table($fs_table_columns, $fs_rows); 
 $tab_layout->add_tab('Folder Settings',$fs_tab);
