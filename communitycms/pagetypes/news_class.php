@@ -39,6 +39,14 @@ class news_item {
         $this->article_id = (int)$article_id;
         return;
     }
+	
+	/**
+	 * 
+	 * @global acl $acl
+	 * @global db $db
+	 * @global debug $debug
+	 * @return boolean
+	 */
 	public function get_article() {
 		global $acl;
 		global $db;
@@ -107,7 +115,7 @@ class news_item {
 				$file_info = $im_file->getInfo();
 				$picture = "<img src='".$article['image']."' alt='".$file_info['label']."' class='news_image' />";
 			} catch (FileException $e) {
-				$debug->addTrace('Image error: '.$e->getMessage(), true);
+				$debug->addMessage('Image error: '.$e->getMessage(), true);
 				$picture = NULL;
 			}
 		}
