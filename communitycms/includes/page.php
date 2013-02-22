@@ -190,53 +190,6 @@ function page_add_group($group_name) {
 }
 
 /**
- * page_delete - Delete a page entry from the database
- * @global object $acl Permissions object
- * @global db $db Database connection object
- * @global Debug $debug Debug object
- * @param int $id ID of page to delete
- * @return boolean Success
- */
-function page_delete($id) {
-	global $acl;
-	global $db;
-	global $debug;
-	// Check for permission to execute
-	if (!$acl->check_permission('page_delete')) {
-		$debug->addMessage('Lacking permission to remove pages',true);
-		return false;
-	}
-	// Validate parameters
-	if (!is_int($id)) {
-		$debug->addMessage('ID is not an integer',true);
-		return false;
-	}
-
-	// FIXME: Check for content on page before deleting
-
-	$page_info = page_get_info($id,array('title'));
-	if (!$page_info) {
-		$debug->addMessage('Failed to retrieve page info',true);
-		return false;
-	}
-
-	// Delete page entry
-	$delete_query = 'DELETE FROM `' . PAGE_TABLE . '`
-		WHERE `id` = '.$id;
-	$delete_handle = $db->sql_query($delete_query);
-	if ($db->error[$delete_handle] === 1) {
-		$debug->addMessage('Failure to delete page',true);
-		return false;
-	}
-	if ($db->sql_affected_rows($delete_handle) < 1) {
-		$debug->addMessage('Delete query did not delete any entries',true);
-		return false;
-	}
-	Log::addMessage('Deleted page \''.$page_info['title'].'\'');
-	return true;
-}
-
-/**
  * Delete a page group
  * @global acl $acl
  * @global db $db
@@ -527,53 +480,7 @@ function page_move_down($id) {
 	return true;
 }
 
-/**
- * set_home_page - Change the default CMS page
- * @global object $acl Permission object
- * @global db $db Database connection object
- * @global Debug $debug Debugger object
- * @param integer $id Page ID to set as the default page
- * @return boolean Success
- */
-function page_set_home($id) {
-	global $acl;
-	global $db;
-	global $debug;
-
-	if (!$acl->check_permission('page_set_home')) {
-		$debug->addMessage('Need permission \'page_set_home\' to perform this action',true);
-		return false;
-	}
-
-	// Validate variables
-	if (!is_numeric($id)) {
-		$debug->addMessage('Page ID is not numeric',true);
-		return false;
-	}
-	$id = (int)$id;
-
-	$check_query = 'SELECT `id`,`title` FROM `'.PAGE_TABLE."`
-		WHERE `id` = $id LIMIT 1";
-	$check_handle = $db->sql_query($check_query);
-	if ($db->error[$check_handle] === 1) {
-		$debug->addMessage('Failed to read page table',true);
-		return false;
-	}
-	if ($db->sql_num_rows($check_handle) != 1) {
-		$debug->addMessage('Page does not exist',true);
-		return false;
-	}
-	if(!set_config('home',$id)) {
-		$debug->addMessage('Failed to set config value',true);
-		return false;
-	}
-	$check_page = $db->sql_fetch_assoc($check_handle);
-	Log::addMessage('Set home page to \''.$check_page['title'].'\'');
-	return true;
-}
-
 function page_level($id) {
-	global $db;
 
 	if (!is_numeric($id) || is_array($id)) {
 		return false;

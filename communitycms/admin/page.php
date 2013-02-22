@@ -73,10 +73,12 @@ switch ($_GET['action']) {
 		break;
 
 	case 'home':
-		if (page_set_home($page_id)) {
-			echo 'Changed home page.<br />'."\n";
-		} else {
-			echo 'Failed to change home page.<br />'."\n";
+		try {
+			$pg = new PageManager($page_id);
+			$pg->setHomepage();
+			echo 'Changed default page.<br />';
+		} catch (PageException $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break; // case 'home'
 
@@ -86,10 +88,12 @@ switch ($_GET['action']) {
 		} else {
 			break;
 		}
-		if (!page_delete($page_id)) {
-			echo 'An error occured when attempting to delete the page.<br />'."\n";
-		} else {
-			echo 'Successfully deleted the page.<br />'."\n";
+		try {
+			$pg = new PageManager($page_id);
+			$pg->delete();
+			echo 'Successfully deleted the page.<br />';
+		} catch (PageException $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break; // case 'del'
 

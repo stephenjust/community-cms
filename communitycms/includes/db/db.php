@@ -81,6 +81,8 @@ abstract class db {
 	/**#@-*/
 }
 
+class SQLException extends Exception {}
+
 require(ROOT.'includes/db/db_'.$CONFIG['db_engine'].'.php');
 $db_class = 'db_'.$CONFIG['db_engine'];
 $db = new $db_class;
