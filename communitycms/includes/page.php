@@ -480,26 +480,6 @@ function page_move_down($id) {
 	return true;
 }
 
-function page_level($id) {
-
-	if (!is_numeric($id) || is_array($id)) {
-		return false;
-	}
-	$id = (int)$id;
-
-	$page_info = page_get_info($id,array('parent'));
-	if ($page_info['parent'] == 0) {
-		return 0;
-	}
-	$level = 0;
-	while ($page_info['parent'] != 0) {
-		$page_info = page_get_info($page_info['parent'],array('parent'));
-		$level++;
-	}
-	unset($page_info);
-	return $level;
-}
-
 function page_path($id) {
 	global $debug;
 
@@ -528,26 +508,6 @@ function page_path($id) {
 	$page_info = page_get_info(get_config('home'),array('title'));
 	$list = $page_info['title'].$list;
 	return $list;
-}
-
-function page_editable($page_id) {
-	global $acl;
-	global $debug;
-
-	// Validate input
-	if (!is_numeric($page_id)) {
-		$debug->addMessage('Invalid page ID',true);
-		return false;
-	}
-	$page_id = (int)$page_id;
-
-	// First, check for permission to edit specific page group
-	if ($acl->check_permission('pagegroupedit-'.$page_id) &&
-		$acl->check_permission('page_edit')) {
-		return true;
-	}
-
-	return false;
 }
 
 /**

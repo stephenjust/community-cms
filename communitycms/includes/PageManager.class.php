@@ -10,13 +10,14 @@
 class PageManager {
 	private $mId;
 	private $mTitle;
+	private $mPageGroup;
 	
 	public function __construct($id) {
 		global $db;
 		
 		$id = $db->sql_escape_string($id);
 		
-		$query = 'SELECT `title`
+		$query = 'SELECT `title`, `page_group`
 			FROM `'.PAGE_TABLE.'`
 			WHERE `id` = '.$id;
 		$handle = $db->sql_query($query);
@@ -29,6 +30,7 @@ class PageManager {
 		
 		$this->mId = $id;
 		$this->mTitle = $result['title'];
+		$this->mPageGroup = $result['page_group'];
 	}
 	
 	/**
@@ -59,6 +61,43 @@ class PageManager {
 		
 		Log::addMessage('Deleted page \''.$this->mTitle.'\'');
 		$this->mId = false;
+	}
+	
+	/**
+	 * Get page depth in page heirarchy
+	 * @return integer
+	 */
+	public function getLevel() {
+		$page_info = page_get_info($this->mId, array('parent'));
+		if ($page_info['parent'] == 0) {
+			return 0;
+		}
+		$level = 0;
+		while ($page_info['parent'] != 0) {
+			$page_info = page_get_info($page_info['parent'],array('parent'));
+			$level++;
+		}
+		return $level;
+	}
+	
+	/**
+	 * Get page group ID
+	 * @return integer
+	 */
+	public function getPageGroup() {
+		return $this->mPageGroup;
+	}
+	
+	/**
+	 * Check if page is editable
+	 * @global acl $acl
+	 * @return boolean
+	 */
+	public function isEditable() {
+		global $acl;
+
+		return ($acl->check_permission('pagegroupedit-'.$this->mPageGroup) &&
+				$acl->check_permission('page_edit'));
 	}
 	
 	/**

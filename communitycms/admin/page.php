@@ -308,7 +308,8 @@ function adm_page_manage_list_row($id) {
 		$page_info['title'] = $page_info['title'][0].' (Link)';
 	}
 	$return = '<tr><td>';
-	for ($i = 0; $i < page_level($page_info['id']); $i++) {
+	$pg = new PageManager($id);
+	for ($i = 0; $i < $pg->getLevel(); $i++) {
 		$return .= '<img src="<!-- $IMAGE_PATH$ -->child.png" />';
 	}
 	if (strlen($page_info['text_id']) == 0 && $page_info['type'] != 0) {
@@ -322,7 +323,7 @@ function adm_page_manage_list_row($id) {
 		$return .= '(Hidden)';
 	}
 	$return .= '</td>';
-	if ($acl->check_permission('page_delete') && page_editable($page_info['page_group'])) {
+	if ($acl->check_permission('page_delete') && $pg->isEditable()) {
 		$return .= '
 			<td><a href="?module=page&action=del&id='.$page_info['id'].'">
 			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>';
@@ -335,7 +336,7 @@ function adm_page_manage_list_row($id) {
 			<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" />Move Down</a></td>';
 	}
 	if ($page_info['type'] != 0) {
-		if (page_editable($page_info['page_group'])) {
+		if ($pg->isEditable()) {
 			$return .= '<td><a href="?module=page&action=edit&id='.$page_info['id'].'">
 				<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>';
 		} else {
