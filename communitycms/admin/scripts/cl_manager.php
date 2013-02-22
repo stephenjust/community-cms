@@ -19,6 +19,7 @@ include (ROOT . 'config.php');
 include (ROOT . 'include.php');
 include (ROOT . 'functions/admin.php');
 require_once(ROOT.'includes/content/Contact.class.php');
+require_once(ROOT.'includes/ui/UISelect.class.php');
 
 initialize('ajax');
 
@@ -85,7 +86,7 @@ for ($i = 1; $i <= $contact_list_rows; $i++) {
 	$current_row = array();
 	$contact_ids[] = $contact_list['id'];
 	$current_row[] = $contact_list['id'];
-	$current_row[] = $contact_list['name'];
+	$current_row[] = HTML::schars($contact_list['name']);
 	if ($acl->check_permission('contacts_edit_lists')) {
 		$current_row[] = '<a href="javascript:update_cl_manager_remove(\''.$contact_list['id'].'\')">Remove</a>';
 	}
@@ -118,12 +119,12 @@ if ($num_contacts === 0) {
 	echo $content;
 	exit;
 }
-$content .= '<select name="cl_add_contact" id="cl_add_contact">'."\n";
+$cl_add_select = new UISelect(array('name' => 'cl_add_contact', 'id' => 'cl_add_contact'));
 for ($i = 0; $i < $num_contacts; $i++) {
 	$cl_result = $db->sql_fetch_assoc($cl_handle);
-	$content .= "\t".'<option value="'.$cl_result['id'].'">'.$cl_result['name'].'</option>';
+	$cl_add_select->addOption($cl_result['id'], $cl_result['name']);
 }
-$content .= '</select>'."\n";
+$content .= $cl_add_select;
 $contact_ids = array2csv($contact_ids);
 $content .= '<input type="hidden" id="cl_contact_ids" value="'.$contact_ids.'" name="contact_ids" />'."\n";
 $content .= '<input type="button" value="Add" onClick="update_cl_manager_add()" /><br />'."\n";

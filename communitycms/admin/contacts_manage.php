@@ -125,16 +125,6 @@ switch ($_GET['action']) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
 		break;
-
-// ----------------------------------------------------------------------------
-	case 'settings_save':
-		$display_mode = addslashes($_POST['display_mode']);
-		if (set_config('contacts_display_mode',$display_mode)) {
-			echo 'Saved settings.<br />';
-		} else {
-			echo '<span class="errormessage">Failed to save settings.</span><br />';
-		}
-		break;
 }
 
 // ----------------------------------------------------------------------------
@@ -181,22 +171,20 @@ if ($db->error[$current_lists_handle] === 1) {
 	if ($db->sql_num_rows($current_lists_handle) == 0) {
 		$tab_content['manage_lists'] .= 'No Contact Lists exist. Please create a new Contacts page to add one.<br />';
 	} else {
-		$tab_content['manage_lists'] .= '<select name="cl" id="adm_cl_list" onChange="update_cl_manager(\'-\')">'."\n";
+		$cn_select = new UISelect(
+				array('name' => 'cl',
+					'id' => 'adm_cl_list',
+					'onChange' => 'update_cl_manager(\'-\')'));
+		if (array_key_exists('page', $_POST)) $cn_cur = $_POST['page'];
 		for ($i = 0; $i < $db->sql_num_rows($current_lists_handle); $i++) {
 			$current_lists_result = $db->sql_fetch_assoc($current_lists_handle);
-			// Set default page
-			if (!isset($_POST['page'])) {
-				$_POST['page'] = $current_lists_result['id'];
-			}
-			if ($_POST['page'] == $current_lists_result['id']) {
-				$tab_content['manage_lists'] .= "\t".'<option value="'.$current_lists_result['id'].'" selected>'.$current_lists_result['title'].'</option>'."\n";
-			} else {
-				$tab_content['manage_lists'] .= "\t".'<option value="'.$current_lists_result['id'].'">'.$current_lists_result['title'].'</option>'."\n";
-			}
+			if (!isset($cn_cur)) $cn_cur = $current_lists_result['id'];
+			$cn_select->addOption($current_lists_result['id'], $current_lists_result['title']);
 		}
-		$tab_content['manage_lists'] .= '</select>'."\n";
+		$cn_select->setChecked($cn_cur);
+		$tab_content['manage_lists'] .= $cn_select."\n";
 		$tab_content['manage_lists'] .= '<div id="adm_contact_list_manager">Loading...</div>'."\n";
-		$tab_content['manage_lists'] .= '<script type="text/javascript">update_cl_manager(\''.$_POST['page'].'\');</script>';
+		$tab_content['manage_lists'] .= '<script type="text/javascript">update_cl_manager(\''.$cn_cur.'\');</script>';
 	}
 }
 $tab_layout->add_tab('Contact Lists',$tab_content['manage_lists']);
@@ -216,18 +204,6 @@ $new_form->add_submit('submit','Submit');
 
 $tab_content['create'] = $new_form;
 $tab_layout->add_tab('Create Contact',$tab_content['create']);
-
-// ----------------------------------------------------------------------------
-
-$settings_form = new form;
-$settings_form->set_method('post');
-$settings_form->set_target('admin.php?module=contacts_manage&amp;action=settings_save');
-$settings_form->add_select('display_mode','Display Mode',
-		array('card','compact'),
-		array('Business Card','Compact'),
-		get_config('contacts_display_mode'));
-$settings_form->add_submit('submit','Submit');
-$tab_layout->add_tab('Settings',$settings_form);
 
 echo $tab_layout;
 

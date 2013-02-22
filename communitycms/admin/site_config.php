@@ -50,7 +50,8 @@ if ($_GET['action'] == 'save') {
 		set_config('news_show_edit_time',$show_edit) &&
 		set_config('news_default_publish_value',$def_pub_val) &&
 		set_config('gallery_app',$_POST['gallery_app']) &&
-		set_config('gallery_dir',$_POST['gallery_dir']))
+		set_config('gallery_dir',$_POST['gallery_dir']) &&
+		set_config('contacts_display_mode',$_POST['contacts_display_mode']))
 	{
 		echo 'Successfully edited site information.<br />'."\n";
 		Log::addMessage('Updated site information.');
@@ -114,6 +115,12 @@ $form->add_select('gallery_app',
 $form->add_textbox('gallery_dir',
 		'Gallery Directory',
 		get_config('gallery_dir'));
+
+$form->add_heading('Contact List Settings');
+$form->add_select('contacts_display_mode','Display Mode',
+		array('card','compact'),
+		array('Business Card','Compact'),
+		get_config('contacts_display_mode'));
 
 $form->add_submit('submit','Save Configuration');
 $tab_content['config'] .= $form;
