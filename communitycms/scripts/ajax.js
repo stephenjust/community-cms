@@ -1,4 +1,3 @@
-<!--
 function createXHR()
 {
     var request = false;
@@ -67,4 +66,3 @@ function changeContent(file, mode, action)
 	$('div.tab_selected').removeClass('tab_selected');
 	$('#tab-' + mode).addClass('tab_selected');
 }
--->

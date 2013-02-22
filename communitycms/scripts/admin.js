@@ -1,4 +1,3 @@
-<!--
 //script by http://www.yvoschaap.com
 
 //XMLHttpRequest class function
@@ -199,4 +198,3 @@ function setVarsForm(vars){
 }
 
 addEvent(window, "load", editbox_init);
--->

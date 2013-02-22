@@ -1,4 +1,3 @@
-<!--
 // ----------------------------------------------------------------------------
 // Installer Functions
 // ----------------------------------------------------------------------------
@@ -64,4 +63,3 @@ function testSettings() {
 		encodeURI(db_name) + '&u=' + encodeURI(db_user) + '&pa=' +
 		encodeURI(db_pass) + '&pr=' + encodeURI(db_pfix),messageplaceholder);
 }
--->

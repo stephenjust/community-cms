@@ -1,4 +1,3 @@
-<!--
 window.onload=$(function(){
 
 	// Tabs
@@ -117,4 +116,3 @@ window.onload=$(function(){
 	});
 
 });
--->

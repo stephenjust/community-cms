@@ -1,4 +1,3 @@
-<!--
 // Block list functions
 function block_list_update() {
 	var urlBase = "./admin/scripts/block_list.php";
@@ -216,4 +215,3 @@ function update_cl_manager_order(content) {
 
 	loadHTML(urlBase + "?page=" + encodeURI(page) + "&action=order&id=" + encodeURI(content) + "&order=" + encodeURI(order),listdiv);
 }
--->

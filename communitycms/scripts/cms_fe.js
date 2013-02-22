@@ -1,4 +1,3 @@
-<!--
 window.onload=$(function(){
 	// Nav Menu
 	$('#nav-menu').dropDownMenu({
@@ -33,4 +32,3 @@ function gallery_load_image(galleryid,imagepath,desc) {
 	var containerdiv = document.getElementById("gallery_body-" + galleryid);
 	containerdiv.innerHTML = '<div class="image_caption">' + desc + '</div><img src="' + encodeURI(imagepath) +  '" />';
 }
--->
