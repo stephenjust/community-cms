@@ -16,7 +16,11 @@ class CalEvent {
 	private $mStart;
 	private $mEnd;
 	private $mLocation;
+	private $mLocationHide;
 	private $mCategory;
+	private $mCategoryHide;
+	private $mImage;
+	private $mHide;
 	
 	public function __construct($id) {
 		global $db;
@@ -27,8 +31,8 @@ class CalEvent {
 		$this->mId = $id;
 
 		// Get event info
-		$info_query = 'SELECT `start`, `end`, `header`, `description`,
-				`category`
+		$info_query = 'SELECT `start`, `end`, `header`, `description`, `hidden`,
+				`category`, `category_hide`, `image`, `location`, `location_hide`
 			FROM `'.CALENDAR_TABLE.'`
 			WHERE `id` = '.$id.'
 			LIMIT 1';
@@ -43,6 +47,11 @@ class CalEvent {
 			$this->mStart = $info['start'];
 			$this->mEnd = $info['end'];
 			$this->mCategory = $info['category'];
+			$this->mCategoryHide = $info['category_hide'];
+			$this->mImage = $info['image'];
+			$this->mLocation = $info['location'];
+			$this->mLocationHide = $info['location_hide'];
+			$this->mHide = $info['hidden'];
 		}
 	}
 
@@ -201,6 +210,10 @@ class CalEvent {
 		Log::addMessage('Edited date entry on ' . date('Y-m-d', $start) . ' \'' . stripslashes($title) . '\'');
 	}
 
+	public function getCategoryHide() {
+		return $this->mCategoryHide;
+	}
+	
 	/**
 	 * Get list of event categories
 	 * @global db $db
@@ -238,6 +251,22 @@ class CalEvent {
 		return $this->mCategory;
 	}
 	
+	public function getDescription() {
+		return HTML::schars($this->mDescription);
+	}
+	
+	/**
+	 * Get event end time
+	 * @return int
+	 */
+	public function getEnd() {
+		return strtotime($this->mEnd);
+	}
+	
+	public function getHidden() {
+		return $this->mHide;
+	}
+	
 	/**
 	 * Get ID
 	 * @return int
@@ -248,6 +277,34 @@ class CalEvent {
 			throw new CalEventException('Event does not exist!');
 		
 		return $this->mId;
+	}
+	
+	/**
+	 * Get event image
+	 * @return string
+	 */
+	public function getImage() {
+		return $this->mImage;
+	}
+	
+	/**
+	 * Get event location
+	 * @return string
+	 */
+	public function getLocation() {
+		return HTML::schars($this->mLocation);
+	}
+	
+	public function getLocationHide() {
+		return $this->mLocationHide;
+	}
+	
+	/**
+	 * Get event start time
+	 * @return integer
+	 */
+	public function getStart() {
+		return strtotime($this->mStart);
 	}
 	
 	/**

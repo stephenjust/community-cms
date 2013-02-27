@@ -78,18 +78,17 @@ switch ($_GET['action']) {
 				$category_ids[] = $cat['id'];
 			}
 			$form->add_select('category', 'Category:',
-					$category_ids, $category_names, $ev->getCategory(), NULL, 'Hide', $event['category_hide']);
-			$start = strtotime($event['start']);
-			$end = strtotime($event['end']);
+					$category_ids, $category_names, $ev->getCategory(), NULL, 'Hide', $ev->getCategoryHide());
+
 			$form->add_textbox('stime', '*Start Time:',
-					date(get_config('time_format'),$start),'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"');
+					date(get_config('time_format'),$ev->getStart()),'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"');
 			$form->add_textbox('etime', '*End Time:',
-					date(get_config('time_format'),$end),'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
-			$form->add_date_cal('date', '*Date:', date('m/d/Y',$start),'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
-			$form->add_textarea('content','Description:',$event['description'],'rows="25"');
-			$form->add_textbox('location','Location:',$event['location'], NULL, 'Hide', $event['location_hide']);
-			$form->add_icon_list('image', 'Image:', 'newsicons', $event['image']);
-			$form->add_checkbox('hide','Hidden:',$event['hidden']);
+					date(get_config('time_format'),$ev->getEnd()),'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
+			$form->add_date_cal('date', '*Date:', date('m/d/Y',$ev->getStart()),'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
+			$form->add_textarea('content','Description:',$ev->getDescription(),'rows="25"');
+			$form->add_textbox('location','Location:',$ev->getLocation(), NULL, 'Hide', $ev->getLocationHide());
+			$form->add_icon_list('image', 'Image:', 'newsicons', $ev->getImage());
+			$form->add_checkbox('hide','Hidden:',$ev->getHidden());
 			$form->add_submit('submit','Save Event');
 			echo '<h1>Edit Calendar Date</h1>';
 			echo $form;
