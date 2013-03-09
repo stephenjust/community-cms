@@ -402,7 +402,7 @@ class calendar_month extends calendar {
 						// Show icon if configured to do so
 						if (get_config('calendar_month_show_cat_icons') == 1) {
 							$event_html .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$this->event_array[$day_number][$e]['cat_image'].'"'
-							.' width="10px" height="10px" alt="'.$this->event_array[$day_number][$e]['cat_label'].'" border="0px" /> ';
+							.' width="10px" height="10px" alt="'.HTML::schars($this->event_array[$day_number][$e]['cat_label']).'" border="0px" /> ';
 						}
 						// Show event start time if configured to do so
 						if (get_config('calendar_month_show_stime') == 1

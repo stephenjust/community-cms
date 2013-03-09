@@ -19,7 +19,6 @@ if (!$acl->check_permission('adm_calendar'))
 /**
  * Include functions necessary for calendar operations
  */
-include (ROOT.'functions/calendar.php');
 require_once(ROOT.'includes/content/CalEvent.class.php');
 require_once(ROOT.'includes/content/CalLocation.class.php');
 require_once(ROOT.'includes/content/CalCategory.class.php');

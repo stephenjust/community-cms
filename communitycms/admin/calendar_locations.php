@@ -14,7 +14,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 /**
  * Include functions necessary to perform operations on this page
  */
-include (ROOT.'functions/calendar.php');
 require_once(ROOT.'includes/content/CalLocation.class.php');
 
 class AdminCalLocationModule extends AdminModule {

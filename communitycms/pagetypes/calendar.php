@@ -19,7 +19,6 @@ $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$
  * Include necessary functions to complete tasks in this file
  */
 include(ROOT . 'pagetypes/calendar_class.php');
-include(ROOT . 'functions/calendar.php');
 /**#@-*/
 if ($view == NULL) {
 	$view = get_config('calendar_defualt_view');

@@ -7,6 +7,8 @@
  * @package CommunityCMS.main
  */
 
+require_once(ROOT.'includes/content/CalLocation.class.php');
+
 class CalEvent {
 	private $mId;
 	private $mExists = false;

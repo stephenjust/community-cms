@@ -10,10 +10,6 @@
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
-/**
- * Include funtions necessary to perform operations on this page
- */
-include (ROOT.'functions/calendar.php');
 
 if (!$acl->check_permission('adm_calendar_import'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');

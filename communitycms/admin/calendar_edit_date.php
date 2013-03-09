@@ -19,7 +19,6 @@ if (!$acl->check_permission('adm_calendar_edit_date'))
 /**
  * Include functions necessary for calendar operations
  */
-require_once(ROOT.'functions/calendar.php');
 require_once(ROOT.'includes/content/CalEvent.class.php');
 
 switch ($_GET['action']) {

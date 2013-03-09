@@ -23,7 +23,7 @@ $block_template->load_file('mini_categories');
 for($i = 1; $i <= $db->sql_num_rows($category_handle); $i++) {
 	$category = $db->sql_fetch_assoc($category_handle);
 	$cats .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$category['colour'].'.png"
-		alt="'.stripslashes($category['label']).'" /> '.stripslashes($category['label']).'<br />';
+		alt="'.HTML::schars($category['label']).'" /> '.HTML::schars($category['label']).'<br />';
 	}
 unset($category_block);
 $block_template->categories = $cats;
