@@ -118,7 +118,8 @@ switch ($_GET['action']) {
 			break;
 		}
 		try {
-			CalCategory::delete($_POST['delete_category_id']);
+			$cat = new CalCategory($_POST['delete_category_id']);
+			$cat->delete();
 			echo 'Successfully deleted category entry.<br />';
 		} catch (CalCategoryException $e) {
 			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';

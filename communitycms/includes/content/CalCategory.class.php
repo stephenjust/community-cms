@@ -8,6 +8,33 @@
  */
 
 class CalCategory {
+	private $mId;
+	private $mName;
+	private $mIcon;
+	
+	/**
+	 * Create a new CalCategory instance
+	 * @global db $db
+	 * @param int $id
+	 * @throws CalCategoryException
+	 */
+	public function __construct($id) {
+		global $db;
+
+		$query = 'SELECT `label`, `colour`
+			FROM `'.CALENDAR_CATEGORY_TABLE.'`
+			WHERE `cat_id` = '.(int)$id;
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle] === 1)
+			throw new CalCategoryException('Error loading category.');
+		if ($db->sql_num_rows($handle) == 0)
+			throw new CalCategoryException('Category does not exist.');
+		$result = $db->sql_fetch_assoc($handle);
+		
+		$this->mId = (int)$id;
+		$this->mName = $result['label'];
+		$this->mIcon = $result['colour'];
+	}
 	
 	/**
 	 * Create a calendar event category
@@ -41,43 +68,57 @@ class CalCategory {
 	/**
 	 * Delete a calendar category entry
 	 * @global db $db
-	 * @param integer $id
 	 * @throws CalCategoryException
 	 */
-	function delete($id) {
+	function delete() {
 		global $db;
-		global $debug;
-		// Validate parameters
-		if (!is_numeric($id))
-			throw new CalCategoryException('Invalid category ID.');
 
-		$check_if_last_query = 'SELECT * FROM `' . CALENDAR_CATEGORY_TABLE . '` LIMIT 2';
-		$check_if_last_handle = $db->sql_query($check_if_last_query);
-		if ($db->error[$check_if_last_handle])
-			throw new CalCategoryException('Failed to check the number of remaining categories.');
-		
-		if ($db->sql_num_rows($check_if_last_handle) == 1)
+		if (CalCategory::count() == 1)
 			throw new CalCategoryException('Cannot delete last category.');
-
-		$check_category_query = 'SELECT * FROM `' . CALENDAR_CATEGORY_TABLE . '`
-		   WHERE `cat_id` = ' . $id . ' LIMIT 1';
-		$check_category_handle = $db->sql_query($check_category_query);
-		if ($db->error[$check_category_handle])
-			throw new CalCategoryException('Failed to read category information');
-
-		if ($db->sql_num_rows($check_category_handle) != 1)
-			throw new CalCategoryException('The category you want to delete does not exist.');
 		
-		$delete_category_query = 'DELETE FROM `' . CALENDAR_CATEGORY_TABLE . '`
-		   WHERE `cat_id` = ' . $id;
+		$delete_category_query = 'DELETE FROM `'.CALENDAR_CATEGORY_TABLE.'`
+		   WHERE `cat_id` = '.$this->mId;
 		$delete_category = $db->sql_query($delete_category_query);
 		if ($db->error[$delete_category])
 			throw new CalCategoryException('Failed to delete category.');
 
-		$check_category = $db->sql_fetch_assoc($check_category_handle);
-		Log::addMessage('Deleted category \''.$check_category['label'].'\'');
+		Log::addMessage('Deleted category \''.$this->mName.'\'');
+		$this->mId = NULL;
 	}
 	
+	/**
+	 * Get the number of calendar categories
+	 * @global db $db
+	 * @return int
+	 * @throws CalCategoryException
+	 */
+	public static function count() {
+		global $db;
+
+		$query = 'SELECT COUNT(*)
+			FROM `'.CALENDAR_CATEGORY_TABLE.'`';
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle] === 1)
+			throw new CalCategoryException('Error counting records.');
+		$result = $db->sql_fetch_row($handle);
+		return $result[0];
+	}
+	
+	/**
+	 * Get category icon file name
+	 * @return string
+	 */
+	public function getIcon() {
+		return HTML::schars($this->mIcon);
+	}
+	
+	/**
+	 * Get name of category
+	 * @return string
+	 */
+	public function getName() {
+		return HTML::schars($this->mName);
+	}
 }
 
 class CalCategoryException extends Exception {}
