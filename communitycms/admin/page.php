@@ -14,6 +14,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 global $acl;
 global $debug;
 
+require_once(ROOT.'includes/ui/UIIcon.class.php');
+
 if (!$acl->check_permission('adm_page'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
@@ -296,6 +298,16 @@ function adm_page_manage_list_row($id) {
 	global $acl;
 	global $db;
 
+	// Create icon instances
+	$icon_info = new UIIcon(array('src' => 'info.png', 'alt' => 'Information'));
+	$icon_child = new UIIcon(array('src' => 'child.png'));
+	$icon_spacer = new UIIcon(array('src' => 'spacer.png'));
+	$icon_delete = new UIIcon(array('src' => 'delete.png', 'alt' => 'Delete'));
+	$icon_up = new UIIcon(array('src' => 'up.png', 'alt' => 'Move Up'));
+	$icon_down = new UIIcon(array('src' => 'down.png', 'alt' => 'Move Down'));
+	$icon_edit = new UIIcon(array('src' => 'edit.png', 'alt' => 'Edit'));
+	$icon_home = new UIIcon(array('src' => 'home.png', 'alt' => 'Make Home'));
+
 	if (!is_numeric($id) || is_array($id)) {
 		return false;
 	}
@@ -309,11 +321,15 @@ function adm_page_manage_list_row($id) {
 	}
 	$return = '<tr><td>';
 	$pg = new PageManager($id);
-	for ($i = 0; $i < $pg->getLevel(); $i++) {
-		$return .= '<img src="<!-- $IMAGE_PATH$ -->child.png" />';
+	$p_level = $pg->getLevel();
+	for ($i = 0; $i < $p_level; $i++) {
+		if ($i == ($p_level - 1))
+			$return .= $icon_child;
+		else
+			$return .= $icon_spacer;
 	}
 	if (strlen($page_info['text_id']) == 0 && $page_info['type'] != 0) {
-		$return .= '<img src="<!-- $IMAGE_PATH$ -->info.png" alt="Information" /> ';
+		$return .= $icon_info.' ';
 	}
 	$return .= $page_info['title'].' ';
 	if ($page_info['id'] == get_config('home')) {
@@ -326,25 +342,25 @@ function adm_page_manage_list_row($id) {
 	if ($acl->check_permission('page_delete') && $pg->isEditable()) {
 		$return .= '
 			<td><a href="?module=page&action=del&id='.$page_info['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>';
+			'.$icon_delete.'Delete</a></td>';
 	}
 	if ($acl->check_permission('page_order')) {
 		$return .= '
 			<td><a href="?module=page&action=move_up&id='.$page_info['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->up.png" alt="Move Up" width="16px" height="16px" border="0px" />Move Up</a></td>
+			'.$icon_up.'Move Up</a></td>
 			<td><a href="?module=page&action=move_down&id='.$page_info['id'].'">
-			<img src="<!-- $IMAGE_PATH$ -->down.png" alt="Move Down" width="16px" height="16px" border="0px" />Move Down</a></td>';
+			'.$icon_down.'Move Down</a></td>';
 	}
 	if ($page_info['type'] != 0) {
 		if ($pg->isEditable()) {
 			$return .= '<td><a href="?module=page&action=edit&id='.$page_info['id'].'">
-				<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" />Edit</a></td>';
+				'.$icon_edit.'Edit</a></td>';
 		} else {
 			$return .= '<td></td>';
 		}
 		if ($acl->check_permission('page_set_home')) {
 			$return .= '<td><a href="?module=page&action=home&id='.$page_info['id'].'">
-				<img src="<!-- $IMAGE_PATH$ -->home.png" alt="Make Home" width="16px" height="16px" border="0px" />Make Home</a></td>';
+				'.$icon_home.'Make Home</a></td>';
 		}
 	} else {
 		$return .= '<td>&nbsp;</td><td>&nbsp;</td>';
