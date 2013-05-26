@@ -23,7 +23,7 @@ if (@SECURITY != 1) {
  * @param integer $showdate
  * @throws Exception 
  */
-function news_create($title,$content,$page,$author,$image,$publish,$showdate) {
+function news_create($title,$content,$page,$author,$image,$publish,$showdate,$deldate) {
 	global $acl;
 	global $db;
 
@@ -43,11 +43,16 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate) {
 	$showdate = (int)$showdate;
 	if(strlen($image) <= 3)
 		$image = NULL;
+	if (strlen($deldate) == 10) {
+		$del_date_value = '\''.DateTime::createFromFormat('m/d/Y', $deldate)->format('Y-m-d').'\'';
+	} else {
+		$del_date_value = 'NULL';
+	}
 
 	// Create article
 	$new_article_query = 'INSERT INTO `'.NEWS_TABLE."`
-		(`page`,`name`,`description`,`author`,`image`,`date`,`showdate`,`publish`)
-		VALUES ($page,'$title','$content','$author','$image','".DATE_TIME."','$showdate',$publish)";
+		(`page`,`name`,`description`,`author`,`image`,`date`,`showdate`,`publish`,`delete_date`)
+		VALUES ($page,'$title','$content','$author','$image','".DATE_TIME."','$showdate',$publish,$del_date_value)";
 	$new_article = $db->sql_query($new_article_query);
 	if($db->error[$new_article] === 1)
 		throw new Exception('An error occurred while attempting to create the article.');
@@ -81,7 +86,7 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate) {
  * @param integer showdate
  * @throws Exception 
  */
-function news_edit($id,$title,$content,$page,$image,$showdate) {
+function news_edit($id,$title,$content,$page,$image,$showdate,$deldate) {
 	global $acl;
 	global $db;
 
@@ -101,6 +106,11 @@ function news_edit($id,$title,$content,$page,$image,$showdate) {
 	$showdate = (int)$showdate;
 	if(strlen($image) <= 3)
 		$image = NULL;
+	if (strlen($deldate) == 10) {
+		$del_date_value = '\''.DateTime::createFromFormat('m/d/Y', $deldate)->format('Y-m-d').'\'';
+	} else {
+		$del_date_value = 'NULL';
+	}
 
 	// Check if the user has permission to edit in this page group
 	$article_page_group = page_group_news($id);
@@ -121,7 +131,8 @@ function news_edit($id,$title,$content,$page,$image,$showdate) {
 	// Update article record
 	$edit_query = 'UPDATE `' . NEWS_TABLE . "`
 		SET `name`='$title',`description`='$content',`page`='$page',
-		`image`='$image',`date_edited`='".DATE_TIME."',`showdate`='$showdate'
+		`image`='$image',`date_edited`='".DATE_TIME."',
+		`showdate`='$showdate', `delete_date`=$del_date_value
 		WHERE `id` = $id";
 	$edit_article = $db->sql_query($edit_query);
 	if ($db->error[$edit_article] === 1)

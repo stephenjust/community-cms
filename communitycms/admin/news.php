@@ -122,7 +122,7 @@ switch ($_GET['action']) {
 		try {
 			news_create($_POST['title'], $_POST['content'],
 					$_POST['page'], $_POST['author'], $_POST['image'],
-					$_POST['publish'], $_POST['date_params']);
+					$_POST['publish'], $_POST['date_params'], $_POST['del_date']);
 			echo 'Successfully added article.<br />';
 		}
 		catch (Exception $e) {
@@ -188,6 +188,8 @@ switch ($_GET['action']) {
 		$edit_form->add_icon_list('image','Image','newsicons',$edit['image']);
 		$edit_form->add_select('date_params','Date',array(0,1,2),
 				array('Hide Date','Show Date','Show Mini'),$edit['showdate']);
+		$edit_form->add_text("Only fill in the field below if you want this item to be automatically deleted.");
+		$edit_form->add_date_cal('del_date', 'Delete On', ($edit['delete_date'] == NULL)? NULL : date('m/d/Y',strtotime($edit['delete_date'])));
 		$edit_form->add_submit('submit','Submit');
 		$tab_layout->add_tab('Edit Article',$edit_form);
 		break;
@@ -198,7 +200,7 @@ switch ($_GET['action']) {
 		try {
 			news_edit($_POST['id'], $_POST['title'],
 					$_POST['update_content'], $_POST['page'],
-					$_POST['image'], $_POST['date_params']);
+					$_POST['image'], $_POST['date_params'], $_POST['del_date']);
 			echo 'Successfully edited article.<br />';
 		}
 		catch (Exception $e) {
@@ -269,6 +271,8 @@ if ($acl->check_permission('news_create')) {
 	if ($acl->check_permission('news_publish')) {
 		$form->add_select('publish','Publish',array(0,1),array('No','Yes'),get_config('news_default_publish_value'));
 	}
+	$form->add_text("Only fill in the field below if you want this item to be automatically deleted.");
+	$form->add_date_cal('del_date', 'Delete On');
 	$form->add_submit('submit','Create Article');
 	$tab_content['create'] = $form;
 	$tab_layout->add_tab('Create Article',$tab_content['create']);
