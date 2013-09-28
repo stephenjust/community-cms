@@ -69,7 +69,7 @@ function initialize($mode = NULL) {
 	// Don't do this during install because there are no users yet
 	if ($mode != 'install') {
 		require_once(ROOT . 'includes/user_class.php');
-		$user = new user;
+		$user = new UserSession;
 	}
 	return;
 }

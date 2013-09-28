@@ -275,4 +275,7 @@ class acl {
 	}
 }
 
+class AclException extends Exception {
+	
+}
 ?>

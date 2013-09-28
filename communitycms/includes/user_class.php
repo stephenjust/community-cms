@@ -12,7 +12,7 @@
  * 
  * @package CommunityCMS.main
  */
-class user {
+class UserSession {
 	public $logged_in = false;
 
 	/**

@@ -6,6 +6,9 @@
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
+
+require_once(ROOT.'includes/User.class.php');
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
@@ -35,105 +38,31 @@ switch ($_GET['action']) {
 		echo 'Successfully deleted user.<br />';
 		Log::addMessage('Deleted user #'.$_GET['id']);
 		break;
-
-// ----------------------------------------------------------------------------
-
+		
 	case 'create':
-		if (!$acl->check_permission('user_create')) {
-			echo '<span class="errormessage">You do not have the necessary permissions to create a new user.</span><br />';
-			break;
+		try {
+			if (!isset($_POST['username']) || !isset($_POST['pass']) ||
+					!isset($_POST['pass_conf']) || !isset($_POST['first_name']) ||
+					!isset($_POST['surname']) || !isset($_POST['telephone']) ||
+					!isset($_POST['address']) && isset($_POST['email'])) {
+				throw new Exception('You did not fill out a required field.');
+			}
+			if ($_POST['pass'] != $_POST['pass_conf'])
+				throw new Exception('Passwords do not match.');
+			User::create($_POST['username'], $_POST['pass'], $_POST['first_name'],
+					$_POST['surname'], $_POST['telephone'], $_POST['address'],
+					$_POST['email'], $_POST['title'], $_POST['groups']);
+
+			echo "Account created.";
 		}
-		if (!isset($_POST['username']) || !isset($_POST['pass']) ||
-				!isset($_POST['pass_conf']) || !isset($_POST['first_name']) ||
-				!isset($_POST['surname']) || !isset($_POST['telephone']) ||
-				!isset($_POST['address']) && isset($_POST['email'])) {
-			echo '<span class="errormessage">You did not fill out a required field.</span><br />';
-			break;
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
-		$error = false;
-		$username = addslashes($_POST['username']);
-		$pass = $_POST['pass'];
-		$pass_conf = $_POST['pass_conf'];
-		if (preg_match('/,/',$_POST['surname'])) {
-			echo '<span class="errormessage">You cannot have a comma in your surname.</span><br />';
-			$error = true;
-		}
-		if (preg_match('/,/',$_POST['first_name'])) {
-			echo '<span class="errormessage">You cannot have a comma in your first name.</span><br />';
-			$error = true;
-		}
-		$real_name = addslashes($_POST['surname']).', '.addslashes($_POST['first_name']);
-		$title = addslashes($_POST['title']);
-		if (strlen($title) <= 1) {
-			$title = NULL;
-		}
-		$groups = (isset($_POST['groups']) && is_array($_POST['groups']))
-			? array2csv($_POST['groups']) : NULL;
-		$telephone = addslashes($_POST['telephone']);
-		$address = addslashes($_POST['address']);
-		$email = addslashes($_POST['email']);
-		if (strlen($username) <= 5) {
-			echo '<span class="errormessage">Your user name should be at least six characters.</span><br />';
-			$error = true;
-		}
-		if ($pass != $pass_conf || $pass == "" || $pass_conf == "") {
-			echo '<span class="errormessage">Your passwords do not match, or you did not fill in one or more of the password fields.</span><br />';
-			$error = true;
-		}
-		if (strlen($pass) <= 7) {
-			echo '<span class="errormessage">Your password must be at least eight characters.</span><br />';
-			$error = true;
-		}
-		if (!preg_match('/^[a-z0-9_\-\.]+@[a-z0-9\-]+\.[a-z0-9\-\.]+$/i',$email)) {
-			echo '<span class="errormessage">You did not enter a valid email address.</span><br />';
-			$error = true;
-		}
-		if (strlen($telephone) <= 11 || !preg_match('/^[0-9\-]+\-[0-9]+\-[0-9]+$/',$telephone)) {
-			echo '<span class="errormessage">Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.</span><br />';
-			$error = true;
-		}
-		$check_user_query = 'SELECT * FROM ' . USER_TABLE . '
-			WHERE username = \''.$username.'\'';
-		$check_user_handle = $db->sql_query($check_user_query);
-		if ($db->error[$check_user_handle] === 1) {
-			echo '<span class="errormessage">Failed to check if your username is already taken.</span><br />';
-		}
-		$check_user_num_rows = $db->sql_num_rows($check_user_handle);
-		if ($check_user_num_rows != 0) {
-			echo '<span class="errormessage">Your username has already been taken. Please choose another.</span>';
-			$error = true;
-		}
-		if ($error == true) {
-			break;
-		}
-		$time = time();
-		$create_user_query = 'INSERT INTO ' . USER_TABLE . "
-			(`type`,`username`,`password`,`password_date`,`realname`,`title`,`groups`,
-			`phone`,`email`,`address`) VALUES
-			(2,'$username','".md5($pass)."',$time,'$real_name',
-			'$title','$groups','$telephone','$email','$address')";
-		$create_user = $db->sql_query($create_user_query);
-		if ($db->error[$create_user] === 1) {
-			echo 'Your account could not be created.<br />';
-			break;
-		}
-		echo "Thank you, $real_name, your account has been created.";
-		Log::addMessage('New user \''.$real_name.'\'');
-		unset($username);
-		unset($pass);
-		unset($real_name);
-		unset($title);
-		unset($groups);
-		unset($telephone);
-		unset($email);
-		unset($address);
 		break;
+
 	default:
 		break;
 }
-if ($_GET['action'] == 'delete') {
-
-} // IF 'delete'
 
 $tab_layout = new tabs;
 
