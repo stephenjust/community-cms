@@ -33,9 +33,8 @@ require(ROOT . 'includes/editbar_class.php');
 require_once(ROOT.'includes/AdminModule.class.php');
 require_once(ROOT.'includes/File.class.php');
 require_once(ROOT.'includes/Image.class.php');
-if(!include_once(ROOT.'classes.php')) {
-    err_page(2001);
-}
+require_once(ROOT.'includes/Tabs.class.php');
+require_once(ROOT.'includes/Block.class.php');
 if(!include_once(ROOT.'functions/blocks.php')) {
     err_page(2001);
 }
