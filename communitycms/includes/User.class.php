@@ -11,12 +11,54 @@ require_once(ROOT.'includes/Validate.class.php');
 
 class User {
 	private $user_id;
+	private $username;
+	private $realname;
+	private $title;
+	private $phone;
+	private $email;
+	private $address;
+	private $last_login_date;
+	private $pass_change_date;
+	private $groups;
+	private $type;
 	
+	/**
+	 * Create a User object from a User ID
+	 * @global db $db
+	 * @param Integer $user_id
+	 * @throws UserException
+	 */
 	public function __construct($user_id) {
-		if ($user_id == 0)
+		global $db;
+
+		if ($user_id == 0 || !is_numeric($user_id))
 			throw new UserException('Invalid User ID.');
 		
+		// Query for user
+		$query = 'SELECT `type`, `username`, `password_date`, `realname`,
+			`title`, `groups`, `phone`, `email`, `address`, `lastlogin`
+			FROM `'.USER_TABLE."`
+			WHERE `id` = $user_id";
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle])
+			throw new UserException('Failed to look up user.');
+		
+		if ($db->sql_num_rows($handle) == 0)
+			throw new UserException('User not found.');
+		$result = $db->sql_fetch_assoc($handle);
+		
+		// Fill class attributes
 		$this->user_id = $user_id;
+		$this->username = $result['username'];
+		$this->realname = $result['realname'];
+		$this->title = $result['title'];
+		$this->phone = $result['phone'];
+		$this->email = $result['email'];
+		$this->address = $result['address'];
+		$this->last_login_date = $result['lastlogin'];
+		$this->pass_change_date = $result['password_date'];
+		$this->groups = csv2array($result['groups']);
+		$this->type = $result['type'];
 	}
 	
 	/**
@@ -82,6 +124,33 @@ class User {
 		
 		Log::addMessage('Created user \''.$real_name.'\' ('.$username.')');
 		return new User(User::exists($username));
+	}
+	
+	/**
+	 * Remove a user record from the database
+	 * @global acl $acl
+	 * @global db $db
+	 * @throws AclException
+	 * @throws UserException
+	 */
+	public function delete() {
+		global $acl;
+		global $db;
+		
+		if (!$acl->check_permission('user_delete'))
+			throw new AclException('You do not have the necessary permissions to delete a user.');
+		if ($this->user_id == 1)
+			throw new UserException('Cannot delete Administrator user.');
+		
+		$query = 'DELETE FROM `'.USER_TABLE.'`
+			WHERE `id` = '.$this->user_id;
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle])
+			throw new UserException('Failed to delete user.');
+		
+		Log::addMessage("Deleted user $this->realname ($this->username)");
+		$this->user_id = 0;
+		$this->username = null;
 	}
 	
 	/**

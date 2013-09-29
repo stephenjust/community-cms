@@ -20,23 +20,14 @@ if (!$acl->check_permission('adm_user'))
 
 switch ($_GET['action']) {
 	case 'delete':
-		if (!$acl->check_permission('user_delete')) {
-			echo '<span class="errormessage">You do not have the necessary permissions to delete a user.</span><br />';
-			break;
+		try {
+			$u = new User($_GET['id']);
+			$u->delete();
+			echo 'Successfully deleted user.<br />';
 		}
-		if ($_GET['id'] == 1) {
-			echo '<span class="errormessage">Cannot delete Administrator.</span><br />';
-			break;
+		catch (Exception $e) {
+			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 		}
-		$delete_user_query = 'DELETE FROM ' . USER_TABLE . '
-			WHERE id = '.(int)$_GET['id'];
-		$delete_user = $db->sql_query($delete_user_query);
-		if ($db->error[$delete_user] === 1) {
-			echo 'Failed to delete user.<br />';
-			break;
-		}
-		echo 'Successfully deleted user.<br />';
-		Log::addMessage('Deleted user #'.$_GET['id']);
 		break;
 		
 	case 'create':
@@ -49,6 +40,7 @@ switch ($_GET['action']) {
 			}
 			if ($_POST['pass'] != $_POST['pass_conf'])
 				throw new Exception('Passwords do not match.');
+			$_POST['groups'] = (isset($_POST['groups'])) ? $_POST['groups'] : null;
 			User::create($_POST['username'], $_POST['pass'], $_POST['first_name'],
 					$_POST['surname'], $_POST['telephone'], $_POST['address'],
 					$_POST['email'], $_POST['title'], $_POST['groups']);
