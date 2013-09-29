@@ -79,13 +79,13 @@ class UserSession {
 		global $debug;
 
 		// Validate parameters
-		if (strlen($username) < 4) {
-			$debug->addMessage('User name is too short',true);
+		if (!Validate::username($username)) {
+			$debug->addMessage('Invalid username format',true);
 			err_page(3001);
 			return false;
 		}
-		if (strlen($password) < 8) {
-			$debug->addMessage('Password is too short',true);
+		if (!Validate::password($password)) {
+			$debug->addMessage('Invalid password format',true);
 			err_page(3001);
 			return false;
 		}

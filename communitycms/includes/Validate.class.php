@@ -56,12 +56,12 @@ class Validate {
 	
 	/**
 	 * Validate username
-	 * A valid username is between 6 and 30 alphanumeric characters, _, - and .
+	 * A valid username is between 4 and 30 alphanumeric characters, _, - and .
 	 * @param String $string
 	 * @return Boolean
 	 */
 	public static function username($string) {
-		return preg_match('/^[a-z0-9_\-\.]{6,30}$/i', $string);
+		return preg_match('/^[a-z0-9_\-\.]{4,30}$/i', $string);
 	}
 }
 ?>

@@ -92,7 +92,7 @@ class User {
 		if (!strlen($username) || !strlen($password))
 			throw new UserException('Username and password may not be blank.');
 		if (!Validate::username($username))
-			throw new UserException('Username is invalid. Usernames must be between 6 and 30 alphanumeric characters.');
+			throw new UserException('Username is invalid. Usernames must be between 4 and 30 alphanumeric characters.');
 		if (User::exists($username))
 			throw new UserException('Username already taken.');
 		if (!Validate::password($password))
