@@ -7,6 +7,8 @@
  * @package CommunityCMS.main
  */
 
+require_once(ROOT.'includes/User.class.php');
+
 /**
  * Handle all user-related functions
  * 
@@ -112,30 +114,13 @@ class UserSession {
 		session_name(get_config('cookie_name'));
 		session_start();
 
-		// Handle upgrade situations where a user may not have a time of last
-		// password change set.
-		if ($result['password_date'] == 0) {
-			$update_password_date_query = 'UPDATE `'.USER_TABLE.'`
-				SET `password_date` = '.time().' WHERE `id` = '.$result['id'];
-			$update_password_date_handle = $db->sql_query($update_password_date_query);
-			if ($db->error[$update_password_date_handle] === 1) {
-				die('Failed to set password creation date to today.');
-			}
-			$result['password_date'] = time();
-		}
-
-		// Check to see if password is expired
-		// If 'password_expire' is 0, then password expiration is disabled
-		if (get_config('password_expire') != 0) {
-			$curtime = time();
-			$expiretime = $result['password_date'] + get_config('password_expire');
-			if ($curtime > $expiretime) {
-				$_GET['page'] = NULL;
-				$_GET['id'] = 'change_password';
-				$debug->addMessage('Password is expired',true);
-				$_SESSION['expired'] = true;
-				return false;
-			}
+		$u = new User($result['id']);
+		if ($u->isPasswordExpired()) {
+			$_GET['page'] = NULL;
+			$_GET['id'] = 'change_password';
+			$debug->addMessage('Password is expired',true);
+			$_SESSION['expired'] = true;
+			return false;
 		}
 		$_SESSION['expired'] = false;
 

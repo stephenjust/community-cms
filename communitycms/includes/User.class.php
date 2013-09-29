@@ -148,7 +148,7 @@ class User {
 		if ($db->error[$handle])
 			throw new UserException('Failed to delete user.');
 		
-		Log::addMessage("Deleted user $this->realname ($this->username)");
+		Log::addMessage("Deleted user '$this->realname' ($this->username)");
 		$this->user_id = 0;
 		$this->username = null;
 	}
@@ -180,6 +180,41 @@ class User {
 		return $result[0];
 	}
 	
+	/**
+	 * Check if password is past its expiration date
+	 * @return boolean
+	 */
+	public function isPasswordExpired() {
+		if (get_config('password_expire') == 0)
+			return false; // Password expiration disabled
+		
+		// Reset password change date if data came from old database format
+		if ($this->password_change_date == 0)
+			$this->setPasswordChangeDate();
+		
+		$curtime = time();
+		$expiretime = $this->pass_change_date + get_config('password_expire');
+		if ($curtime > $expiretime)
+			return true;
+	}
+	
+	/**
+	 * Set password changed date
+	 * @global db $db
+	 * @throws UserException
+	 */
+	private function setPasswordChangeDate() {
+		global $db;
+		
+		$new_time = time();
+		$query = 'UPDATE `'.USER_TABLE."`
+			SET `password_date` = $new_time
+			WHERE `id` = $this->user_id";
+		$handle = $db->sql_query($query);
+		if ($db->error[$handle])
+			throw new UserException('Failed to set password creation time.');
+		$this->pass_change_date = $new_time;
+	}
 }
 
 class UserException extends Exception {}
