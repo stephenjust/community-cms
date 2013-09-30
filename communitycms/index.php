@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
+ * @copyright Copyright (C) 2007-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @version SVN
  * @package CommunityCMS.main
@@ -15,9 +15,7 @@ define('ROOT','./');
 require_once('./functions/error.php');
 // Load database configuration
 if (@ !include_once('./config.php')) {
-	if (@ !include_once('./config.temp.php')) {
-		err_page(0001);
-	}
+	require_once('./config.temp.php');
 }
 
 if (!isset($CONFIG['db_engine'])) {
@@ -41,20 +39,6 @@ if (DEBUG === 1) {
 }
 
 initialize();
-
-global $user;
-
-// Perform login/logout operation
-$login = (isset($_GET['login'])) ? $_GET['login'] : NULL;
-$_POST['user'] = (isset($_POST['user'])) ? $_POST['user'] : NULL;
-$_POST['passwd'] = (isset($_POST['passwd'])) ? $_POST['passwd'] : NULL;
-if ($login == 1) {
-	$user->login($_POST['user'],$_POST['passwd']);
-} elseif ($login == 2) {
-	$user->logout();
-}
-unset($_POST['user']);
-unset($_POST['passwd']);
 
 // Check if site is active
 if (get_config('site_active') == 0) {
