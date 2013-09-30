@@ -29,7 +29,7 @@ require(ROOT . 'includes/Content.class.php');
 require(ROOT . 'includes/Gallery.class.php');
 require(ROOT . 'includes/Poll.class.php');
 require(ROOT . 'includes/Log.class.php');
-require(ROOT . 'includes/editbar_class.php');
+require_once(ROOT.'includes/EditBar.class.php');
 require_once(ROOT.'includes/AdminModule.class.php');
 require_once(ROOT.'includes/File.class.php');
 require_once(ROOT.'includes/Image.class.php');

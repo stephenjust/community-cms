@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2010 Stephen Just
+ * @copyright Copyright (C) 2010-2013 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -12,7 +12,7 @@
  * 
  * @package CommunityCMS.main
  */
-class editbar {
+class EditBar {
 	public $visible = true;
 	public $control_count = 0;
 	public $class = 'edit_bar';
@@ -53,7 +53,7 @@ class editbar {
 		}
 
 		$this->control_count++;
-		$this->string .= '<a href="'.$url.'"><img src="<!-- $IMAGE_PATH$ -->'.$image.'" alt="'.$label.'" border="0px"></a>';
+		$this->string .= '<a href="'.HTML::schars($url).'"><img src="<!-- $IMAGE_PATH$ -->'.$image.'" alt="'.HTML::schars($label).'" border="0px"></a>';
 		return true;
 	}
 
