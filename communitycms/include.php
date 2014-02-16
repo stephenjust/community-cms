@@ -36,13 +36,8 @@ require_once(ROOT.'includes/File.class.php');
 require_once(ROOT.'includes/Image.class.php');
 require_once(ROOT.'includes/Tabs.class.php');
 require_once(ROOT.'includes/Block.class.php');
-if(!include_once(ROOT.'functions/blocks.php')) {
-    err_page(2001);
-}
-if(!include_once(ROOT.'functions/files.php')) {
-    err_page(2001);
-}
-if(!include_once(ROOT.'functions/forms.php')) {
-    err_page(2001);
-}
+require_once(ROOT.'functions/blocks.php');
+require_once(ROOT.'functions/files.php');
+require_once(ROOT.'functions/forms.php');
+require_once(ROOT.'functions/form_class.php');
 ?>
