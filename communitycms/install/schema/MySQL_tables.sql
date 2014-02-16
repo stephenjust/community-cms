@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`id` int(11) NOT NULL auto_increment,
-	`category` int(11) NOT NULL,
+	`category` int(11) UNSIGNED,
 	`category_hide` tinyint(1) NOT NULL default 0,
 	`start` datetime NOT NULL,
 	`end` datetime NOT NULL,
@@ -39,12 +39,12 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 ) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
-	`cat_id` int(11) NOT NULL auto_increment,
+	`cat_id` int(11) UNSIGNED NOT NULL auto_increment,
 	`label` text NOT NULL,
 	`colour` text NOT NULL,
 	`description` text NULL default NULL,
 	PRIMARY KEY  (`cat_id`)
-) ENGINE=MyISAM CHARACTER SET=utf8;
+) ENGINE=InnoDB CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_sources` (
 	`id` int(11) NOT NULL auto_increment,
@@ -261,4 +261,9 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`lastlogin` INT NOT NULL default '0',
 	PRIMARY KEY  (`id`),
 	KEY `type` (`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3;
+
+ALTER TABLE `<!-- $DB_PREFIX$ -->calendar`
+ADD FOREIGN KEY (`category`)
+REFERENCES `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`)
+ON DELETE SET NULL ON UPDATE NO ACTION;
