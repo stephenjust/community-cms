@@ -218,7 +218,7 @@ $page_list = new UISelectPageList(
 			'onChange' => 'update_article_list(\'-\')',
 			'pagetype' => 1 // News pages
 			));
-$page_list->addOption('0', 'No Page');
+$page_list->addOption(NULL, 'No Page');
 $page_list->addOption('*', 'All Pages');
 $cur_page = (array_key_exists('page', $_POST)) ? $_POST['page'] : get_config('home');
 $page_list->setChecked($cur_page);

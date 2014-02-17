@@ -335,16 +335,16 @@ class form {
 	 * @param string $props Extra HTML properties for field
 	 */
 	function add_page_list($name, $label, $pagetype = '*', $nopageallowed = 0,
-		$value = NULL, $props = NULL) {
+		$value = false, $props = NULL) {
 		
 		$props = array('name' => $name, 'id' => '_'.$name);
 		if ($pagetype != '*') $props['pagetype'] = $pagetype;
 		$options = new UISelectPageList($props);
 
 		if ($nopageallowed == 1) {
-			$options->addOption(0, 'No Page');
+			$options->addOption(NULL, 'No Page');
 		}
-		if ($value !== NULL)
+		if ($value !== false)
 			$options->setChecked($value);
 		$form_var = '<div class="admin_form_element"><label for="_'.$name.'">'.$label.'</label>
 			'.(string)$options.'</div><br />';

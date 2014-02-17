@@ -16,7 +16,7 @@ if (@SECURITY != 1) {
  * @global db $db
  * @param string $title
  * @param string $content
- * @param integer $page
+ * @param null|integer $page
  * @param string $author
  * @param string $image
  * @param integer $publish
@@ -33,9 +33,9 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
 	// Sanitize inputs
 	$title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
 	$content = $db->sql_escape_string(remove_comments($content));
-	$page = (int)$page;
-	if ($page < 0)
+	if ($page != NULL && $page < 1)
 		throw new Exception('An invalid page was selected.');
+	if ($page == NULL) $page = 'NULL';
 	$publish = ($acl->check_permission('news_publish')) ?
 		(int)$publish : (int)get_config('news_default_publish_value');
 	$author = $db->sql_escape_string(htmlspecialchars(strip_tags($author)));
@@ -81,7 +81,7 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
  * @param integer $id
  * @param string $title
  * @param string $content
- * @param integer $page
+ * @param null|integer $page
  * @param string $image
  * @param integer showdate
  * @throws Exception 
@@ -99,9 +99,9 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate) {
 		throw new Exception('An invalid article ID was provided.');
 	$title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
 	$content = $db->sql_escape_string(remove_comments($content));
-	$page = (int)$page;
-	if ($page < 0)
+	if ($page != NULL && $page < 1)
 		throw new Exception('An invalid page was selected.');
+	if ($page == NULL) $page = 'NULL';
 	$image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
 	$showdate = (int)$showdate;
 	if(strlen($image) <= 3)
@@ -130,7 +130,7 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate) {
 
 	// Update article record
 	$edit_query = 'UPDATE `' . NEWS_TABLE . "`
-		SET `name`='$title',`description`='$content',`page`='$page',
+		SET `name`='$title',`description`='$content',`page`=$page,
 		`image`='$image',`date_edited`='".DATE_TIME."',
 		`showdate`='$showdate', `delete_date`=$del_date_value
 		WHERE `id` = $id";
