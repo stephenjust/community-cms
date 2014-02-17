@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	`id` int(11) NOT NULL auto_increment,
-	`page` int(11) default NULL,
+	`page` int(11) UNSIGNED default NULL,
 	`priority` int(11) NOT NULL default 0,
 	`name` text,
 	`description` text,
@@ -147,21 +147,21 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	`publish` int(1) NOT NULL default 1,
 	PRIMARY KEY  (`id`),
 	KEY `page` (`page`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
+) ENGINE=InnoDB CHARACTER SET=utf8 AUTO_INCREMENT=2;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->newsletters` (
 	`id` int(11) NOT NULL auto_increment,
-	`page` int(11) NOT NULL,
+	`page` int(11) UNSIGNED default NULL,
 	`year` int(4) NOT NULL default '2008',
 	`month` int(2) NOT NULL default '1',
 	`label` text character set utf8 collate utf8_unicode_ci,
 	`path` text character set utf8 collate utf8_unicode_ci,
 	`hidden` tinyint(1) NOT NULL default '0',
 	PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB CHARACTER SET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
-	`id` int(11) NOT NULL auto_increment,
+	`id` int(11) UNSIGNED NOT NULL auto_increment,
 	`text_id` text NOT NULL,
 	`title` text NOT NULL,
 	`meta_desc` text NOT NULL,
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pages` (
 	`blocks_right` text NULL,
 	`hidden` int(1) NOT NULL default '0',
 	PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_groups` (
 	`id` INT NOT NULL auto_increment PRIMARY KEY,
@@ -266,4 +266,9 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 ALTER TABLE `<!-- $DB_PREFIX$ -->calendar`
 ADD FOREIGN KEY (`category`)
 REFERENCES `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`)
+ON DELETE SET NULL ON UPDATE NO ACTION;
+
+ALTER TABLE  `<!-- $DB_PREFIX$ -->news`
+ADD FOREIGN KEY (`page`)
+REFERENCES `<!-- $DB_PREFIX$ -->pages` (`id`)
 ON DELETE SET NULL ON UPDATE NO ACTION;
