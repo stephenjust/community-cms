@@ -25,8 +25,18 @@ class acl {
 	public $permission_list;
 	private $acl_cache = array();
 	/**#@-*/
+	private static $instance;
 
-	function acl() {
+	/**
+	 * Get instance of acl class
+	 * @return \acl
+	 */
+	public static function get() {
+		if (!acl::$instance) acl::$instance = new acl();
+		return acl::$instance;
+	}
+	
+	function __construct() {
 		$this->permission_list = $this->get_acl_key_names();
 	}
 

@@ -26,6 +26,10 @@ class Debug {
 	private static $error_count = 0;
 	private static $instance;
 	
+	/**
+	 * Get instance of debug class
+	 * @return \Debug
+	 */
 	public static function get() {
 		if (!Debug::$instance) Debug::$instance = new Debug();
 		return Debug::$instance;

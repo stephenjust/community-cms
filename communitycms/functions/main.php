@@ -52,7 +52,7 @@ function initialize($mode = NULL) {
 
 	require_once(ROOT . 'includes/acl/acl.php');
 	require_once(ROOT . 'includes/acl/acl_functions.php');
-	$acl = new acl;
+	$acl = acl::get();
 
 	require_once(ROOT . 'includes/Log.class.php');
 
