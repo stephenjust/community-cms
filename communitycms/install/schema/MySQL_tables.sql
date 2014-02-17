@@ -185,14 +185,14 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_groups` (
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_messages` (
 	`message_id` INT NOT NULL auto_increment PRIMARY KEY,
-	`page_id` INT NOT NULL,
+	`page_id` INT UNSIGNED NOT NULL,
 	`start_date` DATE NOT NULL,
 	`end_date` DATE NOT NULL,
 	`end` BOOL NOT NULL DEFAULT '1',
 	`text` TEXT NOT NULL,
 	`order` INT NOT NULL,
 	INDEX ( `page_id`,`order` )
-) ENGINE = MYISAM DEFAULT CHARSET=latin1;
+) ENGINE = InnoDB CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
 	`id` int(4) NOT NULL auto_increment,
@@ -272,3 +272,7 @@ ALTER TABLE  `<!-- $DB_PREFIX$ -->news`
 ADD FOREIGN KEY (`page`)
 REFERENCES `<!-- $DB_PREFIX$ -->pages` (`id`)
 ON DELETE SET NULL ON UPDATE NO ACTION;
+
+ALTER TABLE  `<!-- $DB_PREFIX$ -->page_messages`
+ADD FOREIGN KEY (`page_id`) REFERENCES  `<!-- $DB_PREFIX$ -->pages` (`id`)
+ON DELETE CASCADE ON UPDATE NO ACTION;
