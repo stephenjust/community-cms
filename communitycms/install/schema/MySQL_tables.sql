@@ -94,21 +94,21 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
 ) ENGINE=MyISAM CHARACTER SET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->galleries` (
-	`id` int(11) NOT NULL auto_increment,
+	`id` int(11) UNSIGNED NOT NULL auto_increment,
 	`title` text NOT NULL,
 	`description` text NOT NULL,
 	`image_dir` text NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=MyISAM CHARACTER SET=utf8 ;
+) ENGINE=InnoDB CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->gallery_images` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`gallery_id` int(11) NOT NULL,
+	`gallery_id` int(11) UNSIGNED NOT NULL,
 	`file` text NOT NULL,
 	`caption` text NOT NULL,
 	PRIMARY KEY (`id`),
 	KEY `gallery_id` (`gallery_id`)
-) ENGINE=MyISAM CHARACTER SET=utf8 ;
+) ENGINE=InnoDb CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->locations` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -267,6 +267,11 @@ ALTER TABLE `<!-- $DB_PREFIX$ -->calendar`
 ADD FOREIGN KEY (`category`)
 REFERENCES `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`)
 ON DELETE SET NULL ON UPDATE NO ACTION;
+
+ALTER TABLE  `<!-- $DB_PREFIX$ -->gallery_images`
+ADD FOREIGN KEY (`gallery_id`)
+REFERENCES `<!-- $DB_PREFIX$ -->galleries` (`id`)
+ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE  `<!-- $DB_PREFIX$ -->news`
 ADD FOREIGN KEY (`page`)

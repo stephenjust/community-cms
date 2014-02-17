@@ -339,8 +339,6 @@ class Gallery {
 	public function delete() {
 		global $db;
 
-		$id = $this->id;
-
 		// Delete article
 		$query = 'DELETE FROM `'.GALLERY_TABLE.'`
 			WHERE `id` = '.$this->id;
