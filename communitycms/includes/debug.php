@@ -24,6 +24,12 @@ class Debug {
 	 * @var integer
 	 */
 	private static $error_count = 0;
+	private static $instance;
+	
+	public static function get() {
+		if (!Debug::$instance) Debug::$instance = new Debug();
+		return Debug::$instance;
+	}
 
 	/**
 	 * add_trace - Use this to add entries to the debug error stack

@@ -42,7 +42,7 @@ function initialize($mode = NULL) {
 	global $user;
 
 	require_once(ROOT . 'includes/debug.php');
-	$debug = new Debug;
+	$debug = Debug::get();
 
 	// Must initialize DB class before ACL class
 	$db->sql_connect();
