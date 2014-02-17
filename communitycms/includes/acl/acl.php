@@ -163,24 +163,11 @@ class acl {
 			echo 'You are not allowed to set permissions.<br />';
 			return false;
 		}
-		$check_if_exists_query = 'SELECT acl_record_id,value FROM `' . ACL_TABLE . '`
-			WHERE `acl_id` = \''.$this->permission_list[$acl_key]['id'].'\'
-			AND `group` = '.$group;
-		$check_if_exists_handle = $db->sql_query($check_if_exists_query);
-		if ($db->error[$check_if_exists_handle] === 1) {
-			return false;
-		}
-		if ($db->sql_num_rows($check_if_exists_handle) == 1) {
-			$check_if_exists = $db->sql_fetch_assoc($check_if_exists_handle);
-			$set_permission_query = 'UPDATE `' . ACL_TABLE . '`
-				SET `value` = '.$value.'
-				WHERE `acl_record_id` = '.$check_if_exists['acl_record_id'];
-			$debug->addMessage('Set permission \''.$acl_key.'\' for group '.$group.' to '.$value,false);
-		} else {
-			$set_permission_query = 'INSERT INTO `' . ACL_TABLE . '`
+		$set_permission_query =
+				'INSERT INTO `' . ACL_TABLE . '`
 				(`acl_id`,`group`,`value`)
-				VALUES (\''.$this->permission_list[$acl_key]['id'].'\','.$group.','.$value.')';
-		}
+				VALUES (\''.$this->permission_list[$acl_key]['id'].'\','.$group.','.$value.')
+				ON DUPLICATE KEY UPDATE `value` = '.$value;
 		$set_permission_handle = $db->sql_query($set_permission_query);
 		if ($db->error[$set_permission_handle] === 1) {
 			return false;
@@ -194,7 +181,7 @@ class acl {
 			$debug->addMessage('Removed vital permission \''.$acl_key.'.\' Reverting.',true);
 			$revert_permission_query = 'UPDATE `' . ACL_TABLE . '`
 				SET `value` = 1
-				WHERE `acl_record_id` = '.$check_if_exists['acl_record_id'];
+				WHERE `acl_id` = '.$this->permission_list[$acl_key]['id'].' AND `group` = '.$group;
 			$revert_permission_handle = $db->sql_query($revert_permission_query);
 			if ($db->error[$revert_permission_handle] === 1) {
 				die('You no longer have the necessary permission to edit

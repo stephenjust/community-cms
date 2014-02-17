@@ -1,17 +1,17 @@
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl` (
-	`acl_record_id` INT NOT NULL auto_increment PRIMARY KEY,
-	`acl_id` TEXT NOT NULL,
-	`group` INT NOT NULL,
-	`value` INT(1) NOT NULL DEFAULT 0
-) ENGINE=MYISAM CHARACTER SET=utf8 ;
+	`acl_id` INT UNSIGNED NOT NULL,
+	`group` INT UNSIGNED NOT NULL,
+	`value` INT(1) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`acl_id`, `group`)
+) ENGINE=InnoDB CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl_keys` (
-	`acl_id` INT NOT NULL auto_increment PRIMARY KEY,
+	`acl_id` INT UNSIGNED NOT NULL auto_increment PRIMARY KEY,
 	`acl_name` TEXT NOT NULL,
 	`acl_longname` TEXT NOT NULL,
 	`acl_description` TEXT NOT NULL,
 	`acl_value_default` INT(1) NOT NULL DEFAULT 0
-) ENGINE=MYISAM CHARACTER SET=utf8;
+) ENGINE=InnoDB CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 	`id` INT NOT NULL auto_increment PRIMARY KEY ,
@@ -240,11 +240,11 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->user_groups` (
-	`id` int(5) NOT NULL auto_increment,
+	`id` INT UNSIGNED NOT NULL auto_increment,
 	`name` text NOT NULL,
 	`label_format` text NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	`id` int(5) NOT NULL auto_increment,
@@ -263,6 +263,16 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->users` (
 	KEY `type` (`type`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3;
 
+ALTER TABLE `<!-- $DB_PREFIX$ -->acl`
+ADD FOREIGN KEY (`acl_id`)
+REFERENCES `<!-- $DB_PREFIX$ -->acl_keys` (`acl_id`)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `<!-- $DB_PREFIX$ -->acl`
+ADD FOREIGN KEY (`group`)
+REFERENCES `<!-- $DB_PREFIX$ -->user_groups` (`id`)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
 ALTER TABLE `<!-- $DB_PREFIX$ -->calendar`
 ADD FOREIGN KEY (`category`)
 REFERENCES `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`)
@@ -279,5 +289,6 @@ REFERENCES `<!-- $DB_PREFIX$ -->pages` (`id`)
 ON DELETE SET NULL ON UPDATE NO ACTION;
 
 ALTER TABLE  `<!-- $DB_PREFIX$ -->page_messages`
-ADD FOREIGN KEY (`page_id`) REFERENCES  `<!-- $DB_PREFIX$ -->pages` (`id`)
+ADD FOREIGN KEY (`page_id`)
+REFERENCES `<!-- $DB_PREFIX$ -->pages` (`id`)
 ON DELETE CASCADE ON UPDATE NO ACTION;
