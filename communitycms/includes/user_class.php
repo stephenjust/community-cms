@@ -16,7 +16,13 @@ require_once(ROOT.'includes/User.class.php');
  */
 class UserSession {
 	public $logged_in = false;
+	private static $instance = NULL;
 
+	public static function get() {
+		if (!UserSession::$instance) UserSession::$instance = new UserSession();
+		return UserSession::$instance;
+	}
+	
 	/**
 	 * Check user's login status
 	 * @global db $db Database connection object
