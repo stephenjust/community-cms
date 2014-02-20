@@ -14,21 +14,8 @@ define('ROOT','./');
 // Load error handling code
 require_once('./functions/error.php');
 // Load database configuration
-if (@ !include_once('./config.php')) {
-	require_once('./config.temp.php');
-}
-
-if (!isset($CONFIG['db_engine'])) {
-	err_page(15);
-}
-
-// Check if site is disabled.
-if (@$CONFIG['disabled'] == 1 || @ $CONFIG['not_installed'] == 1) {
-	err_page(11);
-}
-
-// Once the database connections are made, include all other necessary files.
-require('./include.php');
+require_once(ROOT.'config.php');
+require_once(ROOT.'include.php');
 
 // Page load timer
 if (DEBUG === 1) {

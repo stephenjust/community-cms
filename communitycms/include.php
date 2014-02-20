@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2011 Stephen Just
+ * @copyright Copyright (C) 2007-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -13,23 +13,21 @@ if (@SECURITY != 1) {
 if(!preg_match('#^[\/\\\\\.]+$#',ROOT)) {
     die ('Invalid ROOT value.');
 }
-if(!include_once(ROOT.'functions/main.php')) {
-    err_page(2001);
-}
-require(ROOT . 'includes/HTML.class.php');
-require(ROOT . 'includes/constants.php');
-require(ROOT . 'includes/db/db.php');
+require_once(ROOT.'functions/main.php');
+require_once(ROOT.'includes/HTML.class.php');
+require_once(ROOT.'includes/constants.php');
+require_once(ROOT.'includes/db/db.php');
 require_once(ROOT.'controllers/LoginController.class.php');
 require_once(ROOT.'includes/PageManager.class.php');
-require(ROOT . 'includes/template.php');
-require(ROOT . 'includes/widget.class.php');
-require(ROOT . 'functions/article.php');
-require(ROOT . 'includes/page.php');
-require(ROOT . 'includes/page_class.php');
-require(ROOT . 'includes/Content.class.php');
-require(ROOT . 'includes/Gallery.class.php');
-require(ROOT . 'includes/Poll.class.php');
-require(ROOT . 'includes/Log.class.php');
+require_once(ROOT.'includes/template.php');
+require_once(ROOT.'includes/widget.class.php');
+require_once(ROOT.'functions/article.php');
+require_once(ROOT.'includes/page.php');
+require_once(ROOT.'includes/page_class.php');
+require_once(ROOT.'includes/Content.class.php');
+require_once(ROOT.'includes/Gallery.class.php');
+require_once(ROOT.'includes/Poll.class.php');
+require_once(ROOT.'includes/Log.class.php');
 require_once(ROOT.'includes/EditBar.class.php');
 require_once(ROOT.'includes/AdminModule.class.php');
 require_once(ROOT.'includes/File.class.php');
