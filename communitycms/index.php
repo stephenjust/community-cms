@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2013 Stephen Just
+ * @copyright Copyright (C) 2007-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @version SVN
  * @package CommunityCMS.main
@@ -99,4 +99,3 @@ if (DEBUG === 1) {
 	$totaltime = ($endtime - $starttime);
 	printf ("This page took %f seconds to load.", $totaltime);
 }
-?>

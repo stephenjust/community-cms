@@ -25,4 +25,3 @@ $CONFIG['db_prefix'] = '';			// Database table prefix
 
 // Set the value below to '1' to disable Community CMS
 $CONFIG['disabled'] = 1;
-?>

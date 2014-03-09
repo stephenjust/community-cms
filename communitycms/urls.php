@@ -16,4 +16,3 @@ $router->addRule("/", new PageController());
 $router->addRule("/admin/", new AdminController());
 $router->addRule("/admin/?(<module>\\w+)/", new AdminController());
 $router->process();
-?>

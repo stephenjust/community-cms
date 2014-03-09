@@ -58,4 +58,3 @@ unset($template_page);
 
 // Close database connections and clean up loose ends.
 clean_up();
-?>
