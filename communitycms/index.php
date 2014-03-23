@@ -27,8 +27,6 @@ if (DEBUG === 1) {
 
 initialize();
 
-require_once(ROOT.'urls.php');
-
 // Check if site is active
 if (get_config('site_active') == 0) {
 	err_page(12);
@@ -75,8 +73,9 @@ if ($page_id == NULL && $page_text_id != NULL) {
 } else {
 	Page::set_page($page_id);
 }
-if (file_exists('./install'))
-	Debug::get()->addMessage('The ./install directory still exists',true);
+if (file_exists('./install')) {
+	$debug->addMessage('The ./install directory still exists',true);
+}
 
 // Display the page.
 Page::display_header();

@@ -17,6 +17,7 @@ require_once(ROOT.'functions/main.php');
 require_once(ROOT.'includes/HTML.class.php');
 require_once(ROOT.'includes/constants.php');
 require_once(ROOT.'includes/db/db.php');
+require_once(ROOT.'controllers/LoginController.class.php');
 require_once(ROOT.'includes/PageManager.class.php');
 require_once(ROOT.'includes/template.php');
 require_once(ROOT.'includes/widget.class.php');

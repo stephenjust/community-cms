@@ -7,6 +7,8 @@
  * @package CommunityCMS.main
  */
 
+require_once(ROOT.'controllers/LoginController.class.php');
+
 // Security Check
 if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
@@ -69,7 +71,8 @@ function initialize($mode = NULL) {
 	// Don't do this during install because there are no users yet
 	if ($mode != 'install') {
 		require_once(ROOT . 'includes/user_class.php');
-		$user = UserSession::get();
+		$user = new UserSession;
+		new LoginController();
 	}
 	return;
 }

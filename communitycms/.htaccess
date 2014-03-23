@@ -1,6 +1,0 @@
-Options -Indexes
-
-RewriteEngine ON
-
-RewriteBase /
-RewriteRule ^admin/([a-z\-]*)$ index.php?url=/admin/$1 [L]

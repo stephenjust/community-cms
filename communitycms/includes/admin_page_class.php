@@ -73,7 +73,7 @@ class AdminPage extends Page {
 				<img src="<!-- $IMAGE_PATH$ -->help.png" alt="Help"
 				border="0px" width="32px" height="32px" /></a>';
 		}
-		$icon_bar .= '<a href="index.php?login=logout">
+		$icon_bar .= '<a href="index.php?login=2">
 			<img src="<!-- $IMAGE_PATH$ -->log_out.png" alt="Log Out"
 			border="0px" width="32px" height="32px" /></a>';
 		$template->icon_bar = $icon_bar;
