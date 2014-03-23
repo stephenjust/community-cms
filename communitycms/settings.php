@@ -49,4 +49,3 @@ if (DEBUG === 1) {
 Page::display_footer();
 
 clean_up();
-?>
