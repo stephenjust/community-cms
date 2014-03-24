@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (
 ) ENGINE=MYISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
-	`id` int(11) NOT NULL auto_increment,
+	`id` int(11) UNSIGNED NOT NULL auto_increment,
 	`category` int(11) UNSIGNED,
 	`category_hide` tinyint(1) NOT NULL default 0,
 	`start` datetime NOT NULL,
@@ -33,9 +33,11 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`image` text default NULL,
 	`hidden` tinyint(1) NOT NULL,
 	`imported` text default NULL,
+	`clone_of` int(11) UNSIGNED NULL default NULL,
 	PRIMARY KEY  (`id`),
 	KEY `category` (`category`),
-	INDEX (`start`, `end`)
+	INDEX (`start`, `end`),
+	INDEX (`clone_of`)
 ) ENGINE=MyISAM CHARACTER SET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
@@ -277,6 +279,11 @@ ALTER TABLE `<!-- $DB_PREFIX$ -->calendar`
 ADD FOREIGN KEY (`category`)
 REFERENCES `<!-- $DB_PREFIX$ -->calendar_categories` (`cat_id`)
 ON DELETE SET NULL ON UPDATE NO ACTION;
+
+ALTER TABLE `<!-- $DB_PREFIX$ -->calendar`
+ADD FOREIGN KEY (`clone_of`)
+REFERENCES `<!-- $DB_PREFIX$ -->calendar` (`id`)
+ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE  `<!-- $DB_PREFIX$ -->gallery_images`
 ADD FOREIGN KEY (`gallery_id`)
