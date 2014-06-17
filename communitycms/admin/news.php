@@ -11,14 +11,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-global $acl;
+require_once(ROOT.'includes/acl/acl.php');
 require_once(ROOT.'functions/news.php');
 require_once(ROOT.'includes/ui/UISelectPageList.class.php');
 
-if (!$acl->check_permission('adm_news'))
-	throw new AdminException('You do not have the necessary permissions to access this module.');
-
-// ----------------------------------------------------------------------------
+acl::get()->require_permission('adm_news');
 
 /**
  * get_selected_items - Return the IDs of the selected form items
@@ -150,7 +147,7 @@ switch ($_GET['action']) {
 // ----------------------------------------------------------------------------
 
 	case 'edit':
-		if (!$acl->check_permission('news_edit')) {
+		if (!acl::get()->check_permission('news_edit')) {
 			echo '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
 			break;
 		}
@@ -172,7 +169,7 @@ switch ($_GET['action']) {
 			break;
 		}
 		$article_page_group = page_group_news($article_id);
-		if (!$acl->check_permission('pagegroupedit-'.$article_page_group)) {
+		if (!acl::get()->check_permission('pagegroupedit-'.$article_page_group)) {
 			echo '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
 			break;
 		}
@@ -237,7 +234,7 @@ $a_page_list->addOption(0, 'No Page');
 
 $tab_content['manage'] .= '<input type="submit" name="pri" value="Update Priorities" /><br /><br />'."\n".
 	'With selected:<br />'."\n";
-if ($acl->check_permission('news_delete')) {
+if (acl::get()->check_permission('news_delete')) {
 	$tab_content['manage'] .= '<input type="radio" id="a_del" name="news_action" value="del" />'."\n".
 		'<label for="a_del" class="ws">Delete</label><br />'."\n";
 }
@@ -256,7 +253,7 @@ $tab_content['manage'] .= '</form>'."\n";
 
 $tab_layout->add_tab('Manage News',$tab_content['manage']);
 
-if ($acl->check_permission('news_create')) {
+if (acl::get()->check_permission('news_create')) {
 	$form = new form;
 	$form->set_target('admin.php?module=news&amp;action=new');
 	$form->set_method('post');
@@ -268,7 +265,7 @@ if ($acl->check_permission('news_create')) {
 	$form->add_select('date_params','Date Settings',
 			array(0,1,2),array('Hide','Show','Show Mini'),
 			get_config('news_default_date_setting'));
-	if ($acl->check_permission('news_publish')) {
+	if (acl::get()->check_permission('news_publish')) {
 		$form->add_select('publish','Publish',array(0,1),array('No','Yes'),get_config('news_default_publish_value'));
 	}
 	$form->add_text("Only fill in the field below if you want this item to be automatically deleted.");
@@ -279,4 +276,3 @@ if ($acl->check_permission('news_create')) {
 }
 
 echo $tab_layout;
-?>
