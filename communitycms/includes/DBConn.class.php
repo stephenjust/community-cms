@@ -35,6 +35,10 @@ class DBConn {
         $this->conn->exec("set names utf8");
 	}
 	
+	/**
+	 * Get the DBConn instance
+	 * @return \DBConn
+	 */
 	public static function get() {
 		if (!DBConn::$instance) DBConn::$instance = new DBConn();
 		
