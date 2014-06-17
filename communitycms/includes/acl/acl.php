@@ -39,6 +39,12 @@ class acl {
 	function __construct() {
 		$this->permission_list = $this->get_acl_key_names();
 	}
+	
+	public function require_permission($acl_key) {
+		if (!$this->check_permission($acl_key)) {
+			throw new AclException(sprintf("This action requires the '%s' permission.", HTML::schars($acl_key)));
+		}
+	}
 
 	/**
 	 * check_permission - Read from the ACL and check if user is allowed to complete action
