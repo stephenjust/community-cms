@@ -11,19 +11,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-global $acl;
-
-if (!$acl->check_permission('adm_calendar'))
-	throw new AdminException('You do not have the necessary permissions to access this module.');
-
-/**
- * Include functions necessary for calendar operations
- */
+require_once(ROOT.'includes/acl/acl.php');
 require_once(ROOT.'includes/content/CalEvent.class.php');
 require_once(ROOT.'includes/content/CalLocation.class.php');
 require_once(ROOT.'includes/content/CalCategory.class.php');
-
-// ----------------------------------------------------------------------------
+acl::get()->require_permission('adm_calendar');
 
 // Save form information from previously created entry
 $_POST['title'] = (isset($_POST['title'])) ? $_POST['title'] : NULL;
@@ -126,7 +118,7 @@ switch ($_GET['action']) {
 		}
 		break;
 	case 'save_settings':
-		if ($acl->check_permission('calendar_settings')) {
+		if (acl::get()->check_permission('calendar_settings')) {
 			$new_fields['default_view'] = addslashes($_POST['default_view']);
 			$new_fields['month_show_stime'] = (isset($_POST['month_show_stime'])) ? checkbox($_POST['month_show_stime']) : 0;
 			$new_fields['month_show_cat_icons'] = (isset($_POST['month_show_cat_icons'])) ? checkbox($_POST['month_show_cat_icons']) : 0;
@@ -291,7 +283,7 @@ $tab_layout->add_tab('Create Event',$tab_content['create']);
 
 // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('calendar_settings')) {
+if (acl::get()->check_permission('calendar_settings')) {
 	$tab_content['settings'] = '<h1>Calendar Settings</h1>';
 	$settings_form = new form;
 	$settings_form->set_method('post');
@@ -374,7 +366,7 @@ if ($acl->check_permission('calendar_settings')) {
 
 // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('adm_calendar_import')) {
+if (acl::get()->check_permission('adm_calendar_import')) {
 	$tab_content['import'] = NULL;
 
 	// FIXME: Remove the warning below
@@ -419,4 +411,3 @@ if ($acl->check_permission('adm_calendar_import')) {
 }
 
 echo $tab_layout;
-?>
