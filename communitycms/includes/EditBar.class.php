@@ -2,10 +2,13 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2010-2013 Stephen Just
+ * @copyright Copyright (C) 2010-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
+
+require_once(ROOT.'includes/acl/acl.php');
+require_once(ROOT.'includes/HTML.class.php');
 
 /**
  * Generates a bar with various buttons to link to different functions
@@ -13,7 +16,7 @@
  * @package CommunityCMS.main
  */
 class EditBar {
-	public $visible = true;
+	public $visible = false;
 	public $control_count = 0;
 	public $class = 'edit_bar';
 	public $label = '';
@@ -21,16 +24,10 @@ class EditBar {
 
 	/**
 	 * Initialize the editbar class
-	 * @global acl $acl
-	 * @global Debug $debug
 	 */
 	function __construct() {
-		global $acl;
-		global $debug;
-
-		if (!$acl->check_permission('show_editbar')) {
-			$this->visible = false;
-			$debug->addMessage('Not displaying edit bar because the user lacks permissions to see it',false);
+		if (acl::get()->check_permission('show_editbar')) {
+			$this->visible = true;
 		}
 	}
 
@@ -53,7 +50,8 @@ class EditBar {
 		}
 
 		$this->control_count++;
-		$this->string .= '<a href="'.HTML::schars($url).'"><img src="<!-- $IMAGE_PATH$ -->'.$image.'" alt="'.HTML::schars($label).'" border="0px"></a>';
+		$image_tag = HTML::templateImage($image, $label, null, 'border: 0px;');
+		$this->string .= HTML::link($url, $image_tag);
 		return true;
 	}
 
@@ -76,7 +74,7 @@ class EditBar {
 		if ($this->control_count === 0) {
 			return '';
 		}
-		return '<div class="'.$this->class.'">'.$this->label.$this->string.'</div>';
+		return HTML::div($this->class, $this->label.$this->string);
 	}
 }
 ?>

@@ -12,6 +12,16 @@
  */
 class HTML {
 	/**
+	 * Generate an HTML div tag
+	 * @param string $class
+	 * @param string $content
+	 * @return string
+	 */
+	public static function div($class, $content) {
+		return sprintf('<div class="%s">%s</div>', HTML::schars($class), $content);
+	}
+	
+	/**
 	 * Generate an HTML anchor
 	 * @param string $href Target URL
 	 * @param string $label Link label (may contain html)
@@ -21,12 +31,46 @@ class HTML {
 	 */
 	public static function link($href, $label, $class = null, $id = null) {
 		$link = '<a href="'.HTML::schars($href).'" ';
-		if ($class !== null)
+		if ($class !== null) {
 			$link .= 'class="'.HTML::schars($class).'" ';
-		if ($id !== null)
+		}
+		if ($id !== null) {
 			$link .= 'id="'.HTML::schars($id).'" ';
+		}
 		$link .= '>'.$label.'</a>';
 		return $link;
+	}
+	
+	/**
+	 * Generate an HTML image tag, using an image from the template path
+	 * @param string $src Image file name
+	 * @param string $alt_text
+	 * @param string $class
+	 * @param string $style
+	 * @return string
+	 */
+	public static function templateImage($src, $alt_text, $class = null, $style = null) {
+		return HTML::image('<!-- $IMAGE_PATH$ -->'.$src, $alt_text, $class, $style);
+	}
+	
+	/**
+	 * Generate an HTML image tag
+	 * @param string $src Image file path
+	 * @param string $alt_text
+	 * @param string $class
+	 * @param string $style
+	 * @return string
+	 */
+	public static function image($src, $alt_text, $class = null, $style = null) {
+		$image = '<img src="'.$src.'" alt="'.HTML::schars($alt_text).'" ';
+		if ($class) {
+			$image .= 'class="'.$class.'" ';
+		}
+		if ($style) {
+			$image .= 'style="'.$style.'" ';
+		}
+		$image .= '/>';
+		return $image;
 	}
 	
 	/**
