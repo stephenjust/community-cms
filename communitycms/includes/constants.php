@@ -14,6 +14,10 @@ if (!defined('SECURITY')) {
 	exit;
 }
 
+if (!ini_get('date.timezone')) {
+	date_default_timezone_set('UTC');
+}
+
 define('COMCMS_VERSION', 'SVN');
 define('DATABASE_VERSION', 0.05);
 define('FILES_ROOT',ROOT.'files/');
