@@ -22,9 +22,10 @@ switch ($_GET['action']) {
 			echo '<span class="errormessage">You are not authorized to clear the log.</span><br />'."\n";
 			break;
 		}
-		if (Log::clear()) {
+		try {
+			Log::clear();
 			echo 'Cleared log messages.<br />'."\n";
-		} else {
+		} catch (Exception $ex) {
 			echo '<span class="errormessage">Failed to clear log messages.</span><br />'."\n";
 		}
 		break;
