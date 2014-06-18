@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.admin
  */
@@ -11,12 +11,9 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-require_once(ROOT.'functions/pagemessage.php');
-
-global $acl;
-
-if (!$acl->check_permission('adm_page_message'))
-	throw new AdminException('You do not have the necessary permissions to access this module.');
+require_once(ROOT.'includes/acl/acl.php');
+require_once(ROOT.'includes/PageMessage.class.php');
+acl::get()->require_permission('adm_page_message');
 
 // Get current page ID
 if (!isset($_POST['page']) && !isset($_GET['page'])) {
@@ -34,7 +31,8 @@ try {
 		default: break;
 
 		case 'delete':
-			pagemessage_delete($_GET['id']);
+			$pm = new PageMessage($_GET['id']);
+			$pm->delete();
 			echo 'Successfully deleted page message.<br />';
 			break;
 		
@@ -48,8 +46,7 @@ try {
 			$start = $_POST['start_year'].'-'.$_POST['start_month'].'-'.$_POST['start_day'];
 			$end = $_POST['end_year'].'-'.$_POST['end_month'].'-'.$_POST['end_day'];
 			$expire = (isset($_POST['expire'])) ? checkbox($_POST['expire']) : 0;
-			pagemessage_create($page_id,
-					$_POST['text'], $start, $end, (boolean)$expire);
+			PageMessage::create($page_id, $_POST['text'], $start, $end, (boolean)$expire);
 			echo 'Successfully created page message.<br />';
 			break;
 	}
@@ -83,7 +80,7 @@ $tab_content['manage'] .= '<script type="text/javascript">update_page_message_li
 $tab_layout->add_tab('Manage Page Messages',$tab_content['manage']);
 
 // Form to create new page message
-if ($acl->check_permission('page_message_new')) {
+if (acl::get()->check_permission('page_message_new')) {
 	$form = new form;
 	$form->set_target('admin.php?module=page_message&amp;action=create');
 	$form->set_method('post');
@@ -98,4 +95,3 @@ if ($acl->check_permission('page_message_new')) {
 }
 
 echo $tab_layout;
-?>

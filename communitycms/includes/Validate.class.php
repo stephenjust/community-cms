@@ -63,5 +63,14 @@ class Validate {
 	public static function username($string) {
 		return preg_match('/^[a-z0-9_\-\.]{4,30}$/i', $string);
 	}
+
+	/**
+	 * Validate date
+	 * @param string $string
+	 * @return boolean
+	 */
+	public static function date($string) {
+		return preg_match('/[0-9]+\-[0-9]+\-[0-9]+/', $string);
+	}
+	
 }
-?>

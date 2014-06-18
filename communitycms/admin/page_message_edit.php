@@ -11,11 +11,9 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-require_once(ROOT.'functions/pagemessage.php');
-
-global $acl;
-if (!$acl->check_permission('adm_page_message_edit'))
-	throw new AdminException('You do not have the necessary permissions to access this module.');
+require_once(ROOT.'includes/acl/acl.php');
+require_once(ROOT.'includes/PageMessage.class.php');
+acl::get()->require_permission('adm_page_message_edit');
 
 if ($_GET['action'] == 'edit') {
 	try {
@@ -28,9 +26,10 @@ if ($_GET['action'] == 'edit') {
 		$start_date = $_POST['start_year'].'-'.$_POST['start_month'].'-'.$_POST['start_day'];
 		$end_date = $_POST['end_year'].'-'.$_POST['end_month'].'-'.$_POST['end_day'];
 		$expire = (isset($_POST['expire'])) ? checkbox($_POST['expire']) : 0;
-		pagemessage_edit($_POST['id'], $_POST['page_id'],
-				$_POST['update_content'], $start_date, $end_date, (boolean)$expire);
+		$pm = new PageMessage($_POST['id']);
+		$pm->edit($_POST['page_id'], $_POST['update_content'], $start_date, $end_date, (boolean)$expire);
 		echo 'Successfully edited page message.<br />';
+		echo HTML::link('admin.php?module=page_message&page='.$_POST['page_id'], 'Back');
 	}
 	catch (Exception $e) {
 		echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
@@ -103,4 +102,3 @@ if ($_GET['action'] == 'edit') {
 		<input type="submit" value="Submit" /></td></tr>
 		</table>';
 }
-?>
