@@ -145,7 +145,7 @@ class PageMessage {
 	}
 	
 	/**
-	 * Get content, abbrediated to a number of characters
+	 * Get content, abbreviated to a number of characters
 	 * @param int $len Number of characters to return, default 75.
 	 * @return string
 	 */
