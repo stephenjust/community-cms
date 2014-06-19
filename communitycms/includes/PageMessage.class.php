@@ -54,6 +54,22 @@ class PageMessage {
 		}
 	}
 	
+	/**
+	 * Get items attached to the given page
+	 * @param int $page_id
+	 * @return \PageMessage
+	 */
+	public static function getByPage($page_id) {
+		$results = DBConn::get()->query(sprintf('SELECT `message_id` from `%s`'
+				. 'WHERE `page_id` = :page', PAGE_MESSAGE_TABLE),
+				array(':page' => $page_id), DBConn::FETCH_ALL);
+		$messages = [];
+		foreach ($results AS $result) {
+			$messages[] = new PageMessage($result['message_id']);
+		}
+		return $messages;
+	}
+	
 	public function __construct($id) {
 		$result = DBConn::get()->query(
 				sprintf('SELECT * FROM `%s` WHERE `message_id` = :id', PAGE_MESSAGE_TABLE),
@@ -109,6 +125,23 @@ class PageMessage {
 		} catch (DBException $ex) {
 			throw new Exception('An error occurred when updating the page message record.');
 		}
+	}
+	
+	/**
+	 * Get message ID
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
+	}
+	
+	/**
+	 * Get content, abbrediated to a number of characters
+	 * @param int $len Number of characters to return, default 75.
+	 * @return string
+	 */
+	public function getAbbreviatedContent($len = 75) {
+		return truncate(strip_tags($this->content,'<br>'), $len);
 	}
 	
 }
