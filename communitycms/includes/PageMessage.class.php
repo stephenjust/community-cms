@@ -30,21 +30,15 @@ class PageMessage {
 	 * @return /PageMessage
 	 * @throws Exception
 	 */
-	public static function create($page, $content, $start, $end, $expire) {
+	public static function create($page, $content) {
 		acl::get()->require_permission('page_message_new');
 		assert(PageUtil::exists($page), 'Page does not exist.');
-		assert(Validate::date($start), 'Invalid start date.');
-		assert(Validate::date($end), 'Invalid end date.');
 		try {
 			DBConn::get()->query(
 					sprintf('INSERT INTO `%s`'
-							. 'SET `start_date`=:start, `end_date`=:end,'
-							. '`end`=:expire, `text`=:content, `page_id`=:page,'
+							. 'SET `text`=:content, `page_id`=:page,'
 							. '`order`=:order', PAGE_MESSAGE_TABLE),
-					array(':start' => $start,
-						':end' => $end,
-						':expire' => ($expire === true) ? 1 : 0,
-						':content' => $content,
+					array(':content' => $content,
 						':page' => $page,
 						':order' => 0));
 			Log::addMessage(sprintf("Created page message for page '%s'", PageUtil::getTitle($page)));
@@ -62,7 +56,7 @@ class PageMessage {
 	public static function getByPage($page_id) {
 		$results = DBConn::get()->query(sprintf('SELECT `message_id` from `%s`'
 				. 'WHERE `page_id` = :page '
-				. 'ORDER BY `start_date` ASC', PAGE_MESSAGE_TABLE),
+				. 'ORDER BY `message_id` ASC', PAGE_MESSAGE_TABLE),
 				array(':page' => $page_id), DBConn::FETCH_ALL);
 		$messages = [];
 		foreach ($results AS $result) {
@@ -110,16 +104,10 @@ class PageMessage {
 	public function edit($page,$content,$start,$end,$expire) {
 		acl::get()->require_permission('page_message_edit');
 		assert(PageUtil::exists($page), 'Page does not exist.');
-		assert(Validate::date($start), 'Invalid start date.');
-		assert(Validate::date($end), 'Invalid end date.');
-		
 		try {
 			DBConn::get()->query(sprintf('UPDATE `%s`'
-					. 'SET `start_date`=:start, `end_date`=:end, `end`=:expire,'
-					. '`text`=:content WHERE `message_id` = :id', PAGE_MESSAGE_TABLE),
-					array(':start' => $start, ':end' => $end,
-						':expire' => ($expire === true) ? 1 : 0,
-						':content' => $content, ':id' => $this->id));
+					. 'SET `text`=:content WHERE `message_id` = :id', PAGE_MESSAGE_TABLE),
+					array(':content' => $content, ':id' => $this->id));
 			Log::addMessage(sprintf("Edited page message for page '%s'", PageUtil::getTitle($page)));
 			$this->content = $content;
 			$this->page_id = $page;
@@ -153,4 +141,11 @@ class PageMessage {
 		return truncate(strip_tags($this->content,'<br>'), $len);
 	}
 	
+	/**
+	 * Get message page
+	 * @return int
+	 */
+	public function getPage() {
+		return $this->page_id;
+	}
 }

@@ -188,9 +188,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_groups` (
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->page_messages` (
 	`message_id` INT NOT NULL auto_increment PRIMARY KEY,
 	`page_id` INT UNSIGNED NOT NULL,
-	`start_date` DATE NOT NULL,
-	`end_date` DATE NOT NULL,
-	`end` BOOL NOT NULL DEFAULT '1',
 	`text` TEXT NOT NULL,
 	`order` INT NOT NULL,
 	INDEX ( `page_id`,`order` )

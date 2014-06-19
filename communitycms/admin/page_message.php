@@ -37,16 +37,7 @@ try {
 			break;
 		
 		case 'create':
-			$_POST['start_year'] = (isset($_POST['start_year'])) ? $_POST['start_year'] : 0;
-			$_POST['start_month'] = (isset($_POST['start_month'])) ? $_POST['start_month'] : 0;
-			$_POST['start_day'] = (isset($_POST['start_day'])) ? $_POST['start_day'] : 0;
-			$_POST['end_year'] = (isset($_POST['end_year'])) ? $_POST['end_year'] : 0;
-			$_POST['end_month'] = (isset($_POST['end_month'])) ? $_POST['end_month'] : 0;
-			$_POST['end_day'] = (isset($_POST['end_day'])) ? $_POST['end_day'] : 0;
-			$start = $_POST['start_year'].'-'.$_POST['start_month'].'-'.$_POST['start_day'];
-			$end = $_POST['end_year'].'-'.$_POST['end_month'].'-'.$_POST['end_day'];
-			$expire = (isset($_POST['expire'])) ? checkbox($_POST['expire']) : 0;
-			PageMessage::create($page_id, $_POST['text'], $start, $end, (boolean)$expire);
+			PageMessage::create($page_id, $_POST['text']);
 			echo 'Successfully created page message.<br />';
 			break;
 	}
@@ -86,9 +77,6 @@ if (acl::get()->check_permission('page_message_new')) {
 	$form->set_method('post');
 	$form->add_textarea('text','Content',NULL,'rows="30"');
 	$form->add_page_list('page', 'Page');
-	$form->add_date('start','Start Date','MDY',NULL,"disabled");
-	$form->add_date('end','End Date','MDY',NULL,"disabled");
-	$form->add_checkbox('expire','Expire',NULL,"disabled");
 	$form->add_submit('submit','Save');
 	$create_form = $form;
 	$tab_layout->add_tab('Create Page Message',$create_form);

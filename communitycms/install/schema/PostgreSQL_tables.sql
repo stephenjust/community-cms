@@ -257,9 +257,6 @@ CREATE SEQUENCE "<!-- $DB_PREFIX$ -->page_messages_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->page_messages" (
 	"message_id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->page_messages_id_seq') PRIMARY KEY,
 	"page_id" integer NOT NULL,
-	"start_date" DATE NOT NULL,
-	"end_date" DATE NOT NULL,
-	"end" integer NOT NULL DEFAULT '1',
 	"text" text NOT NULL,
 	"order" integer NOT NULL
 );
