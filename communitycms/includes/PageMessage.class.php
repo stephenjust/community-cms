@@ -24,9 +24,6 @@ class PageMessage {
 	 * Create a page message record
 	 * @param int $page
 	 * @param string $content
-	 * @param string $start
-	 * @param string $end
-	 * @param boolean $expire
 	 * @return /PageMessage
 	 * @throws Exception
 	 */
@@ -96,12 +93,9 @@ class PageMessage {
 	 * Edit the page message
 	 * @param int $page
 	 * @param string $content
-	 * @param string $start
-	 * @param string $end
-	 * @param boolean $expire
 	 * @throws Exception
 	 */
-	public function edit($page,$content,$start,$end,$expire) {
+	public function edit($page,$content) {
 		acl::get()->require_permission('page_message_edit');
 		assert(PageUtil::exists($page), 'Page does not exist.');
 		try {
