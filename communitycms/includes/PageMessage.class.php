@@ -61,7 +61,8 @@ class PageMessage {
 	 */
 	public static function getByPage($page_id) {
 		$results = DBConn::get()->query(sprintf('SELECT `message_id` from `%s`'
-				. 'WHERE `page_id` = :page', PAGE_MESSAGE_TABLE),
+				. 'WHERE `page_id` = :page '
+				. 'ORDER BY `start_date` ASC', PAGE_MESSAGE_TABLE),
 				array(':page' => $page_id), DBConn::FETCH_ALL);
 		$messages = [];
 		foreach ($results AS $result) {
@@ -133,6 +134,14 @@ class PageMessage {
 	 */
 	public function getId() {
 		return $this->id;
+	}
+	
+	/**
+	 * Get message content
+	 * @return string
+	 */
+	public function getContent() {
+		return $this->content;
 	}
 	
 	/**

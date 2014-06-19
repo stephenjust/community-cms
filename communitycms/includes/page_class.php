@@ -7,6 +7,8 @@
  * @package CommunityCMS.main
  */
 
+require_once(ROOT.'includes/PageMessage.class.php');
+
 /**
  * Generates a page
  * @package CommunityCMS.main
@@ -583,6 +585,15 @@ class Page {
 		$template->right_content = $right_blocks_content;
 		echo $template;
 	}
+	
+	private static function getPageMessages() {
+		$messages = PageMessage::getByPage(Page::$id);
+		$return = NULL;
+		foreach ($messages AS $message) {
+			$return .= sprintf('<div class="page_message">%s</div>', $message->getContent());
+		}
+		return $return;
+	}
 
 	public static function display_content() {
 		global $db;
@@ -626,30 +637,14 @@ class Page {
 			$template->replace_range('notification',NULL);
 		}
 
-		// Skip page message fetch on special pages
-		$page_message = NULL;
 		if (Page::$type != 'special.php') {
-			// Get page messages
-			$page_message_query = 'SELECT * FROM `' . PAGE_MESSAGE_TABLE . '`
-				WHERE `page_id` = '.Page::$id.'
-				ORDER BY `start_date` ASC';
-			$page_message_handle = $db->sql_query($page_message_query);
-			if ($db->error[$page_message_handle] === 0) { // Don't run the loop if the query failed
-				for ($i = 1; $db->sql_num_rows($page_message_handle) >= $i; $i++) {
-					$page_message_content = $db->sql_fetch_assoc($page_message_handle);
-					$page_message .= '<div class="page_message">'.stripslashes($page_message_content['text']).'</div>';
-				}
-			}
-		}
-
-		// Display page messages
-		if (strlen($page_message) > 0) {
-			$template->page_message = $page_message;
-			$template->page_message_start = NULL;
-			$template->page_message_end = NULL;
+			$page_message = Page::getPageMessages();
 		} else {
-			$template->replace_range('page_message',NULL);
+			$page_message = NULL;
 		}
+		$template->page_message = $page_message;
+		$template->page_message_start = NULL;
+		$template->page_message_end = NULL;
 
 		$template->content = Page::get_page_content();
 
