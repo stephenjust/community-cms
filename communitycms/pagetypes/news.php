@@ -51,6 +51,7 @@ if (acl::get()->check_permission('news_publish')) {
 
 // Handle first article offset value
 $start = (empty($_GET['start'])) ? 1 : $_GET['start'];
+$content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
 
 // Check for display mode
 if (isset($_GET['article'])) {
@@ -69,12 +70,10 @@ if (isset($_GET['article'])) {
 		Page::$showtitle = false;
 		return $return.' ';
 	}
-	// FIXME: Replace $start with some estimation of where to start to ensure
-	// the requested article is visible
-	$article_list = get_article_list(Page::$id, $start);
-} else {
-	$article_list = get_article_list(Page::$id, $start);
+	$article_pos = array_search($_GET['article'], $content_id_array);
+	$start = floor($article_pos / get_config('news_num_articles')) * get_config('news_num_articles') + 1;
 }
+$article_list = get_article_list(Page::$id, $start);
 
 if (count($article_list) == 0) {
 	$return .= 'There are no articles to be displayed.';
@@ -90,8 +89,6 @@ foreach ($article_list AS $article_record) {
 	unset($article);
 }
 
-// Get array of content IDs for pagination
-$content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
 // Paginate
 include(ROOT . 'includes/pagination.php');
 $return .= pagination($start, get_config('news_num_articles'), $content_id_array);

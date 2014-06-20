@@ -31,6 +31,7 @@ class Content {
 	 * @return \Content
 	 */
 	public static function getByPage($page_id, $start = 0, $num = 0, $only_published = false) {
+		if ($start < 0) { $start = 0; }
 		$query = sprintf('SELECT `id` FROM `%s` '
 				. 'WHERE `page` = :page %s ORDER BY `priority` DESC, `date` DESC, `id` DESC %s OFFSET %d',
 				NEWS_TABLE, ($only_published) ? 'AND `publish` = 1' : null,
@@ -90,11 +91,19 @@ class Content {
 	}
 	
 	/**
+	 * Get page ID
+	 * @return int
+	 */
+	public function getPage() {
+		return $this->page_id;
+	}
+	
+	/**
 	 * True if the item is published
 	 * @return boolean
 	 */
 	public function published() {
-		return (boolean) $this->published();
+		return (boolean) $this->publish;
 	}
 }
 
