@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -14,56 +14,28 @@ if (!defined('SECURITY')) {
 	exit;
 }
 
-function get_article_list($page,$start = 1) {
-	global $acl;
-	global $db;
-	global $debug;
+require_once(ROOT.'includes/acl/acl.php');
+require_once(ROOT.'includes/Content.class.php');
+require_once(ROOT.'includes/DBConn.class.php');
+require_once(ROOT.'pagetypes/news_class.php');
 
-	if (!isset($page)) {
-		$debug->addMessage('No page ID provided',true);
-		return array();
-	}
-	if (!is_numeric($start)) {
-		$start = 1;
-		$debug->addMessage('Non-numeric offset - reverting to 1',true);
-	}
-	$start = (int)($start - 1);
-	$page = (int)$page;
+function get_article_list($page, $start = 1) {
+	assert(is_numeric($page), 'Invalid page ID');
+	assert(is_numeric($start), 'Invalid starting value');
 
-	$first_date = NULL;
-	if ($acl->check_permission('news_fe_show_unpublished')) {
-		$query = 'SELECT `id` FROM `' . NEWS_TABLE . '`
-			WHERE `page` = '.$page.'
-			ORDER BY `priority` DESC, `date` DESC, `id` DESC
-			LIMIT '.get_config('news_num_articles').' OFFSET '.$start.'';
+	if (acl::get()->check_permission('news_fe_show_unpublished')) {
+		return Content::getByPage($page, $start-1, (int)get_config('news_num_articles'));
 	} else {
-		$query = 'SELECT `id` FROM `' . NEWS_TABLE . '`
-			WHERE `page` = '.$page.'
-			AND `publish` = 1
-			ORDER BY `priority` DESC, `date` DESC, `id` DESC
-			LIMIT '.get_config('news_num_articles').' OFFSET '.$start.'';
+		return Content::getPublishedByPage($page, $start-1, (int)get_config('news_num_articles'));
 	}
-	$handle = $db->sql_query($query);
-
-	if ($db->sql_num_rows($handle) == 0) {
-		return array();
-	}
-
-	$article_list = array();
-	for ($i = 1; $i <= $db->sql_num_rows($handle); $i++) {
-		$news = $db->sql_fetch_assoc($handle);
-		$article_list[] = (int)$news['id'];
-	}
-	return $article_list;
 }
 
-global $acl;
 global $db;
 global $debug;
 $return = NULL;
 
 // (Un)publish articles on request
-if ($acl->check_permission('news_publish')) {
+if (acl::get()->check_permission('news_publish')) {
 	require_once(ROOT . 'functions/news.php');
 	require_once(ROOT . 'functions/admin.php');
 	if (isset($_GET['publish']) || isset($_GET['unpublish'])) {
@@ -78,91 +50,40 @@ if ($acl->check_permission('news_publish')) {
 }
 
 // Handle first article offset value
-if(!isset($_GET['start']) || $_GET['start'] == "" || (int)$_GET['start'] < 1) {
-	$_GET['start'] = 1;
-}
-$start = (int)$_GET['start'];
+$start = (empty($_GET['start'])) ? 1 : $_GET['start'];
 
 // Check for display mode
 if (isset($_GET['article'])) {
-	// We want to display the given article on the page
-	// Make sure a valid article ID is passed
-	if (!is_numeric($_GET['article']) || strlen($_GET['article']) == 0) {
-		$debug->addMessage('Article ID not numeric',true);
+	try {
+		$c = new Content($_GET['article']);
+		if (!$c->published() && !acl::get()->check_permission('news_fe_show_unpublished')) {
+			throw new ContentNotFoundException();
+		}
+		if ($c->getPage() != Page::$id) {
+			throw new ContentNotFoundException();
+		}
+	} catch (ContentNotFoundException $ex) {
 		header("HTTP/1.0 404 Not Found");
 		Page::$notification = 'The requested article does not exist.<br />'."\n";
 		Page::$title = 'Article not found';
 		Page::$showtitle = false;
 		return $return.' ';
 	}
-	$article_id = (int)$_GET['article'];
-	if ($acl->check_permission('news_fe_show_unpublished')) {
-		$article_page_query = 'SELECT `page`
-			FROM `'.NEWS_TABLE.'`
-			WHERE `id` = '.$article_id.'
-			LIMIT 1';
-	} else {
-		$article_page_query = 'SELECT `page`
-			FROM `'.NEWS_TABLE.'`
-			WHERE `id` = '.$article_id.'
-			AND `publish` = 1
-			LIMIT 1';
-	}
-	$article_page_handle = $db->sql_query($article_page_query);
-	if ($db->error[$article_page_handle] === 1) {
-		$debug->addMessage('Failed to look up article\'s page in the database',true);
-		header("HTTP/1.0 404 Not Found");
-		Page::$notification = 'An error occurred when trying to retrieve the requested article.<br />'."\n";
-		Page::$title = 'Error';
-		Page::$showtitle = false;
-		return $return.' ';
-	}
-	if ($db->sql_num_rows($article_page_handle) != 1) {
-		$debug->addMessage('Article does not exist',true);
-		header("HTTP/1.0 404 Not Found");
-		Page::$notification = 'The requested article does not exist.<br />'."\n";
-		Page::$title = 'Article not found';
-		Page::$showtitle = false;
-		return $return.' ';
-	} else {
-		$article_found = false;
-		while ($article_found == false && $start < 1000) {
-			$article_list = get_article_list(Page::$id,$start);
-			for ($i = 0; $i < count($article_list); $i++) {
-				if ($article_list[$i] == $article_id) {
-					$article_found = true;
-				}
-			}
-			if ($article_found == false) {
-				$start = $start + get_config('news_num_articles');
-			}
-		}
-		if ($start >= 1000) {
-			$debug->addMessage('Gave up looking for article',true);
-			header("HTTP/1.0 404 Not Found");
-			Page::$notification = 'The requested article could not be found.<br />'."\n";
-			Page::$title = 'Article not found';
-			Page::$showtitle = false;
-			return $return.' ';
-		}
-	}
+	// FIXME: Replace $start with some estimation of where to start to ensure
+	// the requested article is visible
+	$article_list = get_article_list(Page::$id, $start);
+} else {
+	$article_list = get_article_list(Page::$id, $start);
 }
 
-include(ROOT.'pagetypes/news_class.php');
-$article_list = get_article_list(Page::$id,$start);
-$first_date = NULL;
-// Initialize session variable if not initialized to prevent warnings.
-if (!isset($_SESSION['user'])) {
-	$_SESSION['user'] = NULL;
-}
 if (count($article_list) == 0) {
 	$return .= 'There are no articles to be displayed.';
 	return $return;
 }
 
-for ($i = 0; $i < count($article_list); $i++) {
+foreach ($article_list AS $article_record) {
 	$article = new news_item;
-	$article->set_article_id($article_list[$i]);
+	$article->set_article_id($article_record->getID());
 	$article->get_article();
 	$last_article_date = $article->date;
 	$return .= $article."\n\n";
@@ -170,24 +91,9 @@ for ($i = 0; $i < count($article_list); $i++) {
 }
 
 // Get array of content IDs for pagination
-$news_id_query = 'SELECT `id` FROM `' . NEWS_TABLE .'`
-	WHERE `page` = '.Page::$id.'
-	ORDER BY `date`,`id` DESC';
-$news_id_handle = $db->sql_query($news_id_query);
-if ($db->error[$news_id_handle] === 1) {
-	$debug->addMessage('Failed to read array of content IDs from database',true);
-	$return .= 'Failed to retreive information necessary for pagination.<br />';
-}
-$content_id_array = array();
-for ($i = 0; $i < $db->sql_num_rows($news_id_handle); $i++) {
-	$news_id = $db->sql_fetch_assoc($news_id_handle);
-	$content_id_array[] = $news_id['id'];
-}
-unset($news_id_query);
-unset($news_id_handle);
+$content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
 // Paginate
 include(ROOT . 'includes/pagination.php');
-$return .= pagination($start,get_config('news_num_articles'),$content_id_array);
+$return .= pagination($start, get_config('news_num_articles'), $content_id_array);
 
 return $return;
-?>

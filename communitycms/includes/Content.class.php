@@ -2,54 +2,100 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
 
-/**
- * content - Container class for all content items
- * 
- * @todo Use this class
- * @package CommunityCMS.main
- */
+require_once(ROOT.'includes/DBConn.class.php');
+
 class Content {
+	private $id = 0;
+	private $page_id;
+	private $title;
+	private $content;
+	private $author;
+	private $date;
+	private $date_edited;
+	private $image;
+	private $publish;
+	private $priority;
+	private $show_date;
+	private $delete_date;
+	
 	/**
-	 * @var int Unique content ID
+	 * Get all of the content items on a page
+	 * @param int $page_id
+	 * @param int $start
+	 * @param int $num
+	 * @return \Content
 	 */
-	var $content_id = 0;
+	public static function getByPage($page_id, $start = 0, $num = 0, $only_published = false) {
+		$query = sprintf('SELECT `id` FROM `%s` '
+				. 'WHERE `page` = :page %s ORDER BY `priority` DESC, `date` DESC, `id` DESC %s OFFSET %d',
+				NEWS_TABLE, ($only_published) ? 'AND `publish` = 1' : null,
+				($num) ? 'LIMIT '.$num : null, $start);
+		$results = DBConn::get()->query($query,
+				array(':page' => $page_id), DBConn::FETCH_ALL);
+		$items = array();
+		foreach ($results AS $result) {
+			$items[] = new Content($result['id']);
+		}
+		return $items;
+	}
+	
+	public static function getPublishedByPage($page_id, $start = 0, $num = 0) {
+		return Content::getByPage($page_id, $start, $num, true);
+	}
+	
+	public static function getContentIDsByPage($page_id, $only_published = false) {
+		$query = sprintf('SELECT `id` FROM `%s` '
+				. 'WHERE `page` = :page %s ORDER BY `priority` DESC, `date` DESC, `id` DESC',
+				NEWS_TABLE, ($only_published) ? 'AND `publish` = 1' : null);
+		$results = DBConn::get()->query($query,
+				array(':page' => $page_id), DBConn::FETCH_ALL);
+		$items = array();
+		foreach ($results AS $result) {
+			$items[] = $result['id'];
+		}
+		return $items;
+	}
+	
+	public function __construct($id) {
+		$result = DBConn::get()->query(sprintf('SELECT * FROM `%s` WHERE `id` = :id', NEWS_TABLE),
+				array(':id' => $id), DBConn::FETCH);
+		if (!$result) {
+			throw new ContentNotFoundException('Content not found');
+		}
+		$this->id = $id;
+		$this->page_id = $result['page'];
+		$this->title = $result['name'];
+		$this->content = $result['description'];
+		$this->author = $result['author'];
+		$this->date = $result['date'];
+		$this->date_edited = $result['date_edited'];
+		$this->image = $result['image'];
+		$this->publish = $result['publish'];
+		$this->priority = $result['priority'];
+		$this->show_date = $result['showdate'];
+		$this->delete_date = $result['delete_date'];
+	}
+	
 	/**
-	 * @var array Information about content from database
+	 * Get content ID
+	 * @return int
 	 */
-	var $content_info = array();
-	function __construct($content_id) {
-		if (!is_numeric($content_id)) {
-			return false;
-		}
-		$this->content_id = $content_id;
-		if (!$this->get_content_info()) {
-			return false;
-		}
+	public function getID() {
+		return $this->id;
 	}
-
-	private function get_content_info() {
-		global $db;
-		global $debug;
-		$content_info_query = 'SELECT * FROM `' . CONTENT_TABLE . '`
-			WHERE `content_id` = '.$this->content_id.' LIMIT 1';
-		$content_info_handle = $db->sql_query($content_info_query);
-		if ($db->error[$content_info_handle] === 1) {
-			$debug->addMessage('Failed to read from database',true);
-			return false;
-		}
-		if ($db->sql_num_rows($content_info_handle) === 0) {
-			$debug->addMessage('Content not found',true);
-			return false;
-		}
-		$content_info = $db->sql_fetch_assoc($content_info_handle);
-		$this->content_info = $content_info;
-		return true;
+	
+	/**
+	 * True if the item is published
+	 * @return boolean
+	 */
+	public function published() {
+		return (boolean) $this->published();
 	}
-
 }
-?>
+
+class ContentNotFoundException extends Exception {}

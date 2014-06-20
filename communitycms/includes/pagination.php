@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -22,7 +22,7 @@ function pagination($start, $num, $all_elements) {
 		$debug->addMessage('List of elements is not an array',true);
 		return false;
 	}
-	if (!is_int($start) || (int)$start < 0) {
+	if (!is_numeric($start) || (int)$start < 0) {
 		$debug->addMessage('Start number is not an integer or is an invalid integer',true);
 		return false;
 	}
