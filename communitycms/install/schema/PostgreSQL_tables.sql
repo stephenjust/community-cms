@@ -194,6 +194,7 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->news" (
 	"author" text,
 	"date" timestamp NOT NULL default CURRENT_TIMESTAMP,
 	"date_edited" timestamp NULL default NULL,
+	"delete_date" timestamp NULL default NULL,
 	"image" text,
 	"showdate" integer NOT NULL default '1',
 	"publish" integer NOT NULL default '1',
