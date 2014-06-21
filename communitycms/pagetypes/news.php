@@ -17,7 +17,6 @@ if (!defined('SECURITY')) {
 require_once(ROOT.'includes/acl/acl.php');
 require_once(ROOT.'includes/Content.class.php');
 require_once(ROOT.'includes/DBConn.class.php');
-require_once(ROOT.'pagetypes/news_class.php');
 
 function get_article_list($page, $start = 1) {
 	assert(is_numeric($page), 'Invalid page ID');
@@ -81,7 +80,7 @@ function format_content(Content $content) {
 	}
 
 	$date = strtotime($content->getDate());
-	$template_article->article_title = '<a href="view.php?article_id='.$content->getID().'" target="_blank">'.$article_title.'</a>';
+	$template_article->article_title = '<a href="index.php?showarticle='.$content->getID().'">'.$article_title.'</a>';
 	$template_article->article_title_nolink = $content->getTitle();
 	$template_article->article_content = $content->getContent();
 	$template_article->article_id = $content->getID();
@@ -131,10 +130,29 @@ if (acl::get()->check_permission('news_publish')) {
 
 // Handle first article offset value
 $start = (empty($_GET['start'])) ? 1 : $_GET['start'];
-$content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
 
 // Check for display mode
-if (isset($_GET['article'])) {
+if (isset($_GET['showarticle'])) {
+	Page::$showtitle = false;
+	try {
+		$c = new Content($_GET['showarticle']);
+		if (!$c->published() && !acl::get()->check_permission('news_fe_show_unpublished')) {
+			throw new ContentNotFoundException();
+		}
+		if ($c->getPage() != Page::$id) {
+			throw new ContentNotFoundException();
+		}
+	} catch (ContentNotFoundException $ex) {
+		header("HTTP/1.0 404 Not Found");
+		Page::$notification = 'The requested article does not exist.<br />'."\n";
+		Page::$title = 'Article not found';
+		Page::$exists = false;
+		return $return.' ';
+	}
+	$article_list = array($c);
+	$content_id_array = array($_GET['showarticle']);
+	Page::$title = $c->getTitle();
+} elseif (isset($_GET['article'])) {
 	try {
 		$c = new Content($_GET['article']);
 		if (!$c->published() && !acl::get()->check_permission('news_fe_show_unpublished')) {
@@ -152,8 +170,12 @@ if (isset($_GET['article'])) {
 	}
 	$article_pos = array_search($_GET['article'], $content_id_array);
 	$start = floor($article_pos / get_config('news_num_articles')) * get_config('news_num_articles') + 1;
+	$article_list = get_article_list(Page::$id, $start);
+	$content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
+} else {
+	$article_list = get_article_list(Page::$id, $start);
+	$content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
 }
-$article_list = get_article_list(Page::$id, $start);
 
 if (count($article_list) == 0) {
 	$return .= 'There are no articles to be displayed.';

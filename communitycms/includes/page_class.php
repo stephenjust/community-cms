@@ -164,21 +164,8 @@ class Page {
 
 		// Article Page
 		if (isset($_GET['showarticle'])) {
-			$debug->addMessage('Loading single article only',false);
-			Page::$id = 0;
-			Page::$text_id = NULL;
-			Page::$showtitle = false;
-			require(ROOT . 'pagetypes/news_class.php');
-			$article = new news_item;
-			$article->set_article_id((int)$_GET['showarticle']);
-			if (!$article->get_article()) {
-				header("HTTP/1.0 404 Not Found");
-				Page::$exists = false;
-				return;
-			}
-			Page::$title .= $article->article_title;
 			Page::$exists = true;
-			Page::$content = $article->article;
+			Page::$content = include(ROOT.'pagetypes/news.php');
 			return;
 		}
 

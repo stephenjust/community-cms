@@ -17,11 +17,7 @@ if (@SECURITY != 1) {
  * @return string URL
  */
 function article_url_nopage($id) {
-	if (!is_numeric($id)) {
-		return '#';
-	}
-
-	return 'view.php?article_id='.$id;
+	return articl_url_ownpage($id);
 }
 
 /**
@@ -58,4 +54,3 @@ function article_url_ownpage($id) {
 
 	return 'index.php?showarticle='.$id;
 }
-?>
