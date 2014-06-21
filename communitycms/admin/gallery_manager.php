@@ -32,7 +32,7 @@ function gallery_upload_box($gallery_id,$gallery_dir) {
 	}
 
 	$form = new form;
-	$form->set_target('?module=gallery_manager&amp;action=edit&amp;id='.$gallery_id);
+	$form->set_target('?module=gallery_manager&action=edit&id='.$gallery_id);
 	$form->set_method('post');
 	$form->add_file_upload('gallery_upload',$gallery_dir,true);
 	$form->add_submit('refresh','Refresh Page');
@@ -243,7 +243,7 @@ switch (get_config('gallery_app')) {
 		$tab_content['create'] = '';
 		$create_form = new form;
 		$create_form->set_method('post');
-		$create_form->set_target('?module=gallery_manager&amp;action=create');
+		$create_form->set_target('?module=gallery_manager&action=create');
 		$create_form->add_textbox('title','Title');
 		$create_form->add_textarea('description','Description',NULL,'class="mceNoEditor"');
 		$create_form->add_textbox('image_dir','Directory Name');

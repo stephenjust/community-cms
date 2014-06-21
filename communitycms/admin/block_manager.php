@@ -64,7 +64,7 @@ switch ($_GET['action']) {
 		$tab_content['edit'] = NULL;
 		$tab_content['edit'] .= 'Block Type: '.$edit_block->type.'<br />'."\n";
 		$tab_content['edit'] .= 'Options:<br />'."\n";
-		$tab_content['edit'] .= '<form method="post" action="?module=block_manager&amp;action=edit_save">'."\n"
+		$tab_content['edit'] .= '<form method="post" action="'.HTML::schars('?module=block_manager&action=edit_save').'">'."\n"
 			.$options.'<input type="hidden" name="id" value="'.$edit_id.'" />'."\n";
 		if (count($edit_block->attribute) != 0) {
 			$tab_content['edit'] .= '<input type="Submit" value="Save Changes" />';

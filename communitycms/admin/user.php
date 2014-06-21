@@ -100,7 +100,7 @@ $tab_layout->add_tab('Manage Users',$tab_content['manage']);
 
 if ($acl->check_permission('user_create')) {
 	$form = new form;
-	$form->set_target('admin.php?module=user&amp;action=create');
+	$form->set_target('admin.php?module=user&action=create');
 	$form->set_method('post');
 	$form->add_textbox('username','User Name');
 	$form->add_password('pass','Password');

@@ -64,7 +64,7 @@ switch ($_GET['action']) {
 		}
 		$newsletter_info = $db->sql_fetch_assoc($newsletter_info_handle);
 		$edit_form = new form;
-		$edit_form->set_target('admin.php?module=newsletter&amp;action=editsave');
+		$edit_form->set_target('admin.php?module=newsletter&action=editsave');
 		$edit_form->set_method('post');
 		$edit_form->add_textbox('label','Label',stripslashes($newsletter_info['label']));
 		$edit_form->add_hidden('id',$newsletter_info['id']);
@@ -148,7 +148,7 @@ $tab_layout->add_tab('Manage Newsletters',$tab_content['manage']);
 
 if ($acl->check_permission('newsletter_create')) {
 	$form = new form;
-	$form->set_target('admin.php?module=newsletter&amp;action=new');
+	$form->set_target('admin.php?module=newsletter&action=new');
 	$form->set_method('post');
 	$form->add_textbox('label','Label');
 	$form->add_file_list('file','File','newsletters');

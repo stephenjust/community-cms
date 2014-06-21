@@ -64,7 +64,7 @@ switch ($_GET['action']) {
 			$ev = new CalEvent($_GET['id']);
 			$form = new form;
 			$form->set_method('post');
-			$form->set_target('admin.php?module=calendar_edit_date&amp;action=edit');
+			$form->set_target('admin.php?module=calendar_edit_date&action=edit');
 			$form->add_hidden('author',HTML::schars($_SESSION['name']));
 			$form->add_hidden('id',$ev->getId());
 			$form->add_textbox('title', '*Heading:', $ev->getTitle());

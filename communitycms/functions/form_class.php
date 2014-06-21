@@ -7,6 +7,7 @@
  * @package CommunityCMS.main
  */
 
+require_once(ROOT.'includes/HTML.class.php');
 require_once(ROOT.'includes/ui/UISelectPageList.class.php');
 
 /**
@@ -30,7 +31,7 @@ class form {
 
 	}
 	function __toString() {
-		$this->form = '<form method="'.$this->method.'" action="'.$this->target.'" '.$this->enctype.'>
+		$this->form = '<form method="'.$this->method.'" action="'.HTML::schars($this->target).'" '.$this->enctype.'>
 			<table class="admintable">
 			<tr><td>'.$this->form.'</tr></td></table></form>';
 		return $this->form;

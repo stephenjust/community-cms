@@ -18,7 +18,8 @@ $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$
 /**#@+
  * Include necessary functions to complete tasks in this file
  */
-include(ROOT . 'pagetypes/calendar_class.php');
+require_once(ROOT.'include/HTML.class.php');
+require_once(ROOT.'pagetypes/calendar_class.php');
 /**#@-*/
 if ($view == NULL) {
 	$view = get_config('calendar_defualt_view');
@@ -69,9 +70,8 @@ switch ($view) {
 			AND `start` <= \''.$event_day_e.'\'
 			ORDER BY `start` ASC, `end` DESC';
 		$day_events_handle = $db->sql_query($day_events_query);
-		$page_content .=
-				sprintf('<a href="?%s&amp;view=month&amp;m=%u&amp;y=%u">Back to month view</a><br />'."\n",
-						Page::$url_reference,$month,$year);
+		$page_content .= HTML::link(sprintf('?%s&view=month&m=%u&y=%u',
+				Page::$url_reference, $month, $year), 'Back to month view').'<br />';
 		if ($db->error[$day_events_handle] === 1) {
 			$page_content .= 'Failed to read list of events from the database.';
 			break;

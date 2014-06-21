@@ -108,7 +108,7 @@ if ($_GET['action'] == 'edit') {
 		}
 	}
 	$form = new form;
-	$form->set_target('admin.php?module=filemanager&amp;action=saveinfo&amp;path='.$_GET['path']);
+	$form->set_target('admin.php?module=filemanager&action=saveinfo&path='.$_GET['path']);
 	$form->set_method('post');
 	$form->add_hidden('id',$file_info['id']);
 	$form->add_hidden('path',$file);

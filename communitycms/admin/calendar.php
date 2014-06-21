@@ -15,6 +15,7 @@ require_once(ROOT.'includes/acl/acl.php');
 require_once(ROOT.'includes/content/CalEvent.class.php');
 require_once(ROOT.'includes/content/CalLocation.class.php');
 require_once(ROOT.'includes/content/CalCategory.class.php');
+require_once(ROOT.'includes/HTML.class.php');
 acl::get()->require_permission('adm_calendar');
 
 // Save form information from previously created entry
@@ -228,14 +229,12 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 		<td>'.date(get_config('time_format'),$starttime).'</td>
 		<td>'.date(get_config('time_format'),$endtime).'</td>
 		<td>'.$cal['header'].'</td>
-		<td><a href="admin.php?module=calendar_edit_date&amp;id='.$cal['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px"
-		height="16px" border="0px" /></a></td>
-		<td><a href="javascript:confirm_delete(\'admin.php?module=calendar&amp;'.
-			'action=delete&amp;date_del='.$cal['id'].'&amp;month='.
-			date('m',strtotime($cal['start'])).'&amp;year='.date('Y',strtotime($cal['start'])).'\')">
-		<img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px"
-		height="16px" border="0px" /></a></td></tr>';
+		<td>'.HTML::link(sprintf('admin.php?module=calendar_edit_date&id=%d', $cal['id']),
+				HTML::templateImage('edit.png', 'Edit', null, 'width: 16px; height: 16px; border: 0;')).'</td>
+		<td>'.HTML::link(sprintf("javascript:confirm_delete('admin.php?module=calendar&action=delete&date_del=%d&month=%d&year=%d')",
+				$cal['id'], date('m', strtotime($cal['start'])), date('Y', strtotime($cal['start']))),
+				HTML::templateImage('delete.png', 'Delete', null, 'width: 16px; height: 16px; border: 0;')).
+		'</td></tr>';
 	if ($rowcount == 1) {
 		$rowcount = 2;
 	} else {
@@ -248,7 +247,7 @@ $tab_layout->add_tab('Manage Events',$tab_content['manage']);
 // ----------------------------------------------------------------------------
 
 $form_create = new form;
-$form_create->set_target('admin.php?module=calendar&amp;action=new');
+$form_create->set_target('admin.php?module=calendar&action=new');
 $form_create->set_method('post');
 $form_create->add_hidden('author',$_SESSION['name']);
 $form_create->add_textbox('title','Heading*',$_POST['title']);
@@ -287,7 +286,7 @@ if (acl::get()->check_permission('calendar_settings')) {
 	$tab_content['settings'] = '<h1>Calendar Settings</h1>';
 	$settings_form = new form;
 	$settings_form->set_method('post');
-	$settings_form->set_target('?module=calendar&amp;action=save_settings');
+	$settings_form->set_target('?module=calendar&action=save_settings');
 	$settings_form->add_select('default_view','Default View',array('month','day'),array('Current Month','Current Day'),get_config('calendar_default_view'));
 	$settings_form->add_checkbox('month_show_stime','Show Start Time on Month Calendar',get_config('calendar_month_show_stime'));
 	$settings_form->add_checkbox('month_show_cat_icons','Show Category Icons on Month Calendar',get_config('calendar_month_show_cat_icons'));
@@ -401,7 +400,7 @@ if (acl::get()->check_permission('adm_calendar_import')) {
 	$tab_content['import'] .= '<h1>Add Source</h1>';
 	$add_src_form = new form;
 	$add_src_form->set_method('post');
-	$add_src_form->set_target('?module=calendar&amp;action=new_source');
+	$add_src_form->set_target('?module=calendar&action=new_source');
 	$add_src_form->add_textbox('desc','Description');
 	$add_src_form->add_textbox('url','Location');
 	$add_src_form->add_submit('submit','Add Source');

@@ -91,7 +91,7 @@ switch ($_GET['action']) {
 			// Create form
 			$edit_form = new form;
 			$edit_form->set_method('post');
-			$edit_form->set_target('admin.php?module=contacts_manage&amp;action=editsave&amp;id='.$c->getId());
+			$edit_form->set_target('admin.php?module=contacts_manage&action=editsave&id='.$c->getId());
 			$edit_form->add_textbox('name','Name',$c->getName());
 			$edit_form->add_textbox('username','Username (optional)',$c->getUsername());
 			$edit_form->add_textbox('title','Title',$c->getTitle());
@@ -193,7 +193,7 @@ $tab_layout->add_tab('Contact Lists',$tab_content['manage_lists']);
 
 $new_form = new form;
 $new_form->set_method('post');
-$new_form->set_target('admin.php?module=contacts_manage&amp;action=create');
+$new_form->set_target('admin.php?module=contacts_manage&action=create');
 $new_form->add_textbox('name','Name');
 $new_form->add_textbox('username','Username (optional)');
 $new_form->add_textbox('title','Title');

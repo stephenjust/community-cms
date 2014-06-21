@@ -66,7 +66,7 @@ $tab_layout = new tabs;
 
 $tab_content['config'] = NULL;
 $form = new form;
-$form->set_target('admin.php?module=site_config&amp;action=save');
+$form->set_target('admin.php?module=site_config&action=save');
 $form->set_method('post');
 $form->add_heading('General Settings');
 $form->add_textbox('site_name','Site Name',get_config('site_name'));

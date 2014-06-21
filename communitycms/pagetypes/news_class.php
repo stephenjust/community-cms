@@ -144,7 +144,7 @@ class news_item {
 		if (!$acl->check_permission('pagegroupedit-'.$page_group_id)) {
 			$editbar->visible = false;
 		}
-		$editbar->add_control('admin.php?module=news&action=edit&amp;id='.$article['id'],
+		$editbar->add_control(sprintf('admin.php?module=news&action=edit&id=%d', $article['id']),
 				'edit.png',
 				'Edit',
 				array('news_edit','adm_news','admin_access'));

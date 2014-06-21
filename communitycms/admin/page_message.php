@@ -73,7 +73,7 @@ $tab_layout->add_tab('Manage Page Messages',$tab_content['manage']);
 // Form to create new page message
 if (acl::get()->check_permission('page_message_new')) {
 	$form = new form;
-	$form->set_target('admin.php?module=page_message&amp;action=create');
+	$form->set_target('admin.php?module=page_message&action=create');
 	$form->set_method('post');
 	$form->add_textarea('text','Content',NULL,'rows="30"');
 	$form->add_page_list('page', 'Page');

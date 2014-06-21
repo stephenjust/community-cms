@@ -177,7 +177,7 @@ switch ($_GET['action']) {
 		$edit = $db->sql_fetch_assoc($edit_handle);
 		$edit_form = new form;
 		$edit_form->set_method('post');
-		$edit_form->set_target('admin.php?module=news&amp;action=editsave');
+		$edit_form->set_target('admin.php?module=news&action=editsave');
 		$edit_form->add_hidden('id',$edit['id']);
 		$edit_form->add_textbox('title','Heading',$edit['name']);
 		$edit_form->add_textarea('update_content','Content',$edit['description']);
@@ -255,7 +255,7 @@ $tab_layout->add_tab('Manage News',$tab_content['manage']);
 
 if (acl::get()->check_permission('news_create')) {
 	$form = new form;
-	$form->set_target('admin.php?module=news&amp;action=new');
+	$form->set_target('admin.php?module=news&action=new');
 	$form->set_method('post');
 	$form->add_textbox('title','Heading');
 	$form->add_hidden('author',$_SESSION['name']);

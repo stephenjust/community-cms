@@ -109,7 +109,7 @@ $tab_layout->add_tab('Manage Polls',$tab_content['manage']);
 
 if ($acl->check_permission('poll_create')) {
 	$form = new form;
-	$form->set_target('admin.php?module=poll_manager&amp;action=new');
+	$form->set_target('admin.php?module=poll_manager&action=new');
 	$form->set_method('post');
 	$form->add_hidden('author',$_SESSION['name']);
 	$form->add_textbox('question', 'Question');
