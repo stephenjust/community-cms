@@ -1,0 +1,17 @@
+{
+	"name": "stephenjust/community-cms",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/stephenjust/community-cms"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0",
+		"ext-gd": "*",
+		"smarty/smarty": "3.1.*"
+	},
+	"autoload": {
+		"psr-4": {"ComCMS\\": "classes/"}
+	}
+}
