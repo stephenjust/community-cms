@@ -9,7 +9,9 @@
 	"require": {
 		"php": ">=5.4.0",
 		"ext-gd": "*",
-		"smarty/smarty": "3.1.*"
+		"ext-mysqli": "*",
+		"smarty/smarty": "3.1.*",
+		"tinymce/tinymce": "4.1.*"
 	},
 	"autoload": {
 		"psr-4": {"ComCMS\\": "classes/"}
