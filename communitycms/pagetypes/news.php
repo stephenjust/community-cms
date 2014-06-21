@@ -57,7 +57,7 @@ function format_content(Content $content) {
 	if (!acl::get()->check_permission('pagegroupedit-'.$page_group_id)) {
 		$editbar->visible = false;
 	}
-	$editbar->add_control('admin.php?module=news&amp;action=edit&amp;id='.$content->getID(),
+	$editbar->add_control('admin.php?module=news&action=edit&amp;id='.$content->getID(),
 			'edit.png',
 			'Edit',
 			array('news_edit','adm_news','admin_access'));
@@ -66,11 +66,11 @@ function format_content(Content $content) {
 	$query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', null, $_SERVER['QUERY_STRING']);
 	if ($content->published()) {
 		// Currently published
-		$editbar->add_control('index.php?'.$query_string.'&amp;unpublish='.$content->getID(),
+		$editbar->add_control('index.php?'.$query_string.'&unpublish='.$content->getID(),
 				'unpublish.png','Unpublish',array('news_publish'));
 	} else {
 		// Currently unpublished
-		$editbar->add_control('index.php?'.$query_string.'&amp;publish='.$content->getID(),
+		$editbar->add_control('index.php?'.$query_string.'&publish='.$content->getID(),
 			'publish.png','Publish',array('news_publish'));
 	}
 	$template_article->edit_bar = $editbar;

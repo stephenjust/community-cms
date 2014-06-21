@@ -622,7 +622,7 @@ class Page {
 			if (Page::$page_group !== 0) {
 				$permission_list[] = 'pagegroupedit-'.Page::$page_group;
 			}
-			$edit_bar->add_control('admin.php?module=page&amp;action=edit&amp;id='.Page::$id,
+			$edit_bar->add_control('admin.php?module=page&action=edit&id='.Page::$id,
 					'edit.png','Edit',$permission_list);
 			unset($permission_list);
 		}

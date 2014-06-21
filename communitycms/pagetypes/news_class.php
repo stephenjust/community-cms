@@ -144,7 +144,7 @@ class news_item {
 		if (!$acl->check_permission('pagegroupedit-'.$page_group_id)) {
 			$editbar->visible = false;
 		}
-		$editbar->add_control('admin.php?module=news&amp;action=edit&amp;id='.$article['id'],
+		$editbar->add_control('admin.php?module=news&action=edit&amp;id='.$article['id'],
 				'edit.png',
 				'Edit',
 				array('news_edit','adm_news','admin_access'));
@@ -153,11 +153,11 @@ class news_item {
 		$query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', NULL, $_SERVER['QUERY_STRING']);
 		if ($article['publish'] == '1') {
 			// Currently published
-			$editbar->add_control('index.php?'.$query_string.'&amp;unpublish='.$article['id'],
+			$editbar->add_control('index.php?'.$query_string.'&unpublish='.$article['id'],
 					'unpublish.png','Unpublish',array('news_publish'));
 		} else {
 			// Currently unpublished
-			$editbar->add_control('index.php?'.$query_string.'&amp;publish='.$article['id'],
+			$editbar->add_control('index.php?'.$query_string.'&publish='.$article['id'],
 				'publish.png','Publish',array('news_publish'));
 		}
 		$template_article->edit_bar = $editbar;
