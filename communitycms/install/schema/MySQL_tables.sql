@@ -128,13 +128,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->logs` (
 	PRIMARY KEY  (`log_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->messages` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`recipient` INT(5) NOT NULL DEFAULT '1',
-	`message` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
-) ENGINE = MYISAM CHARACTER SET=utf8;
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->news` (
 	`id` int(11) NOT NULL auto_increment,
 	`page` int(11) UNSIGNED default NULL,

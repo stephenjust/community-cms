@@ -686,17 +686,6 @@ class Page {
 			unset($template_loginbox);
 		} else {
 			$return = $_SESSION['name']."<br />\n".HTML::link('index.php?'.$_SERVER['QUERY_STRING'].'&login=2','Log Out')."<br />\n";
-			$check_message_query = 'SELECT * FROM ' . MESSAGE_TABLE . '
-				WHERE recipient = '.$_SESSION['userid'];
-			$check_message_handle = $db->sql_query($check_message_query);
-			if (!$check_message_handle) {
-				$return .= 'Could not check messages.';
-			} else {
-				$check_message = $db->sql_num_rows($check_message_handle);
-				$return .= '<a href="messages.php">'.$check_message." new messages</a><br />\n";
-			}
-			unset($check_message_handle);
-			unset($check_message_query);
 			$return .= HTML::link('index.php?id=change_password','Change Password')."<br />\n";
 			if ($acl->check_permission('admin_access')) {
 				$return .= HTML::link('admin.php','Admin');

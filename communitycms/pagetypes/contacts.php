@@ -1,7 +1,7 @@
 <?php
 /**
  * Community CMS
- * @copyright Copyright (C) 2007-2011 Stephen Just
+ * @copyright Copyright (C) 2007-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -12,46 +12,9 @@ if (@SECURITY != 1) {
 
 require_once(ROOT.'includes/content/Contact.class.php');
 
-global $db;
-
 $c_list = Contact::getList(Page::$id);
 
 $content = NULL;
-if (!isset($_GET['message'])) {
-	$_GET['message'] = '';
-}
-if (!isset($_GET['action'])) {
-	$_GET['action'] = '';
-}
-if($_GET['message'] != '') {
-	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
-	header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0"); // HTTP/1.1
-	header("Cache-Control: post-check=0, pre-check=0", false);
-	header("Pragma: no-cache"); // HTTP/1.0
-	$content .= '<form method="POST" action="index.php?'.Page::$url_reference.'&action=send">
-<input type="hidden" name="recipient" value="'.(int)$_GET['message'].'" />
-Message to user:<br />
-<textarea name="message" rows="5" cols="50"></textarea><br />
-<input type="submit" value="Send Message" />
-</form><form method="POST" action="index.php?'.Page::$url_reference.'"><input type="submit" value="Cancel" /></form>';
-}
-if($_GET['action'] == 'send') {
-	$message = addslashes($_POST['message']);
-	if (strlen($message) <= 10) {
-		$content .= 'Your message was too short.';
-	} else {
-		$recipient = (int)$_POST['recipient'];
-		$message_query = 'INSERT INTO ' . MESSAGE_TABLE . "
-			(recipient,message) VALUES ($recipient,'$message')";
-		$message_handle = $db->sql_query($message_query);
-		if ($db->error[$message_handle] === 1) {
-			$content .= 'An error occured. Falied to send message.';
-		} else {
-			$content .= 'Message sent.';
-		}
-	}
-}
 if (count($c_list) == 0) {
 	$content .= 'There are no contacts.';
 	return $content;
@@ -77,11 +40,7 @@ for ($i = 0; $i < count($c_list); $i++) {
 	$contact = new Contact($c_list[$i]);
 
 	// Prepare contact information
-	if ($contact->getUserId() != 0) {
-		$realname = '<a href="index.php?'.Page::$url_reference.'&message='.$contact->getUserId().'">'.$contact->getName().'</a>';
-	} else {
-		$realname = $contact->getName();
-	}
+	$realname = $contact->getName();
 	$contact_title = $contact->getTitle();
 	if (strlen($contact->getEmail()) == 0) {
 		$contact_email = NULL;
@@ -136,4 +95,3 @@ $content .= (string)$contact_template_foot;
 unset($contact_template_foot);
 
 return $content;
-?>

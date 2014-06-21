@@ -170,18 +170,6 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->logs" (
 SELECT setval('<!-- $DB_PREFIX$ -->logs_id_seq', (SELECT max("log_id") FROM "<!-- $DB_PREFIX$ -->logs"));
 
 -- ----------------------------------------------------------------------------
--- comcms_messages
--- ----------------------------------------------------------------------------
-CREATE SEQUENCE "<!-- $DB_PREFIX$ -->messages_id_seq";
-CREATE TABLE "<!-- $DB_PREFIX$ -->messages" (
-	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->messages_id_seq'),
-	"recipient" integer NOT NULL DEFAULT '1',
-	"message" text NOT NULL,
-	PRIMARY KEY ("id")
-);
-SELECT setval('<!-- $DB_PREFIX$ -->messages_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->messages"));
-
--- ----------------------------------------------------------------------------
 -- comcms_news
 -- ----------------------------------------------------------------------------
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->news_id_seq";
