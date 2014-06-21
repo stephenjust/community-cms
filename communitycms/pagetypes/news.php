@@ -30,7 +30,87 @@ function get_article_list($page, $start = 1) {
 	}
 }
 
-global $db;
+function format_content(Content $content) {
+	assert($content->getID());
+	
+	$template_article = new template;
+	$template_article->load_file('article');
+	if (!empty($content->getImage())) {
+		$im_file = new File($content->getImage());
+		$im_info = $im_file->getInfo();
+		$template_article->article_image = HTML::image('./files/'.$content->getImage(), $im_info['label'], 'news_image');
+	} else {
+		$template_article->article_image = null;
+	}
+
+	if ($content->isDateVisible()) {
+		$template_article->full_date_start = null;
+		$template_article->full_date_end = null;
+	} else {
+		$template_article->replace_range('full_date', null);
+	}
+
+	// Edit bar permission check
+	$editbar = new editbar;
+	$editbar->set_label('Article');
+	$page_group_id = page_group_news($content->getID());
+	if (!acl::get()->check_permission('pagegroupedit-'.$page_group_id)) {
+		$editbar->visible = false;
+	}
+	$editbar->add_control('admin.php?module=news&amp;action=edit&amp;id='.$content->getID(),
+			'edit.png',
+			'Edit',
+			array('news_edit','adm_news','admin_access'));
+
+	// Get current url
+	$query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', null, $_SERVER['QUERY_STRING']);
+	if ($content->published()) {
+		// Currently published
+		$editbar->add_control('index.php?'.$query_string.'&amp;unpublish='.$content->getID(),
+				'unpublish.png','Unpublish',array('news_publish'));
+	} else {
+		// Currently unpublished
+		$editbar->add_control('index.php?'.$query_string.'&amp;publish='.$content->getID(),
+			'publish.png','Publish',array('news_publish'));
+	}
+	$template_article->edit_bar = $editbar;
+
+	$article_title = $content->getTitle();
+	if (!$content->published()) {
+		$article_title .= ' <span class="news_not_published_label">NOT PUBLISHED</span>';
+	}
+
+	$date = strtotime($content->getDate());
+	$template_article->article_title = '<a href="view.php?article_id='.$content->getID().'" target="_blank">'.$article_title.'</a>';
+	$template_article->article_title_nolink = $content->getTitle();
+	$template_article->article_content = $content->getContent();
+	$template_article->article_id = $content->getID();
+	$template_article->article_date_month = date('m', $date);
+	$template_article->article_date_month_text = strtoupper(date('M', $date));
+	$template_article->article_date_day = date('j', $date);
+	$template_article->article_date_year = date('Y', $date);
+	$template_article->article_date = date('d-m-Y', $date);
+	if (get_config('news_show_author') == 0) {
+		$template_article->replace_range('article_author', null);
+	} else {
+		$template_article->article_author = $content->getAuthor();
+	}
+
+	// Remove info div entirely if author and date are hidden
+	if (!get_config('news_show_author') && !$content->isDateVisible()) {
+		$template_article->replace_range('article_details', null);
+	} else {
+		$template_article->article_details_start = null;
+		$template_article->article_details_end = null;
+	}
+
+	$template_article->replace_variable('article_url_onpage','article_url_onpage($a);');
+	$template_article->replace_variable('article_url_ownpage','article_url_ownpage($a);');
+	$template_article->replace_variable('article_url_nopage','article_url_nopage($a);');
+
+	return (string) $template_article;
+}
+
 global $debug;
 $return = NULL;
 
@@ -81,12 +161,7 @@ if (count($article_list) == 0) {
 }
 
 foreach ($article_list AS $article_record) {
-	$article = new news_item;
-	$article->set_article_id($article_record->getID());
-	$article->get_article();
-	$last_article_date = $article->date;
-	$return .= $article."\n\n";
-	unset($article);
+	$return .= format_content($article_record)."\n\n";
 }
 
 // Paginate

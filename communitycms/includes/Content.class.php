@@ -99,11 +99,59 @@ class Content {
 	}
 	
 	/**
+	 * Get content title
+	 * @return string
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
+	
+	/**
+	 * Get content body
+	 * @return string
+	 */
+	public function getContent() {
+		return $this->content;
+	}
+	
+	/**
+	 * Get content author
+	 * @return string
+	 */
+	public function getAuthor() {
+		return $this->author;
+	}
+	
+	/**
+	 * Get content image
+	 * @return string 
+	 */
+	public function getImage() {
+		return str_replace('./files/', null, $this->image);
+	}
+	
+	/**
+	 * Get content's creation date
+	 * @return string
+	 */
+	public function getDate() {
+		return $this->date;
+	}
+	
+	/**
 	 * True if the item is published
 	 * @return boolean
 	 */
 	public function published() {
 		return (boolean) $this->publish;
+	}
+	
+	/**
+	 * True if the date should be visible
+	 * @return boolean
+	 */
+	public function isDateVisible() {
+		return (bool) $this->show_date;
 	}
 }
 
