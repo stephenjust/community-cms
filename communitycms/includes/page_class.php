@@ -626,13 +626,16 @@ class Page {
 
 		if (Page::$type != 'special.php') {
 			$page_message = Page::getPageMessages();
+			if ($page_message) {
+				$template->page_message = $page_message;
+				$template->page_message_start = null;
+				$template->page_message_end = null;
+			} else {
+				$template->replace_range('page_message', null);
+			}
 		} else {
-			$page_message = NULL;
+			$template->replace_range('page_message', null);
 		}
-		$template->page_message = $page_message;
-		$template->page_message_start = NULL;
-		$template->page_message_end = NULL;
-
 		$template->content = Page::get_page_content();
 
 		// This must be done after $template->content is set because the
