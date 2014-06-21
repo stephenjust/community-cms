@@ -1,14 +1,14 @@
 # Exclude /config.php
-/communitycms/config.php
+/config.php
 
 # Exclude all contents of /files/ except /files/newsicons
-/communitycms/files/
-!/communitycms/files/newsicons/
-!/communitycms/files/newsletters/
+/files/
+!/files/newsicons/
+!/files/newsletters/
 
 # Exclude TinyMCE cache files
-/communitycms/scripts/tiny_mce/tiny_mce_*.gz
-/communitycms/simpleviewer/
+/scripts/tiny_mce/tiny_mce_*.gz
+/simpleviewer/
 
 # Exclude Composer vendor files
 /vendor/

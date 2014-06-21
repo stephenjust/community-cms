@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>SimpleViewer Gallery</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+		<script type="text/javascript">
+			var flashvars = {};
+			flashvars.galleryURL = "compact.xml";
+			var params = {};			
+			params.allowfullscreen = true;
+			params.allowscriptaccess = "always";
+			params.bgcolor = "FFFFFF";
+			swfobject.embedSWF("simpleviewer.swf", "flashContent", "600", "550", "9.0.124", false, flashvars, params);
+		</script>
+		
+		<style type="text/css" media="screen">	
+			html, body	{ height:100%; }
+			body {			
+				margin:0;
+				padding:0;
+				overflow:auto;
+				background-color: #DDD;
+				color:#333;
+				font-family:sans-serif;
+				font-size:20px;		
+			}
+			a {	
+				color:#ff0000;	
+			}
+		</style>
+		
+	</head><body><div id="flashContent">SimpleViewer requires JavaScript and the Flash Player. <a href="http://get.adobe.com/flashplayer/">Get Flash</a></div></body>
+</html>
