@@ -17,7 +17,7 @@ if (!$acl->check_permission('adm_contacts_manage'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
 require_once(ROOT.'includes/content/Contact.class.php');
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 
 // ----------------------------------------------------------------------------
 

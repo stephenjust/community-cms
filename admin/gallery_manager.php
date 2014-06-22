@@ -84,7 +84,7 @@ function gallery_photo_manager($gallery_id) {
 
 // ----------------------------------------------------------------------------
 
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 
 // Check to make sure a gallery application is selected
 if (get_config('gallery_app') == 'disabled' || get_config('gallery_app') == NULL)

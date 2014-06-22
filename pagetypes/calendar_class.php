@@ -119,7 +119,7 @@ class calendar_event {
 		$template_event->event_heading = stripslashes($event_info['header']);
 		
 		// Insert edit bar
-		$editbar = new editbar;
+		$editbar = new EditBar;
 		$editbar->set_label('Event');
 		if (!$acl->check_permission('adm_calendar_edit_date'))
 			$editbar->visible = false;

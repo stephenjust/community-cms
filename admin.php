@@ -14,6 +14,8 @@ DEFINE('SECURITY',1);
 DEFINE('ADMIN',1);
 define('ROOT','./');
 
+require_once('vendor/autoload.php');
+
 // Load required includes
 require(ROOT.'functions/error.php');
 require(ROOT.'config.php');

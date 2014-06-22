@@ -62,7 +62,7 @@ if ($_GET['action'] == 'save') {
 
 // ----------------------------------------------------------------------------
 
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 
 $tab_content['config'] = NULL;
 $form = new form;

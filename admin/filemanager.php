@@ -88,7 +88,7 @@ if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 
 // ----------------------------------------------------------------------------
 
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 if ($_GET['action'] == 'edit') {
 	$tab_content['edit'] = NULL;
 	$file = $db->sql_escape_string($_GET['path'].'/'.$_GET['file']);

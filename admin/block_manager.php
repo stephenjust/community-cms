@@ -16,7 +16,7 @@ global $acl;
 if (!$acl->check_permission('adm_block_manager'))
 	throw new AdminException('You do not have the necessary permissions to access this module.');
 
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 
 switch ($_GET['action']) {
 	default:

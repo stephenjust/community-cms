@@ -58,7 +58,7 @@ if ($view_all == false) {
 	$tab_content['view'] .= '<form method="POST" action="?module=log_view&amp;action=viewall">'."\n".
 		'<input type="submit" value="View All Logs" /></form>'."\n";
 }
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 $tab_layout->add_tab('View Log Messages',$tab_content['view']);
 
 if ($acl->check_permission('log_clear')) {

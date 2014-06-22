@@ -40,7 +40,7 @@ function get_selected_items($prefix = 'item') {
 
 // ----------------------------------------------------------------------------
 
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 
 switch ($_GET['action']) {
 	default:

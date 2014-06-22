@@ -15,7 +15,6 @@ if (!defined('SECURITY')) {
 }
 
 require_once(ROOT.'includes/acl/acl.php');
-require_once(ROOT.'includes/Content.class.php');
 require_once(ROOT.'includes/DBConn.class.php');
 
 function get_article_list($page, $start = 1) {
@@ -50,7 +49,7 @@ function format_content(Content $content) {
 	}
 
 	// Edit bar permission check
-	$editbar = new editbar;
+	$editbar = new EditBar;
 	$editbar->set_label('Article');
 	$page_group_id = page_group_news($content->getID());
 	if (!acl::get()->check_permission('pagegroupedit-'.$page_group_id)) {

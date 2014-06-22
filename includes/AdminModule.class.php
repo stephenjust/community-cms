@@ -21,7 +21,7 @@ abstract class AdminModule {
 		if (!$acl->check_permission($this->permission))
 			throw new AdminUnauthorizedException('You do not have the necessary permissions to access this module.');
 		
-		$this->layout = new tabs;
+		$this->layout = new Tabs;
 	}
 	
 	/**

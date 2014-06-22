@@ -37,7 +37,7 @@ for ($i = 1; $i <= $num_entries; $i++) {
 }
 
 // Draw the interface
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 $tab_layout->add_tab('View Configuration',create_table(array('Name','Value'),$config_table_values));
 
 echo $tab_layout;

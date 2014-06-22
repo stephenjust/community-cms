@@ -14,6 +14,7 @@
 		"tinymce/tinymce": "4.1.*"
 	},
 	"autoload": {
-		"psr-4": {"ComCMS\\": "classes/"}
+		"classmap": ["includes/"],
+		"files": []
 	}
 }

@@ -56,7 +56,7 @@ switch ($_GET['action']) {
 		break;
 }
 
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 
 // ----------------------------------------------------------------------------
 

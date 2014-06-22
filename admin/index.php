@@ -29,7 +29,7 @@ if ($_GET['action'] == 'new_log') {
 
 // ----------------------------------------------------------------------------
 
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 $tab_content['activity'] = NULL;
 // Display log messages
 $messages = Log::getLastMessages(5);

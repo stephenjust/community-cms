@@ -14,26 +14,13 @@ if(!preg_match('#^[\/\\\\\.]+$#',ROOT)) {
     die ('Invalid ROOT value.');
 }
 require_once(ROOT.'functions/main.php');
-require_once(ROOT.'includes/HTML.class.php');
 require_once(ROOT.'includes/constants.php');
 require_once(ROOT.'includes/db/db.php');
-require_once(ROOT.'controllers/LoginController.class.php');
-require_once(ROOT.'includes/PageManager.class.php');
 require_once(ROOT.'includes/template.php');
 require_once(ROOT.'includes/widget.class.php');
 require_once(ROOT.'functions/article.php');
 require_once(ROOT.'includes/page.php');
 require_once(ROOT.'includes/page_class.php');
-require_once(ROOT.'includes/Content.class.php');
-require_once(ROOT.'includes/Gallery.class.php');
-require_once(ROOT.'includes/Poll.class.php');
-require_once(ROOT.'includes/Log.class.php');
-require_once(ROOT.'includes/EditBar.class.php');
-require_once(ROOT.'includes/AdminModule.class.php');
-require_once(ROOT.'includes/File.class.php');
-require_once(ROOT.'includes/Image.class.php');
-require_once(ROOT.'includes/Tabs.class.php');
-require_once(ROOT.'includes/Block.class.php');
 require_once(ROOT.'functions/blocks.php');
 require_once(ROOT.'functions/files.php');
 require_once(ROOT.'functions/forms.php');

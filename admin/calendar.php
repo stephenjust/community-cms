@@ -187,7 +187,7 @@ if (isset($_POST['year'])) {
 } else {
 	$_POST['year'] = date('Y');
 }
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 $tab_content['manage'] = '<form method="post" action="?module=calendar"><select name="month">';
 $months = array('January','February','March','April','May','June','July',
 	'August','September','October','November','December');

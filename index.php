@@ -11,6 +11,8 @@
 define('SECURITY',1);
 define('ROOT','./');
 
+require_once('vendor/autoload.php');
+
 // Load error handling code
 require_once('./functions/error.php');
 // Load database configuration

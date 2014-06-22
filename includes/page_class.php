@@ -601,7 +601,7 @@ class Page {
 		}
 
 		// Display page edit bar
-		$edit_bar = new editbar;
+		$edit_bar = new EditBar();
 		$edit_bar->set_label('Page');
 		$edit_bar->class = 'edit_bar page_edit_bar';
 		if (Page::$id != 0) {

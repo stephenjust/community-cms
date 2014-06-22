@@ -48,7 +48,7 @@ catch (Exception $e) {
 
 // ----------------------------------------------------------------------------
 
-$tab_layout = new tabs;
+$tab_layout = new Tabs;
 $tab_content['manage'] = '
 	<select id="adm_page_message_page_list" name="page" onChange="update_page_message_list(\'-\')">';
 $page_query = 'SELECT * FROM ' . PAGE_TABLE . ' ORDER BY list ASC';
