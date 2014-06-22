@@ -11,12 +11,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 	die ('You cannot access this page directly.');
 }
 
-global $acl;
+acl::get()->require_permission('adm_contacts_manage');
 
-if (!$acl->check_permission('adm_contacts_manage'))
-	throw new AdminException('You do not have the necessary permissions to access this module.');
-
-require_once(ROOT.'includes/content/Contact.class.php');
 $tab_layout = new Tabs;
 
 // ----------------------------------------------------------------------------
@@ -75,8 +71,7 @@ switch ($_GET['action']) {
 					$_POST['title'],
 					$_POST['phone'],
 					$_POST['address'],
-					$_POST['email'],
-					$_POST['username']);
+					$_POST['email']);
 			echo 'Successfully created contact.<br />'."\n";
 		}
 		catch (ContactException $e) {
@@ -93,7 +88,6 @@ switch ($_GET['action']) {
 			$edit_form->set_method('post');
 			$edit_form->set_target('admin.php?module=contacts_manage&action=editsave&id='.$c->getId());
 			$edit_form->add_textbox('name','Name',$c->getName());
-			$edit_form->add_textbox('username','Username (optional)',$c->getUsername());
 			$edit_form->add_textbox('title','Title',$c->getTitle());
 			$edit_form->add_textbox('phone','Telephone',$c->getPhone());
 			$edit_form->add_textbox('address','Address',$c->getAddress());
@@ -117,8 +111,7 @@ switch ($_GET['action']) {
 					$_POST['title'],
 					$_POST['phone'],
 					$_POST['address'],
-					$_POST['email'],
-					$_POST['username']);
+					$_POST['email']);
 			echo 'Successfully edited contact.<br />';
 		}
 		catch (ContactException $e) {
@@ -195,7 +188,6 @@ $new_form = new form;
 $new_form->set_method('post');
 $new_form->set_target('admin.php?module=contacts_manage&action=create');
 $new_form->add_textbox('name','Name');
-$new_form->add_textbox('username','Username (optional)');
 $new_form->add_textbox('title','Title');
 $new_form->add_textbox('phone','Telephone');
 $new_form->add_textbox('address','Address');
@@ -206,5 +198,3 @@ $tab_content['create'] = $new_form;
 $tab_layout->add_tab('Create Contact',$tab_content['create']);
 
 echo $tab_layout;
-
-?>

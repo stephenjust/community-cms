@@ -14,8 +14,6 @@ class Contact {
 	private $mEmail;
 	private $mAddress;
 	private $mTitle;
-	private $mUser;
-	private $mUserId;
 	
 	/**
 	 * Load a contact record
@@ -27,11 +25,9 @@ class Contact {
 		global $db;
 
 		$id = (int)$id;
-		$query = 'SELECT `c`.*, `u`.`username`
-			FROM `'.CONTACTS_TABLE.'` `c`
-			LEFT JOIN `'.USER_TABLE.'` `u`
-			ON `c`.`user_id` = `u`.`id`
-			WHERE `c`.`id` = '.$id.' LIMIT 1';
+		$query = 'SELECT *
+			FROM `'.CONTACTS_TABLE.'`
+			WHERE `id` = '.$id.' LIMIT 1';
 		$handle = $db->sql_query($query);
 		if ($db->error[$handle] === 1)
 			throw new ContactException('Error reading contact information.');
@@ -44,25 +40,18 @@ class Contact {
 		$this->mPhone = $contact['phone'];
 		$this->mEmail = $contact['email'];
 		$this->mAddress = $contact['address'];
-		$this->mUser = $contact['username'];
-		$this->mUserId = $contact['user_id'];
 		$this->mTitle = $contact['title'];
 	}
 
 	/**
 	 * Add contact to a contact list
-	 * @global acl $acl
 	 * @global db $db
 	 * @param integer $list_id
 	 * @throws ContactException
 	 */
 	public function addToList($list_id) {
-		global $acl;
 		global $db;
-
-		// Check permissions
-		if (!$acl->check_permission('contacts_edit_lists'))
-			throw new ContactException('You are not allowed to edit contact lists.');
+		acl::get()->require_permission('contacts_edit_lists');
 
 		// Check for invalid parameters
 		if (!is_numeric($list_id))
@@ -106,36 +95,30 @@ class Contact {
 	
 	/**
 	 * Create a contact record
-	 * @global acl $acl
 	 * @global db $db
 	 * @param string $name
 	 * @param string $title
 	 * @param string $phone
 	 * @param string $address
 	 * @param string $email
-	 * @param string $username
 	 * @return \Contact
 	 * @throws ContactException
 	 */
-	public static function create($name, $title, $phone, $address, $email, $username) {
-		global $acl;
+	public static function create($name, $title, $phone, $address, $email) {
 		global $db;
-
-		if (!$acl->check_permission('contacts_create'))
-			throw new ContactException('You are not allowed to create contact records.');
+		acl::get()->require_permission('contacts_create');
 
 		// Sanitize inputs
 		$name = $db->sql_escape_string($name);
 		$title = $db->sql_escape_string($title);
 		$address = $db->sql_escape_string($address);
 		$email = $db->sql_escape_string($email);
-		$username = $db->sql_escape_string($username);
 
 		// Format phone number for storage
 		if ($phone != "") {
-			$phone = preg_replace('[^0-9]', NULL, $phone);
+			$phone = preg_replace('/[^0-9]/', null, $phone);
 			if (!is_numeric($phone))
-				throw new ContactException('Invalid telephone number.');
+				throw new ContactException(sprintf('Invalid telephone number: %s', HTML::schars($phone)));
 		}
 
 		// Verify email address
@@ -144,29 +127,11 @@ class Contact {
 				throw new ContactException('Invalid email address.');
 		}
 
-		// Verify username and get user ID
-		if ($username != '') {
-			$username_query = 'SELECT `id`
-			FROM `'.USER_TABLE.'`
-			WHERE `username` = \''.$username.'\'';
-			$username_handle = $db->sql_query($username_query);
-			if ($db->error[$username_handle] === 1)
-				throw new ContactException('An error occurred while looking up a username record.');
-			if ($db->sql_num_rows($username_handle) == 0) {
-				$uid = 0;
-			} else {
-				$uname = $db->sql_fetch_assoc($username_handle);
-				$uid = $uname['id'];
-			}
-		} else {
-			$uid = 0;
-		}
-
 		// Create contact
 		$query = 'INSERT INTO `'.CONTACTS_TABLE."`
-		(`name`,`user_id`,`title`,`phone`,`email`,`address`)
+		(`name`,`title`,`phone`,`email`,`address`)
 		VALUES
-		('$name',$uid,'$title',$phone,'$email','$address')";
+		('$name','$title','$phone','$email','$address')";
 		$handle = $db->sql_query($query);
 		if ($db->error[$handle] === 1)
 			throw new ContactException('An error occurred while creating the contact record.');
@@ -178,16 +143,12 @@ class Contact {
 	
 	/**
 	 * Delete the open contact entry
-	 * @global acl $acl Permission object
 	 * @global db $db Database object
 	 * @throws ContactException
 	 */
 	public function delete() {
-		global $acl;
 		global $db;
-
-		if (!$acl->check_permission('contacts_delete'))
-			throw new ContactException('You are not allowed to delete contacts.');
+		acl::get()->require_permission('contacts_delete');
 
 		if (!$this->mId)
 			throw new ContactException('Invalid contact ID.');
@@ -217,17 +178,13 @@ class Contact {
 
 	/**
 	 * Remove contact from list
-	 * @global acl $acl
 	 * @global db $db
 	 * @param integer $page_id
 	 * @throws ContactException
 	 */
 	function deleteFromList($page_id) {
-		global $acl;
 		global $db;
-
-		if (!$acl->check_permission('contacts_edit_lists'))
-			throw new ContactException('You are not allowed to edit contact lists.');
+		acl::get()->require_permission('contacts_edit_lists');
 		if (!is_numeric($page_id))
 			throw new ContactException('Invalid content ID.');
 
@@ -243,35 +200,29 @@ class Contact {
 	
 	/**
 	 * Edit contact record
-	 * @global acl $acl
 	 * @global db $db
 	 * @param string $name
 	 * @param string $title
 	 * @param string $phone
 	 * @param string $address
 	 * @param string $email
-	 * @param string $username
 	 * @throws ContactException
 	 */
-	public function edit($name, $title, $phone, $address, $email, $username) {
-		global $acl;
+	public function edit($name, $title, $phone, $address, $email) {
 		global $db;
-
-		if (!$acl->check_permission('contacts_edit'))
-			throw new ContactException('You are not allowed to edit contact records.');
+		acl::get()->require_permission('contacts_edit');
 
 		// Sanitize inputs
 		$name = $db->sql_escape_string($name);
 		$title = $db->sql_escape_string($title);
 		$address = $db->sql_escape_string($address);
 		$email = $db->sql_escape_string($email);
-		$username = $db->sql_escape_string($username);
 
 		// Format phone number for storage
 		if ($phone != "") {
-			$phone = preg_replace('[^0-9]', NULL, $phone);
+			$phone = preg_replace('/[^0-9]/', null, $phone);
 			if (!is_numeric($phone))
-				throw new ContactException('Invalid telephone number.');
+				throw new ContactException(sprintf('Invalid telephone number: %s', HTML::schars($phone)));
 		}
 
 		// Verify email address
@@ -280,35 +231,16 @@ class Contact {
 				throw new ContactException('Invalid email address.');
 		}
 
-		// Verify username and get user ID
-		if ($username != '') {
-			$username_query = 'SELECT `id`
-			FROM `' . USER_TABLE . '`
-			WHERE `username` = \'' . $username . '\'';
-			$username_handle = $db->sql_query($username_query);
-			if ($db->error[$username_handle] === 1)
-				throw new ContactException('Error looking up username record.');
-			if ($db->sql_num_rows($username_handle) == 0) {
-				$uid = 0;
-			} else {
-				$uname = $db->sql_fetch_assoc($username_handle);
-				$uid = $uname['id'];
-			}
-		} else {
-			$uid = 0;
-		}
-
 		// Update contact record
 		$query = 'UPDATE `' . CONTACTS_TABLE . "`
-		SET `name`='$name',`user_id`=$uid,`title`='$title',
-		`phone`=$phone,`email`='$email',`address`='$address'
+		SET `name`='$name',`title`='$title',
+		`phone`='$phone',`email`='$email',`address`='$address'
 		WHERE `id` = $this->mId";
 		$handle = $db->sql_query($query);
 		if ($db->error[$handle] === 1)
 			throw new ContactException('An error occurred while updating the contact record.');
 		
 		$this->mName = stripslashes($name);
-		$this->mUser = $username;
 		$this->mTitle = stripslashes($title);
 		$this->mPhone = $phone;
 		$this->mEmail = stripslashes($email);
@@ -369,29 +301,17 @@ class Contact {
 	public function getTitle() {
 		return HTML::schars($this->mTitle);
 	}
-	
-	public function getUserId() {
-		return $this->mUserId;
-	}
-	
-	public function getUsername() {
-		return HTML::schars($this->mUser);
-	}
-	
+
 	/**
 	 * Set contact list order
-	 * @global acl $acl
 	 * @global db $db
 	 * @param integer $order
 	 * @param integer $page_id
 	 * @throws ContactException
 	 */
 	public function setListOrder($order, $page_id) {
-		global $acl;
 		global $db;
-
-		if (!$acl->check_permission('contacts_edit_lists'))
-			throw new ContactException('You are not allowed to edit contact lists.');
+		acl::get()->require_permission('contacts_edit_lists');
 		if (!is_numeric($page_id) || !is_numeric($order))
 			throw new ContactException('Invalid page ID or order.');
 
@@ -407,4 +327,3 @@ class Contact {
 }
 
 class ContactException extends Exception {}
-?>

@@ -96,7 +96,6 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->config" (
 CREATE SEQUENCE "<!-- $DB_PREFIX$ -->contacts_id_seq";
 CREATE TABLE "<!-- $DB_PREFIX$ -->contacts" (
 	"id" INT NOT NULL default nextval('<!-- $DB_PREFIX$ -->contacts_id_seq') ,
-	"user_id" INT NOT NULL ,
 	"name" TEXT NOT NULL ,
 	"phone" CHAR( 11 ) NULL default NULL ,
 	"address" TEXT NOT NULL ,
