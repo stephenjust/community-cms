@@ -47,13 +47,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_categories` (
 	PRIMARY KEY  (`cat_id`)
 ) ENGINE=InnoDB CHARACTER SET=utf8;
 
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar_sources` (
-	`id` int(11) NOT NULL auto_increment,
-	`desc` TEXT NOT NULL,
-	`url` TEXT NOT NULL,
-	PRIMARY KEY (`id`)
-) ENGINE=MyISAM CHARACTER SET=utf8 ;
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->config` (
 	`config_name` varchar(255) NOT NULL,
 	`config_value` varchar(255) NOT NULL,

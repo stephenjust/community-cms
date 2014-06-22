@@ -69,18 +69,6 @@ CREATE TABLE "<!-- $DB_PREFIX$ -->calendar_categories" (
 SELECT setval('<!-- $DB_PREFIX$ -->calendar_categories_cat_id_seq', (SELECT max("cat_id") FROM "<!-- $DB_PREFIX$ -->calendar_categories"));
 
 -- ----------------------------------------------------------------------------
--- comcms_calendar_sources
--- ----------------------------------------------------------------------------
-CREATE SEQUENCE "<!-- $DB_PREFIX$ -->calendar_sources_id_seq";
-CREATE TABLE "<!-- $DB_PREFIX$ -->calendar_sources" (
-	"id" integer NOT NULL default nextval('<!-- $DB_PREFIX$ -->calendar_sources_id_seq'),
-	"desc" text NOT NULL,
-	"url" text NOT NULL,
-	PRIMARY KEY ("id")
-);
-SELECT setval('<!-- $DB_PREFIX$ -->calendar_sources_id_seq', (SELECT max("id") FROM "<!-- $DB_PREFIX$ -->calendar_sources"));
-
--- ----------------------------------------------------------------------------
 -- comcms_config
 -- ----------------------------------------------------------------------------
 CREATE TABLE "<!-- $DB_PREFIX$ -->config" (
