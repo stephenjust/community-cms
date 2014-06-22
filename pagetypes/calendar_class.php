@@ -79,106 +79,23 @@ class calendar_event {
 		return;
 	}
 	function get_event($id) {
-		global $acl;
-		global $db;
-		global $debug;
-
-		$this->event_query = 'SELECT `cal`.*, `cat`.`label`
-			FROM `'.CALENDAR_TABLE.'` cal
-			LEFT JOIN `'.CALENDAR_CATEGORY_TABLE.'` cat
-			ON `cal`.`category` = `cat`.`cat_id`
-			WHERE `cal`.`id` = '.(int)$id.'
-			LIMIT 1';
-		$event_handle = $db->sql_query($this->event_query);
-		if($db->error[$event_handle] === 1) {
-			header('HTTP/1.1 404 Not Found');
-			$this->event_text = '<div class="notification">
-				Failed to retrieve event from the database.</div>';
-			return;
-		}
-		if($db->sql_num_rows($event_handle) != 1) {
-			header('HTTP/1.1 404 Not Found');
-			$this->event_text = '<div class="notification">
-				The event could not be found.</div>';
-			return;
-		}
-		$event_info = $db->sql_fetch_assoc($event_handle);
-		if($event_info['start'] == $event_info['end']) {
-			$event_start = strtotime($event_info['start']);
-			$event_time = 'All day, '.date('l, F j Y',$event_start);
-		} else {
-			$event_start = strtotime($event_info['start']);
-			$event_end = strtotime($event_info['end']);
-			$event_time = date(get_config('time_format').' -',$event_start).
-					date(' '.get_config('time_format'),$event_end)."<br />".date(' l, F j Y',$event_start);
-			unset($event_end);
-		}
-		$month_text = date('F',$event_start);
-		$template_event = new template;
-		$template_event->load_file('calendar_event');
-		$template_event->event_heading = stripslashes($event_info['header']);
+		$eventTpl = new Smarty();
+		$event = new CalEvent($id);
 		
-		// Insert edit bar
-		$editbar = new EditBar;
-		$editbar->set_label('Event');
-		if (!$acl->check_permission('adm_calendar_edit_date'))
-			$editbar->visible = false;
-		$editbar->add_control('admin.php?module=calendar_edit_date&id='.$event_info['id'],
-				'edit.png',
-				'Edit',
-				array('adm_calendar_edit_date','admin_access'));
-		$template_event->edit_bar = $editbar;
-		
-		// Insert event author
-		if (get_config('calendar_show_author')) {
-			$template_event->event_author_start = NULL;
-			$template_event->event_author_end = NULL;
-			$template_event->event_author = stripslashes($event_info['author']);
-		} else
-			$template_event->replace_range('event_author',NULL);
-
-		$template_event->event_time = $event_time;
-		$template_event->event_start_date = date('Y-m-d', $event_start);
-		if (strlen($event_info['image']) > 0) {
-			try {
-				$im_file = new File(str_replace('./files/', NULL, $event_info['image']));
-				$im_info = $im_file->getInfo();
-				$template_event->event_image = '<img src="'.stripslashes($event_info['image']).'" class="calendar_event_image" alt="'.$im_info['label'].'" />';
-			} catch (FileException $e) {
-				$debug->add_trace('Image error: '.$e->getMessage(), true);
-				$template_event->event_image = NULL;
-			}
-			$template_event->event_image_start = NULL;
-			$template_event->event_image_end = NULL;
-		} else
-			$template_event->replace_range('event_image',NULL);
-		if ($event_info['category_hide'] || $event_info['label'] == NULL) {
-			$template_event->replace_range('event_category', NULL);
-		} else {
-			$template_event->event_category_start = NULL;
-			$template_event->event_category_end = NULL;
-			$template_event->event_category = $event_info['label'];
+		if (acl::get()->check_permission('adm_calendar_edit_date')) {
+			$editbar = new EditBar();
+			$editbar->set_label('Event');
+			$editbar->add_control('admin.php?module=calendar_edit_date&id='.$event->getId(),
+					'edit.png', 'Edit', array('adm_calendar_edit_date','admin_access'));
+			$eventTpl->assign('editbar', $editbar);
 		}
-		$template_event->event_description = stripslashes($event_info['description']);
+		$eventTpl->assign('event', $event);
+		$eventTpl->assign('time_format', get_config('time_format'));
+		$eventTpl->assign('show_author', get_config('calendar_show_author'));
+		$eventTpl->assign('page_url', Page::$url_reference);
 
-		// Check if we need to fill the location field
-		if (strlen($event_info['location']) < 1 || $event_info['location_hide'] == 1) {
-			$template_event->replace_range('event_location',NULL);
-		} else {
-			$template_event->event_location = stripslashes($event_info['location']);
-			$template_event->event_location_start = NULL;
-			$template_event->event_location_end = NULL;
-		}
-		$this->event_text .= "<a href='?".Page::$url_reference."&amp;view=month&amp;m=".
-			date('m',$event_start)."&amp;y=".date('Y',$event_start)."'>Back to month
-			view</a><br />";
-		$this->event_text .= "<a href='?".Page::$url_reference."&amp;view=day&amp;d=".
-			date('d',$event_start)."&amp;m=".date('m',$event_start)."&amp;y=".date('Y',$event_start).
-			"'>Back to day view</a><br />";
-		$this->event_text .= $template_event;
-		unset($template_event);
-		Page::$title .= ' - '.stripslashes($event_info['header']).' - '.date('M d, Y',$event_start);
-		return;
+		$this->event_text = $eventTpl->fetch('calendarEvent.tpl');
+		Page::$title .= ' - '.stripslashes($event->getTitle().' - '.date('M d, Y', $event->getStart()));
 	}
 }
 

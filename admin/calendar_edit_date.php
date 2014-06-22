@@ -77,7 +77,7 @@ switch ($_GET['action']) {
 				$category_ids[] = $cat['id'];
 			}
 			$form->add_select('category', 'Category:',
-					$category_ids, $category_names, $ev->getCategory(), NULL, 'Hide', $ev->getCategoryHide());
+					$category_ids, $category_names, $ev->getCategoryID(), NULL, 'Hide', $ev->getCategoryHide());
 
 			$form->add_textbox('stime', '*Start Time:',
 					date(get_config('time_format'),$ev->getStart()),'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"');

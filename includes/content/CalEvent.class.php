@@ -23,6 +23,7 @@ class CalEvent {
 	private $mCategoryHide;
 	private $mImage;
 	private $mHide;
+	private $mAuthor;
 	
 	public function __construct($id) {
 		global $db;
@@ -34,7 +35,7 @@ class CalEvent {
 
 		// Get event info
 		$info_query = 'SELECT `start`, `end`, `header`, `description`, `hidden`,
-				`category`, `category_hide`, `image`, `location`, `location_hide`
+				`category`, `category_hide`, `image`, `location`, `location_hide`, `author`
 			FROM `'.CALENDAR_TABLE.'`
 			WHERE `id` = '.$id.'
 			LIMIT 1';
@@ -54,6 +55,7 @@ class CalEvent {
 			$this->mLocation = $info['location'];
 			$this->mLocationHide = $info['location_hide'];
 			$this->mHide = $info['hidden'];
+			$this->mAuthor = $info['author'];
 		}
 	}
 
@@ -243,18 +245,19 @@ class CalEvent {
 	
 	/**
 	 * Get category
-	 * @return int
-	 * @throws CalEventException
+	 * @return string
 	 */
 	public function getCategory() {
-		if (!$this->mExists)
-			throw new CalEventException('Event does not exist!');
-		
+		$cat = new CalCategory($this->mCategory);
+		return $cat->getName();
+	}
+	
+	public function getCategoryID() {
 		return $this->mCategory;
 	}
 	
 	public function getDescription() {
-		return HTML::schars($this->mDescription);
+		return $this->mDescription;
 	}
 	
 	/**
@@ -267,6 +270,10 @@ class CalEvent {
 	
 	public function getHidden() {
 		return $this->mHide;
+	}
+	
+	public function getAuthor() {
+		return $this->mAuthor;
 	}
 	
 	/**
