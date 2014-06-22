@@ -74,9 +74,6 @@
 		<key name="adm_calendar_edit_date"
 			 title="Calendar Edit"
 			 description="Allow a user to access the calendar edit module" />
-		<key name="adm_calendar_import"
-			 title="Import Events"
-			 description="Allow a user to import calendar events" />
 		<key name="adm_calendar_locations"
 			 title="Manage Locations"
 			 description="Allow a user to manage calendar locations" />

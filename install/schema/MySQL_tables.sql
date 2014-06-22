@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->calendar` (
 	`author` text,
 	`image` text default NULL,
 	`hidden` tinyint(1) NOT NULL,
-	`imported` text default NULL,
 	`clone_of` int(11) UNSIGNED NULL default NULL,
 	PRIMARY KEY  (`id`),
 	KEY `category` (`category`),
