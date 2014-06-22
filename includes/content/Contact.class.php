@@ -353,7 +353,7 @@ class Contact {
 		$result = array();
 		for ($i = 0; $i < $db->sql_num_rows($handle); $i++) {
 			$row = $db->sql_fetch_assoc($handle);
-			$result[] = $row['ref_id'];
+			$result[] = new Contact($row['ref_id']);
 		}
 		return $result;
 	}
