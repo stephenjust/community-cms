@@ -12,3 +12,4 @@
 
 # Exclude Composer vendor files
 /vendor/
+/templates_c/

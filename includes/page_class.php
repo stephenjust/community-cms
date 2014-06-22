@@ -572,15 +572,6 @@ class Page {
 		$template->right_content = $right_blocks_content;
 		echo $template;
 	}
-	
-	private static function getPageMessages() {
-		$messages = PageMessage::getByPage(Page::$id);
-		$return = NULL;
-		foreach ($messages AS $message) {
-			$return .= sprintf('<div class="page_message">%s</div>', $message->getContent());
-		}
-		return $return;
-	}
 
 	public static function display_content() {
 		global $db;
@@ -625,16 +616,11 @@ class Page {
 		}
 
 		if (Page::$type != 'special.php') {
-			$page_message = Page::getPageMessages();
-			if ($page_message) {
-				$template->page_message = $page_message;
-				$template->page_message_start = null;
-				$template->page_message_end = null;
-			} else {
-				$template->replace_range('page_message', null);
-			}
+			$pmt = new Smarty();
+			$pmt->assign('pageMessage', PageMessage::getByPage(Page::$id));
+			$template->page_message = $pmt->fetch('pageMessage.tpl');
 		} else {
-			$template->replace_range('page_message', null);
+			$template->page_message = null;
 		}
 		$template->content = Page::get_page_content();
 
