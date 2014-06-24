@@ -2,67 +2,27 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2013 Stephen Just
+ * @copyright Copyright (C) 2013-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
 
-require_once(ROOT.'includes/content/CalLocation.class.php');
-
 class CalEvent {
-	private $mId;
-	private $mExists = false;
-	
-	private $mTitle;
-	private $mDescription;
-	private $mStart;
-	private $mEnd;
-	private $mLocation;
-	private $mLocationHide;
-	private $mCategory;
-	private $mCategoryHide;
-	private $mImage;
-	private $mHide;
-	private $mAuthor;
-	
-	public function __construct($id) {
-		global $db;
-
-		if (!is_numeric($id))
-			throw new CalEventException('Invalid event ID');
-		
-		$this->mId = $id;
-
-		// Get event info
-		$info_query = 'SELECT `start`, `end`, `header`, `description`, `hidden`,
-				`category`, `category_hide`, `image`, `location`, `location_hide`, `author`
-			FROM `'.CALENDAR_TABLE.'`
-			WHERE `id` = '.$id.'
-			LIMIT 1';
-		$info_handle = $db->sql_query($info_query);
-		if ($db->error[$info_handle] === 1)
-			throw new CalEventException('Failed to access event database.');
-		if ($db->sql_num_rows($info_handle) != 0) {
-			$this->mExists = true;
-			$info = $db->sql_fetch_assoc($info_handle);
-			$this->mTitle = $info['header'];
-			$this->mDescription = $info['description'];
-			$this->mStart = $info['start'];
-			$this->mEnd = $info['end'];
-			$this->mCategory = $info['category'];
-			$this->mCategoryHide = $info['category_hide'];
-			$this->mImage = $info['image'];
-			$this->mLocation = $info['location'];
-			$this->mLocationHide = $info['location_hide'];
-			$this->mHide = $info['hidden'];
-			$this->mAuthor = $info['author'];
-		}
-	}
+	private $id = 0;
+	private $title;
+	private $description;
+	private $start_time;
+	private $end_time;
+	private $location;
+	private $category;
+	private $author;
+	private $image;
+	private $publish;
+	private $location_hidden;
+	private $category_hidden;
 
 	/**
 	 * Create calendar event entry
-	 * @global type $acl
-	 * @global db $db
 	 * @param string $title
 	 * @param string $description
 	 * @param string $author
@@ -78,89 +38,95 @@ class CalEvent {
 	 * @return \CalEvent
 	 * @throws CalEventException
 	 */
-	public static function create($title, $description, $author, $start_time, $end_time, $date, $category, $category_hide, $location, $location_hide, $image, $hide) {
-		global $acl;
-		global $db;
-
-		if (!$acl->check_permission('date_create'))
-			throw new CalEventException('You are not allowed to create calendar events.');
-
-		// Add location to list of saved locations
-		try {
-			CalLocation::save($location);
-		} catch (CalLocationException $e) {
-			
+	public static function create($title, $description, $author, $start_time,
+			$end_time, $date, $category, $category_hide, $location, $location_hide, $image, $hide) {
+		acl::get()->require_permission('date_create');
+		if (!$title) {
+			throw new CalEventException('Event heading must not be blank.');
 		}
-
-		// Sanitize inputs
-		$location = $db->sql_escape_string(strip_tags($location));
-		$title = $db->sql_escape_string(strip_tags($title));
-		$description = $db->sql_escape_string(remove_comments($description));
-		$author = $db->sql_escape_string(strip_tags($author));
-
-		// Determine date
-		if ($date == '') {
-			$date = date('d/m/Y');
-		}
-		if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#', $date))
-			throw new CalEventException('Your event\'s date was formatted invalidly. It should be in the format dd/mm/yyyy.');
-		$event_date_parts = explode('/', $date);
-		$year = $event_date_parts[2];
-		$month = $event_date_parts[0];
-		$day = $event_date_parts[1];
-
-		if ($start_time == "" || $end_time == "" || $year == "" || $title == "")
-			throw new CalEventException('One or more required fields was left blank.');
-		$start_time = parse_time($start_time);
-		$end_time = parse_time($end_time);
-		if (!$start_time || !$end_time || $start_time > $end_time)
+		$start = CalEvent::convertInputToDatetime($date, $start_time);
+		$end = CalEvent::convertInputToDatetime($date, $end_time);
+		if (strtotime($start) > strtotime($end)) {
 			throw new CalEventException('Invalid start or end time. Your event cannot end before it begins.');
-
-		// Generate start/end dates for new system
-		$start = $year . '-' . $month . '-' . $day . ' ' . $start_time;
-		$end = $year . '-' . $month . '-' . $day . ' ' . $end_time;
-
-		// Create event entry
-		$create_date_query = 'INSERT INTO `'.CALENDAR_TABLE.'`
-		(`category`,`category_hide`,`start`,`end`,`header`,
-		`description`,`location`,`location_hide`,`author`,`image`,`hidden`)
-		VALUES ("' . $category . '","' . (int) $category_hide . '","' . $start . '","' . $end . '","' . $title . '","' . $description . '",
-		"' . $location . '","' . (int) $location_hide . '","' . $author . '","' . $image . '",' . $hide . ')';
-		$create_date = $db->sql_query($create_date_query);
-		if ($db->error[$create_date] === 1)
-			throw new CalEventException('An error occurred while creating the calendar event.');
-		$insert_id = $db->sql_insert_id(CALENDAR_TABLE, 'id');
-
-		Log::addMessage('New date entry on ' . $day . '/' . $month . '/'
-				. $year . ' \'' . stripslashes($title) . '\'');
+		}
 		
-		return new CalEvent($insert_id);
+		try {
+			DBConn::get()->query(sprintf('INSERT INTO `%s` '
+					. '(`category`, `category_hide`, `start`, `end`, `header`, '
+					. '`description`, `location`, `location_hide`, `author`, `image`, `hidden`) VALUES '
+					. '(:category, :category_hide, :start, :end, :header, '
+					. ':description, :location, :location_hide, :author, :image, :hide)', CALENDAR_TABLE),
+					array(':category' => $category,
+						':category_hide' => (int) $category_hide,
+						':start' => $start, ':end' => $end,
+						':header' => $title,
+						':description' => remove_comments($description),
+						':location' => $location,
+						':location_hide' => (int) $location_hide,
+						':author' => $author, ':image' => $image,
+						':hide' => (int) $hide));
+		
+			try {
+				CalLocation::save($location);
+			} catch (CalLocationException $e) {
+				Debug::get()->addMessage('Failed to save event location.');
+			}
+			$insert_id = DBConn::get()->lastInsertId();
+			Log::addMessage(sprintf("New date entry on %s, '%s'", date('d/m/Y', strtotime($start)), $title));
+			return new CalEvent($insert_id);
+		} catch (DBException $ex) {
+			echo $ex;
+			throw new CalEventException('Failed to create event.');
+		}
 	}
 	
 	/**
+	 * Create CalEvent instance
+	 * @param int $id
+	 * @throws CalEventException
+	 */
+	public function __construct($id) {
+		assert(is_numeric($id));
+		
+		$result = DBConn::get()->query(sprintf('SELECT * FROM `%s` WHERE `id` = :id', CALENDAR_TABLE),
+				array(':id' => $id), DBConn::FETCH);
+		if (!$result) {
+			throw new CalEventException('Event not found.');
+		}
+
+		$this->id = $id;
+		$this->title = $result['header'];
+		$this->description = $result['description'];
+		$this->start_time = $result['start'];
+		$this->end_time = $result['end'];
+		$this->category = $result['category'];
+		$this->category_hidden = $result['category_hide'];
+		$this->image = $result['image'];
+		$this->location = $result['location'];
+		$this->location_hidden = $result['location_hide'];
+		$this->publish = !$result['hidden'];
+		$this->author = $result['author'];
+	}
+
+	/**
 	 * Delete calendar event
-	 * @global db $db
 	 * @throws CalEventException
 	 */
 	function delete() {
-		global $db;
-		
-		if (!$this->mExists)
-			throw new CalEventException('Event does not exist.');
-
-		$query = 'DELETE FROM `'.CALENDAR_TABLE.'`
-		   WHERE `id` = '.$this->mId;
-		$handle = $db->sql_query($query);
-		if ($db->error[$handle] === 1)
+		assert($this->id);
+		try {
+			DBConn::get()->query(sprintf('DELETE FROM `%s` WHERE `id` = :id',
+					CALENDAR_TABLE),
+					array(':id' => $this->id));
+			Log::addMessage(sprintf("Deleted calendar date '%s'.", $this->title));
+			$this->id = 0;
+		} catch (DBException $ex) {
 			throw new CalEventException('Failed to delete event.');
-
-		Log::addMessage('Deleted calendar date \''.$this->mTitle.'\'');
-		$this->mExists = false;
+		}
 	}
 	
 	/**
 	 * Edit an event entry
-	 * @global acl $acl
 	 * @global db $db
 	 * @param string $title
 	 * @param string $description
@@ -176,11 +142,8 @@ class CalEvent {
 	 * @throws CalEventException 
 	 */
 	public function edit($title, $description, $author, $start, $end, $category, $category_hide, $location, $location_hide, $image, $hide) {
-		global $acl;
 		global $db;
-
-		if (!$acl->check_permission('acl_calendar_edit_date'))
-			throw new CalEventException('You are not allowed to edit calendar events.');
+		acl::get()->require_permission('acl_calendar_edit_date');
 
 		// Sanitize Inputs
 		$title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
@@ -206,7 +169,7 @@ class CalEvent {
 		`start`='$start_t', `end`='$end_t',
 		`header`='$title', `description`='$description',
 		`location`='$location', `location_hide`='$location_hide',
-		author='$author',image='$image',hidden='$hide' WHERE id = {$this->mId} LIMIT 1";
+		author='$author',image='$image',hidden='$hide' WHERE id = {$this->id} LIMIT 1";
 		$edit_date = $db->sql_query($edit_date_query);
 		if ($db->error[$edit_date] === 1)
 			throw new CalEventException('An error occurred while updating the event record.');
@@ -215,7 +178,7 @@ class CalEvent {
 	}
 
 	public function getCategoryHide() {
-		return $this->mCategoryHide;
+		return $this->category_hidden;
 	}
 	
 	/**
@@ -248,16 +211,16 @@ class CalEvent {
 	 * @return string
 	 */
 	public function getCategory() {
-		$cat = new CalCategory($this->mCategory);
+		$cat = new CalCategory($this->category);
 		return $cat->getName();
 	}
 	
 	public function getCategoryID() {
-		return $this->mCategory;
+		return $this->category;
 	}
 	
 	public function getDescription() {
-		return $this->mDescription;
+		return $this->description;
 	}
 	
 	/**
@@ -265,15 +228,15 @@ class CalEvent {
 	 * @return int
 	 */
 	public function getEnd() {
-		return strtotime($this->mEnd);
+		return strtotime($this->end_time);
 	}
 	
 	public function getHidden() {
-		return $this->mHide;
+		return !$this->publish;
 	}
 	
 	public function getAuthor() {
-		return $this->mAuthor;
+		return $this->author;
 	}
 	
 	/**
@@ -281,11 +244,8 @@ class CalEvent {
 	 * @return int
 	 * @throws CalEventException
 	 */
-	public function getId() {
-		if (!$this->mExists)
-			throw new CalEventException('Event does not exist!');
-		
-		return $this->mId;
+	public function getId() {		
+		return $this->id;
 	}
 	
 	/**
@@ -293,7 +253,7 @@ class CalEvent {
 	 * @return string
 	 */
 	public function getImage() {
-		return $this->mImage;
+		return $this->image;
 	}
 	
 	/**
@@ -301,11 +261,11 @@ class CalEvent {
 	 * @return string
 	 */
 	public function getLocation() {
-		return HTML::schars($this->mLocation);
+		return HTML::schars($this->location);
 	}
 	
 	public function getLocationHide() {
-		return $this->mLocationHide;
+		return $this->location_hidden;
 	}
 	
 	/**
@@ -313,7 +273,7 @@ class CalEvent {
 	 * @return integer
 	 */
 	public function getStart() {
-		return strtotime($this->mStart);
+		return strtotime($this->start_time);
 	}
 	
 	/**
@@ -322,12 +282,32 @@ class CalEvent {
 	 * @throws CalEventException
 	 */
 	public function getTitle() {
-		if (!$this->mExists)
-			throw new CalEventException('Event does not exist!');
-		
-		return HTML::schars($this->mTitle);
+		return HTML::schars($this->title);
+	}
+
+	/**
+	 * Convert user input to a MySQL compatible datetime string.
+	 * @param string $date_string
+	 * @param string $time_string
+	 * @return string
+	 * @throws CalEventException
+	 */
+	private static function convertInputToDatetime($date_string, $time_string) {
+		if (!$date_string) {
+			$date_string = date('d/m/Y');
+		}
+		if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#', $date_string)) {
+			throw new CalEventException('Your event\'s date was formatted invalidly. It should be in the format dd/mm/yyyy.');
+		}
+		$event_date_parts = explode('/', $date_string);
+		$year = $event_date_parts[2];
+		$month = $event_date_parts[0];
+		$day = $event_date_parts[1];
+
+		$time = parse_time($time_string);
+
+		return sprintf('%d-%d-%d %s', $year, $month, $day, $time);
 	}
 }
 
 class CalEventException extends Exception {}
-?>

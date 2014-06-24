@@ -78,30 +78,32 @@ class calendar_event {
 		$this->$name = $value;
 		return;
 	}
+	
 	function get_event($id) {
 		try {
 			$eventTpl = new Smarty();
 			$event = new CalEvent($id);
-			
-			if (acl::get()->check_permission('adm_calendar_edit_date')) {
-				$editbar = new EditBar();
-				$editbar->set_label('Event');
-				$editbar->add_control('admin.php?module=calendar_edit_date&id='.$event->getId(),
-						'edit.png', 'Edit', array('adm_calendar_edit_date','admin_access'));
-				$eventTpl->assign('editbar', $editbar);
-			}
-			$eventTpl->assign('event', $event);
-			$eventTpl->assign('time_format', get_config('time_format'));
-			$eventTpl->assign('show_author', get_config('calendar_show_author'));
-			$eventTpl->assign('page_url', Page::$url_reference);
-			
-			$this->event_text = $eventTpl->fetch('calendarEvent.tpl');
-			Page::$title .= ' - '.stripslashes($event->getTitle().' - '.date('M d, Y', $event->getStart()));
 		} catch (CalEventException $ex) {
 			header('HTTP/1.1 404 Not Found');
 			$this->event_text = '<div class="notification">The event could not be found.</div>';
 			Debug::get()->addMessage($ex->getMessage(), true);
+			return;
 		}
+			
+		if (acl::get()->check_permission('adm_calendar_edit_date')) {
+			$editbar = new EditBar();
+			$editbar->set_label('Event');
+			$editbar->add_control('admin.php?module=calendar_edit_date&id='.$event->getId(),
+					'edit.png', 'Edit', array('adm_calendar_edit_date','admin_access'));
+			$eventTpl->assign('editbar', $editbar);
+		}
+		$eventTpl->assign('event', $event);
+		$eventTpl->assign('time_format', get_config('time_format'));
+		$eventTpl->assign('show_author', get_config('calendar_show_author'));
+		$eventTpl->assign('page_url', Page::$url_reference);
+
+		$this->event_text = $eventTpl->fetch('calendarEvent.tpl');
+		Page::$title .= ' - '.stripslashes($event->getTitle().' - '.date('M d, Y', $event->getStart()));
 	}
 }
 
