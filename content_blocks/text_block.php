@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2009-2010 Stephen Just
+ * @copyright Copyright (C) 2009-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -13,7 +13,7 @@ if (@SECURITY != 1) {
 global $acl;
 global $db;
 
-$text_block = new block;
+$text_block = new Block;
 $text_block->block_id = $block_info['id'];
 $return = NULL;
 $text_block->get_block_information();

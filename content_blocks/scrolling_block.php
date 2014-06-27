@@ -13,7 +13,7 @@ if (@SECURITY != 1) {
 global $acl;
 global $db;
 
-$text_block = new block;
+$text_block = new Block;
 $text_block->block_id = $block_info['id'];
 $return = NULL;
 $text_block->get_block_information();
@@ -89,4 +89,3 @@ $return .= '</div>';
 $return .= '</div><div id="scroll_prev">&lt;</div> <div id="scroll_next">&gt;</div></div>';
 
 return $return;
-?>

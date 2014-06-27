@@ -12,7 +12,7 @@ if (@SECURITY != 1) {
 }
 
 $event_widget = new widget;
-$event_block = new block;
+$event_block = new Block;
 $event_block->block_id = $block_info['id'];
 $bl_return = NULL;
 $event_block->get_block_information();
@@ -79,4 +79,3 @@ $event_widget->setContent((string) $template_events);
 unset($template_events);
 unset($event_block);
 return (string) $event_widget;
-?>

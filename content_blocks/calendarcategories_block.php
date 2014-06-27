@@ -11,7 +11,7 @@ if (@SECURITY != 1) {
 	die ('You cannot access this page directly.');
 }
 
-$category_block = new block;
+$category_block = new Block;
 $category_block->block_id = $block_info['id'];
 $bl_return = NULL;
 $cats = NULL;
@@ -29,4 +29,3 @@ unset($category_block);
 $block_template->categories = $cats;
 $bl_return = $block_template;
 return $bl_return;
-?>

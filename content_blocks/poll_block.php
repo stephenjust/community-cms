@@ -12,7 +12,7 @@ if (@SECURITY != 1) {
 }
 
 global $acl;
-$poll_block = new block;
+$poll_block = new Block;
 $poll_block->block_id = $block_info['id'];
 $poll_block->get_block_information();
 $return = NULL;
@@ -72,4 +72,3 @@ if ($db->sql_num_rows($poll_questions_handle) == 0) {
 	}
 return $return;
 // TODO: Add graphical results display.
-?>
