@@ -19,11 +19,9 @@
 		<link label="Event Locations" module="calendar_locations" acl="adm_calendar_locations"></link>
 		<link label="Manage Contacts" module="contacts_manage" acl="adm_contacts_manage"></link>
 		<link label="Image Galleries" module="gallery_manager" acl="adm_gallery_manager"></link>
-		<link label="Polls" module="poll_manager" acl="adm_poll_manager"></link>
 		<link label="Files" module="filemanager" acl="adm_filemanager"></link>
 		<link label="Edit Date" module="calendar_edit_date" acl="adm_calendar_edit_date" hide="1"></link>
 		<link label="Import Events" module="calendar_import" acl="adm_calendar_import" hide="1"></link>
-		<link label="Poll Results" module="poll_results" acl="adm_poll_results" hide="1"></link>
 	</category>
 	<category name="Pages">
 		<link label="Pages" module="page" acl="adm_page"></link>

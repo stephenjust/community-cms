@@ -183,17 +183,6 @@
 			 title="Delete Page Messages"
 			 description="Allow a user to delete existing page messages" />
 	</category>
-	<category name="Polls">
-		<key name="adm_poll_manager"
-			 title="Poll Manager Module"
-			 description="Allow a user to access the poll manager module" />
-		<key name="poll_create"
-			 title="Create Polls"
-			 description="Allow a user to create new polls" />
-		<key name="adm_poll_results"
-			 title="Poll Results"
-			 description="Allow a user to see the results of polls" />
-	</category>
 	<category name="Users and Groups">
 		<key name="adm_user"
 			 title="User Module"

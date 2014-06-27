@@ -188,32 +188,6 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->pagetypes` (
 	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_questions` (
-	`question_id` int(5) NOT NULL auto_increment,
-	`question` text NOT NULL,
-	`short_name` text NOT NULL,
-	`type` int(2) NOT NULL default '1',
-	`active` tinyint(1) NOT NULL default '1',
-	PRIMARY KEY  (`question_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
-
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_answers` (
-	`answer_id` int(6) NOT NULL auto_increment,
-	`question_id` int(5) NOT NULL,
-	`answer` text NOT NULL,
-	`answer_order` int(2) NOT NULL,
-	PRIMARY KEY  (`answer_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
-
-CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->poll_responses` (
-	`response_id` int(11) NOT NULL auto_increment,
-	`question_id` int(5) NOT NULL,
-	`answer_id` int(6) NOT NULL,
-	`value` text,
-	`ip_addr` int(10) NOT NULL,
-	PRIMARY KEY  (`response_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0 ;
-
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->templates` (
 	`id` int(3) NOT NULL auto_increment,
 	`path` text NOT NULL,

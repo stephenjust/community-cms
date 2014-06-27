@@ -268,36 +268,6 @@ function block_edit_form($type,$vars = array()) {
 			
 // ----------------------------------------------------------------------------
 
-		case 'poll':
-			if (!isset($vars['question_id'])) {
-				$vars['question_id'] = 0;
-			}
-			$poll_query = 'SELECT `question_id`,`question` FROM `'.POLL_QUESTION_TABLE.'`
-				ORDER BY `question` ASC';
-			$poll_handle = $db->sql_query($poll_query);
-			if ($db->error[$poll_handle] === 1) {
-				$debug->addMessage('Failed to read poll table');
-				return false;
-			}
-			$poll_count = $db->sql_num_rows($poll_handle);
-			if ($poll_count == 0) {
-				$return .= 'No polls currently exist.<br />'."\n";
-			}
-			$return .= 'Question <select name="question_id">'."\n";
-			for ($i = 1; $i <= $poll_count; $i++) {
-				$poll = $db->sql_fetch_assoc($poll_handle);
-				if ($vars['question_id'] == $poll['question_id']) {
-					$return .= "\t".'<option value="'.$poll['question_id'].'" selected>'.$poll['question'].'</option>'."\n";
-				} else {
-					$return .= "\t".'<option value="'.$poll['question_id'].'">'.$poll['question'].'</option>'."\n";
-				}
-			}
-			$return .= '</select><br />'."\n";
-			$return .= '<input type="hidden" name="attributes" value="question_id" />'."\n";
-			break;
-
-// ----------------------------------------------------------------------------
-
 		case 'calendarcategories':
 			$return .= '<input type="hidden" name="attributes" value="" />'."\n";
 			$return .= 'No options exist for this type.<br />'."\n";
