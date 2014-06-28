@@ -20,7 +20,6 @@ require_once(ROOT.'includes/template.php');
 require_once(ROOT.'includes/widget.class.php');
 require_once(ROOT.'functions/article.php');
 require_once(ROOT.'includes/page.php');
-require_once(ROOT.'includes/page_class.php');
 require_once(ROOT.'functions/blocks.php');
 require_once(ROOT.'functions/files.php');
 require_once(ROOT.'functions/forms.php');
