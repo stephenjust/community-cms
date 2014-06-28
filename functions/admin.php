@@ -17,60 +17,33 @@ if (@SECURITY != 1) {
  * @return string Menu HTML
  */
 function admin_nav() {
-	global $acl;
-
-	// Read menu XML file
-	$xmlreader = new XMLReader;
-	$xmlreader->open(ROOT.'admin/page_list.xml');
-	$result = NULL;
-	while($xmlreader->read()) {
-		if ($xmlreader->nodeType == XMLREADER::DOC_TYPE ||
-				$xmlreader->nodeType == XMLREADER::COMMENT ||
-				$xmlreader->nodeType == XMLREADER::XML_DECLARATION) {
-			continue;
-		}
-		if ($xmlreader->name == 'category' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
-			$cat_name = $xmlreader->getAttribute('name');
-			$cat_label = '<h3>'.$cat_name."</h3>\n";
-			$item_count = 0;
-			$cat_items = NULL;
-		}
-		if ($xmlreader->name == 'category' && $xmlreader->nodeType == XMLREADER::END_ELEMENT) {
-			if ($item_count != 0) {
-				$result .= "<div>\n".$cat_label."<div>\n".$cat_items."</div>\n</div>\n";
+	$nav_handle = fopen(ROOT.'admin/page_list.json', 'r');
+	$nav_json = fread($nav_handle, filesize(ROOT.'admin/page_list.json'));
+	$nav = json_decode($nav_json, true);
+	
+	$result = null;
+	foreach ($nav['categories'] as $category) {
+		$result .= '<div>';
+		$result .= sprintf('<h3>%s</h3>', HTML::schars($category['name']));
+		$result .= '<div>';
+		foreach ($category['pages'] as $page) {
+			if (!array_key_exists('label', $page)) {
+				continue;
 			}
-		}
-
-		if ($xmlreader->name == 'link' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
-			if ($xmlreader->getAttribute('hide') != '1') {
-				$acl_value = $xmlreader->getAttribute('acl');
-				if ($acl_value != '') {
-					// Don't show link if you don't have permission to use it
-					if (!$acl->check_permission($acl_value)) {
-						continue;
-					}
-				}
-				$label = $xmlreader->getAttribute('label');
-				$url = $xmlreader->getAttribute('url');
-				$module = $xmlreader->getAttribute('module');
-				$target = $xmlreader->getAttribute('target');
-				if ($target != '') {
-					$target = ' target="'.$target.'"';
-				}
-				if ($url == '' && $module != '') {
-					$path = 'admin.php?module='.$module;
-				} else {
-					$path = $url;
-				}
-				$cat_items .= '<a href="'.$path.'"'.$target.'>'.$label."</a><br />\n";
-				$item_count++;
+			if (array_key_exists('acl', $page) && !acl::get()->check_permission($page['acl'])) {
+				continue;
 			}
+			if (array_key_exists('url', $page)) {
+				$result .= HTML::link($page['url'], $page['label']);
+			} elseif (array_key_exists('module', $page)) {
+				$result .= HTML::link('admin.php?module='.$page['module'], $page['label']);
+			} else {
+				continue;
+			}
+			$result .= '<br />';
 		}
-		if ($xmlreader->name == 'link' && $xmlreader->nodeType == XMLREADER::END_ELEMENT) {
-
-		}
+		$result .= '</div></div>';
 	}
-	$xmlreader->close();
 	return $result;
 }
 

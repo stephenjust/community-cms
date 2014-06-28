@@ -1,0 +1,118 @@
+{
+	"categories": [
+		{
+			"name": "Main",
+			"pages": [
+				{
+					"label": "Admin Home",
+					"url": "admin.php"
+				},
+				{
+					"label": "View Site",
+					"url": "index.php",
+					"target": "_blank"
+				},
+				{
+					"label": "Configuration",
+					"module": "site_config",
+					"acl": "adm_site_config"
+				}
+			]
+		},
+		{
+			"name": "Content",
+			"pages": [
+				{
+					"label": "News Articles",
+					"module": "news",
+					"acl": "adm_news"
+				},
+				{
+					"label": "Newsletters",
+					"module": "newsletter",
+					"acl": "adm_newsletter"
+				},
+				{
+					"label": "Calendar",
+					"module": "calendar",
+					"acl": "adm_calendar"
+				},
+				{
+					"label": "Event Locations",
+					"module": "calendar_locations",
+					"acl": "adm_calendar_locations"
+				},
+				{
+					"label": "Manage Contacts",
+					"module": "contacts_manage",
+					"acl": "adm_contacts_manage"
+				},
+				{
+					"label": "Image Galleries",
+					"module": "gallery_manager",
+					"acl": "adm_gallery_manager"
+				},
+				{
+					"label": "Files",
+					"module": "filemanager",
+					"acl": "adm_filemanager"
+				}
+			]
+		},
+		{
+			"name": "Pages",
+			"pages": [
+				{
+					"label": "Pages",
+					"module": "page",
+					"acl": "adm_page"
+				},
+				{
+					"label": "Page Messages",
+					"module": "page_message",
+					"acl": "adm_page_message"
+				}
+			]
+		},
+		{
+			"name": "Blocks",
+			"pages": [
+				{
+					"label": "Block Manager",
+					"module": "block_manager",
+					"acl": "adm_block_manager"
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"pages": [
+				{
+					"label": "Manage Users",
+					"module": "user",
+					"acl": "adm_user"
+				},
+				{
+					"label": "Groups",
+					"module": "user_groups",
+					"acl": "adm_user_groups"
+				}
+			]
+		},
+		{
+			"name": "Utilities",
+			"pages": [
+				{
+					"label": "View Logs",
+					"module": "log_view",
+					"acl": "adm_log_view"
+				},
+				{
+					"label": "View Configuration",
+					"module": "config_view",
+					"acl": "adm_config_view"
+				}
+			]
+		}
+	]
+}
