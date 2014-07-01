@@ -164,10 +164,6 @@
 		<key name="page_edit"
 			 title="Edit Pages"
 			 description="Allow a user to edit pages (requires ability to edit specific page groups)" />
-		<key name="page_group_create"
-			 title="Create Page Groups"
-			 description="Allow a user to create new page groups" />
-		<key_range regex="/^pagegroupedit\-/i" />
 	</category>
 	<category name="Page Messages">
 		<key name="adm_page_message"

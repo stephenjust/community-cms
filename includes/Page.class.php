@@ -81,11 +81,7 @@ class Page {
 	 * @var string
 	 */
 	private static $meta_description;
-	/**
-	 * Page group
-	 * @var integer
-	 */
-	public static $page_group = 0;
+
 //	/**
 //	 * Contains the hierarchial structure of page IDs
 //	 * @var array
@@ -207,7 +203,6 @@ class Page {
 		Page::$blocksright = $page['blocks_right'];
 		Page::$exists = true;
 		Page::$meta_description = $page['meta_desc'];
-		Page::$page_group = $page['page_group'];
 		Page::$type = $page['filename'];
 		if (strlen(Page::$text_id) == 0) {
 			Page::$url_reference = 'id='.Page::$id;
@@ -597,9 +592,6 @@ class Page {
 		$edit_bar->class = 'edit_bar page_edit_bar';
 		if (Page::$id != 0) {
 			$permission_list = array('admin_access','page_edit');
-			if (Page::$page_group !== 0) {
-				$permission_list[] = 'pagegroupedit-'.Page::$page_group;
-			}
 			$edit_bar->add_control('admin.php?module=page&action=edit&id='.Page::$id,
 					'edit.png','Edit',$permission_list);
 			unset($permission_list);
@@ -680,4 +672,3 @@ class Page {
 		return $return;
 	}
 }
-?>

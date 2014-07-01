@@ -112,11 +112,6 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate) {
 		$del_date_value = 'NULL';
 	}
 
-	// Check if the user has permission to edit in this page group
-	$article_page_group = page_group_news($id);
-	if (!$acl->check_permission('pagegroupedit-'.$article_page_group))
-		throw new Exception('You are not allowed to edit content in this page group.');
-
 	// Check if the article exists
 	$check_query = 'SELECT `id`
 		FROM `'.NEWS_TABLE.'`

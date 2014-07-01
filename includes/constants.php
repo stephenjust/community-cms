@@ -69,7 +69,6 @@ define('LOG_TABLE', $CONFIG['db_prefix'] . 'logs');
 define('NEWS_TABLE', $CONFIG['db_prefix'] . 'news');
 define('NEWSLETTER_TABLE', $CONFIG['db_prefix'] . 'newsletters');
 define('PAGE_TABLE', $CONFIG['db_prefix'] . 'pages');
-define('PAGE_GROUP_TABLE', $CONFIG['db_prefix'] . 'page_groups');
 define('PAGE_MESSAGE_TABLE', $CONFIG['db_prefix'] . 'page_messages');
 define('PAGE_TYPE_TABLE', $CONFIG['db_prefix'] . 'pagetypes');
 define('PLUGIN_TABLE', $CONFIG['db_prefix'] . 'plugins');

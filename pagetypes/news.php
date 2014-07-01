@@ -51,10 +51,6 @@ function format_content(Content $content) {
 	// Edit bar permission check
 	$editbar = new EditBar;
 	$editbar->set_label('Article');
-	$page_group_id = page_group_news($content->getID());
-	if (!acl::get()->check_permission('pagegroupedit-'.$page_group_id)) {
-		$editbar->visible = false;
-	}
 	$editbar->add_control('admin.php?module=news&action=edit&amp;id='.$content->getID(),
 			'edit.png',
 			'Edit',

@@ -31,8 +31,7 @@ if ($_GET['action'] == 'new') {
 			$_POST['type'],
 			$show_title,
 			$show_menu,
-			$_POST['parent'],
-			$_POST['page_group']);
+			$_POST['parent']);
 		echo 'Successfully added page.<br />'."\n";
 	}
 	catch (Exception $e) {
@@ -99,40 +98,6 @@ switch ($_GET['action']) {
 		}
 		break; // case 'del'
 
-	case 'new_page_group':
-		if (!isset($_POST['page_group_name'])) {
-			echo 'Invalid page group name.<br />'."\n";
-		}
-		if (page_add_group($_POST['page_group_name'])) {
-			echo 'Successfully created new page group.<br />'."\n";
-		} else {
-			echo '<span class="errormessage">Failed to create page group.</span><br />'."\n";
-		}
-		break; // case 'new_page_group'
-
-	case 'delete_page_group':
-		if (!isset($_GET['id'])) {
-			echo 'No page group specified to delete.<br />'."\n";
-		}
-		switch (page_delete_group((int)$_GET['id'])) {
-			default:
-				echo '<span class="errormessage">Failed to delete page group.</span><br />'."\n";
-				break;
-			case 2:
-				echo '<span class="errormessage">The page group you are trying to delete is not empty. Please reassign any pages assigned to this page group to another page group.</span><br />'."\n";
-				break;
-			case 3:
-				echo '<span class="errormessage">Failed to delete user permission records associated with this page group.</span><br />'."\n";
-				break;
-			case 4:
-				echo '<span class="errormessage">Failed to delete permission key associated with this page group.</span><br />'."\n";
-				break;
-			case true:
-				echo 'Successfully deleted page group.<br />'."\n";
-				break;
-		}
-		break; // case 'delete_page_group'
-
 	case 'hide':
 		// FIXME: Implement page hiding
 		break;
@@ -154,7 +119,6 @@ switch ($_GET['action']) {
 		}
 		$title = addslashes($_POST['title']);
 		$meta_desc = addslashes($_POST['meta_desc']);
-		$page_group = (int)$_POST['page_group'];
 		$parent = (int)$_POST['parent'];
 		$menu = (isset($_POST['hidden'])) ? checkbox($_POST['hidden']) : 0;
 		$show_title = (isset($_POST['show_title'])) ? checkbox($_POST['show_title']) : 0;
@@ -163,7 +127,7 @@ switch ($_GET['action']) {
 		$save_query = 'UPDATE ' . PAGE_TABLE . "
 			SET {$set_text_id}`title`='$title', `meta_desc`='$meta_desc',
 			`menu`=$menu, `show_title`=$show_title, `parent`=$parent,
-			`page_group`=$page_group, `blocks_left`='$blocks_left',
+			`blocks_left`='$blocks_left',
 			`blocks_right`='$blocks_right'
 			WHERE id = $page_id";
 		$save_handle = $db->sql_query($save_query);
@@ -252,33 +216,9 @@ if ($_GET['action'] == 'edit') {
 			$parent_page .= '</select>'."\n";
 		}
 
-		// Get list of page groups
-		// TODO: exlude those that you don't have permission to edit
-		$page_group_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
-			ORDER BY `id` ASC';
-		$page_group_handle = $db->sql_query($page_group_query);
-		if ($db->error[$page_group_handle] === 1) {
-			$debug->addMessage('Failed to read page group table',true);
-			$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
-		} else {
-			$page_group = '<select name="page_group">';
-			for ($i = 1; $i <= $db->sql_num_rows($page_group_handle); $i++) {
-				$page_group_result = $db->sql_fetch_assoc($page_group_handle);
-				if ($page_group_result['id'] == $edit_page['page_group']) {
-					$page_group .= '<option value="'.$page_group_result['id'].'" selected>'.
-						$page_group_result['label'].'</option>'."\n";
-				} else {
-					$page_group .= '<option value="'.$page_group_result['id'].'">'.
-						$page_group_result['label'].'</option>'."\n";
-				}
-			}
-			$page_group .= '</select>';
-		}
-
 		$tab_content['edit'] .= '<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="'.$edit_page['title'].'" /></td></tr>
 			<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor">'.$edit_page['meta_desc'].'</textarea></td></tr>
 			<tr><td width="150">Parent Page:</td><td>'.$parent_page.'</td></tr>
-			<tr><td width="150">Page Group:</td><td>'.$page_group.'</td></tr>
 			<tr class="row2"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" '.$show_title.'/></td></tr>
 			<tr class="row1"><td>Show on Menu:</td><td><input type="checkbox" name="hidden" '.$hidden.'/></td></td></tr>
 			<tr class="row2"><td valign="top">Blocks:</td><td>
@@ -430,30 +370,11 @@ if ($acl->check_permission('page_create')) {
 		$parent_page .= '</select>'."\n";
 	}
 
-	// Get list of page groups
-	// TODO: Exlude those that you don't have permission to edit
-	$page_group_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
-		ORDER BY `id` ASC';
-	$page_group_handle = $db->sql_query($page_group_query);
-	if ($db->error[$page_group_handle] === 1) {
-		$debug->addMessage('Failed to read page group table',true);
-		$page_group = '<input type="hidden" name="page_group" value="1" />Error.';
-	} else {
-		$page_group = '<select name="page_group">';
-		for ($i = 1; $i <= $db->sql_num_rows($page_group_handle); $i++) {
-			$page_group_result = $db->sql_fetch_assoc($page_group_handle);
-			$page_group .= '<option value="'.$page_group_result['id'].'">'.
-				$page_group_result['label'].'</option>'."\n";
-		}
-		$page_group .= '</select>';
-	}
-
 	$tab_content['add'] .= '<form method="POST" action="admin.php?module=page&action=new">
 		<table class="admintable">
 		<tr class="row1"><td width="150">Title (required):</td><td><input type="text" name="title" value="" /></td></tr>
 		<tr><td width="150">Page Description (optional):</td><td><textarea name="meta_desc" rows="5" cols="30" class="mceNoEditor"></textarea></td></tr>
 		<tr><td width="150">Parent Page:</td><td>'.$parent_page.'</td></tr>
-		<tr><td width="150">Page Group:</td><td>'.$page_group.'</td></tr>
 		<tr class="row2"><td width="150">Text ID (optional):</td><td><input type="text" name="text_id" value="" /></td></tr>
 		<tr class="row1"><td width="150">Show Title:</td><td><input type="checkbox" name="show_title" checked /></td></tr>
 		<tr class="row2"><td>Show on Menu:</td><td><input type="checkbox" name="menu" checked /></td></td></tr>
@@ -505,38 +426,4 @@ if ($acl->check_permission('page_create')) {
 	$tab_layout->add_tab('Add Link to External Page',$tab_content['addlink']);
 }
 
-// ----------------------------------------------------------------------------
-
-$tab_content['page_groups'] = NULL;
-// Add page group form
-$tab_content['page_groups'] .= '<h1>Add Page Group</h1>
-	<form method="post" action="?module=page&amp;action=new_page_group">
-	Group Name: <input type="text" name="page_group_name" />
-	<input type="submit" value="Add Group" />
-	</form><br />';
-
-$tab_content['page_groups'] .= '<h1>Page Groups List</h1>';
-$page_group_list_query = 'SELECT * FROM `'.PAGE_GROUP_TABLE.'`
-	ORDER BY `id` ASC';
-$page_group_list_handle = $db->sql_query($page_group_list_query);
-if ($db->error[$page_group_list_handle] === 1) {
-	$tab_content['page_groups'] .= 'Failed to fetch group list.<br />';
-} elseif ($db->sql_num_rows($page_group_list_handle) == 0) {
-	$tab_content['page_groups'] .= 'No page groups exist. This should never
-		occur. Please create a new page group.<br />';
-} else {
-	$tab_content['page_groups'] .= '<table class="admintable"><tr>
-		<th>Group Name</th><th width="1px"></th></tr>';
-	for ($i = 1; $i <= $db->sql_num_rows($page_group_list_handle); $i++) {
-		$page_group_list = $db->sql_fetch_assoc($page_group_list_handle);
-		$tab_content['page_groups'] .= '<tr><td>'.$page_group_list['label'].'</td>
-			<td><a href="?module=page&amp;action=delete_page_group&amp;id='.$page_group_list['id'].'">
-				<img src="<!-- $IMAGE_PATH$ -->delete.png" border="0px" alt="Delete" /></a></td></tr>';
-	}
-	$tab_content['page_groups'] .= '</table>';
-}
-// FIXME: Finish page group support.
-$tab_layout->add_tab('Page Groups',$tab_content['page_groups']);
 echo $tab_layout;
-
-?>

@@ -168,11 +168,6 @@ switch ($_GET['action']) {
 			echo '<span class="errormessage">The article you are trying to edit does not exist.</span><br />';
 			break;
 		}
-		$article_page_group = page_group_news($article_id);
-		if (!acl::get()->check_permission('pagegroupedit-'.$article_page_group)) {
-			echo '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
-			break;
-		}
 
 		$edit = $db->sql_fetch_assoc($edit_handle);
 		$edit_form = new form;

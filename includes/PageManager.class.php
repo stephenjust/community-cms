@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2013 Stephen Just
+ * @copyright Copyright (C) 2013-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -10,7 +10,6 @@
 class PageManager {
 	private $mId;
 	private $mTitle;
-	private $mPageGroup;
 	
 	public function __construct($id) {
 		global $db;
@@ -30,23 +29,17 @@ class PageManager {
 		
 		$this->mId = $id;
 		$this->mTitle = $result['title'];
-		$this->mPageGroup = $result['page_group'];
 	}
 	
 	/**
 	 * Delete a page
-	 * @global acl $acl
 	 * @global db $db
 	 * @throws PageException
 	 */
 	public function delete() {
-		global $acl;
+		acl::get()->require_permission('page_delete');
+		assert($this->mId, 'Invalid page.');
 		global $db;
-		
-		if (!$this->mId)
-			throw new PageException('Invalid page.');
-		if (!$acl->check_permission('page_delete'))
-			throw new PageException('You are not allowed to delete pages.');
 
 		// FIXME: Check for content on page before deleting
 
@@ -81,42 +74,24 @@ class PageManager {
 	}
 	
 	/**
-	 * Get page group ID
-	 * @return integer
-	 */
-	public function getPageGroup() {
-		return $this->mPageGroup;
-	}
-	
-	/**
 	 * Check if page is editable
-	 * @global acl $acl
 	 * @return boolean
 	 */
 	public function isEditable() {
-		global $acl;
-
-		return ($acl->check_permission('pagegroupedit-'.$this->mPageGroup) &&
-				$acl->check_permission('page_edit'));
+		return acl::get()->check_permission('page_edit');
 	}
 	
 	/**
 	 * Set the default page
-	 * @global acl $acl
 	 * @throws PageException
 	 */
 	function setHomepage() {
-		global $acl;
+		acl::get()->require_permission('page_set_home');
 
-		if (!$acl->check_permission('page_set_home'))
-			throw new PageException('You are not allowed to change the default page.');
-
-		if (!set_config('home', $this->mId))
+		if (!set_config('home', $this->mId)) {
 			throw new PageException('Error setting defualt page.');
+		}
 		
-		Log::addMessage('Set home page to \''.$this->mTitle.'\'');
+		Log::addMessage(sprintf("Set home page to '%s'.", $this->mTitle));
 	}
-	
 }
-
-?>

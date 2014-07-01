@@ -81,7 +81,6 @@ function page_check_unique_id($text_id) {
 
 /**
  * Create a page record
- * @global acl $acl
  * @global db $db
  * @param string $text_id
  * @param string $title
@@ -90,16 +89,11 @@ function page_check_unique_id($text_id) {
  * @param boolean $show_title
  * @param boolean $show_menu
  * @param integer $parent
- * @param integer $group
  * @throws Exception
  */
-function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$parent,$group) {
-	global $acl;
+function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$parent) {
 	global $db;
-
-	// Check permission
-	if (!$acl->check_permission('page_create')) 
-		throw new Exception('You are not allowed to create new pages.');
+	acl::get()->require_permission('page_create');
 
 	// Validate parameters
 	if (strlen($text_id) == 0) {
@@ -128,16 +122,13 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
 	$parent = (int)$parent;
 	if ($parent < 0)
 		throw new Exception('Invalid parent page selected.');
-	$group = (int)$group;
-	if ($group < 0)
-		throw new Exception('Invalid page group selected.');
 
 	// Add page to database.
 	$new_page_query = 'INSERT INTO `'.PAGE_TABLE."`
-		(`text_id`,`title`,`meta_desc`,`show_title`,`type`,`menu`,`parent`,`page_group`)
+		(`text_id`,`title`,`meta_desc`,`show_title`,`type`,`menu`,`parent`)
 		VALUES
 		('$text_id','$title','$meta_desc',$show_title,
-		$type,$show_menu,$parent,$group)";
+		$type,$show_menu,$parent)";
 	$new_page = $db->sql_query($new_page_query);
 	if ($db->error[$new_page] === 1)
 		throw new Exception('An error occurred while creating a new page.');
@@ -147,117 +138,6 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
 
 function page_add_link() {
 	// FIXME: Stub
-}
-
-/**
- * Create a new page group
- * @global acl $acl Permission object
- * @global db $db Database object
- * @global Debug $debug Debugging object
- * @param string $group_name Name of new group
- * @return boolean Success
- */
-function page_add_group($group_name) {
-	global $acl;
-	global $db;
-	global $debug;
-
-	if (!$acl->check_permission('page_group_create')) {
-		return false;
-	}
-	if (strlen($group_name) == 0) {
-		return false;
-	}
-	$group_name = addslashes($group_name);
-
-	// Create group
-	$query = 'INSERT INTO `'.PAGE_GROUP_TABLE.'` (`label`)
-		VALUES (\''.$group_name.'\')';
-	$handle = $db->sql_query($query);
-	if ($db->error[$handle] === 1) {
-		return false;
-	}
-
-	// Create permission key
-	if (!$acl->create_key('pagegroupedit-'.$db->sql_insert_id(PAGE_GROUP_TABLE,'id'),
-			'Edit Page Group \''.stripslashes($group_name).'\'',
-			'Allow user to edit pages in the group \''.stripslashes($group_name).'\'',0)) {
-		$debug->addMessage('Failed to create new permission value',true);
-		return false;
-	}
-	Log::addMessage('Created page group \''.stripslashes($group_name).'\'');
-	return true;
-}
-
-/**
- * Delete a page group
- * @global acl $acl
- * @global db $db
- * @global Debug $debug
- * @param integer $group_id ID of group to delete
- * @return mixed Boolean for success, integer error codes for more detailed error messages
- */
-function page_delete_group($group_id) {
-	global $acl;
-	global $db;
-	global $debug;
-
-	if (!is_numeric($group_id)) {
-		$debug->addMessage('No ID provided',true);
-		return false;
-	}
-	// Make sure page group is empty before deleting it
-	$verify_empty_query = 'SELECT `page_group` FROM `'.PAGE_TABLE.'`
-		WHERE `page_group` = '.$group_id;
-	$verify_empty_handle = $db->sql_query($verify_empty_query);
-	if ($db->error[$verify_empty_handle] === 1) {
-		$debug->addMessage('Failed to check if the group is empty',true);
-		return false;
-	}
-	if ($db->sql_num_rows($verify_empty_handle) != 0) {
-		$debug->addMessage('The group is not empty',true);
-		return 2;
-	}
-
-	// Remove any permission assignments related to this group
-	$get_permission_query = 'SELECT `acl_table`.`acl_record_id` FROM
-		`'.ACL_KEYS_TABLE.'` `key_table`, `'.ACL_TABLE.'` `acl_table` WHERE
-		`acl_table`.`acl_id` = `key_table`.`acl_id`
-		AND `key_table`.`acl_name` = \'pagegroupedit-'.$group_id.'\'';
-	$get_permission_handle = $db->sql_query($get_permission_query);
-	if ($db->error[$get_permission_handle] === 1) {
-		$debug->addMessage('Failed to check if there are users with permission to edit this group',true);
-		return false;
-	}
-	for ($i = 1; $i <= $db->sql_num_rows($get_permission_handle); $i++) {
-		$permission_entry = $db->sql_fetch_assoc($get_permission_handle);
-		$remove_permission_query = 'DELETE FROM `'.ACL_TABLE.'` WHERE
-			`acl_record_id` = '.$permission_entry['acl_record_id'];
-		$remove_permission_handle = $db->sql_query($remove_permission_query);
-		if ($db->error[$remove_permission_handle] === 1) {
-			$debug->addMessage('Failed to delete user permission records',true);
-			return 3;
-		}
-	}
-
-	// Remove permission key
-	$del_acl_key_query = 'DELETE FROM `'.ACL_KEYS_TABLE.'` WHERE
-		`acl_name` = \'pagegroupedit-'.$group_id.'\'';
-	$del_acl_key_handle = $db->sql_query($del_acl_key_query);
-	if ($db->error[$del_acl_key_handle] === 1) {
-		$debug->addMessage('Failed to delete permission key',true);
-		return 4;
-	}
-
-	// Delete group
-	$del_group_query = 'DELETE FROM `'.PAGE_GROUP_TABLE.'` WHERE
-		`id` = '.$group_id;
-	$del_group_handle = $db->sql_query($del_group_query);
-	if ($db->error[$del_group_handle] === 1) {
-		return false;
-	}
-	Log::addMessage('Deleted page group');
-	return true;
 }
 
 function page_hide($id) {
@@ -484,7 +364,7 @@ function page_path($id) {
 	global $debug;
 
 	// Don't execute this for special pages or non-existant pages
-	if ((int)Page::$id == 0 || Page::$exists == false) {
+	if ($id == 0 || Page::$exists == false) {
 		$debug->addMessage('Not generating page path',false);
 		return false;
 	}
@@ -509,39 +389,3 @@ function page_path($id) {
 	$list = $page_info['title'].$list;
 	return $list;
 }
-
-/**
- * page_group_news - Get the page group that a news article belongs to
- * @global db $db Database connection object
- * @param integer $article_id News article ID
- * @return mixed False (on fail) or a page group ID
- */
-function page_group_news($article_id) {
-	global $db;
-
-	// Validate parameters
-	if (!is_numeric($article_id)) {
-		return false;
-	}
-	$article_id = (int)$article_id;
-
-	// Find the correct page group
-	$query = 'SELECT `page_group`.`id` FROM
-		`'.PAGE_GROUP_TABLE.'` `page_group`,
-		`'.PAGE_TABLE.'` `page`,
-		`'.NEWS_TABLE.'` `news` WHERE
-		`news`.`id` = '.$article_id.' AND
-		`news`.`page` = `page`.`id` AND
-		`page`.`page_group` = `page_group`.`id`';
-	$handle = $db->sql_query($query);
-	if ($db->sql_num_rows($handle) != 1) {
-		return false;
-	}
-	$page_group = $db->sql_fetch_assoc($handle);
-	$id = $page_group['id'];
-	unset($query);
-	unset($handle);
-	unset($page_group);
-	return $id;
-}
-?>
