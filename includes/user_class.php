@@ -15,7 +15,12 @@ require_once(ROOT.'includes/User.class.php');
  * @package CommunityCMS.main
  */
 class UserSession {
+	private static $session = null;
 	public $logged_in = false;
+	
+	public static function get() {
+		return UserSession::$session;
+	}
 
 	/**
 	 * Check user's login status
@@ -64,6 +69,8 @@ class UserSession {
 		}
 		$this->logged_in = true;
 		$debug->addMessage('Verified logged-in state',false);
+		
+		UserSession::$session = $this;
 	}
 
 	/**
