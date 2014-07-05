@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2014 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -47,6 +47,15 @@ define('LOG_LEVEL_ADMIN',1);
 define('LOG_LEVEL_USER',2);
 define('LOG_LEVEL_ANON',3);
 define('LOG_LEVEL_INSTALL',4);
+/**#@-*/
+
+/**#@+
+ * Page types
+ */
+define('NEWS_PAGE_TYPE', 1);
+define('NEWSLETTER_PAGE_TYPE', 2);
+define('CALENDAR_PAGE_TYPE', 3);
+define('CONTACTS_PAGE_TYPE', 4);
 /**#@-*/
 
 /**#@+
