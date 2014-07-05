@@ -82,6 +82,28 @@ class Content {
 		$this->delete_date = $result['delete_date'];
 	}
 	
+	public function getEditBar() {
+		$editbar = new EditBar();
+		$editbar->set_label('Article');
+		$editbar->add_control('admin.php?module=news&action=edit&amp;id='.$this->getID(),
+				'edit.png',
+				'Edit',
+				array('news_edit','adm_news','admin_access'));
+
+		// Get current url
+		$query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', null, $_SERVER['QUERY_STRING']);
+		if ($this->published()) {
+			// Currently published
+			$editbar->add_control('index.php?'.$query_string.'&unpublish='.$this->getID(),
+					'unpublish.png','Unpublish',array('news_publish'));
+		} else {
+			// Currently unpublished
+			$editbar->add_control('index.php?'.$query_string.'&publish='.$this->getID(),
+				'publish.png','Publish',array('news_publish'));
+		}
+		return $editbar;
+	}
+	
 	/**
 	 * Get content ID
 	 * @return int
@@ -152,6 +174,10 @@ class Content {
 	 */
 	public function isDateVisible() {
 		return (bool) $this->show_date;
+	}
+	
+	public function isAuthorVisible() {
+		return get_config('news_show_author');
 	}
 }
 
