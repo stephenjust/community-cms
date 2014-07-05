@@ -20,7 +20,7 @@ class HTML {
 	public static function div($class, $content) {
 		return sprintf('<div class="%s">%s</div>', HTML::schars($class), $content);
 	}
-	
+
 	/**
 	 * Generate an HTML anchor
 	 * @param string $href Target URL
@@ -40,7 +40,7 @@ class HTML {
 		$link .= '>'.$label.'</a>';
 		return $link;
 	}
-	
+
 	/**
 	 * Generate an HTML image tag, using an image from the template path
 	 * @param string $src Image file name
@@ -52,7 +52,7 @@ class HTML {
 	public static function templateImage($src, $alt_text, $class = null, $style = null) {
 		return HTML::image('<!-- $IMAGE_PATH$ -->'.$src, $alt_text, $class, $style);
 	}
-	
+
 	/**
 	 * Generate an HTML image tag
 	 * @param string $src Image file path
@@ -72,7 +72,7 @@ class HTML {
 		$image .= '/>';
 		return $image;
 	}
-	
+
 	/**
 	 * Convert HTML special characters to entities
 	 * @param string $string
@@ -81,5 +81,24 @@ class HTML {
 	public static function schars($string) {
 		return htmlspecialchars($string, ENT_COMPAT, 'UTF-8', false);
 	}
+
+	/**
+	 * Generate an HTML meta tag
+	 * @param string $name
+	 * @param string $content
+	 * @return string
+	 */
+	public static function meta($name, $content) {
+		return sprintf('<meta name="%s" content="%s" />', HTML::schars($name), HTML::schars($content));
+	}
+
+	/**
+	 * Generate an HTML meta http-equiv tag
+	 * @param string $name
+	 * @param string $content
+	 * @return string
+	 */
+	public static function metaHTTP($name, $content) {
+		return sprintf('<meta http-equiv="%s" content="%s" />', HTML::schars($name), HTML::schars($content));
+	}
 }
-?>
