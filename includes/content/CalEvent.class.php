@@ -223,6 +223,10 @@ class CalEvent {
 		return $this->description;
 	}
 	
+	public function getTruncatedDescription($length = 100) {
+		return truncate(strip_tags($this->description), $length);
+	}
+	
 	/**
 	 * Get event end time
 	 * @return int
@@ -237,6 +241,10 @@ class CalEvent {
 	
 	public function getAuthor() {
 		return $this->author;
+	}
+	
+	public function isAllDay() {
+		return ($this->start_time == $this->end_time);
 	}
 	
 	/**
