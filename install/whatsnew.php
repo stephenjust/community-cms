@@ -3,8 +3,8 @@
  * Community CMS Installer - "What's New"
  *
  * @copyright Copyright (C) 2009-2010 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.install
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.install
  */
 
 ob_start();

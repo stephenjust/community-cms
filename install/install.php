@@ -3,8 +3,8 @@
  * Community CMS Installer
  *
  * @copyright Copyright (C) 2008-2010 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.install
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.install
  */
 // TODO: Check for versions: PHP, MySQL, PostgreSQL etc.
 $content = '<h1>Step 1: Check Dependencies</h1>'."\n";
@@ -20,13 +20,13 @@ $content .= 'config.php';
 $content .= '</td><td>';
 touch('../config.php');
 if (file_exists('../config.php')) {
-	if (is_writable('../config.php')) {
-		$content .= '<span class="req_good">Writable</span>';
-	} else {
-		$content .= '<span class="req_bad">Not Writable</span>';
-	}
+    if (is_writable('../config.php')) {
+        $content .= '<span class="req_good">Writable</span>';
+    } else {
+        $content .= '<span class="req_bad">Not Writable</span>';
+    }
 } else {
-	$content .= '<span class="req_bad">Does Not Exist</span>';
+    $content .= '<span class="req_bad">Does Not Exist</span>';
 }
 $content .= '</td></tr>'."\n";
 
@@ -35,13 +35,13 @@ $content .= '<tr>'."\n".'<td>';
 $content .= 'files/';
 $content .= '</td><td>';
 if (!file_exists('../files')) {
-	$content .= '<span class="req_bad">Does Not Exist</span>';
-	$error = 1;
+    $content .= '<span class="req_bad">Does Not Exist</span>';
+    $error = 1;
 } elseif (!is_writable('../files')) {
-	$content .= '<span class="req_bad">Not Writable</span>';
-	$error = 1;
+    $content .= '<span class="req_bad">Not Writable</span>';
+    $error = 1;
 } else {
-	$content .= '<span class="req_good">Writable</span>';
+    $content .= '<span class="req_good">Writable</span>';
 }
 $content .= '</td></tr>'."\n";
 
@@ -51,13 +51,13 @@ $content .= '<tr>'."\n".'<td>';
 $content .= 'templates/';
 $content .= '</td><td>';
 if (!file_exists('../templates')) {
-	$content .= '<span class="req_bad">Does Not Exist</span>';
-	$error = 1;
+    $content .= '<span class="req_bad">Does Not Exist</span>';
+    $error = 1;
 } elseif (!is_writable('../templates')) {
-	$content .= '<span class="req_bad">Not Writable</span>';
-	$error = 1;
+    $content .= '<span class="req_bad">Not Writable</span>';
+    $error = 1;
 } else {
-	$content .= '<span class="req_good">Writable</span>';
+    $content .= '<span class="req_good">Writable</span>';
 }
 $content .= '</td></tr>'."\n";
 
@@ -70,20 +70,20 @@ $content .= '<tr><th>Configuration</th><th>Status</th></tr>'."\n";
 // Register globals
 $content .= '<tr><td>register_globals</td><td>';
 if (ini_get('register_globals')) {
-	$content .= '<span class="req_bad">Enabled</span>';
-	$error = 1;
+    $content .= '<span class="req_bad">Enabled</span>';
+    $error = 1;
 } else {
-	$content .= '<span class="req_good">Disabled</span>';
+    $content .= '<span class="req_good">Disabled</span>';
 }
 $content .= '</td></tr>';
 
 // Magic Quotes
 $content .= '<tr><td>magic_quotes_gpc</td><td>';
 if (get_magic_quotes_gpc()) {
-	$content .= '<span class="req_bad">Enabled</span>';
-	$error = 1;
+    $content .= '<span class="req_bad">Enabled</span>';
+    $error = 1;
 } else {
-	$content .= '<span class="req_good">Disabled</span>';
+    $content .= '<span class="req_good">Disabled</span>';
 }
 $content .= '</td></tr>';
 
@@ -98,25 +98,25 @@ $db = 0;
 // MySQLi
 $content .= '<tr><td>MySQLi</td><td>';
 if (check_library('mysqli')) {
-	$content .= '<span class="req_good">Found</span>';
-	$db = 1;
+    $content .= '<span class="req_good">Found</span>';
+    $db = 1;
 } else {
-	$content .= '<span class="req_bad">Not Found</span>';
+    $content .= '<span class="req_bad">Not Found</span>';
 }
 $content .= '</td></tr>'."\n";
 
 // PostgreSQL
 $content .= '<tr><td>PostgreSQL</td><td>';
 if (check_library('postgresql')) {
-	$content .= '<span class="req_good">Found</span>';
-	$db = 1;
+    $content .= '<span class="req_good">Found</span>';
+    $db = 1;
 } else {
-	$content .= '<span class="req_bad">Not Found</span>';
+    $content .= '<span class="req_bad">Not Found</span>';
 }
 $content .= '</td></tr>'."\n";
 
 if ($db == 0) {
-	$error = 1;
+    $error = 1;
 }
 
 // Separator
@@ -128,40 +128,40 @@ $content .= '<tr><th>Library</th><th>Status</th></tr>'."\n";
 // Check for GD
 $content .= '<tr><td>GD Image Library</td><td>';
 if (check_library('gd')) {
-	$content .= '<span class="req_good">Found</span>';
+    $content .= '<span class="req_good">Found</span>';
 } else {
-	$content .= '<span class="req_false">Not Found</span>';
-	$error = 1;
+    $content .= '<span class="req_false">Not Found</span>';
+    $error = 1;
 }
 $content .= '</td></tr>'."\n";
 
 // Check for MBString
 $content .= '<tr><td>Multi-Byte String Library</td><td>';
 if (check_library('mbstring')) {
-	$content .= '<span class="req_good">Found</span>';
+    $content .= '<span class="req_good">Found</span>';
 } else {
-	$content .= '<span class="req_false">Not Found</span>';
-	$error = 1;
+    $content .= '<span class="req_false">Not Found</span>';
+    $error = 1;
 }
 $content .= '</td></tr>'."\n";
 
 // Check for PEAR
 $content .= '<tr><td>PEAR Library</td><td>';
 if (check_library('pear')) {
-	$content .= '<span class="req_good">Found</span>';
+    $content .= '<span class="req_good">Found</span>';
 } else {
-	$content .= '<span class="req_bad">Not Found</span>';
-	$error = 1;
+    $content .= '<span class="req_bad">Not Found</span>';
+    $error = 1;
 }
 $content .= '</td></tr>'."\n";
 
 // Check for XMLReader Class
 $content .= '<tr><td>XMLReader</td><td>';
 if (check_library('xmlreader')) {
-	$content .= '<span class="req_good">Found</span>';
+    $content .= '<span class="req_good">Found</span>';
 } else {
-	$content .= '<span class="req_bad">Not Found</span>';
-	$error = 1;
+    $content .= '<span class="req_bad">Not Found</span>';
+    $error = 1;
 }
 $content .= '</td></tr>'."\n";
 
@@ -206,8 +206,8 @@ target="_blank">tracker</a> to report any bugs.
 </td></tr></table>
 END;
 if ($error == 0) {
-	$content .= '<form method="POST" action="index.php?page=2"><input type="submit" value="Next" /></form>';
+    $content .= '<form method="POST" action="index.php?page=2"><input type="submit" value="Next" /></form>';
 } else {
-	$content .= '<br /><br />An error has occured. Please make sure that the files and folders listed above are writable, and that the required libraries are available.';
+    $content .= '<br /><br />An error has occured. Please make sure that the files and folders listed above are writable, and that the required libraries are available.';
 }
 ?>

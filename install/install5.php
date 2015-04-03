@@ -3,8 +3,8 @@
  * Community CMS Installer
  *
  * @copyright Copyright (C) 2009-2010 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.install
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.install
  */
 
 $content = '<h1>Step 5: Initial Set-Up</h1>'."\n";

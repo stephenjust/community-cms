@@ -3,8 +3,8 @@
  * Community CMS Installer
  *
  * @copyright Copyright (C) 2010 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.install
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.install
  */
 $content = '<h1>License Agreement</h1>'."\n";
 $content .= 'To use Community CMS, you must agree to the following license terms.
