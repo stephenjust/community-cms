@@ -3,55 +3,57 @@
  * Community CMS
  *
  * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.admin
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.admin
  */
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
-	die ('You cannot access this page directly.');
+    die ('You cannot access this page directly.');
 }
 
-require_once(ROOT.'includes/ui/UISelectDirList.class.php');
+require_once ROOT.'includes/ui/UISelectDirList.class.php';
 
 global $acl;
 
-if (!$acl->check_permission('adm_filemanager'))
-	throw new AdminException('You do not have the necessary permissions to access this module.');
+if (!$acl->check_permission('adm_filemanager')) {
+    throw new AdminException('You do not have the necessary permissions to access this module.'); 
+}
 
 try {
-	switch ($_GET['action']) {
-		default: break;
+    switch ($_GET['action']) {
+    default: 
+        break;
 
-		case 'saveinfo':
-			try {
-				$file = new File($_POST['path']);
-				$file->setInfo(array('label' => $_POST['label']));
-				echo 'Updated file info.<br />';
-			} catch (FileException $e) {
-				echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
-			}
-			unset($_POST['path']);
-			break;
+    case 'saveinfo':
+        try {
+            $file = new File($_POST['path']);
+            $file->setInfo(array('label' => $_POST['label']));
+            echo 'Updated file info.<br />';
+        } catch (FileException $e) {
+            echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+        }
+        unset($_POST['path']);
+        break;
 
-		// Create new subfolder
-		case 'new_folder':
-			File::createDir($_POST['new_folder_name']);
-			echo 'Successfully created directory.<br />';
-			break;
+     // Create new subfolder
+    case 'new_folder':
+        File::createDir($_POST['new_folder_name']);
+        echo 'Successfully created directory.<br />';
+        break;
 
-		// Save folder property
-		case 'save_folder_prop':
-			File::setDirProperty($_GET['dir'], $_GET['prop'], $_GET['value']);
-			echo 'Saved folder properties.<br />';
-			break;
-		case 'save_cat':
-			File::setDirProperty($_GET['dir'], 'category', $_POST['category']);
-			echo 'Saved folder category.<br />';
-			break;
-	}
+     // Save folder property
+    case 'save_folder_prop':
+        File::setDirProperty($_GET['dir'], $_GET['prop'], $_GET['value']);
+        echo 'Saved folder properties.<br />';
+        break;
+    case 'save_cat':
+        File::setDirProperty($_GET['dir'], 'category', $_POST['category']);
+        echo 'Saved folder category.<br />';
+        break;
+    }
 }
 catch (Exception $e) {
-	echo '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
+    echo '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
 }
 
 
@@ -59,81 +61,84 @@ catch (Exception $e) {
 
 // Upload file
 if (isset($_GET['upload'])) {
-	try {
-		if (!isset($_POST['path']))
-			throw new Exception('No path was given. This may occur if the uploaded file is too big.');
-		echo File::upload($_POST['path']);
-	}
-	catch (Exception $e) {
-		echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
-	}
+    try {
+        if (!isset($_POST['path'])) {
+            throw new Exception('No path was given. This may occur if the uploaded file is too big.'); 
+        }
+        echo File::upload($_POST['path']);
+    }
+    catch (Exception $e) {
+        echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
+    }
 }
 
 // Delete files
 if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
-	if (!isset($_GET['filename'])) {
-		echo 'No file was specified to delete.<br />';
-	} else {
-		try {
-			if ($_GET['path'] != NULL)
-				$_GET['path'] .= '/';
-			$file = new File($_GET['path'].$_GET['filename']);
-			$file->delete();
-			echo 'Suucessfully deleted "'.$_GET['filename'].'".<br />';
-		} catch (FileException $e) {
-			echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
-		}
-	}
+    if (!isset($_GET['filename'])) {
+        echo 'No file was specified to delete.<br />';
+    } else {
+        try {
+            if ($_GET['path'] != null) {
+                $_GET['path'] .= '/'; 
+            }
+            $file = new File($_GET['path'].$_GET['filename']);
+            $file->delete();
+            echo 'Suucessfully deleted "'.$_GET['filename'].'".<br />';
+        } catch (FileException $e) {
+            echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
 
 $tab_layout = new Tabs;
 if ($_GET['action'] == 'edit') {
-	$tab_content['edit'] = NULL;
-	$file = $db->sql_escape_string($_GET['path'].'/'.$_GET['file']);
-	$file_info_query = 'SELECT * FROM ' . FILE_TABLE . '
+    $tab_content['edit'] = null;
+    $file = $db->sql_escape_string($_GET['path'].'/'.$_GET['file']);
+    $file_info_query = 'SELECT * FROM ' . FILE_TABLE . '
 		WHERE `path` = \''.$file.'\' LIMIT 1';
-	$file_info_handle = $db->sql_query($file_info_query);
-	if ($db->error[$file_info_handle] === 1) {
-		$tab_content['edit'] .= 'Could not read file information from database.';
-		$file_info['label'] = NULL;
-		$file_info['id'] = NULL;
-	} else {
-		if ($db->sql_num_rows($file_info_handle) != 1) {
-			$file_info['label'] = NULL;
-			$file_info['id'] = NULL;
-		} else {
-			$file_info = $db->sql_fetch_assoc($file_info_handle);
-		}
-	}
-	$form = new form;
-	$form->set_target('admin.php?module=filemanager&action=saveinfo&path='.$_GET['path']);
-	$form->set_method('post');
-	$form->add_hidden('id',$file_info['id']);
-	$form->add_hidden('path',$file);
-	$form->add_textbox('label','Label',$file_info['label']);
-	$form->add_submit('submit','Save');
-	$tab_content['edit'] .= $form;
-	$tab_layout->add_tab('Edit File Properties',$tab_content['edit']);
+    $file_info_handle = $db->sql_query($file_info_query);
+    if ($db->error[$file_info_handle] === 1) {
+        $tab_content['edit'] .= 'Could not read file information from database.';
+        $file_info['label'] = null;
+        $file_info['id'] = null;
+    } else {
+        if ($db->sql_num_rows($file_info_handle) != 1) {
+            $file_info['label'] = null;
+            $file_info['id'] = null;
+        } else {
+            $file_info = $db->sql_fetch_assoc($file_info_handle);
+        }
+    }
+    $form = new form;
+    $form->set_target('admin.php?module=filemanager&action=saveinfo&path='.$_GET['path']);
+    $form->set_method('post');
+    $form->add_hidden('id', $file_info['id']);
+    $form->add_hidden('path', $file);
+    $form->add_textbox('label', 'Label', $file_info['label']);
+    $form->add_submit('submit', 'Save');
+    $tab_content['edit'] .= $form;
+    $tab_layout->add_tab('Edit File Properties', $tab_content['edit']);
 }
 if (!isset($_POST['folder_list']) && !isset($_POST['path'])) {
-	if (isset($_GET['path'])) {
-		$_POST['folder_list'] = $_GET['path'];
-	} else {
-		$_POST['folder_list'] = NULL;
-	}
+    if (isset($_GET['path'])) {
+        $_POST['folder_list'] = $_GET['path'];
+    } else {
+        $_POST['folder_list'] = null;
+    }
 } elseif (!isset($_POST['folder_list']) && isset($_POST['path'])) {
-	$_POST['folder_list'] = $_POST['path'];
+    $_POST['folder_list'] = $_POST['path'];
 }
 
 $dir_list = new UISelectDirList(
-	array(
-		'id' => 'adm_file_dir_list',
-		'onChange' => 'update_file_list(\'-\')'
-	));
-$dir_list->setChecked(basename($_POST['folder_list']));
-$tab_content['list'] = '<form method="POST" action="admin.php?module=filemanager">
+    array(
+        'id' => 'adm_file_dir_list',
+        'onChange' => 'update_file_list(\'-\')'
+    )
+);
+ $dir_list->setChecked(basename($_POST['folder_list']));
+ $tab_content['list'] = '<form method="POST" action="admin.php?module=filemanager">
 '.$dir_list.'</form>
 <br />
 <div id="adm_file_list">Loading...</div>
@@ -142,50 +147,50 @@ update_file_list(\''.$_POST['folder_list'].'\');
 </script>';
 
 if ($acl->check_permission('file_create_folder')) {
-	$tab_content['list'] .= '<br />
+    $tab_content['list'] .= '<br />
 		<br />
 		<form method="post" action="?module=filemanager&action=new_folder">
 		New folder: <input type="text" name="new_folder_name" maxlength="30" />
 		<input type="submit" value="Create Folder" />
 		</form>';
 }
-$tab_layout->add_tab('File List',$tab_content['list']);
+    $tab_layout->add_tab('File List', $tab_content['list']);
 
-// ----------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
 
 if ($acl->check_permission('file_upload')) {
-	$tab_content['upload'] = NULL;
+    $tab_content['upload'] = null;
 
-	// Display upload form and upload location selector.
-	try {
-		$tab_content['upload'] .= file_upload_box(1);
-	}
-	catch (Exception $e) {
-		$tab_content['upload'] .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
-	}
-	$tab_layout->add_tab('Upload File',$tab_content['upload']);
+    // Display upload form and upload location selector.
+    try {
+        $tab_content['upload'] .= file_upload_box(1);
+    }
+    catch (Exception $e) {
+        $tab_content['upload'] .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
+    }
+    $tab_layout->add_tab('Upload File', $tab_content['upload']);
 }
 
-// Folder settings panel
-$fs_table_columns = array('Folder', 'Icons Only', 'Category');
-$fs_folders = File::getDirList();
-$fs_rows = array();
+    // Folder settings panel
+    $fs_table_columns = array('Folder', 'Icons Only', 'Category');
+    $fs_folders = File::getDirList();
+    $fs_rows = array();
 for ($i = 0; $i < count($fs_folders); $i++) {
-	if (File::getDirProperty($fs_folders[$i],'icons_only')) {
-		$fs_dir_prop_icons = '<a href="admin.php?module=filemanager&amp;action=save_folder_prop&amp;dir='.$fs_folders[$i].'&amp;prop=icons_only&amp;value=0">
+    if (File::getDirProperty($fs_folders[$i], 'icons_only')) {
+        $fs_dir_prop_icons = '<a href="admin.php?module=filemanager&amp;action=save_folder_prop&amp;dir='.$fs_folders[$i].'&amp;prop=icons_only&amp;value=0">
 			<img src="<!-- $IMAGE_PATH$ -->tick.png" alt="yes" width="16" height="16" border="0" />
 			</a>';
-	} else {
-		$fs_dir_prop_icons = '<a href="admin.php?module=filemanager&amp;action=save_folder_prop&amp;dir='.$fs_folders[$i].'&amp;prop=icons_only&amp;value=1">
+    } else {
+        $fs_dir_prop_icons = '<a href="admin.php?module=filemanager&amp;action=save_folder_prop&amp;dir='.$fs_folders[$i].'&amp;prop=icons_only&amp;value=1">
 			<img src="<!-- $IMAGE_PATH$ -->cross.png" alt="no" width="16" height="16" border="0" />
 			</a>';
-	}
-	$fs_cat = '<form method="post" action="admin.php?module=filemanager&amp;action=save_cat&amp;dir='.HTML::schars($fs_folders[$i]).'">
+    }
+    $fs_cat = '<form method="post" action="admin.php?module=filemanager&amp;action=save_cat&amp;dir='.HTML::schars($fs_folders[$i]).'">
 		<input type="text" name="category" value="'.HTML::schars(File::getDirProperty($fs_folders[$i], 'category')).'" /><input type="submit" value="Save" /></form>';
-	$fs_rows[] = array($fs_folders[$i], $fs_dir_prop_icons, $fs_cat);
+    $fs_rows[] = array($fs_folders[$i], $fs_dir_prop_icons, $fs_cat);
 }
-$fs_tab = create_table($fs_table_columns, $fs_rows); 
-$tab_layout->add_tab('Folder Settings',$fs_tab);
+    $fs_tab = create_table($fs_table_columns, $fs_rows); 
+    $tab_layout->add_tab('Folder Settings', $fs_tab);
 
-echo $tab_layout;
+    echo $tab_layout;
 ?>

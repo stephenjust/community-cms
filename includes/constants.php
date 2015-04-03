@@ -3,24 +3,24 @@
  * Community CMS
  *
  * @copyright Copyright (C) 2007-2014 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.main
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.main
  */
 
 /**
  * @ignore
  */
 if (!defined('SECURITY')) {
-	exit;
+    exit;
 }
 
 if (!ini_get('date.timezone')) {
-	date_default_timezone_set('UTC');
+    date_default_timezone_set('UTC');
 }
 
 define('COMCMS_VERSION', 'SVN');
 define('DATABASE_VERSION', 0.05);
-define('FILES_ROOT',ROOT.'files/');
+define('FILES_ROOT', ROOT.'files/');
 
 /**
  * Enable debugging
@@ -43,10 +43,10 @@ define('TIME_12', date('h:ia'));
 /**#@+
  * Log message levels (for Log class)
  */
-define('LOG_LEVEL_ADMIN',1);
-define('LOG_LEVEL_USER',2);
-define('LOG_LEVEL_ANON',3);
-define('LOG_LEVEL_INSTALL',4);
+define('LOG_LEVEL_ADMIN', 1);
+define('LOG_LEVEL_USER', 2);
+define('LOG_LEVEL_ANON', 3);
+define('LOG_LEVEL_INSTALL', 4);
 /**#@-*/
 
 /**#@+
