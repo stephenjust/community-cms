@@ -18,7 +18,7 @@ class PageManager
         
         $id = $db->sql_escape_string($id);
         
-        $query = 'SELECT `title`, `page_group`
+        $query = 'SELECT `title`
 			FROM `'.PAGE_TABLE.'`
 			WHERE `id` = '.$id;
         $handle = $db->sql_query($query);

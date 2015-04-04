@@ -14,7 +14,7 @@ define('SECURITY', 1);
 define('ROOT', '../../');
 /**#@-*/
 
-require ROOT . 'config.php';
+require_once ROOT.'vendor/autoload.php';
 require ROOT . 'include.php';
 require ROOT . 'functions/admin.php';
 

@@ -14,13 +14,9 @@ define('SECURITY', 1);
 define('ROOT', '../../');
 /**#@-*/
 
-require_once ROOT.'config.php';
+require_once ROOT.'vendor/autoload.php';
 require_once ROOT.'include.php';
 require_once ROOT.'functions/admin.php';
-require_once ROOT.'includes/acl/acl.php';
-require_once ROOT.'includes/HTML.class.php';
-require_once ROOT.'includes/PageMessage.class.php';
-
 initialize('ajax');
 
 acl::get()->require_permission('adm_page_message');

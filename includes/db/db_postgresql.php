@@ -23,12 +23,10 @@ class db_postgresql extends db
     }
     function sql_connect() 
     {
-        global $CONFIG;
         $this->db_connect_id = 'pgsql';
         $this->connect = pg_connect(
-            "host={$CONFIG['db_host']}
-			port={$CONFIG['db_host_port']} dbname={$CONFIG['db_name']}
-			user={$CONFIG['db_user']} password={$CONFIG['db_pass']}"
+            'host='.Config::DB_HOST.'port='.Config::DB_HOST_PORT.' '.
+            'dbname='.Config::DB_NAME.' user='.Config::DB_USER.' password='.Config::DB_PASS
         );
         return $this->connect;
     }

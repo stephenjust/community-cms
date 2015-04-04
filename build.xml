@@ -61,6 +61,7 @@
 		<exclude name="auth.json" />
 		<exclude name="composer.*" />
 		<exclude name="build.xml" />
+		<exclude name="config.php" />
 		<exclude name="**/reports/**" />
 		<exclude name="**/build/**" />
 		<exclude name="**/tests/**" />

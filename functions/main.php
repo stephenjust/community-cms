@@ -51,8 +51,6 @@ function initialize($mode = null)
         err_page(1001); // Database connection error
     }
 
-    include_once ROOT . 'includes/acl/acl.php';
-    include_once ROOT . 'includes/acl/acl_functions.php';
     $acl = acl::get();
 
     include_once ROOT . 'includes/Log.class.php';

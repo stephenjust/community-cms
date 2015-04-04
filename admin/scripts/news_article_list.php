@@ -14,8 +14,7 @@ define('SECURITY', 1);
 define('ROOT', '../../');
 /**#@-*/
 
-require_once ROOT.'includes/content/News.class.php';
-require_once ROOT.'includes/acl/acl.php';
+require_once ROOT.'vendor/autoload.php';
 require_once ROOT . 'include.php';
 require_once ROOT . 'functions/admin.php';
 

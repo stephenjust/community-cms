@@ -19,7 +19,7 @@ define('ROOT', '../../');
 define('SECURITY', 1);
 /**#@-*/
 
-require '../../config.php';
+require_once ROOT.'vendor/autoload.php';
 require '../../include.php';
 require_once ROOT.'includes/content/CalLocation.class.php';
 

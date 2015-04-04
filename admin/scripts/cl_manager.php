@@ -15,11 +15,9 @@ define('ROOT', '../../');
 /**#@-*/
 
 $content = null;
-require ROOT . 'config.php';
+require_once ROOT.'vendor/autoload.php';
 require ROOT . 'include.php';
 require ROOT . 'functions/admin.php';
-require_once ROOT.'includes/content/Contact.class.php';
-require_once ROOT.'includes/ui/UISelect.class.php';
 
 initialize('ajax');
 

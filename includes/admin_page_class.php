@@ -86,7 +86,6 @@ class AdminPage extends Page
 
     public static function display_admin() 
     {
-        global $CONFIG;
         global $db;
         global $acl;
 

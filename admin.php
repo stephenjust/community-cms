@@ -18,11 +18,7 @@ require_once('vendor/autoload.php');
 
 // Load required includes
 require(ROOT.'functions/error.php');
-require(ROOT.'config.php');
 require(ROOT.'include.php');
-// Check if site is disabled.
-if ($CONFIG['disabled'] == 1)
-	err_page(1);
 
 initialize();
 

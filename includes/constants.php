@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2014 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 /**
@@ -61,28 +66,28 @@ define('CONTACTS_PAGE_TYPE', 4);
 /**#@+
  * Database Tables
  */
-define('ACL_TABLE', $CONFIG['db_prefix'] . 'acl');
-define('ACL_KEYS_TABLE', $CONFIG['db_prefix'] . 'acl_keys');
-define('BLOCK_TABLE', $CONFIG['db_prefix'] . 'blocks');
-define('CALENDAR_TABLE', $CONFIG['db_prefix'] . 'calendar');
-define('CALENDAR_CATEGORY_TABLE', $CONFIG['db_prefix'] . 'calendar_categories');
-define('CONFIG_TABLE', $CONFIG['db_prefix'] . 'config');
-define('CONTACTS_TABLE', $CONFIG['db_prefix'] . 'contacts');
-define('CONTENT_TABLE', $CONFIG['db_prefix'] . 'content');
-define('DIR_PROP_TABLE', $CONFIG['db_prefix'] . 'dir_props');
-define('FILE_TABLE', $CONFIG['db_prefix'] . 'files');
-define('GALLERY_TABLE', $CONFIG['db_prefix'] . 'galleries');
-define('GALLERY_IMAGE_TABLE', $CONFIG['db_prefix'] . 'gallery_images');
-define('LOCATION_TABLE', $CONFIG['db_prefix'] . 'locations');
-define('LOG_TABLE', $CONFIG['db_prefix'] . 'logs');
-define('NEWS_TABLE', $CONFIG['db_prefix'] . 'news');
-define('NEWSLETTER_TABLE', $CONFIG['db_prefix'] . 'newsletters');
-define('PAGE_TABLE', $CONFIG['db_prefix'] . 'pages');
-define('PAGE_MESSAGE_TABLE', $CONFIG['db_prefix'] . 'page_messages');
-define('PAGE_TYPE_TABLE', $CONFIG['db_prefix'] . 'pagetypes');
-define('PLUGIN_TABLE', $CONFIG['db_prefix'] . 'plugins');
-define('SESSION_TABLE', $CONFIG['db_prefix'] . 'sessions');
-define('TEMPLATE_TABLE', $CONFIG['db_prefix'] . 'templates');
-define('USER_TABLE', $CONFIG['db_prefix'] . 'users');
-define('USER_GROUPS_TABLE', $CONFIG['db_prefix'] . 'user_groups');
+define('ACL_TABLE', Config::DB_PREFIX . 'acl');
+define('ACL_KEYS_TABLE', Config::DB_PREFIX . 'acl_keys');
+define('BLOCK_TABLE', Config::DB_PREFIX . 'blocks');
+define('CALENDAR_TABLE', Config::DB_PREFIX . 'calendar');
+define('CALENDAR_CATEGORY_TABLE', Config::DB_PREFIX . 'calendar_categories');
+define('CONFIG_TABLE', Config::DB_PREFIX . 'config');
+define('CONTACTS_TABLE', Config::DB_PREFIX . 'contacts');
+define('CONTENT_TABLE', Config::DB_PREFIX . 'content');
+define('DIR_PROP_TABLE', Config::DB_PREFIX . 'dir_props');
+define('FILE_TABLE', Config::DB_PREFIX . 'files');
+define('GALLERY_TABLE', Config::DB_PREFIX . 'galleries');
+define('GALLERY_IMAGE_TABLE', Config::DB_PREFIX . 'gallery_images');
+define('LOCATION_TABLE', Config::DB_PREFIX . 'locations');
+define('LOG_TABLE', Config::DB_PREFIX . 'logs');
+define('NEWS_TABLE', Config::DB_PREFIX . 'news');
+define('NEWSLETTER_TABLE', Config::DB_PREFIX . 'newsletters');
+define('PAGE_TABLE', Config::DB_PREFIX . 'pages');
+define('PAGE_MESSAGE_TABLE', Config::DB_PREFIX . 'page_messages');
+define('PAGE_TYPE_TABLE', Config::DB_PREFIX . 'pagetypes');
+define('PLUGIN_TABLE', Config::DB_PREFIX . 'plugins');
+define('SESSION_TABLE', Config::DB_PREFIX . 'sessions');
+define('TEMPLATE_TABLE', Config::DB_PREFIX . 'templates');
+define('USER_TABLE', Config::DB_PREFIX . 'users');
+define('USER_GROUPS_TABLE', Config::DB_PREFIX . 'user_groups');
 /**#@-*/

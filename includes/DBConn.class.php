@@ -2,11 +2,15 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2014 Stephen Just
- * @copyright Copyright (C) 2013 Glenn De Jonghe
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
+ * @package   CommunityCMS.database
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2013 Glenn De Jonghe
+ * @copyright 2014-2015 Stephen Just
  * @license   https://www.gnu.org/licenses/gpl-3.0.txt
- * @author    stephenjust@gmail.com
- * @package   CommunityCMS.main
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 require_once ROOT.'config.php';
@@ -32,9 +36,8 @@ class DBConn
     
     private function __construct() 
     {
-        global $CONFIG;
-        $conn_string = sprintf("mysql:host=%s;dbname=%s", $CONFIG['db_host'], $CONFIG['db_name']);
-        $this->conn = new PDO($conn_string, $CONFIG['db_user'], $CONFIG['db_pass']);
+        $conn_string = sprintf("mysql:host=%s;dbname=%s", Config::DB_HOST, Config::DB_NAME);
+        $this->conn = new PDO($conn_string, Config::DB_USER, Config::DB_PASS);
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->conn->exec("set names utf8");
     }
@@ -108,5 +111,3 @@ class DBConn
         return $this->conn->lastInsertId();  
     }
 }
-
-?>

@@ -2,10 +2,16 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2013 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.database
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
+
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
@@ -88,7 +94,6 @@ class SQLException extends Exception
 {
 }
 
-require ROOT.'includes/db/db_'.$CONFIG['db_engine'].'.php';
-$db_class = 'db_'.$CONFIG['db_engine'];
+require ROOT.'includes/db/db_'.Config::DB_ENGINE.'.php';
+$db_class = 'db_'.Config::DB_ENGINE;
 $db = new $db_class;
-?>

@@ -17,10 +17,6 @@ define('ROOT', './');
 
 require_once 'vendor/autoload.php';
 
-// Load error handling code
-require_once './functions/error.php';
-// Load database configuration
-require_once ROOT.'config.php';
 require_once ROOT.'include.php';
 
 // Page load timer

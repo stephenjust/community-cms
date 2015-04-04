@@ -23,11 +23,10 @@ class db_mysqli extends db
     }
     function sql_connect() 
     {
-        global $CONFIG;
         $this->db_connect_id = 'mysqli';
         $this->connect = mysqli_connect(
-            $CONFIG['db_host'], $CONFIG['db_user'],
-            $CONFIG['db_pass'], $CONFIG['db_name'], $CONFIG['db_host_port']
+            Config::DB_HOST, Config::DB_USER,
+            Config::DB_PASS, Config::DB_NAME, Config::DB_HOST_PORT
         );
         return $this->connect;
     }
