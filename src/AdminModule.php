@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2013 Stephen Just
- * @author    stephenjust@users.sourceforge.net
- * @package   CommunityCMS.main
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
+ * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2013-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -22,7 +27,7 @@ abstract class AdminModule
         }
 
         if (!acl::get()->check_permission($this->permission)) {
-            throw new AdminUnauthorizedException('You do not have the necessary permissions to access this module.'); 
+            throw new Exceptions\InsufficientPermissionException();
         }
         
         $this->layout = new Tabs;
@@ -38,8 +43,3 @@ abstract class AdminModule
      */
     abstract public function display();
 }
-
-class AdminUnauthorizedException extends \Exception
-{
-}
-?>

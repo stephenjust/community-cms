@@ -41,7 +41,7 @@ class PageMessage
             );
             Log::addMessage(sprintf("Created page message for page '%s'", PageUtil::getTitle($page)));
             return new PageMessage(DBConn::get()->lastInsertId());
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             throw new \Exception('An error occurred when creating the page message record.');
         }
     }
@@ -94,7 +94,7 @@ class PageMessage
             );
             Log::addMessage(sprintf("Deleted page message on page '%s'", PageUtil::getTitle($this->page_id)));
             $this->id = 0;
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             throw new \Exception('An error occurred while deleting the page message.');
         }
     }
@@ -120,7 +120,7 @@ class PageMessage
             Log::addMessage(sprintf("Edited page message for page '%s'", PageUtil::getTitle($page)));
             $this->content = $content;
             $this->page_id = $page;
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             throw new \Exception('An error occurred when updating the page message record.');
         }
     }

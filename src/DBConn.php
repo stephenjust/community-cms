@@ -15,10 +15,6 @@
 
 namespace CommunityCMS;
 
-class DBException extends \Exception
-{
-}
-
 /**
  * Description of DBConn
  *
@@ -57,7 +53,7 @@ class DBConn
     public function query($query, $params = null, $return_type = DBConn::NOTHING) 
     {
         if(empty($query)) {
-            throw new DBException("Empty Query"); 
+            throw new Exceptions\DBException("Empty Query"); 
         }     
         try{
             $sth = $this->conn->prepare($query);
@@ -75,7 +71,7 @@ class DBConn
                 return $sth->fetch(\PDO::FETCH_ASSOC);
             }
         } catch (\PDOException $e){
-            throw new DBException($e->errorInfo[0]);
+            throw new Exceptions\DBException($e->errorInfo[0], $e->getCode(), $e);
         }
     }
     

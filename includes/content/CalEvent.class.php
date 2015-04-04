@@ -82,7 +82,7 @@ class CalEvent
             $insert_id = DBConn::get()->lastInsertId();
             Log::addMessage(sprintf("New date entry on %s, '%s'", date('d/m/Y', strtotime($start)), $title));
             return new CalEvent($insert_id);
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             echo $ex;
             throw new CalEventException('Failed to create event.');
         }
@@ -136,7 +136,7 @@ class CalEvent
             );
             Log::addMessage(sprintf("Deleted calendar date '%s'.", $this->title));
             $this->id = 0;
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             throw new CalEventException('Failed to delete event.');
         }
     }

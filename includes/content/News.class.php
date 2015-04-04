@@ -59,7 +59,7 @@ class News
                 $return[] = $row['id'];
             }
             return $return;
-        } catch (DBException $e) {
+        } catch (Exceptions\DBException $e) {
             Debug::get()->addMessage('Database error while getting news articles: '.$e->getMessage(), true);
             return array();
         }
@@ -85,7 +85,7 @@ class News
             $instance = new News();
             $instance->populate($article);
             return $instance;
-        } catch (DBException $e) {
+        } catch (Exceptions\DBException $e) {
             Debug::get()->addMessage('Failed to get article: '.$e, true);
             return null;
         }

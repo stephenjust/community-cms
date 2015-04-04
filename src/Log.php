@@ -42,7 +42,7 @@ class Log
                 $query, array(':user_id' => $user,
                 ':action' => $message, ':date' => DATE_TIME, ':ip' => $ip)
             );
-        } catch (DBException $e) {
+        } catch (Exceptions\DBException $e) {
             return false;
         }
         return true;

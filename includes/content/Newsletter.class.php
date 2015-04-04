@@ -39,7 +39,7 @@ class Newsletter
 			FROM `'.NEWSLETTER_TABLE.'` WHERE `id` = :id LIMIT 1';
         try {
             $result = DBConn::get()->query($query, [':id' => $id], DBConn::FETCH);
-        } catch (DBException $e) {
+        } catch (Exceptions\DBException $e) {
             throw new NewsletterException('Failed to access newsletter database.');
         }
         if ($result) {
@@ -75,7 +75,7 @@ class Newsletter
         try {
             DBConn::get()->query($delete_query, [':id' => $this->mId], DBConn::NOTHING);
             Log::addMessage('Deleted newsletter \''.$this->mLabel.'\'');
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             throw new NewsletterException('An error occurred when deleting the newsletter entry.');
         }
         $this->mExists = false;
@@ -133,7 +133,7 @@ class Newsletter
                 DBConn::NOTHING);
             $insert_id = DBConn::get()->lastInsertId();
             Log::addMessage('Newsletter \''.$entry_name.'\' added to page '.PageUtil::getTitle($page));
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             throw new NewsletterException('An error occurred when creating the newsletter.');
         }
         return new Newsletter($insert_id);
@@ -154,7 +154,7 @@ class Newsletter
 			ORDER BY year desc, month desc';
         try {
             $results = DBConn::get()->query($query, null, DBConn::FETCH_ALL);
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             throw new NewsletterException('Failed to lookup newsletters.');
         }
 
@@ -181,7 +181,7 @@ class Newsletter
         try {
             $results = DBConn::get()->query($query, [':page' => $page],
                 DBConn::FETCH_ALL);
-        } catch (DBException $ex) {
+        } catch (Exceptions\DBException $ex) {
             throw new NewsletterException('Failed to lookup newsletters.');
         }
 
