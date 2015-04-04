@@ -14,7 +14,7 @@ namespace CommunityCMS;
  *
  * @author Stephen
  */
-class widget
+class Widget
 {
     private $title = null;
     private $content = null;

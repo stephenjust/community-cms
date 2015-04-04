@@ -14,6 +14,9 @@
 		"tinymce/tinymce": "4.1.*"
 	},
 	"autoload": {
-		"classmap": ["includes/", "config.php"]
+		"classmap": ["includes/", "config.php"],
+		"psr-4": {
+			"CommunityCMS\\": "src/"
+		}
 	}
 }

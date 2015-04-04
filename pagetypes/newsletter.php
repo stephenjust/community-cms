@@ -14,8 +14,6 @@ if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
 
-require_once ROOT.'includes/content/Newsletter.class.php';
-
 $return = null;
 
 try {

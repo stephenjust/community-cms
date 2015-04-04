@@ -16,9 +16,6 @@ if (!defined('SECURITY')) {
     exit;
 }
 
-require_once ROOT.'includes/acl/acl.php';
-require_once ROOT.'includes/DBConn.class.php';
-
 function get_article_list($page, $start = 1) 
 {
     assert(is_numeric($page), 'Invalid page ID');

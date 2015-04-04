@@ -13,8 +13,6 @@ if (@SECURITY != 1) {
     die('You cannot access this page directly.');
 }
 
-require_once ROOT.'includes/content/Contact.class.php';
-
 $clTpl = new Smarty();
 $clTpl->assign('contacts', Contact::getList(Page::$id));
 switch (get_config('contacts_display_mode')) {

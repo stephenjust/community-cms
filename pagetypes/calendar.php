@@ -21,7 +21,6 @@ $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$
 /**#@+
  * Include necessary functions to complete tasks in this file
  */
-require_once ROOT.'includes/HTML.class.php';
 require_once ROOT.'pagetypes/calendar_class.php';
 /**#@-*/
 if ($view == null) {
