@@ -55,23 +55,23 @@ unset($_GET['page'], $_GET['id']);
 // Load page information.
 $page = new Page();
 if ($page_id == null && $page_text_id != null) {
-    Page::set_page($page_text_id, false);
+    Page::setPage($page_text_id, false);
 } else {
-    Page::set_page($page_id);
+    Page::setPage($page_id);
 }
 if (file_exists('./install')) {
     $debug->addMessage('The ./install directory still exists', true);
 }
 
 // Display the page.
-Page::display_header();
-Page::display_left();
-Page::display_right();
-Page::display_content();
+Page::displayHeader();
+Page::displayLeft();
+Page::displayRight();
+Page::displayContent();
 if (DEBUG === 1) {
-    Page::display_debug();
+    Page::displayDebug();
 }
-Page::display_footer();
+Page::displayFooter();
 
 clean_up();
 

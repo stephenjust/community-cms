@@ -93,7 +93,7 @@ class AdminPage extends Page
         $template_page->load_admin_file();
 
         $template_page->nav_bar = '<div id="menu">'.admin_nav().'</div>';
-        $template_page->nav_login = Page::display_login_box();
+        $template_page->nav_login = Page::displayLoginBox();
         $template_page_bottom = $template_page->split('content');
         echo $template_page;
         unset($template_page);

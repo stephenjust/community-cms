@@ -224,7 +224,7 @@ function page_list($parent = 0, $visible_only = false)
         $result = $db->sql_fetch_assoc($handle);
 
         $page_list[$i] = $result;
-        $page_list[$i]['has_children'] = Page::has_children($page_list[$i]['id'], $visible_only);
+        $page_list[$i]['has_children'] = Page::hasChildren($page_list[$i]['id'], $visible_only);
     }
     return $page_list;
 }

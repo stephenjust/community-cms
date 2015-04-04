@@ -2,16 +2,20 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
-require_once ROOT.'includes/PageMessage.class.php';
+namespace CommunityCMS;
 
 /**
  * Generates a page
- * @package CommunityCMS.main
  */
 class Page
 {
@@ -99,7 +103,7 @@ class Page
      * @param string $type Name of page type to load
      * @return void
      */
-    public static function set_type($type) 
+    public static function setType($type) 
     {
         switch ($type) {
         default:
@@ -115,7 +119,7 @@ class Page
      * @param boolean $is_id     If $reference is a numeric ID or special page, true; else a text ID
      * @return boolean Success
      */
-    public static function set_page($reference, $is_id = true) 
+    public static function setPage($reference, $is_id = true) 
     {
         global $debug;
 
@@ -127,7 +131,7 @@ class Page
                     // Error case
                     $debug->addMessage('Unknown special page type', true);
                     Page::$exists = false;
-                    Page::get_page_content();
+                    Page::getPageContent();
                     return false;
 
                 case 'change_password':
@@ -135,7 +139,7 @@ class Page
                     Page::$text_id = $reference;
                     Page::$showlogin = false;
                     Page::$url_reference = 'id=change_password';
-                    Page::get_special_page();
+                    Page::getSpecialPage();
                     return true;
                 }
             }
@@ -147,7 +151,7 @@ class Page
             Page::$text_id = (string)$reference;
             Page::$url_reference = 'page='.Page::$text_id;
         }
-        Page::get_page_information();
+        Page::getPageInformation();
         return true;
     }
 
@@ -157,7 +161,7 @@ class Page
      * @global Debug $debug Debug object
      * @return void
      */
-    public static function get_page_information() 
+    public static function getPageInformation() 
     {
         global $db;
         global $debug;
@@ -241,7 +245,7 @@ class Page
      * Handle "special" pages (i.e. change password page)
      * @global Debug $debug
      */
-    private static function get_special_page() 
+    private static function getSpecialPage() 
     {
         global $debug;
 
@@ -261,7 +265,7 @@ class Page
         }
     }
 
-    public static function get_page_content() 
+    public static function getPageContent() 
     {
         if (Page::$exists === false) {
             Page::$title .= 'Page Not Found';
@@ -273,7 +277,7 @@ class Page
         }
     }
 
-    public static function display_page() 
+    public static function displayPage() 
     {
         // Read template.xml for current template to figure out which order
         // to spit out content
@@ -287,7 +291,7 @@ class Page
     /**
      * display_header - Print the page header
      */
-    public static function display_header() 
+    public static function displayHeader() 
     {
         $template = new template;
         $template->load_file('header');
@@ -354,7 +358,7 @@ class Page
      * @global Debug $debug Debugging object
      * @return string HTML for menu
      */
-    private static function nav_menu() 
+    private static function navMenu() 
     {
         global $db;
         global $debug;
@@ -410,7 +414,7 @@ class Page
             $item_template->menu_item_id = 'menuitem_'.$nav_menu_item['id'];
             // Generate hidden child div
             if ($haschild == 1) {
-                $item_template->child_placeholder = Page::nav_child_menu($nav_menu_item['id']);
+                $item_template->child_placeholder = Page::navChildMenu($nav_menu_item['id']);
             } else {
                 $item_template->child_placeholder = null;
             }
@@ -421,7 +425,7 @@ class Page
         return $menu_template;
     }
 
-    private static function nav_child_menu($parent) 
+    private static function navChildMenu($parent) 
     {
         global $db;
 
@@ -463,13 +467,13 @@ class Page
             $haschild = 0;
             $extra_text = null;
             // Select the proper template
-            if (Page::has_children($items_result['id']) === true && Page::$id !== $items_result['id']) {
+            if (Page::hasChildren($items_result['id']) === true && Page::$id !== $items_result['id']) {
                 $this_item = clone $itemchild_temp;
-                $this_item->child_placeholder = Page::nav_child_menu($items_result['id']);
-            } elseif (Page::has_children($items_result['id']) === true && Page::$id === $items_result['id']) {
+                $this_item->child_placeholder = Page::navChildMenu($items_result['id']);
+            } elseif (Page::hasChildren($items_result['id']) === true && Page::$id === $items_result['id']) {
                 $this_item = clone $currentitemchild_temp;
-                $this_item->child_placeholder = Page::nav_child_menu($items_result['id']);
-            } elseif (Page::has_children($items_result['id']) === false && Page::$id !== $items_result['id'])
+                $this_item->child_placeholder = Page::navChildMenu($items_result['id']);
+            } elseif (Page::hasChildren($items_result['id']) === false && Page::$id !== $items_result['id'])
             $this_item = clone $item_temp;
             else {
                 $this_item = clone $currentitem_temp; 
@@ -507,7 +511,7 @@ class Page
     * @param boolean $visible_children_only Only consider items that will appear in the menu
     * @return boolean
     */
-    public static function has_children($id, $visible_children_only = false) 
+    public static function hasChildren($id, $visible_children_only = false) 
     {
         global $db;
 
@@ -549,15 +553,15 @@ class Page
         return $return;
     }
 
-    public static function display_left() 
+    public static function displayLeft() 
     {
         $template = new template;
         $template->load_file('left');
-        $template->nav_bar = Page::nav_menu();
+        $template->nav_bar = Page::navMenu();
 
         // Hide login box when it may cause issues
         if (Page::$showlogin === true) {
-            $template->nav_login = Page::display_login_box();
+            $template->nav_login = Page::displayLoginBox();
         } else {
             $template->nav_login = null;
         }
@@ -571,7 +575,8 @@ class Page
         $template->left_content = $left_blocks_content;
         echo $template;
     }
-    public static function display_right() 
+
+    public static function displayRight() 
     {
         $template = new template;
         $template->load_file('right');
@@ -586,7 +591,7 @@ class Page
         echo $template;
     }
 
-    public static function display_content() 
+    public static function displayContent()
     {
         global $db;
 
@@ -635,7 +640,7 @@ class Page
         } else {
             $template->page_message = null;
         }
-        $template->content = Page::get_page_content();
+        $template->content = Page::getPageContent();
 
         // This must be done after $template->content is set because the
         // following could be used within the content.
@@ -645,7 +650,8 @@ class Page
         echo $template;
         unset($template);
     }
-    public static function display_footer() 
+
+    public static function displayFooter()
     {
         $template = new template;
         $template->load_file('footer');
@@ -653,7 +659,8 @@ class Page
         echo $template;
         unset($template);
     }
-    public static function display_debug() 
+
+    public static function displayDebug()
     {
         global $db;
         global $debug;
@@ -668,31 +675,24 @@ class Page
     }
 
     /**
-    * display_login_box - Generate and return content of login box area
+    * displayLoginBox - Generate and return content of login box area
     * @global db $db
     * @global object $acl
     * @return string
     */
-    public static function display_login_box() 
+    public static function displayLoginBox()
     {
-        global $db;
-        global $acl;
-        global $user;
-        if (!$user->logged_in) {
-            $template_loginbox = new template;
-            $template_loginbox->load_file('login');
-            $template_loginbox->login_username = '<input type="text" name="user" id="login_user" />';
-            $template_loginbox->login_password = '<input type="password" name="passwd" id="login_password" />';
-            $template_loginbox->login_button = '<input type="submit" value="Login!" id="login_button" />';
-            $return = "<form method='post' action='index.php?".$_SERVER['QUERY_STRING']."&amp;login=1'>\n".$template_loginbox."</form>\n";
-            unset($template_loginbox);
+        $tpl = new Smarty();
+        $tpl->assign("login_target", "index.php?{$_SERVER['QUERY_STRING']}&amp;login=1");
+        $tpl->assign("logout_target", "index.php?{$_SERVER['QUERY_STRING']}&amp;login=2");
+        $tpl->assign("change_password_target", "index.php?id=change_password");
+        $tpl->assign("admin_target", "admin.php");
+        $tpl->assign("admin_status", acl::get()->check_permission("admin_access"));
+        $tpl->assign("user", (isset($_SESSION['name'])) ? $_SESSION['name'] : "Anonymous");
+        if (!UserSession::get()->logged_in) {
+            return $tpl->fetch("login.tpl");
         } else {
-            $return = $_SESSION['name']."<br />\n".HTML::link('index.php?'.$_SERVER['QUERY_STRING'].'&login=2', 'Log Out')."<br />\n";
-            $return .= HTML::link('index.php?id=change_password', 'Change Password')."<br />\n";
-            if ($acl->check_permission('admin_access')) {
-                $return .= HTML::link('admin.php', 'Admin');
-            }
+            return $tpl->fetch("userbox.tpl");
         }
-        return $return;
     }
 }

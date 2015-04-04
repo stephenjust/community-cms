@@ -2,12 +2,15 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2010 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2010-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
-
-require_once ROOT.'includes/User.class.php';
 
 /**
  * Handle all user-related functions
@@ -18,10 +21,16 @@ class UserSession
 {
     private static $session = null;
     public $logged_in = false;
-    
+
+    /**
+     * @return \UserSession
+     */
     public static function get() 
     {
-        return UserSession::$session;
+        if (self::$session == null) {
+            self::$session = new self();
+        }
+        return self::$session;
     }
 
     /**
@@ -74,7 +83,7 @@ class UserSession
         $this->logged_in = true;
         $debug->addMessage('Verified logged-in state', false);
         
-        UserSession::$session = $this;
+        self::$session = $this;
     }
 
     /**
@@ -199,4 +208,3 @@ class UserSession
         return true;
     }
 }
-?>

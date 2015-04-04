@@ -42,6 +42,7 @@
     <copy todir="./build">
 	  <fileset defaultexcludes="true" expandsymboliclinks="true" dir=".">
 		<include name="**/*.css" />
+		<include name="**/*.gif" />
 		<include name="**/*.htm" />
 		<include name="**/*.html" />
 		<include name="**/*.jpg" />

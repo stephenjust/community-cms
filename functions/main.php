@@ -53,8 +53,6 @@ function initialize($mode = null)
 
     $acl = acl::get();
 
-    include_once ROOT . 'includes/Log.class.php';
-
     // Don't do this when installing - we have no DB version set yet
     if ($mode != 'install') {
         // Check for up-to-date database
@@ -69,7 +67,6 @@ function initialize($mode = null)
     // We need to initialize this class after the session is started
     // Don't do this during install because there are no users yet
     if ($mode != 'install') {
-        include_once ROOT . 'includes/user_class.php';
         $user = new UserSession;
         new LoginController();
     }
