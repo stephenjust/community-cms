@@ -16,8 +16,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 global $debug;
 
-require_once ROOT.'includes/ui/UIIcon.class.php';
-
 if (!acl::get()->check_permission('adm_page')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }

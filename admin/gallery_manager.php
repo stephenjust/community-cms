@@ -35,7 +35,7 @@ function gallery_upload_box($gallery_id,$gallery_dir)
 			Please delete this gallery.</span>';
     }
 
-    $form = new form;
+    $form = new Form;
     $form->set_target('?module=gallery_manager&action=edit&id='.$gallery_id);
     $form->set_method('post');
     $form->add_file_upload('gallery_upload', $gallery_dir, true);
@@ -254,7 +254,7 @@ case 'built-in':
 
     // Create a gallery
     $tab_content['create'] = '';
-    $create_form = new form;
+    $create_form = new Form;
     $create_form->set_method('post');
     $create_form->set_target('?module=gallery_manager&action=create');
     $create_form->add_textbox('title', 'Title');

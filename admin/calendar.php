@@ -14,11 +14,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-require_once ROOT.'includes/acl/acl.php';
-require_once ROOT.'includes/content/CalEvent.class.php';
-require_once ROOT.'includes/content/CalLocation.class.php';
-require_once ROOT.'includes/content/CalCategory.class.php';
-require_once ROOT.'includes/HTML.class.php';
 acl::get()->require_permission('adm_calendar');
 
 // Save form information from previously created entry
@@ -239,7 +234,7 @@ $tab_layout->add_tab('Manage Events', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-$form_create = new form;
+$form_create = new Form;
 $form_create->set_target('admin.php?module=calendar&action=new');
 $form_create->set_method('post');
 $form_create->add_hidden('author', $_SESSION['name']);
@@ -277,7 +272,7 @@ $tab_layout->add_tab('Create Event', $tab_content['create']);
 
 if (acl::get()->check_permission('calendar_settings')) {
     $tab_content['settings'] = '<h1>Calendar Settings</h1>';
-    $settings_form = new form;
+    $settings_form = new Form;
     $settings_form->set_method('post');
     $settings_form->set_target('?module=calendar&action=save_settings');
     $settings_form->add_select('default_view', 'Default View', array('month','day'), array('Current Month','Current Day'), get_config('calendar_default_view'));

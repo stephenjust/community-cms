@@ -55,7 +55,7 @@ echo 'Use the form below to send feedback to the people in charge of'."\n\r".
     'assist with domain specific problems, the address of your website will'."\n\r".
     'also be sent with your message.'."\n\r";
 
-$form = new form;
+$form = new Form;
 $form->set_method('post');
 $form->set_target('admin.php?module=feedback&send=1');
 $form->add_select('topic', 'Topic', array('bug','feature','comment'), array('Bug Report','Feature Request','Other Comment'));

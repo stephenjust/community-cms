@@ -68,7 +68,7 @@ if ($_GET['action'] == 'save') {
 $tab_layout = new Tabs;
 
 $tab_content['config'] = null;
-$form = new form;
+$form = new Form;
 $form->set_target('admin.php?module=site_config&action=save');
 $form->set_method('post');
 $form->add_heading('General Settings');

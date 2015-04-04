@@ -2,12 +2,18 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2008-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
- * @package   CommunityCMS.main
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
+ * @package   CommunityCMS.Exceptions
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2008-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
+
 /**
  * Generate a form
  * 
@@ -18,7 +24,7 @@ namespace CommunityCMS;
  * @author  stephen
  * @package CommunityCMS.main
  */
-class form
+class Form
 {
     function __construct() 
     {
@@ -504,4 +510,3 @@ class form
         $this->form .= $form_var;
     }
 }
-?>

@@ -14,9 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-require_once ROOT.'includes/acl/acl.php';
 require_once ROOT.'functions/news.php';
-require_once ROOT.'includes/ui/UISelectPageList.class.php';
 
 acl::get()->require_permission('adm_news');
 
@@ -174,7 +172,7 @@ case 'edit':
     }
 
     $edit = $db->sql_fetch_assoc($edit_handle);
-    $edit_form = new form;
+    $edit_form = new Form;
     $edit_form->set_method('post');
     $edit_form->set_target('admin.php?module=news&action=editsave');
     $edit_form->add_hidden('id', $edit['id']);
@@ -258,7 +256,7 @@ if (acl::get()->check_permission('news_delete')) {
     $tab_layout->add_tab('Manage News', $tab_content['manage']);
 
 if (acl::get()->check_permission('news_create')) {
-    $form = new form;
+    $form = new Form;
     $form->set_target('admin.php?module=news&action=new');
     $form->set_method('post');
     $form->add_textbox('title', 'Heading');

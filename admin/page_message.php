@@ -14,8 +14,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-require_once ROOT.'includes/acl/acl.php';
-require_once ROOT.'includes/PageMessage.class.php';
 acl::get()->require_permission('adm_page_message');
 
 // Get current page ID
@@ -76,7 +74,7 @@ $tab_layout->add_tab('Manage Page Messages', $tab_content['manage']);
 
 // Form to create new page message
 if (acl::get()->check_permission('page_message_new')) {
-    $form = new form;
+    $form = new Form;
     $form->set_target('admin.php?module=page_message&action=create');
     $form->set_method('post');
     $form->add_textarea('text', 'Content', null, 'rows="30"');

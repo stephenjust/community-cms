@@ -90,7 +90,7 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
             $current_name[1] = null;
         }
         $tab_layout = new Tabs;
-        $form = new form;
+        $form = new Form;
         $form->set_target('admin.php?module=user_edit&edit='.$_GET['id']);
         $form->set_method('post');
         $form->add_password('edit_pass', 'New Password');

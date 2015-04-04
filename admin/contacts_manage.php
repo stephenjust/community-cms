@@ -90,7 +90,7 @@ case 'edit':
         $c = new Contact($_GET['id']);
 
         // Create form
-        $edit_form = new form;
+        $edit_form = new Form;
         $edit_form->set_method('post');
         $edit_form->set_target('admin.php?module=contacts_manage&action=editsave&id='.$c->getId());
         $edit_form->add_textbox('name', 'Name', $c->getName());
@@ -195,7 +195,7 @@ $tab_layout->add_tab('Contact Lists', $tab_content['manage_lists']);
 
 // ----------------------------------------------------------------------------
 
-$new_form = new form;
+$new_form = new Form;
 $new_form->set_method('post');
 $new_form->set_target('admin.php?module=contacts_manage&action=create');
 $new_form->add_textbox('name', 'Name');

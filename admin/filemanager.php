@@ -110,7 +110,7 @@ if ($_GET['action'] == 'edit') {
             $file_info = $db->sql_fetch_assoc($file_info_handle);
         }
     }
-    $form = new form;
+    $form = new Form;
     $form->set_target('admin.php?module=filemanager&action=saveinfo&path='.$_GET['path']);
     $form->set_method('post');
     $form->add_hidden('id', $file_info['id']);

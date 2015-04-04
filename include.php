@@ -22,4 +22,3 @@ require_once(ROOT.'functions/page.php');
 require_once(ROOT.'functions/blocks.php');
 require_once(ROOT.'functions/files.php');
 require_once(ROOT.'functions/forms.php');
-require_once(ROOT.'functions/form_class.php');

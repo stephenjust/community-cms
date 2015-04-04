@@ -18,11 +18,6 @@ if (!acl::get()->check_permission('adm_calendar_edit_date')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
-/**
- * Include functions necessary for calendar operations
- */
-require_once ROOT.'includes/content/CalEvent.class.php';
-
 switch ($_GET['action']) {
 case 'edit':
     try {
@@ -70,7 +65,7 @@ case 'edit':
 default:
     try {
         $ev = new CalEvent($_GET['id']);
-        $form = new form;
+        $form = new Form;
         $form->set_method('post');
         $form->set_target('admin.php?module=calendar_edit_date&action=edit');
         $form->add_hidden('author', HTML::schars($_SESSION['name']));

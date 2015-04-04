@@ -14,11 +14,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-/**
- * Include functions necessary to perform operations on this page
- */
-require_once ROOT.'includes/content/CalLocation.class.php';
-
 class AdminCalLocationModule extends AdminModule
 {
     protected $permission = 'adm_calendar_locations';
