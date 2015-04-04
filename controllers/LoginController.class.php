@@ -17,13 +17,10 @@ class LoginController extends BaseController
 {
     /**
      * Handle login event at page load
-     * @global UserSession $user
      * @return void
      */
     public function onLoad() 
     {
-        global $user;
-
         // Check required parameters
         if (!isset($_GET['login'])) { return; 
         }
@@ -35,14 +32,12 @@ class LoginController extends BaseController
         }
         
         if ($_GET['login'] == 1) {
-            $user->login($_POST['user'], $_POST['passwd']);
+            UserSession::get()->login($_POST['user'], $_POST['passwd']);
         } elseif ($_GET['login'] == 2) {
-            $user->logout();
+            UserSession::get()->logout();
         }
         unset($_POST['user']);
         unset($_POST['passwd']);
         unset($_GET['login']);
     }    
 }
-
-?>

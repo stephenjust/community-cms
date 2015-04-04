@@ -17,7 +17,6 @@ if (!defined('SECURITY')) {
 }
 
 global $db;
-global $user;
 $content = null;
 
 if (!isset($_GET['action'])) {
@@ -68,7 +67,7 @@ case 'change_password':
         if (isset($_SESSION['expired']) && $_SESSION['expired'] == true) {
             Page::$notification .= 'You must change your password because it has expired.';
         }
-        $user->logout();
+        UserSession::get()->logout();
         $content .= '<h1>Change Password</h1>'."\n";
         $content .= '<form method="post" action="?id=change_password&amp;action=save">'."\n";
         $content .= '<table style="border: 0px;">';
@@ -86,4 +85,3 @@ default:
 }
 
 return $content;
-?>

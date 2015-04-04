@@ -39,7 +39,6 @@ function initialize($mode = null)
 
     global $db;
     global $debug;
-    global $user;
 
     include_once ROOT . 'includes/debug.php';
     $debug = Debug::get();
@@ -61,12 +60,8 @@ function initialize($mode = null)
     session_name(get_config('cookie_name'));
     session_start();
 
-    // We need to initialize this class after the session is started
-    // Don't do this during install because there are no users yet
-    if ($mode != 'install') {
-        $user = new UserSession;
-        new LoginController();
-    }
+    new LoginController();
+
     return;
 }
 function clean_up() 

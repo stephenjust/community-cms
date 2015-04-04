@@ -90,10 +90,7 @@ class SpecialPage extends Page
             ':user_id' => $check_oldpass['id'])
         );
         $this->content = '<strong>Changed your password. You may now log in.</strong>';
-        $user = UserSession::get();
-        if ($user) {
-            $user->logout();
-        }
+        UserSession::get()->logout();
     }
     
     private function changePasswordPrompt() 
