@@ -25,7 +25,7 @@ if ($_GET['action'] == 'edit') {
         echo 'Successfully edited page message.<br />';
         echo HTML::link('admin.php?module=page_message&page='.$_POST['page_id'], 'Back');
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
 } else {

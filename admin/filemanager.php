@@ -51,7 +51,7 @@ try {
         break;
     }
 }
-catch (Exception $e) {
+catch (\Exception $e) {
     echo '<span class="errormessage">'.$e->getMessage()."</span><br />\n";
 }
 
@@ -66,7 +66,7 @@ if (isset($_GET['upload'])) {
         }
         echo File::upload($_POST['path']);
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
     }
 }
@@ -164,7 +164,7 @@ if (acl::get()->check_permission('file_upload')) {
     try {
         $tab_content['upload'] .= file_upload_box(1);
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         $tab_content['upload'] .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     $tab_layout->add_tab('Upload File', $tab_content['upload']);

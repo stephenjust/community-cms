@@ -126,7 +126,7 @@ case 'new':
         );
         echo 'Successfully added article.<br />';
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     break;
@@ -203,7 +203,7 @@ case 'editsave':
         );
         echo 'Successfully edited article.<br />';
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     break;

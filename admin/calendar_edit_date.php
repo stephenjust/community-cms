@@ -106,7 +106,7 @@ default:
         echo '<h1>Edit Calendar Date</h1>';
         echo $form;
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
 

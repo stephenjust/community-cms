@@ -29,7 +29,7 @@ case 'delete':
         block_delete($_GET['id']);
         echo 'Successfully deleted block.<br />';
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     break;
@@ -43,7 +43,7 @@ case 'new':
         block_create($_POST['type'], $_POST['attributes']);
         echo 'Successfully created block.<br />';
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     break;
@@ -90,7 +90,7 @@ case 'edit_save':
         block_edit($_POST['id'], $_POST['attributes']);
         echo 'Successfully edited block.<br />'."\n";
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     break;

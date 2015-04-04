@@ -39,7 +39,7 @@ if ($_GET['action'] == 'new') {
         );
         echo 'Successfully added page.<br />'."\n";
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
     }
 }

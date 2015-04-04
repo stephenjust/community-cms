@@ -46,7 +46,7 @@ try {
         break;
     }
 }
-catch (Exception $e) {
+catch (\Exception $e) {
     echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
 }
 

@@ -44,7 +44,7 @@ class DBConn
     
     /**
      * Get the DBConn instance
-     * @return \DBConn
+     * @return DBConn
      */
     public static function get() 
     {

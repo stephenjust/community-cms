@@ -28,7 +28,7 @@ case 'delete':
     try {
         Log::clear();
         echo 'Cleared log messages.<br />'."\n";
-    } catch (Exception $ex) {
+    } catch (\Exception $ex) {
         echo '<span class="errormessage">Failed to clear log messages.</span><br />'."\n";
     }
     break;

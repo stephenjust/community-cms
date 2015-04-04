@@ -25,7 +25,7 @@ if ($_GET['action'] == 'new_log') {
         }
         Log::addMessage($log_message);
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
 } // IF 'new_log'

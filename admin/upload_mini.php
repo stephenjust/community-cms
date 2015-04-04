@@ -38,7 +38,7 @@ if(isset($_GET['upload'])) {
             $content .= File::upload($_POST['path']);
         }
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         $content .= '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
     }
 }
@@ -54,10 +54,9 @@ try {
         $content .= file_upload_box(1);
     }
 }
-catch (Exception $e) {
+catch (\Exception $e) {
     $content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
 }
 $template->dialog_body = $content;
 echo $template;
 clean_up();
-?>
