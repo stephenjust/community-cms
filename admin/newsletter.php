@@ -68,9 +68,9 @@ case 'edit':
     $edit_form = new form;
     $edit_form->set_target('admin.php?module=newsletter&action=editsave');
     $edit_form->set_method('post');
-    $edit_form->add_textbox('label', 'Label', stripslashes($newsletter_info['label']));
+    $edit_form->add_textbox('label', 'Label', HTML::schars($newsletter_info['label']));
     $edit_form->add_hidden('id', $newsletter_info['id']);
-    $edit_form->add_textbox('file', 'File', $newsletter_info['path'], 'size="35" disabled');
+    $edit_form->add_textbox('file', 'File', HTML::schars($newsletter_info['path']), 'size="35" disabled');
     $edit_form->add_select(
         'month', 'Month', array(1,2,3,4,5,6,7,8,9,10,11,12), array('January',
         'February','March','April','May','June','July','August','September','October',
@@ -169,4 +169,3 @@ if (acl::get()->check_permission('newsletter_create')) {
     $tab_layout->add_tab('Create Newsletter', $tab_content['create']);
 }
 echo $tab_layout;
-?>

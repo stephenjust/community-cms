@@ -25,7 +25,7 @@ case 'delete':
         $u->delete();
         echo 'Successfully deleted user.<br />';
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     break;
@@ -51,7 +51,7 @@ case 'create':
 
         echo "Account created.";
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     break;

@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2013 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2013-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -23,8 +28,6 @@ class Newsletter
     
     public function __construct($id) 
     {
-        global $db;
-
         if (!is_numeric($id)) {
             throw new NewsletterException('Invalid newsletter ID'); 
         }
@@ -32,42 +35,31 @@ class Newsletter
         $this->mId = $id;
 
         // Get newsletter info
-        $info_query = 'SELECT `page`, `year`, `month`, `label`, `path`, `hidden`
-			FROM `'.NEWSLETTER_TABLE.'` WHERE
-			`id` = '.$id.'
-			LIMIT 1';
-        $info_handle = $db->sql_query($info_query);
-        if ($db->error[$info_handle] === 1) {
-            throw new NewsletterException('Failed to access newsletter database.'); 
+        $query = 'SELECT `page`, `year`, `month`, `label`, `path`, `hidden`
+			FROM `'.NEWSLETTER_TABLE.'` WHERE `id` = :id LIMIT 1';
+        try {
+            $result = DBConn::get()->query($query, [':id' => $id], DBConn::FETCH);
+        } catch (DBException $e) {
+            throw new NewsletterException('Failed to access newsletter database.');
         }
-        if ($db->sql_num_rows($info_handle) != 0) {
+        if ($result) {
             $this->mExists = true;
-            $info = $db->sql_fetch_assoc($info_handle);
-            $this->mPage = $info['page'];
-            $this->mYear = $info['year'];
-            $this->mMonth = $info['month'];
-            $this->mLabel = $info['label'];
-            
-            // Backwards compatibility fix
-            if (substr($info['path'], 0, 7) != './files/') { $info['path'] = './files/'.$info['path']; 
-            }
-            
-            $this->mPath = $info['path'];
-            $this->mHidden = $info['hidden'];
+            $this->mPage = $result['page'];
+            $this->mYear = $result['year'];
+            $this->mMonth = $result['month'];
+            $this->mLabel = $result['label'];
+            $this->mPath = $result['path'];
+            $this->mHidden = $result['hidden'];
         }
     }
 
     /**
      * Delete newsletter entry from the database
-     * @global db $db Database connection object
      * @param integer $id Newsletter ID
      * @throws NewsletterException
      */
     public function delete() 
     {
-        global $db;
-
-        // Make sure entry exists
         if (!$this->mExists) {
             throw new NewsletterException('Newsletter does not exist.'); 
         }
@@ -79,42 +71,34 @@ class Newsletter
 
         // Delete newsletter entry
         $delete_query = 'DELETE FROM `'.NEWSLETTER_TABLE.'`
-			WHERE `id` = '.$this->mId;
-        $delete = $db->sql_query($delete_query);
-        if($db->error[$delete]) {
-            throw new NewsletterException('An error occurred when deleting the newsletter entry.'); 
+			WHERE `id` = :id';
+        try {
+            DBConn::get()->query($delete_query, [':id' => $this->mId], DBConn::NOTHING);
+            Log::addMessage('Deleted newsletter \''.$this->mLabel.'\'');
+        } catch (DBException $ex) {
+            throw new NewsletterException('An error occurred when deleting the newsletter entry.');
         }
-
-        Log::addMessage('Deleted newsletter \''.$this->mLabel.'\'');
         $this->mExists = false;
     }
 
     /**
      * Create a newsletter record
-     * @global db $db
      * @param string  $entry_name
-     * @param string  $entry_file
+     * @param string  $file
      * @param integer $page       Numeric Page ID
      * @param integer $year
      * @param integer $month
      * @throws NewsletterException 
      * @return Newsletter Newsletter instance for created item
      */
-    public static function create($entry_name,$entry_file,$page,$year,$month) 
+    public static function create($entry_name,$file,$page,$year,$month) 
     {
-        global $db;
-
         // Check permissions
         if (!acl::get()->check_permission('newsletter_create')) {
             throw new NewsletterException('You are not allowed to create newsletters.'); 
         }
 
-        // Sanitize inputs
-        $entry_name = $db->sql_escape_string($entry_name);
-        $entry_file = $db->sql_escape_string($entry_file);
-        $page = (int)$page;
-        $year = (int)$year;
-        $month = (int)$month;
+        $entry_file = join('/', array('./files', trim($file, '/')));
         if (strlen($entry_name) == 0) {
             throw new NewsletterException('No label was given for the newsletter.'); 
         }
@@ -129,60 +113,52 @@ class Newsletter
         }
 
         // Validate the newsletter page
-        // FIXME: This should be done with page class
-        $page_query = 'SELECT `title` FROM `'.PAGE_TABLE.'`
-			WHERE `id` = '.$page.' LIMIT 1';
-        $page_handle = $db->sql_query($page_query);
-        if ($db->error[$page_handle] === 1) { 
-            throw new NewsletterException('An error occurred when validating the given page information.'); 
+        if (!PageUtil::exists($page)) {
+            throw new NewsletterException('The page given for the newsletter does not exist.');
         }
-        if ($db->sql_num_rows($page_handle) === 0) {
-            throw new NewsletterException('The page given for the newsletter does not exist.'); 
-        }
-        $page_title = $db->sql_fetch_assoc($page_handle);
 
         // Create the new newsletter record
-        $new_query = 'INSERT INTO `'.NEWSLETTER_TABLE."`
+        $query = 'INSERT INTO `'.NEWSLETTER_TABLE."`
 			(`label`,`page`,`year`,`month`,`path`) VALUES
-			('$entry_name',".$page.",".$year.",".$month.",'".$entry_file."')";
-        $new = $db->sql_query($new_query);
-        if ($db->error[$new] === 1) {
-            throw new NewsletterException('An error occurred when creating the newsletter.'); 
+			(:label, :page, :year, :month, :path)";
+        try {
+            DBConn::get()->query($query,
+                [
+                    ':label' => $entry_name,
+                    ':page' => $page,
+                    ':year' => $year,
+                    ':month' => $month,
+                    ':path' => $entry_file
+                ],
+                DBConn::NOTHING);
+            $insert_id = DBConn::get()->lastInsertId();
+            Log::addMessage('Newsletter \''.$entry_name.'\' added to page '.PageUtil::getTitle($page));
+        } catch (DBException $ex) {
+            throw new NewsletterException('An error occurred when creating the newsletter.');
         }
-        $insert_id = $db->sql_insert_id(NEWSLETTER_TABLE, 'id');
-
-        // Create the log entry
-        Log::addMessage('Newsletter \''.$entry_name.'\' added to page '.$page_title['title']);
-        
         return new Newsletter($insert_id);
     }
 
     /**
      * Get an array of all newsletters
      * from most recent to oldest
-     * @global db $db
-     * @return \Newsletter
+     * @return Newsletter
      * @throws NewsletterException
      */
     public static function getAll() 
     {
-        global $db;
-        
         $return = array();
-        
+
         $query = 'SELECT `id`
 			FROM `'.NEWSLETTER_TABLE.'`
 			ORDER BY year desc, month desc';
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle]) {
-            throw new NewsletterException('Failed to lookup newsletters.'); 
+        try {
+            $results = DBConn::get()->query($query, null, DBConn::FETCH_ALL);
+        } catch (DBException $ex) {
+            throw new NewsletterException('Failed to lookup newsletters.');
         }
-        
-        $num_records = $db->sql_num_rows($handle);
-        
-        // Populate array of newsletters
-        for ($i = 0; $i < $num_records; $i++) {
-            $record = $db->sql_fetch_assoc($handle);
+
+        foreach ($results as $record) {
             $return[] = new Newsletter($record['id']);
         }
         return $return;
@@ -191,35 +167,25 @@ class Newsletter
     /**
      * Get an array of newsletters on the specified page
      * from most recent to oldest
-     * @global db $db
      * @param int $page
-     * @return \Newsletter
+     * @return Newsletter
      * @throws NewsletterException
      */
     public static function getByPage($page) 
     {
-        global $db;
-        
-        // FIXME: Use page class to check if page is valid newsletter page
-        if (!is_numeric($page)) {
-            throw new NewsletterException('Invalid page!'); 
-        }
-        
         $return = array();
         
         $query = 'SELECT `id`
 			FROM `'.NEWSLETTER_TABLE.'`
-			WHERE `page` = '.$page.' ORDER BY year desc, month desc';
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle]) {
-            throw new NewsletterException('Failed to lookup newsletters.'); 
+			WHERE `page` = :page ORDER BY year desc, month desc';
+        try {
+            $results = DBConn::get()->query($query, [':page' => $page],
+                DBConn::FETCH_ALL);
+        } catch (DBException $ex) {
+            throw new NewsletterException('Failed to lookup newsletters.');
         }
-        
-        $num_records = $db->sql_num_rows($handle);
-        
-        // Populate array of newsletters
-        for ($i = 0; $i < $num_records; $i++) {
-            $record = $db->sql_fetch_assoc($handle);
+
+        foreach ($results as $record) {
             $return[] = new Newsletter($record['id']);
         }
         return $return;
@@ -329,4 +295,3 @@ class Newsletter
 class NewsletterException extends \Exception
 {
 }
-?>
