@@ -21,7 +21,6 @@ include (ROOT . 'functions/admin.php');
 
 initialize('ajax');
 
-if ($acl->check_permission('admin_access')) {
+if (acl::get()->check_permission('admin_access')) {
 	die ('Access forbidden.<br /><input type="button" value="Close" onClick="$(this).dialog("close")" />');
 }
-?>

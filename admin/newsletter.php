@@ -14,11 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-require_once ROOT.'includes/content/Newsletter.class.php';
-
-global $acl;
-
-if (!$acl->check_permission('adm_newsletter')) {
+if (!acl::get()->check_permission('adm_newsletter')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
@@ -154,7 +150,7 @@ $tab_layout->add_tab('Manage Newsletters', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('newsletter_create')) {
+if (acl::get()->check_permission('newsletter_create')) {
     $form = new form;
     $form->set_target('admin.php?module=newsletter&action=new');
     $form->set_method('post');

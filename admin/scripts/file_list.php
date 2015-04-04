@@ -23,7 +23,7 @@ require ROOT . 'functions/admin.php';
 
 initialize('ajax');
 
-if (!$acl->check_permission('adm_filemanager') || !$acl->check_permission('admin_access')) {
+if (!acl::get()->check_permission('adm_filemanager') || !acl::get()->check_permission('admin_access')) {
     die ('You do not have the necessary permissions to access this page.');
 }
 if (!isset($_GET['directory'])) {

@@ -14,9 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-global $acl;
-
-if (!$acl->check_permission('adm_block_manager')) {
+if (!acl::get()->check_permission('adm_block_manager')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
@@ -109,19 +107,19 @@ for ($i = 1; $i <= $db->sql_num_rows($block_list_handle); $i++) {
     $block_list = $db->sql_fetch_assoc($block_list_handle);
     $attribute_list = ($block_list['attributes'] == '') ? null : ' ('.$block_list['attributes'].')';
     $current_row = array($block_list['type'].$attribute_list);
-    if ($acl->check_permission('block_delete')) {
+    if (acl::get()->check_permission('block_delete')) {
         $current_row[] = '<a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a>'; 
     }
-    if ($acl->check_permission('block_edit')) {
+    if (acl::get()->check_permission('block_edit')) {
         $current_row[] = '<a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>'; 
     }
     $block_list_rows[] = $current_row;
 }
 $heading_list = array('Info');
-if ($acl->check_permission('block_delete')) {
+if (acl::get()->check_permission('block_delete')) {
     $heading_list[] = 'Delete'; 
 }
-if ($acl->check_permission('block_edit')) {
+if (acl::get()->check_permission('block_edit')) {
     $heading_list[] = 'Edit'; 
 }
 $tab_content['manage'] = create_table($heading_list, $block_list_rows);
@@ -129,7 +127,7 @@ $tabs['manage'] = $tab_layout->add_tab('Manage Blocks', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('block_create')) {
+if (acl::get()->check_permission('block_create')) {
     $tab_content['create'] = null;
     $directory = 'content_blocks/';
     $folder_open = ROOT.$directory;

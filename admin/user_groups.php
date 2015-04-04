@@ -16,20 +16,17 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 function perm_list($group = 0) 
 {
-    global $acl;
-
     $return = null;
-    $permission_list = $acl->permission_list;
+    $permission_list = acl::get()->permission_list;
     $form_var_list = array_keys($permission_list);
     $form_var_list = array2csv($form_var_list);
     $return .= '<input type="hidden" name="var_list" value="'.$form_var_list.'" />';
 
-    $return .= permission_list($acl->permission_list, $group, true);
+    $return .= permission_list(acl::get()->permission_list, $group, true);
     return $return;
 }
 
-global $acl;
-if (!$acl->check_permission('adm_user_groups')) {
+if (!acl::get()->check_permission('adm_user_groups')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
@@ -52,7 +49,7 @@ if ($_GET['action'] == 'delete') {
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'new') {
-    if ($acl->check_permission('group_create')) {
+    if (acl::get()->check_permission('group_create')) {
         if (strlen($_POST['group_name']) < 2) {
             echo '<span class="errormessage">Error: Your group name was too short.</span><br />';
         } else {
@@ -87,8 +84,8 @@ if ($_GET['action'] == 'permsave') {
                 $form_var_value = $_POST[$form_var];
             }
             $new_setting = checkbox($form_var_value);
-            if (array_key_exists($form_var, $acl->permission_list)) {
-                $set_perm = $acl->set_permission($form_var, $new_setting, $id, true);
+            if (array_key_exists($form_var, acl::get()->permission_list)) {
+                $set_perm = acl::get()->set_permission($form_var, $new_setting, $id, true);
                 if (!$set_perm) {
                     $set_perm_error = 1;
                 }
@@ -162,7 +159,7 @@ $tab['manage'] = $tab_layout->add_tab('Manage Groups', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('group_create')) {
+if (acl::get()->check_permission('group_create')) {
     $tab_content['create'] = null;
     $tab_content['create'] .= '<form method="POST" action="admin.php?module=user_groups&action=new"><table class="admintable">
 		<tr><td>Group Name:</td><td><input type="text" name="group_name" /></td>

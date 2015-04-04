@@ -677,7 +677,6 @@ class Page
     /**
     * displayLoginBox - Generate and return content of login box area
     * @global db $db
-    * @global object $acl
     * @return string
     */
     public static function displayLoginBox()

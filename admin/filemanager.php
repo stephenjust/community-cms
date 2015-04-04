@@ -14,11 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-require_once ROOT.'includes/ui/UISelectDirList.class.php';
-
-global $acl;
-
-if (!$acl->check_permission('adm_filemanager')) {
+if (!acl::get()->check_permission('adm_filemanager')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
@@ -149,7 +145,7 @@ $dir_list = new UISelectDirList(
 update_file_list(\''.$_POST['folder_list'].'\');
 </script>';
 
-if ($acl->check_permission('file_create_folder')) {
+if (acl::get()->check_permission('file_create_folder')) {
     $tab_content['list'] .= '<br />
 		<br />
 		<form method="post" action="?module=filemanager&action=new_folder">
@@ -161,7 +157,7 @@ if ($acl->check_permission('file_create_folder')) {
 
     // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('file_upload')) {
+if (acl::get()->check_permission('file_upload')) {
     $tab_content['upload'] = null;
 
     // Display upload form and upload location selector.

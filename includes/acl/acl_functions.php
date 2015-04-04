@@ -81,7 +81,6 @@ function permission_file_read()
 
 /**
  * Create a permission list with HTML tables
- * @global acl $acl
  * @global Debug $debug
  * @param array   $permission_list
  * @param integer $group
@@ -90,7 +89,6 @@ function permission_file_read()
  */
 function permission_list($permission_list,$group = 0,$form = false) 
 {
-    global $acl;
     global $debug;
 
     $permission_file_array = permission_file_read();
@@ -150,7 +148,7 @@ function permission_list($permission_list,$group = 0,$form = false)
                     $return .= '<tr>'."\n";
                     if ($form === true) {
                         // Need to add a checkbox
-                        $perm = $acl->check_permission($items[$i]['name'], $group, false);
+                        $perm = acl::get()->check_permission($items[$i]['name'], $group, false);
                         $return .= "\t".'<td>';
                         if ($perm === true) {
                             $return .= '<input type="checkbox" name="'.$items[$i]['name'].'" checked />';
@@ -175,14 +173,12 @@ function permission_list($permission_list,$group = 0,$form = false)
 
 /**
  * Update permission list to reflect the XML file
- * @global acl $acl
  * @global db $db
  * @global Debug $debug
  * @return mixed Number of changes, or false on failure
  */
 function permission_list_refresh() 
 {
-    global $acl;
     global $db;
     global $debug;
 
@@ -192,7 +188,7 @@ function permission_list_refresh()
     if ($permission_list_file === false) {
         return false;
     }
-    $permission_list_db = $acl->permission_list;
+    $permission_list_db = acl::get()->permission_list;
     foreach ($permission_list_file AS $permission_list) {
         // Step through each permission category
         for ($i = 0; $i < count($permission_list['items']); $i++) {

@@ -23,7 +23,7 @@ require ROOT . 'functions/admin.php';
 
 initialize('ajax');
 
-if (!$acl->check_permission('adm_newsletter') || !$acl->check_permission('admin_access')) {
+if (!acl::get()->check_permission('adm_newsletter') || !acl::get()->check_permission('admin_access')) {
     die ('You do not have the necessary permissions to access this page.');
 }
 if (!isset($_GET['page'])) {
@@ -49,7 +49,7 @@ try {
         $current_row[] = $newsletter->getLabel();
         $current_row[] = $newsletter->getMonthString();
         $current_row[] = $newsletter->getYear();
-        if ($acl->check_permission('newsletter_delete')) {
+        if (acl::get()->check_permission('newsletter_delete')) {
             $current_row[] = '<a href="javascript:confirm_delete(\'?module=newsletter'
             .'&amp;action=delete&amp;id='
             .$newsletter->getId().'&amp;page='.$page_id.'\')">'
@@ -63,7 +63,7 @@ try {
     }
     
     $label_list = array('Label','Month','Year');
-    if ($acl->check_permission('newsletter_delete')) {
+    if (acl::get()->check_permission('newsletter_delete')) {
         $label_list[] = 'Delete';
     }
     $label_list[] = 'Edit';

@@ -14,7 +14,6 @@ if (@SECURITY != 1) {
 
 /**
  * get_block - Get contents of a block
- * @global acl $acl
  * @global db $db
  * @param int $block_id ID of block to display
  * @return string
@@ -25,7 +24,6 @@ function get_block($block_id = null)
     if(strlen($block_id) < 1 || $block_id <= 0) {
         return;
     }
-    global $acl;
     global $db;
     $block_content = null;
     $block_query = 'SELECT * FROM ' . BLOCK_TABLE . '
@@ -36,7 +34,7 @@ function get_block($block_id = null)
             $block_info = $db->sql_fetch_assoc($block_handle);
             $block_content .= include ROOT.'content_blocks/'.$block_info['type'].'_block.php';
         } else {
-            if ($acl->check_permission('show_fe_errors')) {
+            if (acl::get()->check_permission('show_fe_errors')) {
                 $block_content .= '<div class="notification"><strong>Error:</strong> Could not load block '.$block_id.'.</div>';
             }
         }
@@ -46,7 +44,6 @@ function get_block($block_id = null)
 
 /**
  * Create a new block record
- * @global acl $acl
  * @global db $db
  * @param string $type
  * @param string $attributes Comma separated list
@@ -54,10 +51,9 @@ function get_block($block_id = null)
  */
 function block_create($type, $attributes) 
 {
-    global $acl;
     global $db;
 
-    if (!$acl->check_permission('block_create')) {
+    if (!acl::get()->check_permission('block_create')) {
         throw new \Exception('You are not allowed to create blocks.'); 
     }
 
@@ -95,7 +91,6 @@ function block_create($type, $attributes)
 
 /**
  * Edit a block entry
- * @global acl $acl
  * @global db $db
  * @param integer $id         Block ID
  * @param string  $attributes Comma separated list
@@ -103,10 +98,9 @@ function block_create($type, $attributes)
  */
 function block_edit($id,$attributes) 
 {
-    global $acl;
     global $db;
     
-    if (!$acl->check_permission('block_edit')) {
+    if (!acl::get()->check_permission('block_edit')) {
         throw new \Exception('You are not allowed to edit content blocks.'); 
     }
 
@@ -142,17 +136,15 @@ function block_edit($id,$attributes)
 
 /**
  * Delete a block record
- * @global acl $acl Permission object
  * @global db $db Database connection object
  * @param integer $id Block ID
  * @throws \Exception
  */
 function block_delete($id) 
 {
-    global $acl;
     global $db;
 
-    if (!$acl->check_permission('block_delete')) {
+    if (!acl::get()->check_permission('block_delete')) {
         throw new \Exception('You are not allowed to delete blocks.'); 
     }
 

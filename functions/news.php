@@ -13,7 +13,6 @@ if (@SECURITY != 1) {
 
 /**
  * Create a news article record
- * @global acl $acl
  * @global db $db
  * @param string       $title
  * @param string       $content
@@ -26,10 +25,9 @@ if (@SECURITY != 1) {
  */
 function news_create($title,$content,$page,$author,$image,$publish,$showdate,$deldate) 
 {
-    global $acl;
     global $db;
 
-    if (!$acl->check_permission('news_create')) {
+    if (!acl::get()->check_permission('news_create')) {
         throw new \Exception('You are not allowed to create news articles.'); 
     }
 
@@ -41,7 +39,7 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
     }
     if ($page == null) { $page = 'NULL'; 
     }
-    $publish = ($acl->check_permission('news_publish')) ?
+    $publish = (acl::get()->check_permission('news_publish')) ?
     (int)$publish : (int)get_config('news_default_publish_value');
     $author = $db->sql_escape_string(htmlspecialchars(strip_tags($author)));
     $image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
@@ -85,7 +83,6 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
 
 /**
  * Edit news article record
- * @global acl $acl
  * @global db $db
  * @param integer          $id
  * @param string           $title
@@ -97,10 +94,9 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
  */
 function news_edit($id,$title,$content,$page,$image,$showdate,$deldate) 
 {
-    global $acl;
     global $db;
 
-    if (!$acl->check_permission('news_edit')) {
+    if (!acl::get()->check_permission('news_edit')) {
         throw new \Exception('You are not allowed to edit news articles.'); 
     }
 
@@ -156,7 +152,6 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate)
 
 /**
  * delete_article - Deletes one or more news articles
- * @global object $acl
  * @global db $db
  * @global Debug $debug
  * @param mixed $article
@@ -164,11 +159,10 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate)
  */
 function delete_article($article) 
 {
-    global $acl;
     global $db;
     global $debug;
 
-    if (!$acl->check_permission('news_delete')) {
+    if (!acl::get()->check_permission('news_delete')) {
         return false;
     }
 
@@ -386,7 +380,6 @@ function save_priorities($form_array)
 
 function news_publish($article_id,$publish = true) 
 {
-    global $acl;
     global $db;
     global $debug;
 
@@ -402,7 +395,7 @@ function news_publish($article_id,$publish = true)
     $article_id = (int)$article_id;
 
     // Check for permission
-    if (!$acl->check_permission('news_publish')) {
+    if (!acl::get()->check_permission('news_publish')) {
         $debug->addMessage('Insufficient permissions', true);
         return false;
     }

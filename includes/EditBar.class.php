@@ -34,7 +34,6 @@ class EditBar
 
     /**
      * Add a button to the editbar
-     * @global acl $acl
      * @param string $url                  URL to link to
      * @param string $image                Name of image to use as icon
      * @param string $label                Alt-text for the image
@@ -43,10 +42,8 @@ class EditBar
      */
     function add_control($url,$image,$label,$required_permissions = array()) 
     {
-        global $acl;
-
         foreach ($required_permissions AS $permission) {
-            if (!$acl->check_permission($permission)) {
+            if (!acl::get()->check_permission($permission)) {
                 return false;
             }
         }

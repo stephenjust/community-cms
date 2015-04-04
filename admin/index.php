@@ -14,11 +14,9 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-global $acl;
-
 if ($_GET['action'] == 'new_log') {
     try {
-        if (!$acl->check_permission('log_post_custom_message')) {
+        if (!acl::get()->check_permission('log_post_custom_message')) {
             throw new \Exception('You are not authorized to post custom log messages.'); 
         }
         $log_message = strip_tags($_POST['message']);
@@ -49,7 +47,7 @@ $tab_content['activity'] .= create_table(
     array('Date','Action','User','IP'),
     $table_values
 );
-if ($acl->check_permission('log_post_custom_message')) {
+if (acl::get()->check_permission('log_post_custom_message')) {
     $tab_content['activity'] .= '<form method="post" action="?action=new_log">
 		<input type="text" name="message" /><input type="submit" value="Add Message" />
 		</form>';

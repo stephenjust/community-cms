@@ -18,7 +18,6 @@ if (@SECURITY != 1) {
 /**
  * Initializes many required variables
  *
- * @global object $acl
  * @global db $db
  * @global Debug $debug
  */
@@ -40,7 +39,6 @@ function initialize($mode = null)
 
     global $db;
     global $debug;
-    global $acl;
     global $user;
 
     include_once ROOT . 'includes/debug.php';
@@ -51,8 +49,6 @@ function initialize($mode = null)
     if (!$db->connect) {
         err_page(1001); // Database connection error
     }
-
-    $acl = acl::get();
 
     // Don't do this when installing - we have no DB version set yet
     if ($mode != 'install') {

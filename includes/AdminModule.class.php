@@ -17,13 +17,11 @@ abstract class AdminModule
     
     public function __construct() 
     {
-        global $acl;
-        
         if (!isset($this->permission)) {
             throw new AdminException('Permission requirement not set!'); 
         }
 
-        if (!$acl->check_permission($this->permission)) {
+        if (!acl::get()->check_permission($this->permission)) {
             throw new AdminUnauthorizedException('You do not have the necessary permissions to access this module.'); 
         }
         

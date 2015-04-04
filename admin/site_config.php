@@ -13,9 +13,8 @@ namespace CommunityCMS;
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
-global $acl;
 
-if (!$acl->check_permission('adm_site_config')) {
+if (!acl::get()->check_permission('adm_site_config')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 

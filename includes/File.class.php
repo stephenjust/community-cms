@@ -38,15 +38,12 @@ class File
     
     /**
      * Create a files directory
-     * @global acl $acl
      * @param string $name
      * @throws FileException
      */
     public static function createDir($name) 
     {
-        global $acl;
-        
-        if (!$acl->check_permission('file_create_folder')) {
+        if (!acl::get()->check_permission('file_create_folder')) {
             throw new FileException('You are not allowed to create folders.'); 
         }
 
@@ -73,16 +70,14 @@ class File
     
     /**
      * Delete the open file
-     * @global acl $acl
      * @global db $db
      * @throws FileException
      */
     public function delete() 
     {
-        global $acl;
         global $db;
 
-        if (!$acl->check_permission('file_delete')) {
+        if (!acl::get()->check_permission('file_delete')) {
             throw new FileException('You are not allowed to delete files.'); 
         }
         if (!$this->file) {
@@ -319,7 +314,6 @@ class File
 
     /**
      * Upload a file
-     * @global acl $acl
      * @param string  $path
      * @param boolean $thumb
      * @return string
@@ -327,8 +321,7 @@ class File
      */
     public static function upload($path, $thumb = false) 
     {
-        global $acl;
-        if (!$acl->check_permission('file_upload')) {
+        if (!acl::get()->check_permission('file_upload')) {
             throw new FileException('You are not allowed to upload files.'); 
         }
 

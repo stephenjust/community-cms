@@ -27,8 +27,6 @@ class AdminPage extends Page
      */
     public static function display_header() 
     {
-        global $acl;
-
         $template = new template;
         $template->load_admin_file('header');
 
@@ -67,12 +65,12 @@ class AdminPage extends Page
 
         // Display icon bar
         $icon_bar = null;
-        if ($acl->check_permission('adm_feedback')) {
+        if (acl::get()->check_permission('adm_feedback')) {
             $icon_bar .= '<a href="admin.php?module=feedback">
 				<img src="<!-- $IMAGE_PATH$ -->send_feedback.png" alt="Send Feedback"
 				border="0px" width="32px" height="32px" /></a>';
         }
-        if ($acl->check_permission('adm_help')) {
+        if (acl::get()->check_permission('adm_help')) {
             $icon_bar .= '<a href="admin.php?module=help">
 				<img src="<!-- $IMAGE_PATH$ -->help.png" alt="Help"
 				border="0px" width="32px" height="32px" /></a>';
@@ -89,8 +87,6 @@ class AdminPage extends Page
     public static function display_admin() 
     {
         global $db;
-        global $acl;
-
         $template_page = new template;
         $template_page->load_admin_file();
 

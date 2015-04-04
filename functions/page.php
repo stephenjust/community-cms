@@ -155,11 +155,9 @@ function page_add_link()
 
 function page_hide($id) 
 {
-    global $acl;
-    global $db;
     global $debug;
     // Check for permission to execute
-    if (!$acl->check_permission('page_hide')) {
+    if (!acl::get()->check_permission('page_hide')) {
         $debug->addMessage('Lacking permission to hide pages', true);
         return false;
     }
@@ -287,17 +285,15 @@ function page_clean_order($parent = 0)
 
 /**
  * Move a page up the list in the site structure
- * @global object $acl Permission object
  * @global db $db Database connection object
  * @param integer $id Page ID to move up
  * @return boolean
  */
 function page_move_up($id) 
 {
-    global $acl;
     global $db;
 
-    if (!$acl->check_permission('page_order')) {
+    if (!acl::get()->check_permission('page_order')) {
         return false;
     }
     if (!is_numeric($id) || is_array($id)) {
@@ -334,17 +330,15 @@ function page_move_up($id)
 
 /**
  * Move a page down the list in the site structure
- * @global object $acl Permissions object
  * @global db $db Database connection object
  * @param integer $id Page ID to move down
  * @return boolean
  */
 function page_move_down($id) 
 {
-    global $acl;
     global $db;
 
-    if (!$acl->check_permission('page_order')) {
+    if (!acl::get()->check_permission('page_order')) {
         return false;
     }
     if (!is_numeric($id) || is_array($id)) {

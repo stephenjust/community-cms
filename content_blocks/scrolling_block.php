@@ -10,14 +10,13 @@
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
-global $acl;
 global $db;
 
 $text_block = new Block;
 $text_block->block_id = $block_info['id'];
 $return = null;
 $text_block->get_block_information();
-if ($acl->check_permission('news_fe_show_unpublished')) {
+if (acl::get()->check_permission('news_fe_show_unpublished')) {
     $text_query = 'SELECT *
 		FROM `'.NEWS_TABLE.'`
 		WHERE `page` = '.$text_block->attribute['page'].'
@@ -31,14 +30,14 @@ if ($acl->check_permission('news_fe_show_unpublished')) {
 }
 $text_handle = $db->sql_query($text_query);
 if($db->error[$text_handle] === 1) {
-    if ($acl->check_permission('show_fe_errors')) {
+    if (acl::get()->check_permission('show_fe_errors')) {
         $return .= 'Failed to retrieve block contents.<br />';
     } else {
         return null;
     }
 }
 if($db->sql_num_rows($text_handle) == 0) {
-    if ($acl->check_permission('show_fe_errors')) {
+    if (acl::get()->check_permission('show_fe_errors')) {
         $return .= '<strong>ERROR:</strong> There is no content associated with this block.<br />';
         return $return;
     } else {

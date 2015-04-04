@@ -14,12 +14,11 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-global $acl;
 global $debug;
 
 require_once ROOT.'includes/ui/UIIcon.class.php';
 
-if (!$acl->check_permission('adm_page')) {
+if (!acl::get()->check_permission('adm_page')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
@@ -242,7 +241,6 @@ if ($_GET['action'] == 'edit') {
 
 function adm_page_manage_list_row($id) 
 {
-    global $acl;
     global $db;
 
     // Create icon instances
@@ -288,12 +286,12 @@ function adm_page_manage_list_row($id)
         $return .= '(Hidden)';
     }
     $return .= '</td>';
-    if ($acl->check_permission('page_delete') && $pg->isEditable()) {
+    if (acl::get()->check_permission('page_delete') && $pg->isEditable()) {
         $return .= '
 			<td><a href="?module=page&action=del&id='.$page_info['id'].'">
 			'.$icon_delete.'Delete</a></td>';
     }
-    if ($acl->check_permission('page_order')) {
+    if (acl::get()->check_permission('page_order')) {
         $return .= '
 			<td><a href="?module=page&action=move_up&id='.$page_info['id'].'">
 			'.$icon_up.'Move Up</a></td>
@@ -307,7 +305,7 @@ function adm_page_manage_list_row($id)
         } else {
             $return .= '<td></td>';
         }
-        if ($acl->check_permission('page_set_home')) {
+        if (acl::get()->check_permission('page_set_home')) {
             $return .= '<td><a href="?module=page&action=home&id='.$page_info['id'].'">
 				'.$icon_home.'Make Home</a></td>';
         }
@@ -331,13 +329,13 @@ function adm_page_manage_list_row($id)
 
 $tab_content['manage'] = null;
 $numopts = 1;
-if ($acl->check_permission('page_delete')) {
+if (acl::get()->check_permission('page_delete')) {
     $numopts++;
 }
-if ($acl->check_permission('page_set_home')) {
+if (acl::get()->check_permission('page_set_home')) {
     $numopts++;
 }
-if ($acl->check_permission('page_order')) {
+if (acl::get()->check_permission('page_order')) {
     $numopts = $numopts + 2;
 }
 $tab_content['manage'] .= '<table class="admintable">
@@ -358,7 +356,7 @@ $tab_layout->add_tab('Manage Pages', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('page_create')) {
+if (acl::get()->check_permission('page_create')) {
     $tab_content['add'] = null;
 
     // Get list of pages for list of options as parent page
@@ -406,7 +404,7 @@ if ($acl->check_permission('page_create')) {
 
 // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('page_create')) {
+if (acl::get()->check_permission('page_create')) {
     // Get list of pages for list of options as parent page
     $parent_page_list_query = 'SELECT * FROM `'.PAGE_TABLE.'`
 		ORDER BY `title` ASC';

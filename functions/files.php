@@ -23,7 +23,6 @@ require ROOT.'functions/files_class.php';
 
 /**
  * file_upload_box - Create a file upload form
- * @global object $acl
  * @param integer $show_dirs
  * @param string  $dir
  * @param string  $extra_vars
@@ -32,8 +31,7 @@ require ROOT.'functions/files_class.php';
  */
 function file_upload_box($show_dirs = 0, $dir = null, $extra_vars = null) 
 {
-    global $acl;
-    if (!$acl->check_permission('file_upload')) {
+    if (!acl::get()->check_permission('file_upload')) {
         throw new \Exception('You are not allowed to upload files.'); 
     }
 

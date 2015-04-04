@@ -21,7 +21,7 @@ require ROOT.'include.php';
 require ROOT.'functions/admin.php';
 require ROOT.'functions/error.php';
 initialize();
-if (!$acl->check_permission('admin_access')) {
+if (!acl::get()->check_permission('admin_access')) {
     die('You don\'t have the necessary permissions to use this page');
 }
 $template = new template;

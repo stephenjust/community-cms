@@ -24,7 +24,7 @@ require ROOT . 'functions/admin.php';
 
 initialize('ajax');
 
-if (!$acl->check_permission('adm_contacts_manage') || !$acl->check_permission('admin_access')) {
+if (!acl::get()->check_permission('adm_contacts_manage') || !acl::get()->check_permission('admin_access')) {
     die ('You do not have the necessary permissions to access this page.');
 }
 
@@ -88,7 +88,7 @@ for ($i = 1; $i <= $contact_list_rows; $i++) {
     $contact_ids[] = $contact_list['id'];
     $current_row[] = $contact_list['id'];
     $current_row[] = HTML::schars($contact_list['name']);
-    if ($acl->check_permission('contacts_edit_lists')) {
+    if(acl::get()->check_permission('contacts_edit_lists')) {
         $current_row[] = '<a href="javascript:update_cl_manager_remove(\''.$contact_list['id'].'\')">Remove</a>';
     }
 
@@ -97,7 +97,7 @@ for ($i = 1; $i <= $contact_list_rows; $i++) {
 } // FOR
 
 $label_array = array('ID','Name');
-if ($acl->check_permission('contacts_edit_lists')) {
+if (acl::get()->check_permission('contacts_edit_lists')) {
     $label_array[] = 'Delete';
 }
 $label_array[] = 'Order';

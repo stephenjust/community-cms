@@ -14,8 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-global $acl;
-if (!$acl->check_permission('adm_user')) {
+if (!acl::get()->check_permission('adm_user')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
@@ -68,7 +67,7 @@ $tab_layout = new Tabs;
 $tab_content['manage'] = '<table class="admintable">
 <tr><th>ID</th><th>Username</th><th width="350">Name</th>';
 $cols = 4;
-if ($acl->check_permission('user_delete')) {
+if (acl::get()->check_permission('user_delete')) {
     $tab_content['manage'] .= '<th></th>';
     $cols++;
 }
@@ -87,7 +86,7 @@ for ($i = 1; $i <= $page_list_rows; $i++) {
 		<td>'.$page_list['id'].'</td>
 		<td>'.$page_list['username'].'</td>
 		<td>'.stripslashes($page_list['realname']).'</td>';
-    if ($acl->check_permission('user_delete')) {
+    if (acl::get()->check_permission('user_delete')) {
         $tab_content['manage'] .= '<td><a href="?module=user&action=delete&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>';
     }
     $tab_content['manage'] .= '<td><a href="?module=user_edit&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
@@ -103,7 +102,7 @@ $tab_layout->add_tab('Manage Users', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------
 
-if ($acl->check_permission('user_create')) {
+if (acl::get()->check_permission('user_create')) {
     $form = new form;
     $form->set_target('admin.php?module=user&action=create');
     $form->set_method('post');

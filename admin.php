@@ -41,7 +41,7 @@ if (!isset($_GET['ui'])) {
 	$_GET['ui'] = 0;
 }
 // Run login checks.
-if (!$acl->check_permission('admin_access')) {
+if (!acl::get()->check_permission('admin_access')) {
 	err_page(3004);
 }
 require(ROOT.'functions/admin.php');

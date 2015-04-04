@@ -36,9 +36,10 @@ class acl
      */
     public static function get() 
     {
-        if (!acl::$instance) { acl::$instance = new acl(); 
+        if (!self::$instance) {
+            self::$instance = new self();
         }
-        return acl::$instance;
+        return self::$instance;
     }
     
     function __construct() 

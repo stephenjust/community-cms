@@ -68,7 +68,6 @@ class User
     
     /**
      * Create a user
-     * @global acl $acl
      * @global db $db
      * @param String $username
      * @param String $password
@@ -87,11 +86,10 @@ class User
         $f_name = null, $l_name = null, $tel = null,
         $address = null, $email = null, $title = null, $groups = null
     ) {
-        global $acl;
         global $db;
 
         // Check permissions
-        if (!$acl->check_permission('user_create')) {
+        if (!acl::get()->check_permission('user_create')) {
             throw new AclException('You do not have the necessary permissions to create a new user.'); 
         }
 
@@ -143,17 +141,15 @@ class User
     
     /**
      * Remove a user record from the database
-     * @global acl $acl
      * @global db $db
      * @throws AclException
      * @throws UserException
      */
     public function delete() 
     {
-        global $acl;
         global $db;
         
-        if (!$acl->check_permission('user_delete')) {
+        if (!acl::get()->check_permission('user_delete')) {
             throw new AclException('You do not have the necessary permissions to delete a user.'); 
         }
         if ($this->user_id == 1) {

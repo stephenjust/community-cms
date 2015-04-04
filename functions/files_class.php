@@ -60,8 +60,6 @@ class file_list
     }
     public function get_list() 
     {
-        global $acl;
-
         if(strlen($this->folder) < 1) {
             return;
         }
@@ -75,7 +73,8 @@ class file_list
         $num_files = count($this->file_array);
         
         $num_cols = 1;
-        if ($acl->check_permission('file_delete')) { $num_cols++; 
+        if (acl::get()->check_permission('file_delete')) {
+            $num_cols++;
         }
 
         $return = '<table class="admintable">'."\n<tr>\n<th>File Name</th>
@@ -98,7 +97,7 @@ class file_list
                 'action=edit&amp;file='.$this->file_array[$i].'&amp;path='.
                 $_POST['folder_list'].'"><img src="./admin/templates/default/images/edit.png"
                     alt="Edit Attributes" width="16px" height="16px" border="0px" /></a></td>';
-                if ($acl->check_permission('file_delete')) {
+                if (acl::get()->check_permission('file_delete')) {
                     $return .= '<td><a href="admin.php?module='.$_GET['module'].'&amp;action=delete&amp;filename='.
                     $this->file_array[$i].'&amp;path='.$_POST['folder_list'].'">
                     <img src="./admin/templates/default/images/delete.png" width="16px" height="16px" border="0px"></a></td>';

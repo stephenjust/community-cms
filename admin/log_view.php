@@ -13,16 +13,15 @@ namespace CommunityCMS;
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
-global $acl;
 $view_all = false;
 
-if (!$acl->check_permission('adm_log_view')) {
+if (!acl::get()->check_permission('adm_log_view')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
 switch ($_GET['action']) {
 case 'delete':
-    if (!$acl->check_permission('log_clear')) {
+    if (!acl::get()->check_permission('log_clear')) {
         echo '<span class="errormessage">You are not authorized to clear the log.</span><br />'."\n";
         break;
     }
@@ -67,7 +66,7 @@ if ($view_all == false) {
 $tab_layout = new Tabs;
 $tab_layout->add_tab('View Log Messages', $tab_content['view']);
 
-if ($acl->check_permission('log_clear')) {
+if (acl::get()->check_permission('log_clear')) {
     $tab_content['delete'] = '<form method="post" action="admin.php?module=log_view&action=delete">
 	<input type="submit" value="Clear Log Messages" />
 	</form>';
@@ -75,4 +74,3 @@ if ($acl->check_permission('log_clear')) {
 }
 
 echo $tab_layout;
-?>

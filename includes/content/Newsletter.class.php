@@ -59,14 +59,12 @@ class Newsletter
 
     /**
      * Delete newsletter entry from the database
-     * @global acl $acl Permission object
      * @global db $db Database connection object
      * @param integer $id Newsletter ID
      * @throws NewsletterException
      */
     public function delete() 
     {
-        global $acl;
         global $db;
 
         // Make sure entry exists
@@ -75,7 +73,7 @@ class Newsletter
         }
         
         // Check permission
-        if (!$acl->check_permission('newsletter_delete')) {
+        if (!acl::get()->check_permission('newsletter_delete')) {
             throw new NewsletterException('You are not allowed to delete newsletters.'); 
         }
 
@@ -93,7 +91,6 @@ class Newsletter
 
     /**
      * Create a newsletter record
-     * @global acl $acl
      * @global db $db
      * @param string  $entry_name
      * @param string  $entry_file
@@ -105,11 +102,10 @@ class Newsletter
      */
     public static function create($entry_name,$entry_file,$page,$year,$month) 
     {
-        global $acl;
         global $db;
 
         // Check permissions
-        if (!$acl->check_permission('newsletter_create')) {
+        if (!acl::get()->check_permission('newsletter_create')) {
             throw new NewsletterException('You are not allowed to create newsletters.'); 
         }
 

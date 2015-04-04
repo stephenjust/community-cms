@@ -14,7 +14,6 @@ if (@SECURITY != 1) {
 
 /**
  * admin_nav - Generate the navigation bar for administration pages
- * @global acl $acl Access Control List class
  * @return string Menu HTML
  */
 function admin_nav() 
