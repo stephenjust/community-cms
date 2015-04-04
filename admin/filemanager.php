@@ -6,6 +6,9 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
+
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -63,7 +66,7 @@ catch (Exception $e) {
 if (isset($_GET['upload'])) {
     try {
         if (!isset($_POST['path'])) {
-            throw new Exception('No path was given. This may occur if the uploaded file is too big.'); 
+            throw new \Exception('No path was given. This may occur if the uploaded file is too big.'); 
         }
         echo File::upload($_POST['path']);
     }

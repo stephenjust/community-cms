@@ -12,6 +12,8 @@
  * @link      https://github.com/stephenjust/community-cms
  */
 
+namespace CommunityCMS;
+
 /**
  * Handle all user-related functions
  * 

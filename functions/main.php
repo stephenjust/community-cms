@@ -7,6 +7,7 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
 require_once ROOT.'controllers/LoginController.class.php';
 
 // Security Check

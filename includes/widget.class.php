@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 /**
  * A container for content in the sidebars
  *

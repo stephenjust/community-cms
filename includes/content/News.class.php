@@ -7,7 +7,7 @@
  * @package   CommunityCMS.main
  */
 
-require_once ROOT.'includes/DBConn.class.php';
+namespace CommunityCMS;
 
 /**
  * Class to handle News objects

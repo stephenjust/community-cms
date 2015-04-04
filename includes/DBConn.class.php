@@ -13,9 +13,9 @@
  * @link      https://github.com/stephenjust/community-cms
  */
 
-require_once ROOT.'config.php';
+namespace CommunityCMS;
 
-class DBException extends Exception
+class DBException extends \Exception
 {
 }
 
@@ -37,8 +37,8 @@ class DBConn
     private function __construct() 
     {
         $conn_string = sprintf("mysql:host=%s;dbname=%s", Config::DB_HOST, Config::DB_NAME);
-        $this->conn = new PDO($conn_string, Config::DB_USER, Config::DB_PASS);
-        $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->conn = new \PDO($conn_string, Config::DB_USER, Config::DB_PASS);
+        $this->conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->conn->exec("set names utf8");
     }
     
@@ -69,12 +69,12 @@ class DBConn
                 return $sth->rowCount(); 
             }
             if($return_type == self::FETCH_ALL) {
-                return $sth->fetchAll(PDO::FETCH_ASSOC); 
+                return $sth->fetchAll(\PDO::FETCH_ASSOC);
             }
             if($return_type == self::FETCH) {
-                return $sth->fetch(PDO::FETCH_ASSOC); 
+                return $sth->fetch(\PDO::FETCH_ASSOC);
             }
-        } catch (PDOException $e){
+        } catch (\PDOException $e){
             throw new DBException($e->errorInfo[0]);
         }
     }
@@ -99,10 +99,10 @@ class DBConn
             return $sth->rowCount(); 
         }
         if($return_type == self::FETCH_ALL) {
-            return $sth->fetchAll(PDO::FETCH_ASSOC); 
+            return $sth->fetchAll(\PDO::FETCH_ASSOC);
         }
         if($return_type == self::FETCH) {
-            return $sth->fetch(PDO::FETCH_ASSOC); 
+            return $sth->fetch(\PDO::FETCH_ASSOC);
         }
     }
     

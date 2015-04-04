@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class UI
 {
     protected $class;

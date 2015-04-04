@@ -7,7 +7,7 @@
  * @package   CommunityCMS.main
  */
 
-require_once ROOT.'includes/DBConn.class.php';
+namespace CommunityCMS;
 
 class Content
 {
@@ -214,6 +214,6 @@ class Content
     }
 }
 
-class ContentNotFoundException extends Exception
+class ContentNotFoundException extends \Exception
 {
 }

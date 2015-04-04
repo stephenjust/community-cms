@@ -7,6 +7,8 @@
  * @package   CommunityCMS.admin
  */
 
+namespace CommunityCMS;
+
 /**
  * Assist in generating admin pages
  *
@@ -136,7 +138,7 @@ class AdminPage extends Page
         if ($module === null) { $module = 'index'; 
         }
         if (!preg_match('/^[a-z_]+$/i', $module)) {
-            throw new Exception('Invalid admin module.'); 
+            throw new \Exception('Invalid admin module.'); 
         }
         if (!file_exists(ROOT.'admin/'.$module.'.php')) { 
             throw new Expcetion('Admin module '.$module.' does not exist.'); 

@@ -7,8 +7,7 @@
  * @package   CommunityCMS.main
  */
 
-require_once ROOT.'includes/ui/UISelect.class.php';
-require_once ROOT.'includes/File.class.php';
+namespace CommunityCMS;
 
 class UISelectDirList extends UISelect
 {

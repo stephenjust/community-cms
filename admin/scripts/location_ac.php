@@ -7,6 +7,7 @@
  * @package   CommunityCMS.admin
  */
 
+namespace CommunityCMS;
 header("Content-type: text/plain");
 
 if (!isset($_GET['term'])) {

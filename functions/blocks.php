@@ -6,6 +6,7 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+namespace CommunityCMS;
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
@@ -49,7 +50,7 @@ function get_block($block_id = null)
  * @global db $db
  * @param string $type
  * @param string $attributes Comma separated list
- * @throws Exception 
+ * @throws \Exception 
  */
 function block_create($type, $attributes) 
 {
@@ -57,13 +58,13 @@ function block_create($type, $attributes)
     global $db;
 
     if (!$acl->check_permission('block_create')) {
-        throw new Exception('You are not allowed to create blocks.'); 
+        throw new \Exception('You are not allowed to create blocks.'); 
     }
 
     // Sanitize inputs
     $type = $db->sql_escape_string($type);
     if (strlen($type) == 0) {
-        throw new Exception('Invalid block type.'); 
+        throw new \Exception('Invalid block type.'); 
     }
     $attributes = explode(',', $attributes);
     $attb_count = count($attributes);
@@ -86,7 +87,7 @@ function block_create($type, $attributes)
 		('$type','$attb_string')";
     $handle = $db->sql_query($query);
     if($db->error[$handle] === 1) {
-        throw new Exception('An error occurred while creating the block.'); 
+        throw new \Exception('An error occurred while creating the block.'); 
     }
 
     Log::addMessage('Created block \''.stripslashes($type).' ('.stripslashes($attb_string).')\'');
@@ -98,7 +99,7 @@ function block_create($type, $attributes)
  * @global db $db
  * @param integer $id         Block ID
  * @param string  $attributes Comma separated list
- * @throws Exception 
+ * @throws \Exception 
  */
 function block_edit($id,$attributes) 
 {
@@ -106,13 +107,13 @@ function block_edit($id,$attributes)
     global $db;
     
     if (!$acl->check_permission('block_edit')) {
-        throw new Exception('You are not allowed to edit content blocks.'); 
+        throw new \Exception('You are not allowed to edit content blocks.'); 
     }
 
     // Validate inputs
     $id = (int)$id;
     if ($id < 1) {
-        throw new Exception('Invalid block ID.'); 
+        throw new \Exception('Invalid block ID.'); 
     }
     $attributes = explode(',', $attributes);
     $attb_count = count($attributes);
@@ -134,7 +135,7 @@ function block_edit($id,$attributes)
 		WHERE `id` = $id";
     $handle = $db->sql_query($query);
     if($db->error[$handle] === 1) {
-        throw new Exception('An error occurred while editing the block.'); 
+        throw new \Exception('An error occurred while editing the block.'); 
     }
     Log::addMessage('Edited block \''.$id.' ('.stripslashes($attb_string).')\'');
 }
@@ -144,7 +145,7 @@ function block_edit($id,$attributes)
  * @global acl $acl Permission object
  * @global db $db Database connection object
  * @param integer $id Block ID
- * @throws Exception
+ * @throws \Exception
  */
 function block_delete($id) 
 {
@@ -152,13 +153,13 @@ function block_delete($id)
     global $db;
 
     if (!$acl->check_permission('block_delete')) {
-        throw new Exception('You are not allowed to delete blocks.'); 
+        throw new \Exception('You are not allowed to delete blocks.'); 
     }
 
     // Sanitize inputs
     $id = (int)$id;
     if ($id < 1) {
-        throw new Exception('Invalid block ID.'); 
+        throw new \Exception('Invalid block ID.'); 
     }
 
     // Check that block exists
@@ -168,10 +169,10 @@ function block_delete($id)
 		LIMIT 1';
     $block_exists_handle = $db->sql_query($block_exists_query);
     if($db->error[$block_exists_handle] === 1) {
-        throw new Exception('An error occurred while checking if the block exists.'); 
+        throw new \Exception('An error occurred while checking if the block exists.'); 
     }
     if ($db->sql_num_rows($block_exists_handle) === 0) {
-        throw new Exception('The block you are trying to delete does not exist.'); 
+        throw new \Exception('The block you are trying to delete does not exist.'); 
     }
 
     // Delete the block record
@@ -179,7 +180,7 @@ function block_delete($id)
 		WHERE `id` = '.$id;
     $delete_block = $db->sql_query($delete_block_query);
     if (!$db->error[$delete_block] === 1) {
-        throw new Exception('An error occurred while deleting the block.'); 
+        throw new \Exception('An error occurred while deleting the block.'); 
     }
     
     $block_exists = $db->sql_fetch_assoc($block_exists_handle);

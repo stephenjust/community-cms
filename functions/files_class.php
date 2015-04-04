@@ -6,6 +6,7 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+namespace CommunityCMS;
 /**
  * Generates a file list
  *

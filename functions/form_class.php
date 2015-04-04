@@ -7,6 +7,7 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
 require_once ROOT.'includes/HTML.class.php';
 require_once ROOT.'includes/ui/UISelectPageList.class.php';
 

@@ -7,8 +7,7 @@
  * @package   CommunityCMS.main
  */
 
-require_once ROOT.'includes/acl/acl.php';
-require_once ROOT.'includes/HTML.class.php';
+namespace CommunityCMS;
 
 /**
  * Generates a bar with various buttons to link to different functions

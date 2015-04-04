@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class SpecialPage extends Page
 {
     private $title;
@@ -26,7 +28,7 @@ class SpecialPage extends Page
     {
         switch ($page_id) {
         default:
-            throw new Exception('Invalid special page.');
+            throw new \Exception('Invalid special page.');
         case 'change_password':
             $this->setupChangePasswordPage();
             break;

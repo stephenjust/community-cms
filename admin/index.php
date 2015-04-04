@@ -6,6 +6,9 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
+
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -16,11 +19,11 @@ global $acl;
 if ($_GET['action'] == 'new_log') {
     try {
         if (!$acl->check_permission('log_post_custom_message')) {
-            throw new Exception('You are not authorized to post custom log messages.'); 
+            throw new \Exception('You are not authorized to post custom log messages.'); 
         }
         $log_message = strip_tags($_POST['message']);
         if (strlen($log_message) <= 5) {
-            throw new Exception('The log message you entered was too short.'); 
+            throw new \Exception('The log message you entered was too short.'); 
         }
         Log::addMessage($log_message);
     }

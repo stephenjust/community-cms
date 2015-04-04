@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class ErrorPage extends Page
 {
     private $error_msg;

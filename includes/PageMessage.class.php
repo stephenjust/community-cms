@@ -8,11 +8,7 @@
  * @package   CommunityCMS.main
  */
 
-require_once ROOT.'includes/acl/acl.php';
-require_once ROOT.'includes/DBConn.class.php';
-require_once ROOT.'includes/Log.class.php';
-require_once ROOT.'includes/PageUtil.class.php';
-require_once ROOT.'includes/Validate.class.php';
+namespace CommunityCMS;
 
 class PageMessage
 {
@@ -26,7 +22,7 @@ class PageMessage
      * @param int    $page
      * @param string $content
      * @return /PageMessage
-     * @throws Exception
+     * @throws \Exception
      */
     public static function create($page, $content) 
     {
@@ -46,7 +42,7 @@ class PageMessage
             Log::addMessage(sprintf("Created page message for page '%s'", PageUtil::getTitle($page)));
             return new PageMessage(DBConn::get()->lastInsertId());
         } catch (DBException $ex) {
-            throw new Exception('An error occurred when creating the page message record.');
+            throw new \Exception('An error occurred when creating the page message record.');
         }
     }
     
@@ -85,7 +81,7 @@ class PageMessage
     
     /**
      * Delete page message
-     * @throws Exception
+     * @throws \Exception
      */
     public function delete() 
     {
@@ -99,7 +95,7 @@ class PageMessage
             Log::addMessage(sprintf("Deleted page message on page '%s'", PageUtil::getTitle($this->page_id)));
             $this->id = 0;
         } catch (DBException $ex) {
-            throw new Exception('An error occurred while deleting the page message.');
+            throw new \Exception('An error occurred while deleting the page message.');
         }
     }
     
@@ -107,7 +103,7 @@ class PageMessage
      * Edit the page message
      * @param int    $page
      * @param string $content
-     * @throws Exception
+     * @throws \Exception
      */
     public function edit($page,$content) 
     {
@@ -125,7 +121,7 @@ class PageMessage
             $this->content = $content;
             $this->page_id = $page;
         } catch (DBException $ex) {
-            throw new Exception('An error occurred when updating the page message record.');
+            throw new \Exception('An error occurred when updating the page message record.');
         }
     }
     

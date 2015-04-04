@@ -12,6 +12,8 @@
  * @link      https://github.com/stephenjust/community-cms
  */
 
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
@@ -90,10 +92,10 @@ abstract class db
     /**#@-*/
 }
 
-class SQLException extends Exception
+class SQLException extends \Exception
 {
 }
 
 require ROOT.'includes/db/db_'.Config::DB_ENGINE.'.php';
-$db_class = 'db_'.Config::DB_ENGINE;
+$db_class = 'CommunityCMS\\db_'.Config::DB_ENGINE;
 $db = new $db_class;

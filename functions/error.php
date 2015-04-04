@@ -6,6 +6,7 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+namespace CommunityCMS;
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
@@ -92,17 +93,16 @@ function err_page($code = 0)
     die($template);
 }
 
-// Add special exception classes
-class AdminException extends Exception
+// Add special \Exception classes
+class AdminException extends \Exception
 {
 }
-class GalleryException extends Exception
+class GalleryException extends \Exception
 {
 }
-class PageException extends Exception
+class PageException extends \Exception
 {
 }
-class PollException extends Exception
+class PollException extends \Exception
 {
 }
-?>

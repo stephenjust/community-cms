@@ -6,10 +6,12 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.database
  */
+namespace CommunityCMS;
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
+
 
 /**
  * Data-Base Abstraction Layer class for PostgreSQL

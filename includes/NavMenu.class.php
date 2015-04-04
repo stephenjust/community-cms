@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class NavMenu
 {
     private $id = 0;
@@ -30,7 +32,7 @@ class NavMenu
             array(':id' => $item), DBConn::FETCH
         );
         if(!$record) {
-            throw new Exception('Failed to load menu item.');
+            throw new \Exception('Failed to load menu item.');
         }
         
         if ($record['type'] != 0) {

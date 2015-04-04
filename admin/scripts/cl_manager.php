@@ -6,6 +6,9 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+
+namespace CommunityCMS;
+
 /**#@+
  * @ignore
  */

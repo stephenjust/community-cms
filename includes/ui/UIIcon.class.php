@@ -7,7 +7,7 @@
  * @package   CommunityCMS.main
  */
 
-require_once ROOT.'includes/ui/UIImage.class.php';
+namespace CommunityCMS;
 
 class UIIcon extends UIImage
 {

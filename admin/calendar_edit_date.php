@@ -6,6 +6,9 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
+
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -32,7 +35,7 @@ case 'edit':
         }
         $event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
         if (!preg_match('#^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$#i', $event_date)) {
-            throw new Exception('Invalid date. Must be formatted DD/MM/YYYY'); 
+            throw new \Exception('Invalid date. Must be formatted DD/MM/YYYY'); 
         }
         $event_date_parts = explode('/', $event_date);
         $year = $event_date_parts[2];
@@ -43,7 +46,7 @@ case 'edit':
         $cat_hide = checkbox($_POST['category_check']);
         $loc_hide = checkbox($_POST['location_check']);
         if (!$start_time || !$end_time || $start_time > $end_time) {
-            throw new Exception('You did not fill out one or more of the times properly. Please fix the problem and resubmit.'); 
+            throw new \Exception('You did not fill out one or more of the times properly. Please fix the problem and resubmit.'); 
         }
         // Generate new start/end string
         $start = $year.'-'.$month.'-'.$day.' '.$start_time;

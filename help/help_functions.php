@@ -7,6 +7,7 @@
  * @package   CommunityCMS.help
  */
 
+namespace CommunityCMS;
 function help_read_list() 
 {
     $listfile = ROOT.'help/help_contents.xml';

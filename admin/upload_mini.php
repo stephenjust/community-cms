@@ -6,6 +6,9 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
+
+namespace CommunityCMS;
+
 /**#@+
  * @ignore
  */
@@ -13,7 +16,7 @@ define('SECURITY', 1);
 define('ADMIN', 1);
 define('ROOT', '../');
 /**#@-*/
-require ROOT.'config.php';
+require ROOT.'vendor/autoload.php';
 require ROOT.'include.php';
 require ROOT.'functions/admin.php';
 require ROOT.'functions/error.php';

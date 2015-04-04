@@ -6,6 +6,8 @@
  * @package CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 /**
  * Contains information about a month-long calendar
  *
@@ -172,7 +174,7 @@ class calendar_month extends calendar
     /**
      * Pull all of the event records for the current month from the database
      * @global db $db
-     * @throws Exception 
+     * @throws \Exception 
      */
     private function load_events() 
     {
@@ -190,7 +192,7 @@ class calendar_month extends calendar
 			ORDER BY `date`.`start` ASC, `date`.`end` DESC';
         $handle = $db->sql_query($query);
         if ($db->error[$handle] === 1) { 
-            throw new Exception('An error occurred while reading dates from the calendar.'); 
+            throw new \Exception('An error occurred while reading dates from the calendar.'); 
         }
         $num_events = $db->sql_num_rows($handle);
 

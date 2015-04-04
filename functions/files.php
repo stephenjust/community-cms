@@ -6,6 +6,7 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+namespace CommunityCMS;
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
@@ -27,13 +28,13 @@ require ROOT.'functions/files_class.php';
  * @param string  $dir
  * @param string  $extra_vars
  * @return string Form HTML
- * @throws Exception
+ * @throws \Exception
  */
 function file_upload_box($show_dirs = 0, $dir = null, $extra_vars = null) 
 {
     global $acl;
     if (!$acl->check_permission('file_upload')) {
-        throw new Exception('You are not allowed to upload files.'); 
+        throw new \Exception('You are not allowed to upload files.'); 
     }
 
     $query_string = $_SERVER['QUERY_STRING'];

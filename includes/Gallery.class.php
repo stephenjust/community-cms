@@ -11,6 +11,8 @@ if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
 
+namespace CommunityCMS;
+
 /**
  * Photo gallery class
  * @package CommunityCMS.main

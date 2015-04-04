@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class File
 {
     protected static $file_root = FILES_ROOT;
@@ -420,7 +422,6 @@ class File
     
 }
 
-class FileException extends Exception
+class FileException extends \Exception
 {
 }
-?>

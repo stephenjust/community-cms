@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class Contact
 {
     private $mId;
@@ -364,6 +366,6 @@ class Contact
     
 }
 
-class ContactException extends Exception
+class ContactException extends \Exception
 {
 }

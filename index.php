@@ -11,6 +11,9 @@
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
  * @link      https://github.com/stephenjust/community-cms
  */
+
+namespace CommunityCMS;
+
 // The not-so-secure security check.
 define('SECURITY', 1);
 define('ROOT', './');

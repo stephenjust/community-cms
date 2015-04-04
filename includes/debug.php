@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 /**
  * Class to provide common trace functions throughout the CMS for debugging
  * where the cause of an issue may not be apparent

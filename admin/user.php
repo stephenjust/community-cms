@@ -7,7 +7,7 @@
  * @package   CommunityCMS.admin
  */
 
-require_once ROOT.'includes/User.class.php';
+namespace CommunityCMS;
 
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
@@ -38,10 +38,10 @@ case 'create':
             || !isset($_POST['surname']) || !isset($_POST['telephone']) 
             || !isset($_POST['address']) && isset($_POST['email'])
         ) {
-            throw new Exception('You did not fill out a required field.');
+            throw new \Exception('You did not fill out a required field.');
         }
         if ($_POST['pass'] != $_POST['pass_conf']) {
-            throw new Exception('Passwords do not match.'); 
+            throw new \Exception('Passwords do not match.'); 
         }
         $_POST['groups'] = (isset($_POST['groups'])) ? $_POST['groups'] : null;
         User::create(

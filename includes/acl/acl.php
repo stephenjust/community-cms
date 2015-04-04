@@ -7,12 +7,14 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
 /**
  * @ignore
  */
 if (!defined('SECURITY')) {
     exit;
 }
+
 
 /**
  * Class for managing user permissions within the CMS
@@ -287,8 +289,7 @@ class acl
     }
 }
 
-class AclException extends Exception
+class AclException extends \Exception
 {
     
 }
-?>

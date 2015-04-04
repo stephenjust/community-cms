@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 abstract class AdminModule
 {
     protected $permission;
@@ -39,7 +41,7 @@ abstract class AdminModule
     abstract public function display();
 }
 
-class AdminUnauthorizedException extends Exception
+class AdminUnauthorizedException extends \Exception
 {
 }
 ?>

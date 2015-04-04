@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class template
 {
     public $template = "";
@@ -85,7 +87,7 @@ class template
     private function load_template($file) 
     {
         if (!file_exists($this->path.$file)) {
-            throw new Exception('Template file does not exist.');
+            throw new \Exception('Template file does not exist.');
         }
         $handle = fopen($this->path.$file, 'r');
         $template_contents = fread($handle, filesize($this->path.$file));

@@ -7,6 +7,7 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
 /**
  * page_get_info - Get requested fields for a page entry in the database
  * @global db $db Database connection object
@@ -91,7 +92,7 @@ function page_check_unique_id($text_id)
  * @param boolean $show_title
  * @param boolean $show_menu
  * @param integer $parent
- * @throws Exception
+ * @throws \Exception
  */
 function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$parent) 
 {
@@ -110,7 +111,7 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
     }
     $title = $db->sql_escape_string($title);
     if (strlen($title) == 0) {
-        throw new Exception('The page title was not long enough.'); 
+        throw new \Exception('The page title was not long enough.'); 
     }
     if (strlen($meta_desc) == 0) {
         $meta_desc = null; 
@@ -118,19 +119,19 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
     $meta_desc = $db->sql_escape_string($meta_desc);
     $type = (int)$type;
     if ($type < 0) {
-        throw new Exception('An invalid page type was selected.'); 
+        throw new \Exception('An invalid page type was selected.'); 
     }
     if (!is_bool($show_title)) {
-        throw new Exception('Invalid value for "Show Title".'); 
+        throw new \Exception('Invalid value for "Show Title".'); 
     }
     $show_title = ($show_title === true) ? 1 : 0;
     if (!is_bool($show_menu)) {
-        throw new Exception('Invalid value for "Show Menu".'); 
+        throw new \Exception('Invalid value for "Show Menu".'); 
     }
     $show_menu = ($show_menu === true) ? 1 : 0;
     $parent = (int)$parent;
     if ($parent < 0) {
-        throw new Exception('Invalid parent page selected.'); 
+        throw new \Exception('Invalid parent page selected.'); 
     }
 
     // Add page to database.
@@ -141,7 +142,7 @@ function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$paren
 		$type,$show_menu,$parent)";
     $new_page = $db->sql_query($new_page_query);
     if ($db->error[$new_page] === 1) {
-        throw new Exception('An error occurred while creating a new page.'); 
+        throw new \Exception('An error occurred while creating a new page.'); 
     }
 
     Log::addMessage('New page \''.stripslashes($title).'\'');

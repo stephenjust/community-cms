@@ -7,7 +7,7 @@
  * @package   CommunityCMS.main
  */
 
-require_once ROOT.'includes/Validate.class.php';
+namespace CommunityCMS;
 
 class User
 {
@@ -245,7 +245,6 @@ class User
     }
 }
 
-class UserException extends Exception
+class UserException extends \Exception
 {
 }
-?>

@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 /**
  * Class to handle calendar location records
  */
@@ -69,7 +71,7 @@ class CalLocation
      * @global db $db
      * @param string $location (unescaped)
      * @return void
-     * @throws Exception 
+     * @throws \Exception 
      */
     public static function save($location) 
     {
@@ -144,7 +146,6 @@ class CalLocation
     }
 }
 
-class CalLocationException extends Exception
+class CalLocationException extends \Exception
 {
 }
-?>

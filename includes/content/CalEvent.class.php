@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class CalEvent
 {
     private $id = 0;
@@ -342,6 +344,6 @@ class CalEvent
     }
 }
 
-class CalEventException extends Exception
+class CalEventException extends \Exception
 {
 }

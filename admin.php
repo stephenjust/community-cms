@@ -7,6 +7,8 @@
  * @package CommunityCMS.admin
  */
 
+namespace CommunityCMS;
+
 /**
  * @ignore
  */

@@ -7,6 +7,7 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
 require_once ROOT.'includes/pagination.php';
 
 class NewsPage extends Page

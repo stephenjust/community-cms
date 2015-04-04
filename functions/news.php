@@ -6,6 +6,7 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+namespace CommunityCMS;
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
@@ -21,7 +22,7 @@ if (@SECURITY != 1) {
  * @param string       $image
  * @param integer      $publish
  * @param integer      $showdate
- * @throws Exception 
+ * @throws \Exception 
  */
 function news_create($title,$content,$page,$author,$image,$publish,$showdate,$deldate) 
 {
@@ -29,14 +30,14 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
     global $db;
 
     if (!$acl->check_permission('news_create')) {
-        throw new Exception('You are not allowed to create news articles.'); 
+        throw new \Exception('You are not allowed to create news articles.'); 
     }
 
     // Sanitize inputs
     $title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
     $content = $db->sql_escape_string(remove_comments($content));
     if ($page != null && $page < 1) {
-        throw new Exception('An invalid page was selected.'); 
+        throw new \Exception('An invalid page was selected.'); 
     }
     if ($page == null) { $page = 'NULL'; 
     }
@@ -60,7 +61,7 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
 		VALUES ($page,'$title','$content','$author','$image','".DATE_TIME."','$showdate',$publish,$del_date_value)";
     $new_article = $db->sql_query($new_article_query);
     if($db->error[$new_article] === 1) {
-        throw new Exception('An error occurred while attempting to create the article.'); 
+        throw new \Exception('An error occurred while attempting to create the article.'); 
     }
 
     // Get page title for log message
@@ -70,7 +71,7 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
 		LIMIT 1';
     $page_title_handle = $db->sql_query($page_title_query);
     if ($db->error[$page_title_handle] === 1) {
-        throw new Exception('An error occurred while looking up page information.'); 
+        throw new \Exception('An error occurred while looking up page information.'); 
     }
     if ($db->sql_num_rows($page_title_handle) == 1) {
         $page_title_result = $db->sql_fetch_assoc($page_title_handle);
@@ -92,7 +93,7 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
  * @param null|integer     $page
  * @param string           $image
  * @param integer showdate
- * @throws Exception 
+ * @throws \Exception 
  */
 function news_edit($id,$title,$content,$page,$image,$showdate,$deldate) 
 {
@@ -100,18 +101,18 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate)
     global $db;
 
     if (!$acl->check_permission('news_edit')) {
-        throw new Exception('You are not allowed to edit news articles.'); 
+        throw new \Exception('You are not allowed to edit news articles.'); 
     }
 
     // Sanitize inputs
     $id = (int)$id;
     if ($id < 1) {
-        throw new Exception('An invalid article ID was provided.'); 
+        throw new \Exception('An invalid article ID was provided.'); 
     }
     $title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
     $content = $db->sql_escape_string(remove_comments($content));
     if ($page != null && $page < 1) {
-        throw new Exception('An invalid page was selected.'); 
+        throw new \Exception('An invalid page was selected.'); 
     }
     if ($page == null) { $page = 'NULL'; 
     }
@@ -133,10 +134,10 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate)
 		LIMIT 1';
     $check_handle = $db->sql_query($check_query);
     if ($db->error[$check_handle] === 1) { 
-        throw new Exception('An error occurred while verifying that the article exists.'); 
+        throw new \Exception('An error occurred while verifying that the article exists.'); 
     }
     if ($db->sql_num_rows($check_handle) === 0) {
-        throw new Exception('The article you are trying to edit does not exist.'); 
+        throw new \Exception('The article you are trying to edit does not exist.'); 
     }
 
     // Update article record
@@ -147,7 +148,7 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate)
 		WHERE `id` = $id";
     $edit_article = $db->sql_query($edit_query);
     if ($db->error[$edit_article] === 1) {
-        throw new Exception('An error occurred while updating the article\'s record.'); 
+        throw new \Exception('An error occurred while updating the article\'s record.'); 
     }
 
     Log::addMessage('Edited news article \''.stripslashes($title).'\'');

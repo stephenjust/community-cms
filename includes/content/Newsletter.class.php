@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class Newsletter
 {
     private $mId;
@@ -328,7 +330,7 @@ class Newsletter
     }
 }
 
-class NewsletterException extends Exception
+class NewsletterException extends \Exception
 {
 }
 ?>

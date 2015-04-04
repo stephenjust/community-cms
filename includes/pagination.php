@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 /**
  * pagination - Create links to previous an next page, when needed
  * @param int   $start        First content number (starts at 1)

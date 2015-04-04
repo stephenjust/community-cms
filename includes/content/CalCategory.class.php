@@ -7,6 +7,8 @@
  * @package   CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 class CalCategory
 {
     private $id;
@@ -116,6 +118,6 @@ class CalCategory
     }
 }
 
-class CalCategoryException extends Exception
+class CalCategoryException extends \Exception
 {
 }
