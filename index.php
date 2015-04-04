@@ -25,10 +25,7 @@ require_once ROOT.'include.php';
 
 // Page load timer
 if (DEBUG === 1) {
-    $time      = microtime();
-    $time      = explode(" ", $time);
-    $time      = $time[1] + $time[0];
-    $starttime = $time;
+    $starttime = microtime(true);
 }
 
 initialize();
@@ -84,10 +81,6 @@ clean_up();
 
 // Page load timer
 if (DEBUG === 1) {
-    $time      = microtime();
-    $time      = explode(" ", $time);
-    $time      = $time[1] + $time[0];
-    $endtime   = $time;
-    $totaltime = ($endtime - $starttime);
+    $totaltime = (microtime(true) - $starttime);
     printf("This page took %f seconds to load.", $totaltime);
 }
