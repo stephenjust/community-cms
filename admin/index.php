@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\LogViewComponent;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -35,18 +37,10 @@ if ($_GET['action'] == 'new_log') {
 $tab_layout = new Tabs;
 $tab_content['activity'] = null;
 // Display log messages
-$messages = Log::getLastMessages(5);
-if (!$messages) {
-    $tab_content['activity'] = '<span class="errormessage">Failed to read log messages.</span><br />'."\n";
-}
-$table_values = array();
-for ($i = 0; $i < count($messages); $i++) {
-    $table_values[] = array($messages[$i]['date'],$messages[$i]['action'],$messages[$i]['user_name'],$messages[$i]['ip_addr']);
-}
-$tab_content['activity'] .= create_table(
-    array('Date','Action','User','IP'),
-    $table_values
-);
+$log_component = new LogViewComponent();
+$log_component->setMaxEntries(5);
+$tab_content['activity'] = $log_component->render();
+
 if (acl::get()->check_permission('log_post_custom_message')) {
     $tab_content['activity'] .= '<form method="post" action="?action=new_log">
 		<input type="text" name="message" /><input type="submit" value="Add Message" />

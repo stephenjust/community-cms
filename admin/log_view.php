@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\LogViewComponent;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -47,18 +49,9 @@ if ($view_all == true) {
 } else {
     $limit = 50;
 }
-$messages = Log::getLastMessages($limit);
-if (!$messages) {
-    $tab_content['view'] = '<span class="errormessage">Failed to read log messages.</span><br />'."\n";
-}
-$table_values = array();
-for ($i = 0; $i < count($messages); $i++) {
-    $table_values[] = array($messages[$i]['date'],$messages[$i]['action'],$messages[$i]['user_name'],$messages[$i]['ip_addr']);
-}
-$tab_content['view'] .= create_table(
-    array('Date','Action','User','IP'),
-    $table_values
-);
+$log_component = new LogViewComponent();
+$log_component->setMaxEntries($limit);
+$tab_content['view'] = $log_component->render();
 if ($view_all == false) {
     $tab_content['view'] .= '<form method="POST" action="?module=log_view&amp;action=viewall">'."\n".
     '<input type="submit" value="View All Logs" /></form>'."\n";
