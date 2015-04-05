@@ -1,0 +1,4 @@
+# app/config/admin-routing.yml
+admin_index:
+    path:       /
+    defaults:   { _controller: \CommunityCMS\Admin\SummaryController::showAction }

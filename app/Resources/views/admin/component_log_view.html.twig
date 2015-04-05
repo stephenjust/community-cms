@@ -1,0 +1,20 @@
+<table class="admintable">
+    <tr>
+        <th>Date</th>
+        <th>Action</th>
+        <th>User</th>
+        <th>IP</th>
+    </tr>
+    {% for entry in log_entries %}
+        <tr>
+            <td>{{ entry.getDate() }}</td>
+            <td>{{ entry.getAction() }}</td>
+            <td>{{ entry.getUser() }}</td>
+            <td>{{ entry.getIP() }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">No entries to display.</td>
+        </tr>
+    {% endfor %}
+</table>

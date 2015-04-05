@@ -54,8 +54,10 @@
 		<include name="**/*.png" />
 		<include name="**/*.sql" />
 		<include name="**/*.tpl" />
+                <include name="**/*.twig" />
 		<include name="**/*.txt" />
 		<include name="**/*.xml" />
+                <include name="**/*.yml" />
 		<include name="**/.htaccess" />
 		<include name="**/vendor/**" />
 		<include name="LICENSE" />

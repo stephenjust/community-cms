@@ -14,7 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-acl::get()->require_permission('adm_contacts_manage');
+acl::get()->requirePermission('adm_contacts_manage');
 
 $tab_layout = new Tabs;
 

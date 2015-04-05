@@ -1,0 +1,318 @@
+/*
+ * COMMUNITY CMS ADMIN STYLESHEET
+ */
+
+ body {
+	min-width: 800px;
+	margin: 0px;
+	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
+}
+#header {
+	background: url('../images/admin/headbg.png') center left;
+	background-color: #505060;
+	border: 0px;
+	border-bottom: 1px solid #333343;
+	margin: 0px;
+	padding: 0px;
+	padding-top: 2px;
+	width: 100%;
+}
+table.main {
+	width: 100%;
+}
+td.left {
+	width: 200px;
+	background-color: #EEE;
+	padding-left: 3px;
+	min-height: 350px; /* for modern browsers */
+	height: auto !important; /* for modern browsers */
+	height: 350px; /* for IE5.x and IE6 */
+}
+td.center {
+	background-color: #FFF;
+	min-height: 350px; /* for modern browsers */
+	height: auto !important; /* for modern browsers */
+	height: 350px; /* for IE5.x and IE6 */
+}
+#footer {
+	clear: both;
+	background-color: #FFF;
+	height: 55px;
+	text-align: center;
+}
+div.iconbar {
+	background: #505060;
+	border: 1px solid #9999AA;
+	float: right;
+	right: 3px;
+	padding: 3px;
+	position: absolute;
+	text-align: right;
+	top: 2px;
+	z-index: 1000;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+/* Fix for underlined spaces in certain browsers (eg. Chrome) */
+div.iconbar > a {
+	text-decoration: none;
+}
+
+h1 {
+	font-family: Cambria,Arial,Sans-Serif;
+}
+h4 {
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+	padding-top: 0px;
+}
+
+ol {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+td {
+	vertical-align: top;
+}
+
+label {
+    width: 10em;
+    float: left;
+    text-align: right;
+    margin-right: 0.5em;
+    display: block;
+}
+label.ws {
+	width: auto;
+	float: none;
+	text-align: left;
+	margin-right: auto;
+	display: inline;
+}
+label.wsl {
+	width: auto;
+	float: left;
+	text-align: left;
+	margin-right: auto;
+	display: inline;
+}
+fieldset {
+	display: block;
+	float: left;
+	border: 0px;
+}
+
+select {
+	font-size: medium;
+	height: 1.8em;
+}
+
+span.mceEditor {
+	display: block;
+	float: left;
+}
+div.mcePlaceHolder {
+	display: block;
+	float: left;
+}
+
+/* 
+ * Administration Specific Styles
+ */
+ #menu > div > h3 {
+	 font-family: Tahoma, sans-serif;
+	 font-size: large;
+	 margin-bottom: 0px;
+	 margin-top: 8px;
+}
+#menu > div > div > a {
+	color: #000066;
+	text-decoration: none;
+}
+#menu > div > div > a:hover {
+	text-decoration: underline;
+}
+
+div.errormessage {
+  color: #FF0000;
+  font-family: Arial;
+  font-size: small;
+  background: #FFFFCC;
+  border: 1px dashed #FFFF66;
+  padding: 5px;
+  position: fixed;
+  bottom: 0px;
+  z-index: 1;
+}
+span.errormessage {
+	color: #FF0000;
+	font-family: Arial;
+	font-weight: bold;
+}
+.admintable {
+	width: 100%;
+	border: 1px solid #e78f08;
+	background: #f6a828;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+}
+.admintable th {
+	text-align: left;
+	font-size: 1em;
+}
+.admintable tr {
+	border-bottom: 1px solid #e78F08;
+}
+.admintable .row1 {
+/*	background: #EEEEEE; */
+}
+.admintable .row2 {
+/*	background: #E6E6E6; */
+}
+.admintable td {
+	border: 1px solid #dddddd;
+	background: #eeeeee url(../scripts/jquery-ui/images/ui-bg_highlight-soft_100_eeeeee_1x100.png) 50% top repeat-x;
+	color: #333333;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+}
+.admintable td.empty {
+	border: 0px;
+	background: #f6a828;
+}
+
+.admintable td h4 {
+	background: #f6a828;
+	border: 1px solid #e78f08;
+	clear: both;
+	color: #FFFFFF;
+	margin: 1em 0.5em 0.5em 0.5em;
+	padding: 0.2em 0.2em 0.2em 0.5em;
+	text-shadow: #e78f08 0px 2px 3px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+}
+
+div.importable_event {
+	border: 1px solid #CCCCCC;
+	display: inline-block;
+	margin: 3px;
+	overflow: hidden;
+	padding: 3px;
+	width: 450px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+
+table.log_messages th {
+	background: #DDDDDD;
+	text-align: left;
+	font-family: Cambria,'Times New Roman',Serif;
+}
+
+.notice {
+	background: #f6ec8c;
+	border: 1px solid #f3d05d;
+	color: #b60000;
+	font-size: small;
+}
+div.notice {
+	position: absolute;
+	right: 10px;
+	width: 300px;
+	z-index: 3;
+}
+div.info {
+	background: #CCDDFF;
+	border: 1px solid #AABBDD;
+	font-size: small;
+	font-style: italic;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+div.admin_form_element {
+    display: block;
+    float: left;
+    clear: left;
+}
+div.admin_form_text {
+    display: block;
+    float: left;
+    margin-left: 10em;
+}
+div.admin_file_list {
+    display: block;
+    float: left;
+}
+div.admin_image_list {
+    display: block;
+    float: left;
+	min-width: 440px;
+	max-height: 300px;
+	overflow: auto;
+}
+div.admin_image_list_item {
+	display: block;
+	float: left;
+	text-align: center;
+	border: 1px solid #e78f08;
+	background: #f6a828;
+	margin: 1px;
+	height: 128px;
+	width: 110px;
+	padding: 3px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+}
+div.admin_image_list_item:hover {
+	background: #fdaf2f;
+}
+div.admin_image_list_item img {
+	max-width: 100px;
+	max-height: 100px;
+	padding: 2px;
+}
+
+/*
+ * Styles used only on help pages
+ */
+#admin_help_toc {
+
+}
+#admin_help_toc a {
+	color: #000;
+	text-decoration:none;
+}
+#admin_help_toc a:hover {
+	text-decoration: underline;
+}
+
+#admin_help_page {
+
+}
+#admin_help_page div.admin_help_explanation {
+	font-style: italic;
+	font-family: Verdana,Geneva,Arial,"DejaVu Sans",sans-serif;
+	font-size: small;
+	margin-left: 50px;
+	margin-right: 50px;
+	text-align: justify;
+}
+#admin_help_page div.admin_help_quick_instructions {
+
+}

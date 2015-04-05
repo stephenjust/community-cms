@@ -14,7 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-acl::get()->require_permission('adm_page_message_edit');
+acl::get()->requirePermission('adm_page_message_edit');
 
 if ($_GET['action'] == 'edit') {
     try {

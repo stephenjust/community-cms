@@ -14,7 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-acl::get()->require_permission('adm_calendar');
+acl::get()->requirePermission('adm_calendar');
 
 // Save form information from previously created entry
 $_POST['title'] = (isset($_POST['title'])) ? $_POST['title'] : null;

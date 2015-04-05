@@ -14,7 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-acl::get()->require_permission('adm_page_message');
+acl::get()->requirePermission('adm_page_message');
 
 // Get current page ID
 if (!isset($_POST['page']) && !isset($_GET['page'])) {

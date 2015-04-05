@@ -22,8 +22,8 @@ require_once ROOT.'include.php';
 require_once ROOT.'functions/admin.php';
 initialize('ajax');
 
-acl::get()->require_permission('adm_page_message');
-acl::get()->require_permission('admin_access');
+acl::get()->requirePermission('adm_page_message');
+acl::get()->requirePermission('admin_access');
 
 // Get current page ID
 if (!isset($_GET['page'])) {

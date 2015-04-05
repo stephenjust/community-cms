@@ -44,7 +44,7 @@ class CalEvent
     public static function create($title, $description, $author, $start_time,
         $end_time, $date, $category, $category_hide, $location, $location_hide, $image, $hide
     ) {
-        acl::get()->require_permission('date_create');
+        acl::get()->requirePermission('date_create');
         if (!$title) {
             throw new CalEventException('Event heading must not be blank.');
         }
@@ -160,7 +160,7 @@ class CalEvent
     public function edit($title, $description, $author, $start, $end, $category, $category_hide, $location, $location_hide, $image, $hide) 
     {
         global $db;
-        acl::get()->require_permission('acl_calendar_edit_date');
+        acl::get()->requirePermission('acl_calendar_edit_date');
 
         // Sanitize Inputs
         $title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));

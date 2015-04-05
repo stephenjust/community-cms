@@ -97,7 +97,7 @@ function page_check_unique_id($text_id)
 function page_add($text_id,$title,$meta_desc,$type,$show_title,$show_menu,$parent) 
 {
     global $db;
-    acl::get()->require_permission('page_create');
+    acl::get()->requirePermission('page_create');
 
     // Validate parameters
     if (strlen($text_id) == 0) {

@@ -16,7 +16,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 require_once ROOT.'functions/news.php';
 
-acl::get()->require_permission('adm_news');
+acl::get()->requirePermission('adm_news');
 
 /**
  * get_selected_items - Return the IDs of the selected form items

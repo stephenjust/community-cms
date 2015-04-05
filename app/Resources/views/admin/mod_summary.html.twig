@@ -1,0 +1,7 @@
+{% extends 'views/admin/base.html.twig' %}
+
+{% block title %}Summary - {{ parent() }}{% endblock %}
+
+{% block body %}
+    {% render(controller('AppBundle:LogView:recentEntries', { 'max': 5 })) %}
+{% endblock %}

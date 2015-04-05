@@ -8,6 +8,9 @@
  */
 
 namespace CommunityCMS;
+
+use CommunityCMS\Exceptions\InsufficientPermissionException;
+
 /**
  * @ignore
  */
@@ -46,11 +49,16 @@ class acl
     {
         $this->permission_list = $this->get_acl_key_names();
     }
-    
-    public function require_permission($acl_key) 
+
+    /**
+     * Check that a user has the given permission, and throw an exception if not
+     * @param string $acl_key
+     * @throws InsufficientPermissionException
+     */
+    public function requirePermission($acl_key) 
     {
         if (!$this->check_permission($acl_key)) {
-            throw new AclException(sprintf("This action requires the '%s' permission.", HTML::schars($acl_key)));
+            throw new InsufficientPermissionException(sprintf("This action requires the '%s' permission.", HTML::schars($acl_key)));
         }
     }
 
@@ -288,9 +296,4 @@ class acl
         $this->permission_list = $this->get_acl_key_names();
         return true;
     }
-}
-
-class AclException extends \Exception
-{
-    
 }

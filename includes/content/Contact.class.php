@@ -58,7 +58,7 @@ class Contact
     public function addToList($list_id) 
     {
         global $db;
-        acl::get()->require_permission('contacts_edit_lists');
+        acl::get()->requirePermission('contacts_edit_lists');
 
         // Check for invalid parameters
         if (!is_numeric($list_id)) {
@@ -120,7 +120,7 @@ class Contact
     public static function create($name, $title, $phone, $address, $email) 
     {
         global $db;
-        acl::get()->require_permission('contacts_create');
+        acl::get()->requirePermission('contacts_create');
 
         // Sanitize inputs
         $name = $db->sql_escape_string($name);
@@ -166,7 +166,7 @@ class Contact
     public function delete() 
     {
         global $db;
-        acl::get()->require_permission('contacts_delete');
+        acl::get()->requirePermission('contacts_delete');
 
         if (!$this->mId) {
             throw new ContactException('Invalid contact ID.'); 
@@ -206,7 +206,7 @@ class Contact
     function deleteFromList($page_id) 
     {
         global $db;
-        acl::get()->require_permission('contacts_edit_lists');
+        acl::get()->requirePermission('contacts_edit_lists');
         if (!is_numeric($page_id)) {
             throw new ContactException('Invalid content ID.'); 
         }
@@ -235,7 +235,7 @@ class Contact
     public function edit($name, $title, $phone, $address, $email) 
     {
         global $db;
-        acl::get()->require_permission('contacts_edit');
+        acl::get()->requirePermission('contacts_edit');
 
         // Sanitize inputs
         $name = $db->sql_escape_string($name);
@@ -349,7 +349,7 @@ class Contact
     public function setListOrder($order, $page_id) 
     {
         global $db;
-        acl::get()->require_permission('contacts_edit_lists');
+        acl::get()->requirePermission('contacts_edit_lists');
         if (!is_numeric($page_id) || !is_numeric($order)) {
             throw new ContactException('Invalid page ID or order.'); 
         }
