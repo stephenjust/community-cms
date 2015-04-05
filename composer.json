@@ -10,8 +10,7 @@
 		"php": ">=5.4.0",
 		"ext-gd": "*",
 		"ext-mysqli": "*",
-		"smarty/smarty": "3.1.*",
-		"tinymce/tinymce": "4.1.*"
+		"smarty/smarty": "3.1.*"
 	},
 	"autoload": {
 		"classmap": ["includes/", "config.php"],
