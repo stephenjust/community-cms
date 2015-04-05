@@ -2,13 +2,17 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2014 Stephen Just
- * @author    stephenjust@users.sourceforge.net
- * @package   CommunityCMS.main
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
+ * @package   CommunityCMS
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2014-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
-require_once ROOT.'includes/pagination.php';
 
 class NewsPage extends Page
 {
@@ -28,10 +32,12 @@ class NewsPage extends Page
     
     public function getContent() 
     {
+        $pagination = new Component\PaginationComponent();
+        $pagination->setCurrentPage($this->start, get_config("news_num_articles"), count($this->content_ids));
         $tpl = new Smarty();
         $tpl->assign('page', $this);
         $tpl->assign('articles', $this->articles);
-        $tpl->assign('pagination', pagination($this->start, get_config('news_num_articles'), $this->content_ids));
+        $tpl->assign('pagination', $pagination->render());
         return $tpl->fetch('newsContent.tpl');
     }
     

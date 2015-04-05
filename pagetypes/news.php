@@ -22,9 +22,9 @@ function get_article_list($page, $start = 1)
     assert(is_numeric($start), 'Invalid starting value');
 
     if (acl::get()->check_permission('news_fe_show_unpublished')) {
-        return Content::getByPage($page, $start-1, (int)get_config('news_num_articles'));
+        return Content::getByPage($page, $start, (int)get_config('news_num_articles'));
     } else {
-        return Content::getPublishedByPage($page, $start-1, (int)get_config('news_num_articles'));
+        return Content::getPublishedByPage($page, $start, (int)get_config('news_num_articles'));
     }
 }
 
@@ -131,7 +131,7 @@ if (acl::get()->check_permission('news_publish')) {
 }
 
 // Handle first article offset value
-$start = (empty($_GET['start'])) ? 1 : $_GET['start'];
+$start = (empty($_GET['start'])) ? 0 : $_GET['start'];
 
 // Check for display mode
 if (isset($_GET['showarticle'])) {
@@ -171,7 +171,7 @@ if (isset($_GET['showarticle'])) {
         return $return.' ';
     }
     $article_pos = array_search($_GET['article'], $content_id_array);
-    $start = floor($article_pos / get_config('news_num_articles')) * get_config('news_num_articles') + 1;
+    $start = floor($article_pos / get_config('news_num_articles')) * get_config('news_num_articles');
     $article_list = get_article_list(Page::$id, $start);
     $content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
 } else {
@@ -188,8 +188,8 @@ foreach ($article_list AS $article_record) {
     $return .= format_content($article_record)."\n\n";
 }
 
-// Paginate
-require ROOT . 'includes/pagination.php';
-$return .= pagination($start, get_config('news_num_articles'), $content_id_array);
+$pagination = new Component\PaginationComponent();
+$pagination->setCurrentPage($start, get_config('news_num_articles'), count($content_id_array));
+$return .= $pagination->render();
 
 return $return;
