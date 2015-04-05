@@ -22,21 +22,21 @@ class User
     private $pass_change_date;
     private $groups;
     private $type;
-    
+
     /**
      * Create a User object from a User ID
      * @global db $db
      * @param Integer $user_id
      * @throws UserException
      */
-    public function __construct($user_id) 
+    public function __construct($user_id)
     {
         global $db;
 
         if ($user_id == 0 || !is_numeric($user_id)) {
-            throw new UserException('Invalid User ID.'); 
+            throw new UserException('Invalid User ID.');
         }
-        
+
         // Query for user
         $query = 'SELECT `type`, `username`, `password_date`, `realname`,
 			`title`, `groups`, `phone`, `email`, `address`, `lastlogin`
@@ -44,14 +44,14 @@ class User
 			WHERE `id` = $user_id";
         $handle = $db->sql_query($query);
         if ($db->error[$handle]) {
-            throw new UserException('Failed to look up user.'); 
+            throw new UserException('Failed to look up user.');
         }
-        
+
         if ($db->sql_num_rows($handle) == 0) {
-            throw new UserException('User not found.'); 
+            throw new UserException('User not found.');
         }
         $result = $db->sql_fetch_assoc($handle);
-        
+
         // Fill class attributes
         $this->user_id = $user_id;
         $this->username = $result['username'];
@@ -65,7 +65,7 @@ class User
         $this->groups = csv2array($result['groups']);
         $this->type = $result['type'];
     }
-    
+
     /**
      * Create a user
      * @global db $db
@@ -90,32 +90,32 @@ class User
 
         // Check permissions
         if (!acl::get()->check_permission('user_create')) {
-            throw new AclException('You do not have the necessary permissions to create a new user.'); 
+            throw new AclException('You do not have the necessary permissions to create a new user.');
         }
 
         // Validate input
         if (!strlen($username) || !strlen($password)) {
-            throw new UserException('Username and password may not be blank.'); 
+            throw new UserException('Username and password may not be blank.');
         }
         if (!Validate::username($username)) {
-            throw new UserException('Username is invalid. Usernames must be between 4 and 30 alphanumeric characters.'); 
+            throw new UserException('Username is invalid. Usernames must be between 4 and 30 alphanumeric characters.');
         }
         if (User::exists($username)) {
-            throw new UserException('Username already taken.'); 
+            throw new UserException('Username already taken.');
         }
         if (!Validate::password($password)) {
-            throw new UserException('Password is invalid. Passwords must be at least 8 characters long.'); 
+            throw new UserException('Password is invalid. Passwords must be at least 8 characters long.');
         }
         if ($email != null && !Validate::email($email)) {
-            throw new UserException('Email address is invalid.'); 
+            throw new UserException('Email address is invalid.');
         }
         if ($tel != null && !Validate::telephone($tel)) {
-            throw new UserException('Telephone number is invalid. Most 10 or 11 digit formats are acceptable.'); 
+            throw new UserException('Telephone number is invalid. Most 10 or 11 digit formats are acceptable.');
         }
         $tel = Validate::telephone($tel);
         if (!Validate::name($l_name) || !Validate::name($f_name)) {
-            throw new UserException('Name contains invalid characters.'); 
-        }        
+            throw new UserException('Name contains invalid characters.');
+        }
         $real_name = $db->sql_escape_string("$l_name, $f_name");
         $title = $db->sql_escape_string($title);
         $groups = (is_array($groups))
@@ -123,7 +123,7 @@ class User
         $address = $db->sql_escape_string($address);
 
         $time = time();
-        
+
         $query = 'INSERT INTO `'.USER_TABLE."`
 			(`type`, `username`, `password`, `password_date`, `realname`,
 			`title`, `groups`, `phone`, `email`, `address`)
@@ -132,42 +132,42 @@ class User
 			'$title', '$groups', '$tel', '$email', '$address')";
         $create_user = $db->sql_query($query);
         if ($db->error[$create_user] === 1) {
-            throw new UserException('Failed to create user.'); 
+            throw new UserException('Failed to create user.');
         }
-        
+
         Log::addMessage('Created user \''.$real_name.'\' ('.$username.')');
         return new User(User::exists($username));
     }
-    
+
     /**
      * Remove a user record from the database
      * @global db $db
      * @throws AclException
      * @throws UserException
      */
-    public function delete() 
+    public function delete()
     {
         global $db;
-        
+
         if (!acl::get()->check_permission('user_delete')) {
-            throw new AclException('You do not have the necessary permissions to delete a user.'); 
+            throw new AclException('You do not have the necessary permissions to delete a user.');
         }
         if ($this->user_id == 1) {
-            throw new UserException('Cannot delete Administrator user.'); 
+            throw new UserException('Cannot delete Administrator user.');
         }
-        
+
         $query = 'DELETE FROM `'.USER_TABLE.'`
 			WHERE `id` = '.$this->user_id;
         $handle = $db->sql_query($query);
         if ($db->error[$handle]) {
-            throw new UserException('Failed to delete user.'); 
+            throw new UserException('Failed to delete user.');
         }
-        
+
         Log::addMessage("Deleted user '$this->realname' ($this->username)");
         $this->user_id = 0;
         $this->username = null;
     }
-    
+
     /**
      * Check whether a user exists
      * @global db $db
@@ -175,67 +175,67 @@ class User
      * @return Numeric User ID, 0 if user does not exist
      * @throws UserException
      */
-    public static function exists($username) 
+    public static function exists($username)
     {
         global $db;
-        
+
         if (!Validate::username($username)) {
-            throw new UserException('Invalid username.'); 
+            throw new UserException('Invalid username.');
         }
-        
+
         $query = 'SELECT `id` FROM `'.USER_TABLE.'`
 			WHERE `username` = \''.$username.'\'';
         $handle = $db->sql_query($query);
         if ($db->error[$handle] === 1) {
-            throw new UserException('Failed to look up user.'); 
+            throw new UserException('Failed to look up user.');
         }
-        
+
         $num_results = $db->sql_num_rows($handle);
         if ($num_results == 0) {
-            return 0; 
+            return 0;
         }
         $result = $db->sql_fetch_row($handle);
-        
+
         return $result[0];
     }
-    
+
     /**
      * Check if password is past its expiration date
      * @return boolean
      */
-    public function isPasswordExpired() 
+    public function isPasswordExpired()
     {
         if (get_config('password_expire') == 0) {
             return false; // Password expiration disabled
-        }        
+        }
         // Reset password change date if data came from old database format
         if ($this->password_change_date == 0) {
-            $this->setPasswordChangeDate(); 
+            $this->setPasswordChangeDate();
         }
-        
+
         $curtime = time();
         $expiretime = $this->pass_change_date + get_config('password_expire');
         if ($curtime > $expiretime) {
-            return true; 
+            return true;
         }
     }
-    
+
     /**
      * Set password changed date
      * @global db $db
      * @throws UserException
      */
-    private function setPasswordChangeDate() 
+    private function setPasswordChangeDate()
     {
         global $db;
-        
+
         $new_time = time();
         $query = 'UPDATE `'.USER_TABLE."`
 			SET `password_date` = $new_time
 			WHERE `id` = $this->user_id";
         $handle = $db->sql_query($query);
         if ($db->error[$handle]) {
-            throw new UserException('Failed to set password creation time.'); 
+            throw new UserException('Failed to set password creation time.');
         }
         $this->pass_change_date = $new_time;
     }

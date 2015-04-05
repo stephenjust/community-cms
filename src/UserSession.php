@@ -16,7 +16,7 @@ namespace CommunityCMS;
 
 /**
  * Handle all user-related functions
- * 
+ *
  * @package CommunityCMS.main
  */
 class UserSession
@@ -27,7 +27,7 @@ class UserSession
     /**
      * @return \UserSession
      */
-    public static function get() 
+    public static function get()
     {
         if (self::$session == null) {
             self::$session = new self();
@@ -41,18 +41,18 @@ class UserSession
      * @global Debug $debug Debug object
      * @return void
      */
-    function __construct() 
+    function __construct()
     {
         global $db;
         global $debug;
         // Check if any session variables are not set
-        if (!isset($_SESSION['expired']) 
-            || !isset($_SESSION['userid']) 
-            || !isset($_SESSION['user']) 
-            || !isset($_SESSION['pass']) 
-            || !isset($_SESSION['name']) 
-            || !isset($_SESSION['type']) 
-            || !isset($_SESSION['groups']) 
+        if (!isset($_SESSION['expired'])
+            || !isset($_SESSION['userid'])
+            || !isset($_SESSION['user'])
+            || !isset($_SESSION['pass'])
+            || !isset($_SESSION['name'])
+            || !isset($_SESSION['type'])
+            || !isset($_SESSION['groups'])
             || !isset($_SESSION['last_login'])
         ) {
             // One or more of the session variables was not set, so clear all
@@ -84,7 +84,7 @@ class UserSession
         }
         $this->logged_in = true;
         $debug->addMessage('Verified logged-in state', false);
-        
+
         self::$session = $this;
     }
 
@@ -96,7 +96,7 @@ class UserSession
      * @param string $password Unencrypted password provided by input
      * @return boolean Success
      */
-    function login($username,$password) 
+    function login($username,$password)
     {
         global $db;
         global $debug;
@@ -171,7 +171,7 @@ class UserSession
      * Destroy all session information
      * @global Debug $debug Debug class
      */
-    function logout() 
+    function logout()
     {
         global $debug;
         unset($_SESSION['userid']);
@@ -194,7 +194,7 @@ class UserSession
      * @global Debug $debug
      * @return boolean Success
      */
-    private function set_login_time() 
+    private function set_login_time()
     {
         global $db;
         global $debug;

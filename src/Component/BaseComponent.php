@@ -19,5 +19,5 @@ namespace CommunityCMS\Component;
  */
 abstract class BaseComponent
 {
-    abstract function render();
+    abstract public function render();
 }

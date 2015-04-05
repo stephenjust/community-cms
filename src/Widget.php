@@ -18,33 +18,33 @@ class Widget
 {
     private $title = null;
     private $content = null;
-    
+
     private $dimension_w = 0; // auto
     private $dimension_h = 0; // auto
-    
-    public function setTitle($title) 
+
+    public function setTitle($title)
     {
         $this->title = htmlspecialchars($title);
     }
-    
-    public function setContent($content) 
+
+    public function setContent($content)
     {
         $this->content = $content;
     }
-    
-    public function setDimensions($w = 0, $h = 0) 
+
+    public function setDimensions($w = 0, $h = 0)
     {
         $this->dimension_h = $h;
         $this->dimension_w = $w;
     }
-    
+
     public function __toString()
     {
         $template = new template;
         $template->load_file('widget');
         $template->widget_title = $this->title;
         $template->widget_content = $this->content;
-        
+
         if ($this->dimension_h === 0 && $this->dimension_w === 0) {
             $template->widget_dimensions = null;
         } elseif ($this->dimension_h !== 0 && $this->dimension_w !== 0) {
@@ -54,9 +54,7 @@ class Widget
         } else {
             $template->widget_dimensions = "width=\"$this->dimension_w\"";
         }
-        
+
         return (string) $template;
     }
 }
-
-?>
