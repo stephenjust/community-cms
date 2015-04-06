@@ -74,7 +74,9 @@
   <!-- Target: test                                  -->
   <!-- ============================================  -->  
   <target name="test" depends="build">
-	<phpunit pharlocation="./deps/phpunit.phar">
+	<phpunit pharlocation="./deps/phpunit.phar"
+                 bootstrap="${phing.dir}/tests/bootstrap.php"
+                 printsummary="true">
 	  <formatter todir="reports" type="plain" />
 	  <batchtest>
 		<fileset dir="tests">
