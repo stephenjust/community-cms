@@ -41,11 +41,8 @@ if (File::getDirProperty($dir, 'icons_only')) {
 		</div><br />';
 }
 
-$file_list = new file_list;
-$file_list->folder_form = $dir;
-$file_list->set_directory($dir);
-$file_list->get_list();
-echo $file_list;
+$file_list = new Component\FileListComponent();
+$file_list->setDirectory($dir);
+echo $file_list->render();
 
 clean_up();
-?>

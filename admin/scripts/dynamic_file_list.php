@@ -44,4 +44,3 @@ if($current_directory == $referer_dir_root.'/admin/scripts') {
 } else {
     die('Security breach 2.');
 }
-?>

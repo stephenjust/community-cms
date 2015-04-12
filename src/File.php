@@ -35,6 +35,16 @@ class File
         
         $this->file = $file;
     }
+
+    public function getPath()
+    {
+        return File::$file_root.$this->file;
+    }
+
+    public function getName()
+    {
+        return basename($this->getPath());
+    }
     
     /**
      * Create a files directory

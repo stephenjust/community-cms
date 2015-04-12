@@ -7,13 +7,13 @@
  * @package   CommunityCMS.main
  */
 namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
 
 require_once ROOT.'includes/ui/UISelectDirList.class.php';
-require ROOT.'functions/files_class.php';
 
 // Include PEAR class required for tar file extraction
 // FIXME: Do we need this?
@@ -128,8 +128,7 @@ function dynamic_file_list($directory = '')
     $return .= $dir_dropdown.'<br />';
 
     // Generate file list
+
     $return .= file_list($directory);
     return $return;
 }
-
-?>

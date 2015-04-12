@@ -73,16 +73,13 @@ if (isset($_GET['upload'])) {
 
 // Delete files
 if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
-    if (!isset($_GET['filename'])) {
+    if (!isset($_GET['file']) && !isset($_GET['path'])) {
         echo 'No file was specified to delete.<br />';
     } else {
         try {
-            if ($_GET['path'] != null) {
-                $_GET['path'] .= '/'; 
-            }
-            $file = new File($_GET['path'].$_GET['filename']);
+            $file = new File($_GET['path'].$_GET['file']);
             $file->delete();
-            echo 'Suucessfully deleted "'.$_GET['filename'].'".<br />';
+            echo 'Suucessfully deleted "'.$_GET['file'].'".<br />';
         } catch (FileException $e) {
             echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
         }
@@ -94,7 +91,7 @@ if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 $tab_layout = new Tabs;
 if ($_GET['action'] == 'edit') {
     $tab_content['edit'] = null;
-    $file = $db->sql_escape_string($_GET['path'].'/'.$_GET['file']);
+    $file = $db->sql_escape_string($_GET['path'].$_GET['file']);
     $file_info_query = 'SELECT * FROM ' . FILE_TABLE . '
 		WHERE `path` = \''.$file.'\' LIMIT 1';
     $file_info_handle = $db->sql_query($file_info_query);
