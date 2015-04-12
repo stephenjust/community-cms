@@ -13,42 +13,6 @@ if (@SECURITY != 1) {
 }
 
 /**
- * admin_nav - Generate the navigation bar for administration pages
- * @return string Menu HTML
- */
-function admin_nav() 
-{
-    $nav_handle = fopen(ROOT.'admin/page_list.json', 'r');
-    $nav_json = fread($nav_handle, filesize(ROOT.'admin/page_list.json'));
-    $nav = json_decode($nav_json, true);
-    
-    $result = null;
-    foreach ($nav['categories'] as $category) {
-        $result .= '<div>';
-        $result .= sprintf('<h3>%s</h3>', HTML::schars($category['name']));
-        $result .= '<div>';
-        foreach ($category['pages'] as $page) {
-            if (!array_key_exists('label', $page)) {
-                continue;
-            }
-            if (array_key_exists('acl', $page) && !acl::get()->check_permission($page['acl'])) {
-                continue;
-            }
-            if (array_key_exists('url', $page)) {
-                $result .= HTML::link($page['url'], $page['label']);
-            } elseif (array_key_exists('module', $page)) {
-                $result .= HTML::link('admin.php?module='.$page['module'], $page['label']);
-            } else {
-                continue;
-            }
-            $result .= '<br />';
-        }
-        $result .= '</div></div>';
-    }
-    return $result;
-}
-
-/**
  * create_table - Generate styled tables for the admin interface
  * @global Debug $debug Debug Object
  * @param array $columns Array of column headings
