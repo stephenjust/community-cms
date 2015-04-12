@@ -8,6 +8,9 @@
  */
 
 namespace CommunityCMS;
+
+use XMLReader;
+
 /**
  * @ignore
  */
@@ -32,25 +35,25 @@ function permission_file_read()
     // Step through each element in the file
     while ($xmlreader->read()) {
         // Skip comments and other useless nodes
-        if ($xmlreader->nodeType == XMLREADER::DOC_TYPE 
-            || $xmlreader->nodeType == XMLREADER::COMMENT 
-            || $xmlreader->nodeType == XMLREADER::XML_DECLARATION
+        if ($xmlreader->nodeType == XMLReader::DOC_TYPE
+            || $xmlreader->nodeType == XMLReader::COMMENT
+            || $xmlreader->nodeType == XMLReader::XML_DECLARATION
         ) {
             continue;
         }
         // Handle categories
-        if ($xmlreader->name == 'category' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
+        if ($xmlreader->name == 'category' && $xmlreader->nodeType == XMLReader::ELEMENT) {
             $key_count = 0;
             $cat_name = $xmlreader->getAttribute('name');
             $permissions[$category_count] = array();
             $permissions[$category_count]['name'] = $cat_name;
             $permissions[$category_count]['items'] = array();
         }
-        if ($xmlreader->name == 'category' && $xmlreader->nodeType == XMLREADER::END_ELEMENT) {
+        if ($xmlreader->name == 'category' && $xmlreader->nodeType == XMLReader::END_ELEMENT) {
             $category_count++;
         }
         // Handle discrete items
-        if ($xmlreader->name == 'key' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
+        if ($xmlreader->name == 'key' && $xmlreader->nodeType == XMLReader::ELEMENT) {
             $key_name = $xmlreader->getAttribute('name');
             $key_title = $xmlreader->getAttribute('title');
             $key_description = $xmlreader->getAttribute('description');
@@ -67,7 +70,7 @@ function permission_file_read()
             $key_count++;
         }
         // Handle regex items
-        if ($xmlreader->name == 'key_range' && $xmlreader->nodeType == XMLREADER::ELEMENT) {
+        if ($xmlreader->name == 'key_range' && $xmlreader->nodeType == XMLReader::ELEMENT) {
             $key_name = $xmlreader->getAttribute('regex');
             $permissions[$category_count]['items'][$key_count]['name'] = $key_name;
             $permissions[$category_count]['items'][$key_count]['regex'] = true;
@@ -267,4 +270,3 @@ function permission_list_refresh()
     }
     return $num_changes;
 }
-?>
