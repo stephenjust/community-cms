@@ -14,6 +14,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
+require_once(ROOT.'includes/acl/acl_functions.php');
+
 function perm_list($group = 0) 
 {
     $return = null;

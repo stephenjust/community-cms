@@ -37,6 +37,14 @@ class AdminNavComponent extends BaseComponent
         $f = fopen(ROOT.self::MODULE_LIST, 'r');
         $json = fread($f, filesize(ROOT.self::MODULE_LIST));
         $data = json_decode($json, true);
+        foreach ($data['categories'] as &$c) {
+            foreach ($c['pages'] as $index => $page) {
+                if (array_key_exists('acl', $page) &&
+                    !acl::get()->check_permission($page['acl'])) {
+                    unset($c['pages'][$index]);
+                }
+            }
+        }
         fclose($f);
         return $data;
     }
