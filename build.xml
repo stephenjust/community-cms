@@ -74,6 +74,13 @@
   <!-- Target: test                                  -->
   <!-- ============================================  -->  
   <target name="test" depends="build">
+	<phpcodesniffer standard="PSR2" format="summary">
+	  <fileset dir="build">
+		<include name="**/*.php" />
+		<exclude name="**/vendor/**" />
+	  </fileset>
+	</phpcodesniffer>
+        
 	<phpunit pharlocation="./deps/phpunit.phar"
                  bootstrap="${phing.dir}/tests/bootstrap.php"
                  printsummary="true">
@@ -85,13 +92,6 @@
 		</fileset>
 	  </batchtest>
 	</phpunit>
-	
-	<phpcodesniffer standard="PSR2" format="summary">
-	  <fileset dir="build">
-		<include name="**/*.php" />
-		<exclude name="**/vendor/**" />
-	  </fileset>
-	</phpcodesniffer>
   </target>
 
   <!-- ============================================  -->
