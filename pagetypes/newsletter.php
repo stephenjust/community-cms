@@ -14,30 +14,15 @@ if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
 
-$return = null;
-
+$tpl = new \Smarty();
 try {
     $newsletters = Newsletter::getByPage(Page::$id);
-    if (count($newsletters) == 0) {
-        $return .= "No newsletters to display";
-    } else {
-        $currentyear = $newsletters[0]->getYear();
-        $return .= "<div class='newsletter'><span class='newsletter_year'>".$currentyear."</span><br />\n";
+    $grouped_newsletters = array();
+    foreach ($newsletters as $newsletter) {
+        $grouped_newsletters[$newsletter->getYear()][] = $newsletter;
     }
-    foreach ($newsletters AS $newsletter) {
-        if ($currentyear != $newsletter->getYear()) {
-            $currentyear = $newsletter->getYear();
-            $return .= "<span class='newsletter_year'>".$currentyear."</span><br />\n";
-        }
-        if (!$newsletter->getHidden()) {
-            $return .= HTML::link($newsletter->getPath(), $newsletter->getLabel())."<br />\n";
-        } else {
-            $return .= $newsletter->getLabel()."<br />\n";
-        }
-    }
+    $tpl->assign("entries", $grouped_newsletters);
+    return $tpl->fetch("newsletters.tpl");
+} catch (\Exception $ex) {
+    return '<span class="errormessage">'.$e->getMessage().'</span>';
 }
-catch (NewsletterException $e) {
-    $return .= '<span class="errormessage">'.$e->getMessage().'</span>';
-}
-return $return."</div>";
-?>

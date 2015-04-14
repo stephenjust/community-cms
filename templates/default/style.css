@@ -1032,7 +1032,7 @@ h1.cal_day-heading {
 	table-layout: fixed;
 }
 
-span.newsletter_year {
+div.newsletter > span.group {
 	font-family: Arial;
 	font-size: larger;
 	font-style: italic;
