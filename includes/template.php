@@ -217,10 +217,10 @@ class template
             $this->image_path = $this->path.'images/';
             // Don't replace the following in admin view
             if (!defined('ADMIN')) {
-                $this->replace_variable('article_url_onpage', 'article_url_onpage($a);');
-                $this->replace_variable('article_url_ownpage', 'article_url_ownpage($a);');
-                $this->replace_variable('article_url_nopage', 'article_url_nopage($a);');
-                $this->replace_variable('gallery_embed', '(string) new Gallery($a);');
+                $this->replace_variable('article_url_onpage', '\\CommunityCMS\\article_url_onpage($a);');
+                $this->replace_variable('article_url_ownpage', '\\CommunityCMS\\article_url_ownpage($a);');
+                $this->replace_variable('article_url_nopage', '\\CommunityCMS\\article_url_nopage($a);');
+                $this->replace_variable('gallery_embed', '(string) new \\CommunityCMS\\Gallery($a);');
             }
         }
         $return = (string)$this->template;
