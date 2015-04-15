@@ -92,7 +92,7 @@ class calendar_event
     function get_event($id) 
     {
         try {
-            $eventTpl = new Smarty();
+            $eventTpl = new \Smarty();
             $event = new CalEvent($id);
         } catch (CalEventException $ex) {
             header('HTTP/1.1 404 Not Found');
@@ -388,4 +388,3 @@ class calendar_month extends calendar
         return (string)$this->template;
     }
 }
-?>
