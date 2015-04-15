@@ -27,7 +27,7 @@ class AdminPage extends Page
      */
     public static function display_header() 
     {
-        $template = new template;
+        $template = new Template;
         $template->load_admin_file('header');
 
         // Include javascript
@@ -87,7 +87,7 @@ class AdminPage extends Page
     public static function display_admin() 
     {
         global $db;
-        $template_page = new template;
+        $template_page = new Template;
         $template_page->load_admin_file();
 
         $nav = new Component\AdminNavComponent();
@@ -113,7 +113,7 @@ class AdminPage extends Page
         global $db;
         global $debug;
 
-        $template = new template;
+        $template = new Template;
         $template->load_admin_file('debug');
         $template->debug_queries = $db->print_queries();
         $template->debug_query_stats = $db->print_query_stats();
@@ -124,7 +124,7 @@ class AdminPage extends Page
 
     public static function display_footer() 
     {
-        $template = new template;
+        $template = new Template;
         $template->load_admin_file('footer');
         $template->footer = 'Powered by Community CMS';
         echo $template;

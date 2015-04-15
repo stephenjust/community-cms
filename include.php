@@ -16,7 +16,6 @@ if(!preg_match('#^[\/\\\\\.]+$#',ROOT)) {
 require_once(ROOT.'functions/main.php');
 require_once(ROOT.'includes/constants.php');
 require_once(ROOT.'includes/db/db.php');
-require_once(ROOT.'includes/template.php');
 require_once(ROOT.'functions/article.php');
 require_once(ROOT.'functions/page.php');
 require_once(ROOT.'functions/blocks.php');

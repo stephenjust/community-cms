@@ -293,7 +293,7 @@ class Page
      */
     public static function displayHeader() 
     {
-        $template = new template;
+        $template = new Template;
         $template->load_file('header');
 
         // Include javascript
@@ -364,7 +364,7 @@ class Page
         global $debug;
 
         // Prepare menu and submenu templates
-        $template = new template;
+        $template = new Template;
         if (!$template->load_file('nav_bar')) {
             return false;
         }
@@ -446,7 +446,7 @@ class Page
         }
 
         // Read template
-        $template = new template();
+        $template = new Template();
         $template->load_file('nav_bar');
         // Grab the sub-menu part of the template
         $sub_template = $template->split_range('nav_submenu');
@@ -555,7 +555,7 @@ class Page
 
     public static function displayLeft() 
     {
-        $template = new template;
+        $template = new Template;
         $template->load_file('left');
         $template->nav_bar = Page::navMenu();
 
@@ -578,7 +578,7 @@ class Page
 
     public static function displayRight() 
     {
-        $template = new template;
+        $template = new Template;
         $template->load_file('right');
 
         // Prepare blocks
@@ -595,7 +595,7 @@ class Page
     {
         global $db;
 
-        $template = new template;
+        $template = new Template;
         $template->load_file('content');
         $template->page_path = page_path(Page::$id);
 
@@ -653,7 +653,7 @@ class Page
 
     public static function displayFooter()
     {
-        $template = new template;
+        $template = new Template;
         $template->load_file('footer');
         $template->footer = get_config('footer');
         echo $template;
@@ -665,7 +665,7 @@ class Page
         global $db;
         global $debug;
 
-        $template = new template;
+        $template = new Template;
         $template->load_file('debug');
         $template->debug_queries = $db->print_queries();
         $template->debug_query_stats = $db->print_query_stats();

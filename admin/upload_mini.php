@@ -24,7 +24,7 @@ initialize();
 if (!acl::get()->check_permission('admin_access')) {
     die('You don\'t have the necessary permissions to use this page');
 }
-$template = new template;
+$template = new Template;
 $template->load_admin_file('dialog');
 $template->root = ROOT;
 $template->dialog_title = 'Upload File';

@@ -40,7 +40,7 @@ class Widget
 
     public function __toString()
     {
-        $template = new template;
+        $template = new Template;
         $template->load_file('widget');
         $template->widget_title = $this->title;
         $template->widget_content = $this->content;

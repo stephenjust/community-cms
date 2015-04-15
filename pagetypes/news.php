@@ -32,7 +32,7 @@ function format_content(Content $content)
 {
     assert($content->getID());
     
-    $template_article = new template;
+    $template_article = new Template;
     $template_article->load_file('article');
     if (!empty($content->getImage())) {
         $im_file = new File($content->getImage());

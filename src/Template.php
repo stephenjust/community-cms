@@ -9,7 +9,7 @@
 
 namespace CommunityCMS;
 
-class template
+class Template
 {
     public $template = "";
     public $template_name;
@@ -182,7 +182,7 @@ class template
         }
         unset($temp);
         unset($content);
-        $new_template = new template;
+        $new_template = new Template;
         $new_template->path = $this->path;
         $new_template->template = '<!-- $'.mb_convert_case($split_marker, MB_CASE_UPPER, "UTF-8").'$ -->'.$new_temp;
         unset($new_temp);
@@ -192,7 +192,7 @@ class template
     /**
      * split_range - Returns a new template containing the contents of a certain range
      * @param string $range Name of start and end markers
-     * @return template New template
+     * @return Template New template
      */
     public function split_range($range) 
     {
@@ -203,7 +203,7 @@ class template
             $debug->addMessage('Failed to get segment of template', true);
             return false;
         }
-        $return = new template;
+        $return = new Template;
         $return->path = $this->path;
         $return->template = $content;
         $this->replace_range($range, null);
@@ -227,5 +227,3 @@ class template
         return $return;
     }
 }
-
-?>

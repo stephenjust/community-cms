@@ -217,7 +217,7 @@ class calendar_month extends calendar
      */
     private function load_template() 
     {
-        $this->template = new template;
+        $this->template = new Template;
         $this->template->load_file('calendar_month');
 
         // Replace template placeholders that should not be altered
@@ -255,7 +255,7 @@ class calendar_month extends calendar
         }
         
         // Week template
-        $template_week = new template;
+        $template_week = new Template;
         $template_week->path = $this->template->path;
         $template_week->template = $this->template->get_range('week');
 
@@ -324,7 +324,7 @@ class calendar_month extends calendar
                 }
 
                 // Choose which template to use for the day
-                $day_template = new template;
+                $day_template = new Template;
                 $day_template->path = $current_week->path;
                 if ($day_number == date('j')
                     && $this->month == date('n')
