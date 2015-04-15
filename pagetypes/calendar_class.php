@@ -8,6 +8,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\EditBarComponent;
+
 /**
  * Contains information about a month-long calendar
  *
@@ -102,13 +104,13 @@ class calendar_event
         }
             
         if (acl::get()->check_permission('adm_calendar_edit_date')) {
-            $editbar = new EditBar();
-            $editbar->set_label('Event');
-            $editbar->add_control(
+            $editbar = new EditBarComponent();
+            $editbar->setLabel('Event');
+            $editbar->addControl(
                 'admin.php?module=calendar_edit_date&id='.$event->getId(),
                 'edit.png', 'Edit', array('adm_calendar_edit_date','admin_access')
             );
-            $eventTpl->assign('editbar', $editbar);
+            $eventTpl->assign('editbar', $editbar->render());
         }
         $eventTpl->assign('event', $event);
         $eventTpl->assign('time_format', get_config('time_format'));

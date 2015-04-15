@@ -209,31 +209,28 @@ span.nowrap {
 /* EDIT BAR */
 
 div.edit_bar {
-	background: rgb(192,192,192);
-	background: rgba(192,192,192,0.75);
-	border: 1px rgb(128,128,128) solid;
-	border: 1px rgba(128,128,128,0.75) solid;
-	color: #333333;
-	float: right;
-	font-size: small;
-	min-height: 1px;
-	min-width: 1px;
-	padding: 2px;
-	position: absolute;
-	right: 3px;
-	top: 3px;
-	vertical-align: middle;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-khtml-border-radius: 5px;
+    background: rgb(192,192,192);
+    border: 1px rgb(128,128,128) solid;
+    box-shadow: 2px 2px 5px rgba(128, 128, 128, 0.5);
+    float: right;
+    font-size: small;
+    padding: 2px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    vertical-align: middle;
+    border-radius: 5px;
 }
-div.edit_bar img {
-	border: 0px;
-	padding: 0px 2px;
+div.edit_bar > span.label {
+    color: #000000;
+    font-weight: bold;
 }
-div.page_edit_bar {
-	position: absolute;
+div.edit_bar > a {
+    text-decoration: none;
+}
+div.edit_bar > a > img {
+    border: 0px;
+    padding: 0px 2px;
 }
 
 /*

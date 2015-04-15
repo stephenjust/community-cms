@@ -14,6 +14,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\EditBarComponent;
+
 /**
  * Generates a page
  */
@@ -611,18 +613,17 @@ class Page
         }
 
         // Display page edit bar
-        $edit_bar = new EditBar();
-        $edit_bar->set_label('Page');
-        $edit_bar->class = 'edit_bar page_edit_bar';
+        $edit_bar = new EditBarComponent();
+        $edit_bar->setLabel('Page');
         if (Page::$id != 0) {
             $permission_list = array('admin_access','page_edit');
-            $edit_bar->add_control(
+            $edit_bar->addControl(
                 'admin.php?module=page&action=edit&id='.Page::$id,
                 'edit.png', 'Edit', $permission_list
             );
             unset($permission_list);
         }
-        $template->page_edit_bar = $edit_bar;
+        $template->page_edit_bar = $edit_bar->render();
 
         // Display page notifications
         if (strlen(Page::$notification) > 0) {

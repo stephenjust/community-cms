@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\EditBarComponent;
+
 class Content
 {
     private $id = 0;
@@ -100,9 +102,9 @@ class Content
     
     public function getEditBar() 
     {
-        $editbar = new EditBar();
-        $editbar->set_label('Article');
-        $editbar->add_control(
+        $editbar = new EditBarComponent();
+        $editbar->setLabel('Article');
+        $editbar->addControl(
             'admin.php?module=news&action=edit&amp;id='.$this->getID(),
             'edit.png',
             'Edit',
@@ -113,18 +115,18 @@ class Content
         $query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', null, $_SERVER['QUERY_STRING']);
         if ($this->published()) {
             // Currently published
-            $editbar->add_control(
+            $editbar->addControl(
                 'index.php?'.$query_string.'&unpublish='.$this->getID(),
                 'unpublish.png', 'Unpublish', array('news_publish')
             );
         } else {
             // Currently unpublished
-            $editbar->add_control(
+            $editbar->addControl(
                 'index.php?'.$query_string.'&publish='.$this->getID(),
                 'publish.png', 'Publish', array('news_publish')
             );
         }
-        return $editbar;
+        return $editbar->render();
     }
     
     /**

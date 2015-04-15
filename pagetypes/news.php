@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\EditBarComponent;
+
 /**
  * @ignore
  */
@@ -50,9 +52,9 @@ function format_content(Content $content)
     }
 
     // Edit bar permission check
-    $editbar = new EditBar;
-    $editbar->set_label('Article');
-    $editbar->add_control(
+    $editbar = new EditBarComponent;
+    $editbar->setLabel('Article');
+    $editbar->addControl(
         'admin.php?module=news&action=edit&amp;id='.$content->getID(),
         'edit.png',
         'Edit',
@@ -63,18 +65,18 @@ function format_content(Content $content)
     $query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', null, $_SERVER['QUERY_STRING']);
     if ($content->published()) {
         // Currently published
-        $editbar->add_control(
+        $editbar->addControl(
             'index.php?'.$query_string.'&unpublish='.$content->getID(),
             'unpublish.png', 'Unpublish', array('news_publish')
         );
     } else {
         // Currently unpublished
-        $editbar->add_control(
+        $editbar->addControl(
             'index.php?'.$query_string.'&publish='.$content->getID(),
             'publish.png', 'Publish', array('news_publish')
         );
     }
-    $template_article->edit_bar = $editbar;
+    $template_article->edit_bar = $editbar->render();
 
     $article_title = $content->getTitle();
     if (!$content->published()) {
