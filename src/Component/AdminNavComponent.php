@@ -15,6 +15,7 @@
 namespace CommunityCMS\Component;
 
 use CommunityCMS\acl;
+use CommunityCMS\Tpl;
 
 /**
  * Generate the navigation list used by administrator pages.
@@ -27,7 +28,7 @@ class AdminNavComponent extends BaseComponent
     {
         acl::get()->require_permission('admin_access');
 
-        $tpl = new \Smarty();
+        $tpl = new Tpl();
         $tpl->assign("menu", $this->getMenu());
         return $tpl->fetch("adminMenu.tpl");
     }

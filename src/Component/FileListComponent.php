@@ -16,6 +16,7 @@ namespace CommunityCMS\Component;
 
 use CommunityCMS\acl;
 use CommunityCMS\File;
+use CommunityCMS\Tpl;
 
 /**
  * Component to display a list of files
@@ -39,9 +40,7 @@ class FileListComponent extends BaseComponent
 
     public function render()
     {
-        $tpl = new \Smarty();
-        $tpl->addTemplateDir(ROOT.'templates/');
-        $tpl->setCompileDir(ROOT.'templates_c/');
+        $tpl = new Tpl();
         $tpl->assign("edit_url", $this->getEditUrl());
         $tpl->assign("delete_url", $this->getDeleteUrl());
         $tpl->assign("show_delete", acl::get()->check_permission('file_delete'));

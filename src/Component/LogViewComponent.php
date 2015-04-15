@@ -16,6 +16,7 @@ namespace CommunityCMS\Component;
 
 use CommunityCMS\acl;
 use CommunityCMS\Log;
+use CommunityCMS\Tpl;
 
 /**
  * Component that displays a table of log entries
@@ -35,7 +36,7 @@ class LogViewComponent extends BaseComponent
 
         $entries = Log::getLastMessages($this->count);
 
-        $tpl = new \Smarty();
+        $tpl = new Tpl();
         $tpl->assign("log_entries", $entries);
         return $tpl->fetch("logView.tpl");
     }

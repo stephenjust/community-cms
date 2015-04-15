@@ -634,7 +634,7 @@ class Page
         }
 
         if (Page::$type != 'special.php') {
-            $pmt = new \Smarty();
+            $pmt = new Tpl();
             $pmt->assign('pageMessage', PageMessage::getByPage(Page::$id));
             $template->page_message = $pmt->fetch('pageMessage.tpl');
         } else {
@@ -681,7 +681,7 @@ class Page
     */
     public static function displayLoginBox()
     {
-        $tpl = new \Smarty();
+        $tpl = new Tpl();
         $tpl->assign("login_target", "index.php?{$_SERVER['QUERY_STRING']}&amp;login=1");
         $tpl->assign("logout_target", "index.php?{$_SERVER['QUERY_STRING']}&amp;login=2");
         $tpl->assign("change_password_target", "index.php?id=change_password");

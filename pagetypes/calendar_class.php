@@ -92,7 +92,7 @@ class calendar_event
     function get_event($id) 
     {
         try {
-            $eventTpl = new \Smarty();
+            $eventTpl = new Tpl();
             $event = new CalEvent($id);
         } catch (CalEventException $ex) {
             header('HTTP/1.1 404 Not Found');

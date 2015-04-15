@@ -14,7 +14,7 @@ if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
 
-$tpl = new \Smarty();
+$tpl = new Tpl();
 try {
     $newsletters = Newsletter::getByPage(Page::$id);
     $grouped_newsletters = array();

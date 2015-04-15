@@ -14,6 +14,8 @@
 
 namespace CommunityCMS\Component;
 
+use CommunityCMS\Tpl;
+
 /**
  * Component displaying buttons to navigate to next or previous entries
  */
@@ -52,7 +54,7 @@ class PaginationComponent extends BaseComponent
 
     public function render()
     {
-        $tpl = new \Smarty();
+        $tpl = new Tpl();
         $tpl->assign("p", $this);
         return $tpl->fetch("pagination.tpl");
     }

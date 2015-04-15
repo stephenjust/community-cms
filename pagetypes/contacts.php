@@ -13,7 +13,7 @@ if (@SECURITY != 1) {
     die('You cannot access this page directly.');
 }
 
-$clTpl = new \Smarty();
+$clTpl = new Tpl();
 $clTpl->assign('contacts', Contact::getList(Page::$id));
 switch (get_config('contacts_display_mode')) {
 default:
