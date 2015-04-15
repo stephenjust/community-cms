@@ -35,9 +35,9 @@ body {
 	font-size: 10px;
 }
 
-/* NEWS */
-div.news_edit_bar {
-	display: none;
+/* EDIT BaR */
+div.edit_bar {
+    display: none;
 }
 
 /* CALENDAR */
