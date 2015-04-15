@@ -19,7 +19,7 @@ if (@SECURITY != 1) {
  */
 function article_url_nopage($id) 
 {
-    return articl_url_ownpage($id);
+    return article_url_ownpage($id);
 }
 
 /**
