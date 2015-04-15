@@ -104,11 +104,6 @@ function format_content(Content $content)
         $template_article->article_details_start = null;
         $template_article->article_details_end = null;
     }
-
-    $template_article->replace_variable('article_url_onpage', 'article_url_onpage($a);');
-    $template_article->replace_variable('article_url_ownpage', 'article_url_ownpage($a);');
-    $template_article->replace_variable('article_url_nopage', 'article_url_nopage($a);');
-
     return (string) $template_article;
 }
 
@@ -170,10 +165,10 @@ if (isset($_GET['showarticle'])) {
         Page::$showtitle = false;
         return $return.' ';
     }
+    $content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
     $article_pos = array_search($_GET['article'], $content_id_array);
     $start = floor($article_pos / get_config('news_num_articles')) * get_config('news_num_articles');
     $article_list = get_article_list(Page::$id, $start);
-    $content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
 } else {
     $article_list = get_article_list(Page::$id, $start);
     $content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
