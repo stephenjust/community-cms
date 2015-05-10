@@ -15,7 +15,7 @@ if (@SECURITY != 1) {
 
 $clTpl = new Tpl();
 $clTpl->assign('contacts', Contact::getList(Page::$id));
-switch (get_config('contacts_display_mode')) {
+switch (SysConfig::get()->getValue('contacts_display_mode')) {
 default:
     $content = $clTpl->fetch('contactList.tpl');
     break;

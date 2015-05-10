@@ -24,10 +24,10 @@ $year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$
 require_once ROOT.'pagetypes/calendar_class.php';
 /**#@-*/
 if ($view == null) {
-    $view = get_config('calendar_defualt_view');
+    $view = SysConfig::get()->getValue('calendar_defualt_view');
 }
 if ($view != 'month' && $view != 'day' && $view != 'event') {
-    $view = get_config('calendar_default_view');
+    $view = SysConfig::get()->getValue('calendar_default_view');
 }
 
 switch ($view) {
@@ -106,8 +106,8 @@ case "day":
         if ($event_start == $event_end) {
             $event_time = 'All day';
         } else {
-            $event_time = date(get_config('time_format'), $event_start).' - '.
-            date(get_config('time_format'), $event_end);
+            $event_time = date(SysConfig::get()->getValue('time_format'), $event_start).' - '.
+            date(SysConfig::get()->getValue('time_format'), $event_end);
         }
         $current_event = clone $event_template;
         $current_event->event_id = $day_events['id'];

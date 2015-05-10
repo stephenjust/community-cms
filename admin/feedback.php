@@ -14,7 +14,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-if (get_config('admin_email') == null) {
+if (SysConfig::get()->getValue('admin_email') == null) {
     throw new AdminException('You need to set an admin email in the website configuration to use this feature.'); 
 }
 
@@ -36,7 +36,7 @@ if ($_GET['send'] == 1) {
     }
     $subject .= ' from '.$_SERVER['SERVER_ADDR'].' ('.$_SERVER['SERVER_NAME'].')';
     $message = addslashes(strip_tags($_POST['content']));
-    $headers = 'From: '.get_config('admin_email').''."\r\n".
+    $headers = 'From: '.SysConfig::get()->getValue('admin_email').''."\r\n".
     'X-Mailer: PHP/' . phpversion();
     if(mail($to, $subject, $message, $headers)) {
         echo 'Message sent.';

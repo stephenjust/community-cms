@@ -333,7 +333,7 @@ class Page
         unset($css_include);
 
         $template->admin_include = null;
-        $template->print_header = get_config('site_name');
+        $template->print_header = SysConfig::get()->getValue('site_name');
 
         // Print Meta Description if available
         $meta_desc = Page::$meta_description;
@@ -348,7 +348,7 @@ class Page
         if (Page::$exists === false) {
             Page::$title .= 'Page Not Found';
         }
-        Page::$title .= ' - '.get_config('site_name');
+        Page::$title .= ' - '.SysConfig::get()->getValue('site_name');
         $template->page_title = Page::$title;
         echo $template;
         unset($template);
@@ -656,7 +656,7 @@ class Page
     {
         $template = new Template;
         $template->load_file('footer');
-        $template->footer = get_config('footer');
+        $template->footer = SysConfig::get()->getValue('footer');
         echo $template;
         unset($template);
     }

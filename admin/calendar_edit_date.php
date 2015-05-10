@@ -86,11 +86,11 @@ default:
 
         $form->add_textbox(
             'stime', '*Start Time:',
-            date(get_config('time_format'), $ev->getStart()), 'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"'
+            date(SysConfig::get()->getValue('time_format'), $ev->getStart()), 'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"'
         );
         $form->add_textbox(
             'etime', '*End Time:',
-            date(get_config('time_format'), $ev->getEnd()), 'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"'
+            date(SysConfig::get()->getValue('time_format'), $ev->getEnd()), 'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"'
         );
         $form->add_date_cal('date', '*Date:', date('m/d/Y', $ev->getStart()), 'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
         $form->add_textarea('content', 'Description:', $ev->getDescription(), 'rows="25"');

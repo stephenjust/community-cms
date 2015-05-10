@@ -205,7 +205,7 @@ class User
      */
     public function isPasswordExpired()
     {
-        if (get_config('password_expire') == 0) {
+        if (SysConfig::get()->getValue('password_expire') == 0) {
             return false; // Password expiration disabled
         }
         // Reset password change date if data came from old database format
@@ -214,7 +214,7 @@ class User
         }
 
         $curtime = time();
-        $expiretime = $this->pass_change_date + get_config('password_expire');
+        $expiretime = $this->pass_change_date + SysConfig::get()->getValue('password_expire');
         if ($curtime > $expiretime) {
             return true;
         }

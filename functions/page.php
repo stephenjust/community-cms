@@ -388,7 +388,7 @@ function page_path($id)
     }
     $id = (int)$id;
 
-    if ($id == get_config('home')) {
+    if ($id == SysConfig::get()->getValue('home')) {
         $page_info = page_get_info($id, array('title'));
         return $page_info['title'];
     }
@@ -399,7 +399,7 @@ function page_path($id)
         $page_info = page_get_info($page_info['parent'], array('parent','title'));
         $list = ' > '.$page_info['title'].$list;
     }
-    $page_info = page_get_info(get_config('home'), array('title'));
+    $page_info = page_get_info(SysConfig::get()->getValue('home'), array('title'));
     $list = $page_info['title'].$list;
     return $list;
 }

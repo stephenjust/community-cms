@@ -65,8 +65,7 @@ $tab['users'] = $tab_layout->add_tab('User Summary', $tab_content['user']);
 
 // ----------------------------------------------------------------------------
 
-$tab_content['database'] = 'Database Content Version: '.get_config('db_version').'<br />
+$tab_content['database'] = 'Database Content Version: '.SysConfig::get()->getValue('db_version').'<br />
 	Database Software Version: '.$db->sql_server_info();
 $tab['database'] = $tab_layout->add_tab('Database Summary', $tab_content['database']);
 echo $tab_layout;
-?>

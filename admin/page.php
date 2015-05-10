@@ -277,7 +277,7 @@ function adm_page_manage_list_row($id)
         $return .= $icon_info.' ';
     }
     $return .= $page_info['title'].' ';
-    if ($page_info['id'] == get_config('home')) {
+    if ($page_info['id'] == SysConfig::get()->getValue('home')) {
         $return .= '(Default)';
     }
     if ($page_info['menu'] == 0) {

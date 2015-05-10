@@ -78,7 +78,7 @@ class CalLocation
         global $db;
 
         // Check if saving is enabled
-        if (get_config('calendar_save_locations') != 1) {
+        if (SysConfig::get()->getValue('calendar_save_locations') != 1) {
             return; 
         }
 

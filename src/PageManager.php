@@ -98,12 +98,12 @@ class PageManager
      */
     function setHomepage() 
     {
-        acl::get()->require_permission('page_set_home');
-
-        if (!set_config('home', $this->mId)) {
-            throw new PageException('Error setting defualt page.');
+        try {
+            acl::get()->require_permission('page_set_home');
+            SysConfig::get()->setValue('home', $this->mId);
+            Log::addMessage(sprintf("Set home page to '%s'.", $this->mTitle));
+        } catch (\Exception $ex) {
+            throw new PageException("Error setting default page.", $ex);
         }
-        
-        Log::addMessage(sprintf("Set home page to '%s'.", $this->mTitle));
     }
 }

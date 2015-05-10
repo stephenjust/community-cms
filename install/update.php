@@ -20,7 +20,7 @@ if(@ !include '../config.php') {
     include_once ROOT . 'functions/main.php';
     include_once ROOT . 'includes/constants.php';
     initialize();
-    $db_version = get_config('db_version');
+    $db_version = SysConfig::get()->getValue('db_version');
     if (is_null($db_version)) {
         // Using old schema - check for db_version
         $ver_handle = $db->sql_query('SELECT db_version FROM '.CONFIG_TABLE.' LIMIT 1');

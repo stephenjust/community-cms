@@ -92,7 +92,7 @@ function gallery_photo_manager($gallery_id)
 $tab_layout = new Tabs;
 
 // Check to make sure a gallery application is selected
-if (get_config('gallery_app') == 'disabled' || get_config('gallery_app') == null) {
+if (SysConfig::get()->getValue('gallery_app') == 'disabled' || SysConfig::get()->getValue('gallery_app') == null) {
     throw new AdminException(
         'There is no image gallery application configured. Please copy '.
         'one of the supported image gallery applications to your server and use '.
@@ -196,7 +196,7 @@ default:
 
 // ----------------------------------------------------------------------------
 
-switch (get_config('gallery_app')) {
+switch (SysConfig::get()->getValue('gallery_app')) {
 default:
     echo 'Unknown gallery application selected. Plase reconfigure your gallery.';
     break;
@@ -205,7 +205,7 @@ default:
 
 case 'simpleviewer':
     // Check if path is correct
-    $gallery_dir = get_config('gallery_dir');
+    $gallery_dir = SysConfig::get()->getValue('gallery_dir');
     $gallery_file = ROOT.$gallery_dir.'/web/simpleviewer.swf';
     if (!file_exists($gallery_file)) {
         echo 'Could not find SimpleViewer application file. Please

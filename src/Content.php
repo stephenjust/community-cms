@@ -212,7 +212,7 @@ class Content
     
     public function isAuthorVisible() 
     {
-        return get_config('news_show_author');
+        return SysConfig::get()->getValue('news_show_author');
     }
 }
 

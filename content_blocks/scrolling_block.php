@@ -6,6 +6,9 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
@@ -70,7 +73,7 @@ for ($i = 1; $i <= $db->sql_num_rows($text_handle); $i++) {
     $template_text_block->article_title = stripslashes($text['name']);
 
     // Hide author if requested
-    if (get_config('news_show_author') == 0) {
+    if (SysConfig::get()->getValue('news_show_author') == 0) {
         $template_text_block->replace_range('article_author', null);
     } else {
         $template_text_block->article_author = stripslashes($text['author']);

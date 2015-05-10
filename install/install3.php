@@ -46,7 +46,7 @@ $error = 0;
 // Check if the database is being installed or updated.
 $db_version_query = 'SELECT `db_version` FROM `'.CONFIG_TABLE.'`';
 @$db_version_handle = $db->sql_query($db_version_query);
-if ($db->error[$db_version_handle] === 1 && !get_config('db_version')) {
+if ($db->error[$db_version_handle] === 1 && !SysConfig::get()->getValue('db_version')) {
     // Install
     $content .= 'Loading table schema for '.$_POST['db_engine'].'... ';
     $schema_file = './schema/'.$_POST['db_engine'].'_tables.sql';
@@ -109,4 +109,3 @@ if ($db->error[$db_version_handle] === 1 && !get_config('db_version')) {
         return true;
     }
 }
-?>

@@ -108,7 +108,7 @@ class Gallery
             throw new GalleryException('An invalid gallery ID number was provided.'); 
         }
         $this->id = (int) $id;
-        Gallery::$engine = get_config('gallery_app');
+        Gallery::$engine = SysConfig::get()->getValue('gallery_app');
         if (Gallery::$engine === null) {
             throw new GalleryException('Image galleries are not correctly configured.'); 
         }
@@ -391,12 +391,12 @@ class Gallery
           break;
         case 'simpleviewer':
             return '<object width="100%" height="450px">
-					<param name="movie" value="'.get_config('gallery_dir').'/web/svcore/swf/simpleviewer.swf?galleryURL='.$this->info_file.'"></param>
+					<param name="movie" value="'.SysConfig::get()->getValue('gallery_dir').'/web/svcore/swf/simpleviewer.swf?galleryURL='.$this->info_file.'"></param>
 					<param name="allowFullScreen" value="true"></param>
 					<param name="allowscriptaccess" value="always"></param>
 					<param name="bgcolor" value="FFFFFF"></param>
 					<param name="wmode" value="transparent"></param>
-					<embed src="'.get_config('gallery_dir').'/web/svcore/swf/simpleviewer.swf?galleryURL='.$this->info_file.'"
+					<embed src="'.SysConfig::get()->getValue('gallery_dir').'/web/svcore/swf/simpleviewer.swf?galleryURL='.$this->info_file.'"
 					type="application/x-shockwave-flash" allowscriptaccess="always"
 					allowfullscreen="true" width="100%" height="450px" bgcolor="FFFFFF"
 					wmode="transparent">

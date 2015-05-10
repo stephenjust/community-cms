@@ -33,7 +33,7 @@ class NewsPage extends Page
     public function getContent() 
     {
         $pagination = new Component\PaginationComponent();
-        $pagination->setCurrentPage($this->start, get_config("news_num_articles"), count($this->content_ids));
+        $pagination->setCurrentPage($this->start, SysConfig::get()->getValue("news_num_articles"), count($this->content_ids));
         $tpl = new Smarty();
         $tpl->assign('page', $this);
         $tpl->assign('articles', $this->articles);
@@ -61,9 +61,9 @@ class NewsPage extends Page
     private function getArticles() 
     {
         if (acl::get()->check_permission('news_fe_show_unpublished')) {
-            return Content::getByPage($this->id, $this->start-1, (int)get_config('news_num_articles'));
+            return Content::getByPage($this->id, $this->start-1, (int)SysConfig::get()->getValue('news_num_articles'));
         } else {
-            return Content::getPublishedByPage($this->id, $this->start-1, (int)get_config('news_num_articles'));
+            return Content::getPublishedByPage($this->id, $this->start-1, (int)SysConfig::get()->getValue('news_num_articles'));
         }
     }
 }

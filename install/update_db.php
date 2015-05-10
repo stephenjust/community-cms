@@ -184,7 +184,7 @@ case 0.02:
     echo 'The database has been updated to version 0.03<br />'."\n";
     break;
 case 0.03:
-    set_config('db_version', '0.04');
+    SysConfig::get()->setValue('db_version', '0.04');
     switch ($db->dbms) {
     case 'mysqli':
         $query[] = "CREATE TABLE IF NOT EXISTS `".GALLERY_TABLE."` {
@@ -347,7 +347,7 @@ case 0.04:
     $query[] = 'DROP TABLE `'.NEWS_SETTINGS_TABLE.'`';
     // FIXME: Add column for class to pagetypes
     execute_queries($query);
-    set_config('db_version', '0.05');
+    SysConfig::get()->setValue('db_version', '0.05');
     $query = array();
     $db_version = 0.05;
     echo 'The database has been updated to version 0.05<br />'."\n";
@@ -396,7 +396,7 @@ if($error == 1) {
 		manually.';
 } else {
     echo 'Update successful. <a href="../index.php">View Site</a>';
-    set_config('db_version', $db_version);
+    SysConfig::get()->setValue('db_version', $db_version);
     Log::addMessage('Upgraded Community CMS', LOG_LEVEL_INSTALL);
 }
 clean_up();

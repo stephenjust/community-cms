@@ -120,7 +120,7 @@ $first = 0;
 while ($i <= $db->sql_num_rows($page_query_handle)) {
     $page = $db->sql_fetch_assoc($page_query_handle);
     if (!isset($_POST['page'])) {
-        $_POST['page'] = get_config('home');
+        $_POST['page'] = SysConfig::get()->getValue('home');
         $first = 1;
     }
     if ($page['id'] == $_POST['page']) {

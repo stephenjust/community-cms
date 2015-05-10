@@ -18,7 +18,7 @@ acl::get()->require_permission('adm_page_message');
 
 // Get current page ID
 if (!isset($_POST['page']) && !isset($_GET['page'])) {
-    $page_id = get_config('home');
+    $page_id = SysConfig::get()->getValue('home');
 } elseif (!isset($_POST['page']) && isset($_GET['page'])) {
     $page_id = (int)$_GET['page'];
     unset($_GET['page']);

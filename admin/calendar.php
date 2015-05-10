@@ -128,18 +128,19 @@ case 'save_settings':
         $new_fields['month_time_sep'] = $_POST['month_time_sep'];
         $new_fields['default_location'] = $_POST['default_location'];
         $new_fields['cal_show_author'] = (isset($_POST['cal_show_author'])) ? checkbox($_POST['cal_show_author']) : 0;
-        if (set_config('calendar_default_view', $new_fields['default_view']) 
-            && set_config('calendar_month_show_stime', $new_fields['month_show_stime']) 
-            && set_config('calendar_month_show_cat_icons', $new_fields['month_show_cat_icons']) 
-            && set_config('calendar_month_day_format', $new_fields['month_day_format']) 
-            && set_config('calendar_save_locations', $new_fields['save_locations']) 
-            && set_config('calendar_month_time_sep', $new_fields['month_time_sep']) 
-            && set_config('calendar_default_location', $new_fields['default_location']) 
-            && set_config('calendar_show_author', $new_fields['cal_show_author'])
-        ) {
+        try {
+            SysConfig::get()->setValue('calendar_default_view', $new_fields['default_view']);
+            SysConfig::get()->setValue('calendar_month_show_stime', $new_fields['month_show_stime']);
+            SysConfig::get()->setValue('calendar_month_show_cat_icons', $new_fields['month_show_cat_icons']);
+            SysConfig::get()->setValue('calendar_month_day_format', $new_fields['month_day_format']);
+            SysConfig::get()->setValue('calendar_save_locations', $new_fields['save_locations']);
+            SysConfig::get()->setValue('calendar_month_time_sep', $new_fields['month_time_sep']);
+            SysConfig::get()->setValue('calendar_default_location', $new_fields['default_location']);
+            SysConfig::get()->setValue('calendar_show_author', $new_fields['cal_show_author']);
             echo 'Updated calendar settings.<br />'."\n";
             Log::addMessage('Updated calendar settings');
-        } else  {
+        } catch (\Exception $ex) {
+            Debug::addMessage("Exception: " . $ex->getMessage(), true);
             echo 'Failed to save settings.<br />'."\n";
         }
     }
@@ -208,8 +209,8 @@ for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
 
     $tab_content['manage'] .= '<tr class="row'.$rowcount.'">
 		<td>'.date('M d, Y', $starttime).'</td>
-		<td>'.date(get_config('time_format'), $starttime).'</td>
-		<td>'.date(get_config('time_format'), $endtime).'</td>
+		<td>'.date(SysConfig::get()->getValue('time_format'), $starttime).'</td>
+		<td>'.date(SysConfig::get()->getValue('time_format'), $endtime).'</td>
 		<td>'.$cal['header'].'</td>
 		<td>'.HTML::link(
     sprintf('admin.php?module=calendar_edit_date&id=%d', $cal['id']),
@@ -252,7 +253,7 @@ for ($b = 1; $b <= $db->sql_num_rows($category_list_handle); $b++) {
     $category_names[$b - 1] = $category_list['label'];
 }
 if (!isset($_POST['location'])) {
-    $new_location = get_config('calendar_default_location');
+    $new_location = SysConfig::get()->getValue('calendar_default_location');
 } else {
     $new_location = addslashes($_POST['location']);
 }
@@ -275,14 +276,14 @@ if (acl::get()->check_permission('calendar_settings')) {
     $settings_form = new Form;
     $settings_form->set_method('post');
     $settings_form->set_target('?module=calendar&action=save_settings');
-    $settings_form->add_select('default_view', 'Default View', array('month','day'), array('Current Month','Current Day'), get_config('calendar_default_view'));
-    $settings_form->add_checkbox('month_show_stime', 'Show Start Time on Month Calendar', get_config('calendar_month_show_stime'));
-    $settings_form->add_checkbox('month_show_cat_icons', 'Show Category Icons on Month Calendar', get_config('calendar_month_show_cat_icons'));
-    $settings_form->add_select('month_time_sep', 'Start Time Separator', array(' ','-',' - '), array('1:00pm Event','1:00pm-Event','1:00pm - Event'), get_config('calendar_month_time_sep'));
-    $settings_form->add_select('month_day_format', 'Label Days on Month Calendar as', array(1,2), array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'), get_config('calendar_month_day_format'));
-    $settings_form->add_checkbox('save_locations', 'Save Location Entries', get_config('calendar_save_locations'));
-    $settings_form->add_textbox('default_location', 'Default Event Location', get_config('calendar_default_location'), '');
-    $settings_form->add_checkbox('cal_show_author', 'Show Event Author', get_config('calendar_show_author'));
+    $settings_form->add_select('default_view', 'Default View', array('month','day'), array('Current Month','Current Day'), SysConfig::get()->getValue('calendar_default_view'));
+    $settings_form->add_checkbox('month_show_stime', 'Show Start Time on Month Calendar', SysConfig::get()->getValue('calendar_month_show_stime'));
+    $settings_form->add_checkbox('month_show_cat_icons', 'Show Category Icons on Month Calendar', SysConfig::get()->getValue('calendar_month_show_cat_icons'));
+    $settings_form->add_select('month_time_sep', 'Start Time Separator', array(' ','-',' - '), array('1:00pm Event','1:00pm-Event','1:00pm - Event'), SysConfig::get()->getValue('calendar_month_time_sep'));
+    $settings_form->add_select('month_day_format', 'Label Days on Month Calendar as', array(1,2), array('Full Name (eg. Thursday)','Abbreviation (eg. Thurs)'), SysConfig::get()->getValue('calendar_month_day_format'));
+    $settings_form->add_checkbox('save_locations', 'Save Location Entries', SysConfig::get()->getValue('calendar_save_locations'));
+    $settings_form->add_textbox('default_location', 'Default Event Location', SysConfig::get()->getValue('calendar_default_location'), '');
+    $settings_form->add_checkbox('cal_show_author', 'Show Event Author', SysConfig::get()->getValue('calendar_show_author'));
     $settings_form->add_submit('submit', 'Save Changes');
     $tab_content['settings'] .= $settings_form;
     unset($settings_form);

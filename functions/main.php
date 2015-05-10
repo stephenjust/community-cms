@@ -52,12 +52,12 @@ function initialize($mode = null)
     // Don't do this when installing - we have no DB version set yet
     if ($mode != 'install') {
         // Check for up-to-date database
-        if (get_config('db_version') != DATABASE_VERSION) {
+        if (SysConfig::get()->getValue('db_version') != DATABASE_VERSION) {
             err_page(10); // Wrong DB Version
         }
     }
 
-    session_name(get_config('cookie_name'));
+    session_name(SysConfig::get()->getValue('cookie_name'));
     session_start();
 
     new LoginController();
@@ -68,105 +68,6 @@ function clean_up()
 {
     global $db;
     @ $db->sql_close();
-}
-
-/**
- * Get configuration value from the database
- * @global array $config_cache Configuration cache
- * @global db $db Database connection object
- * @param string $config_name Name of configuration value to look up
- * @return mixed Configuration value, or NULL if failure
- */
-function get_config($config_name) 
-{
-    // Validate parameters
-    if (!is_string($config_name)) {
-        return null;
-    }
-    if (strlen($config_name) < 1) {
-        return null;
-    }
-
-    $config_name = addslashes($config_name);
-
-    global $config_cache;
-    global $db;
-
-    if (!isset($config_cache)) {
-        $config_cache = array();
-        $query = 'SELECT `config_name`, `config_value`
-			FROM `'.CONFIG_TABLE.'`';
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            return null;
-        }
-        $num_config = $db->sql_num_rows($handle);
-        if ($num_config == 0) {
-            return null;
-        }
-        for ($i = 1; $i <= $num_config; $i++) {
-            $config = $db->sql_fetch_assoc($handle);
-            $config_cache[$config['config_name']] = $config['config_value'];
-        }
-    }
-    if (!isset($config_cache[$config_name])) {
-        return null;
-    }
-    return stripslashes($config_cache[$config_name]);
-}
-
-/**
- * Set a configuration value
- * @global array $config_cache Configuration cache
- * @global db $db Database connection object
- * @param string $config_name  Name of configuration value to set
- * @param string $config_value
- * @return boolean True if success, false if error
- */
-function set_config($config_name,$config_value) 
-{
-    // Validate parameters
-    if (!is_string($config_name)) {
-        return false;
-    }
-    if (strlen($config_name) < 1) {
-        return false;
-    }
-    if (is_array($config_value)) {
-        return false;
-    }
-    if (strlen($config_value) < 1) {
-        return true; // Not changed because we can't accept null values
-    }
-
-    $config_name = addslashes($config_name);
-    $config_value = addslashes($config_value);
-
-    global $config_cache;
-    global $db;
-
-    // Check if value already exists in database
-    if (!is_null(get_config($config_name))) {
-        // Value exists
-        $set_query = "UPDATE `".CONFIG_TABLE."`
-			SET `config_value` = '$config_value'
-			WHERE `config_name` = '$config_name'";
-    } else {
-        // Value does not exist
-        $set_query = "INSERT INTO `".CONFIG_TABLE."`
-			(`config_name`,`config_value`)
-			VALUES ('$config_name','$config_value')";
-    }
-    $set_handle = $db->sql_query($set_query);
-    if ($db->error[$set_handle] === 1) {
-        return false;
-    }
-
-    // Update cache - first, make sure the cache exists
-    get_config($config_name);
-    $config_cache[$config_name] = $config_value;
-
-    return true;
 }
 
 /**
@@ -295,7 +196,7 @@ function format_tel($phone_number)
         return $phone_number;
     }
 
-    $format = get_config('tel_format');
+    $format = SysConfig::get()->getValue('tel_format');
     if (strlen($phone_number) == 11) {
         $phone_number = preg_replace('/^1/', '', $phone_number);
     }

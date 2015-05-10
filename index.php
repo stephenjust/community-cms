@@ -30,7 +30,7 @@ if (DEBUG === 1) {
 initialize();
 
 // Check if site is active
-if (get_config('site_active') == 0) {
+if (SysConfig::get()->getValue('site_active') == 0) {
     err_page(12);
 }
 
@@ -41,7 +41,7 @@ unset($_GET['view']);
 // Figure out which page to fetch from the provided variables
 if (!isset($_GET['id']) && !isset($_GET['page'])) {
     // No page provided - go to home page
-    $page_id      = get_config('home');
+    $page_id      = SysConfig::get()->getValue('home');
     $page_text_id = null;
 } else {
     if (isset($_GET['page'])) {

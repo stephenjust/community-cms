@@ -19,7 +19,7 @@ if (!acl::get()->check_permission('adm_site_config')) {
 }
 
 if ($_GET['action'] == 'save') {
-    // We don't really need to escape any of this because the set_config()
+    // We don't really need to escape any of this because the SysConfig::get()->setValue()
     // function already does that. This will just cause issues from double-
     // escaping. Only not escaping footer for now.
     $site_name = addslashes(strip_tags($_POST['site_name']));
@@ -36,29 +36,30 @@ if ($_GET['action'] == 'save') {
     $show_author = (isset($_POST['author'])) ? checkbox($_POST['author']) : 0;
     $show_edit = (isset($_POST['etime'])) ? checkbox($_POST['etime']) : 0;
     $def_pub_val = (int)$_POST['default_publish_value'];
-    if (set_config('site_name', $site_name) 
-        && set_config('site_url', $site_url) 
-        && set_config('admin_email', $admin_email) 
-        && set_config('comment', $site_desc) 
-        && set_config('site_active', checkbox($_POST['active'])) 
-        && set_config('cookie_name', $cookie_name) 
-        && set_config('cookie_path', $cookie_path) 
-        && set_config('password_expire', $password_expire) 
-        && set_config('time_format', $time_format) 
-        && set_config('tel_format', $tel_format) 
-        && set_config('footer', $_POST['footer']) 
-        && set_config('news_num_articles', $num_articles) 
-        && set_config('news_default_date_setting', $def_date) 
-        && set_config('news_show_author', $show_author) 
-        && set_config('news_show_edit_time', $show_edit) 
-        && set_config('news_default_publish_value', $def_pub_val) 
-        && set_config('gallery_app', $_POST['gallery_app']) 
-        && set_config('gallery_dir', $_POST['gallery_dir']) 
-        && set_config('contacts_display_mode', $_POST['contacts_display_mode'])
-    ) {
+
+    try {
+        SysConfig::get()->setValue('site_name', $site_name);
+        SysConfig::get()->setValue('site_url', $site_url);
+        SysConfig::get()->setValue('admin_email', $admin_email);
+        SysConfig::get()->setValue('comment', $site_desc);
+        SysConfig::get()->setValue('site_active', checkbox($_POST['active']));
+        SysConfig::get()->setValue('cookie_name', $cookie_name);
+        SysConfig::get()->setValue('cookie_path', $cookie_path);
+        SysConfig::get()->setValue('password_expire', $password_expire);
+        SysConfig::get()->setValue('time_format', $time_format);
+        SysConfig::get()->setValue('tel_format', $tel_format);
+        SysConfig::get()->setValue('footer', $_POST['footer']);
+        SysConfig::get()->setValue('news_num_articles', $num_articles);
+        SysConfig::get()->setValue('news_default_date_setting', $def_date);
+        SysConfig::get()->setValue('news_show_author', $show_author);
+        SysConfig::get()->setValue('news_show_edit_time', $show_edit);
+        SysConfig::get()->setValue('news_default_publish_value', $def_pub_val);
+        SysConfig::get()->setValue('gallery_app', $_POST['gallery_app']);
+        SysConfig::get()->setValue('gallery_dir', $_POST['gallery_dir']);
+        SysConfig::get()->setValue('contacts_display_mode', $_POST['contacts_display_mode']);
         echo 'Successfully edited site information.<br />'."\n";
         Log::addMessage('Updated site information.');
-    } else {
+    } catch (\Exception $ex) {
         echo 'Failed to update site information.<br />'."\n";
     }
 } // IF 'save'
@@ -72,18 +73,18 @@ $form = new Form;
 $form->set_target('admin.php?module=site_config&action=save');
 $form->set_method('post');
 $form->add_heading('General Settings');
-$form->add_textbox('site_name', 'Site Name', get_config('site_name'));
-$form->add_textbox('site_desc', 'Site Description', get_config('comment'));
-$form->add_textbox('site_url', 'Site URL', get_config('site_url'));
-$form->add_checkbox('active', 'Site Active', get_config('site_active'));
-$form->add_textbox('admin_email', 'Admin E-Mail Address', get_config('admin_email'));
+$form->add_textbox('site_name', 'Site Name', SysConfig::get()->getValue('site_name'));
+$form->add_textbox('site_desc', 'Site Description', SysConfig::get()->getValue('comment'));
+$form->add_textbox('site_url', 'Site URL', SysConfig::get()->getValue('site_url'));
+$form->add_checkbox('active', 'Site Active', SysConfig::get()->getValue('site_active'));
+$form->add_textbox('admin_email', 'Admin E-Mail Address', SysConfig::get()->getValue('admin_email'));
 $form->add_heading('General Display Settings');
-$form->add_textarea('footer', 'Footer Text', get_config('footer'));
+$form->add_textarea('footer', 'Footer Text', SysConfig::get()->getValue('footer'));
 $form->add_select(
     'time_format', 'Time Format',
     array('g:i a','g:i A','h:i a','h:i A','G:i','H:i'),
     array('4:05 am','4:05 AM','04:05 am','04:05 AM','4:05','04:05'),
-    get_config('time_format')
+    SysConfig::get()->getValue('time_format')
 );
 $form->add_select(
     'tel_format', 'Telephone Number Format',
@@ -93,29 +94,29 @@ $form->add_select(
     array('(555) 555-1234',
             '555-555-1234',
             '555.555.1234'),
-    get_config('tel_format')
+    SysConfig::get()->getValue('tel_format')
 );
 $form->add_heading('User Settings');
 $form->add_select(
     'password_expire', 'Password Expire Time',
     array('0','1209600','2592000','7776000','15552000','31104000'),
     array('No Expiration','2 Weeks','1 Month','3 Months','6 Months','1 Year'),
-    get_config('password_expire')
+    SysConfig::get()->getValue('password_expire')
 );
 $form->add_heading('Cookie Settings');
-$form->add_textbox('cookie_name', 'Cookie Name', get_config('cookie_name'));
-$form->add_textbox('cookie_path', 'Cookie Path', get_config('cookie_path'));
+$form->add_textbox('cookie_name', 'Cookie Name', SysConfig::get()->getValue('cookie_name'));
+$form->add_textbox('cookie_path', 'Cookie Path', SysConfig::get()->getValue('cookie_path'));
 // TODO: template, disable messaging
 
 $form->add_heading('News Settings');
-$form->add_textbox('num_articles', '# Articles per Page', get_config('news_num_articles'), 'size="3" maxlength="3"');
+$form->add_textbox('num_articles', '# Articles per Page', SysConfig::get()->getValue('news_num_articles'), 'size="3" maxlength="3"');
 $form->add_select(
     'date', 'Default Date View', array(0,1,2), array('Hide Date',
-    'Show Date','Show Mini'), get_config('news_default_date_setting')
+    'Show Date','Show Mini'), SysConfig::get()->getValue('news_default_date_setting')
 );
-$form->add_checkbox('author', 'Show Author', get_config('news_show_author'));
-$form->add_checkbox('etime', 'Show Edit Time', get_config('news_show_edit_time'));
-$form->add_select('default_publish_value', 'Articles default to', array(0,1), array('Un-published','Published'), get_config('news_default_publish_value'));
+$form->add_checkbox('author', 'Show Author', SysConfig::get()->getValue('news_show_author'));
+$form->add_checkbox('etime', 'Show Edit Time', SysConfig::get()->getValue('news_show_edit_time'));
+$form->add_select('default_publish_value', 'Articles default to', array(0,1), array('Un-published','Published'), SysConfig::get()->getValue('news_default_publish_value'));
 
 $form->add_heading('Gallery Settings');
 $form->add_select(
@@ -123,12 +124,12 @@ $form->add_select(
     'Gallery Type',
     array('built-in','simpleviewer'),
     array('Built-In','SimpleViewer'),
-    get_config('gallery_app')
+    SysConfig::get()->getValue('gallery_app')
 );
 $form->add_textbox(
     'gallery_dir',
     'Gallery Directory',
-    get_config('gallery_dir')
+    SysConfig::get()->getValue('gallery_dir')
 );
 
 $form->add_heading('Contact List Settings');
@@ -136,7 +137,7 @@ $form->add_select(
     'contacts_display_mode', 'Display Mode',
     array('card','compact'),
     array('Business Card','Compact'),
-    get_config('contacts_display_mode')
+    SysConfig::get()->getValue('contacts_display_mode')
 );
 
 $form->add_submit('submit', 'Save Configuration');

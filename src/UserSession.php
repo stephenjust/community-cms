@@ -133,8 +133,8 @@ class UserSession
             return false;
         }
         session_destroy();
-        session_set_cookie_params(84000000, get_config('cookie_path'));
-        session_name(get_config('cookie_name'));
+        session_set_cookie_params(84000000, SysConfig::get()->getValue('cookie_path'));
+        session_name(SysConfig::get()->getValue('cookie_name'));
         session_start();
 
         $u = new User($result['id']);

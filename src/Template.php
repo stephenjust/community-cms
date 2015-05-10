@@ -27,7 +27,7 @@ class Template
         }
         if (!isset($template_cache['path']) || !isset($template_cache['template_name'])) {
             $template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
-				WHERE id = '.get_config('site_template').' LIMIT 1';
+				WHERE id = '.SysConfig::get()->getValue('site_template').' LIMIT 1';
             $template_handle = $db->sql_query($template_query);
             if ($db->sql_num_rows($template_handle) != 1) {
                 $debug->addMessage('Current template not found in database', true);

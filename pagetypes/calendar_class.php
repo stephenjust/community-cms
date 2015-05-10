@@ -113,8 +113,8 @@ class calendar_event
             $eventTpl->assign('editbar', $editbar->render());
         }
         $eventTpl->assign('event', $event);
-        $eventTpl->assign('time_format', get_config('time_format'));
-        $eventTpl->assign('show_author', get_config('calendar_show_author'));
+        $eventTpl->assign('time_format', SysConfig::get()->getValue('time_format'));
+        $eventTpl->assign('show_author', SysConfig::get()->getValue('calendar_show_author'));
         $eventTpl->assign('page_url', Page::$url_reference);
 
         $this->event_text = $eventTpl->fetch('calendarEvent.tpl');
@@ -238,7 +238,7 @@ class calendar_month extends calendar
         // calendar_month_day_format
         // 1 - Use full name
         // 0 - Use abbreviation
-        if (get_config('calendar_month_day_format') == 1) {
+        if (SysConfig::get()->getValue('calendar_month_day_format') == 1) {
             $this->template->cal_sunday = 'Sunday';
             $this->template->cal_monday = 'Monday';
             $this->template->cal_tuesday = 'Tuesday';
@@ -359,15 +359,15 @@ class calendar_month extends calendar
                             $this->event_array[$day_number][$e]['id']
                         );
                         // Show icon if configured to do so
-                        if (get_config('calendar_month_show_cat_icons') == 1) {
+                        if (SysConfig::get()->getValue('calendar_month_show_cat_icons') == 1) {
                             $event_html .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$this->event_array[$day_number][$e]['cat_image'].'"'
                             .' width="10px" height="10px" alt="'.HTML::schars($this->event_array[$day_number][$e]['cat_label']).'" border="0px" /> ';
                         }
                         // Show event start time if configured to do so
-                        if (get_config('calendar_month_show_stime') == 1
+                        if (SysConfig::get()->getValue('calendar_month_show_stime') == 1
                             && $this->event_array[$day_number][$e]['start'] != $this->event_array[$day_number][$e]['end']
                         ) {
-                            $event_html .= '<span class="calendar_event_starttime">'.date('g:ia', $this->event_array[$day_number][$e]['start']).'</span>'.get_config('calendar_month_time_sep');
+                            $event_html .= '<span class="calendar_event_starttime">'.date('g:ia', $this->event_array[$day_number][$e]['start']).'</span>'.SysConfig::get()->getValue('calendar_month_time_sep');
                         }
                         $event_html .= $this->event_array[$day_number][$e]['heading'].'</a><br />'."\n";
                     }

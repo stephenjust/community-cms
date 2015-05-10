@@ -24,9 +24,9 @@ function get_article_list($page, $start = 1)
     assert(is_numeric($start), 'Invalid starting value');
 
     if (acl::get()->check_permission('news_fe_show_unpublished')) {
-        return Content::getByPage($page, $start, (int)get_config('news_num_articles'));
+        return Content::getByPage($page, $start, (int)SysConfig::get()->getValue('news_num_articles'));
     } else {
-        return Content::getPublishedByPage($page, $start, (int)get_config('news_num_articles'));
+        return Content::getPublishedByPage($page, $start, (int)SysConfig::get()->getValue('news_num_articles'));
     }
 }
 
@@ -93,14 +93,14 @@ function format_content(Content $content)
     $template_article->article_date_day = date('j', $date);
     $template_article->article_date_year = date('Y', $date);
     $template_article->article_date = date('d-m-Y', $date);
-    if (get_config('news_show_author') == 0) {
+    if (SysConfig::get()->getValue('news_show_author') == 0) {
         $template_article->replace_range('article_author', null);
     } else {
         $template_article->article_author = $content->getAuthor();
     }
 
     // Remove info div entirely if author and date are hidden
-    if (!get_config('news_show_author') && !$content->isDateVisible()) {
+    if (!SysConfig::get()->getValue('news_show_author') && !$content->isDateVisible()) {
         $template_article->replace_range('article_details', null);
     } else {
         $template_article->article_details_start = null;
@@ -169,7 +169,7 @@ if (isset($_GET['showarticle'])) {
     }
     $content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
     $article_pos = array_search($_GET['article'], $content_id_array);
-    $start = floor($article_pos / get_config('news_num_articles')) * get_config('news_num_articles');
+    $start = floor($article_pos / SysConfig::get()->getValue('news_num_articles')) * SysConfig::get()->getValue('news_num_articles');
     $article_list = get_article_list(Page::$id, $start);
 } else {
     $article_list = get_article_list(Page::$id, $start);
@@ -186,7 +186,7 @@ foreach ($article_list AS $article_record) {
 }
 
 $pagination = new Component\PaginationComponent();
-$pagination->setCurrentPage($start, get_config('news_num_articles'), count($content_id_array));
+$pagination->setCurrentPage($start, SysConfig::get()->getValue('news_num_articles'), count($content_id_array));
 $return .= $pagination->render();
 
 return $return;

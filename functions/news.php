@@ -40,7 +40,7 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
     if ($page == null) { $page = 'NULL'; 
     }
     $publish = (acl::get()->check_permission('news_publish')) ?
-    (int)$publish : (int)get_config('news_default_publish_value');
+    (int)$publish : (int)SysConfig::get()->getValue('news_default_publish_value');
     $author = $db->sql_escape_string(htmlspecialchars(strip_tags($author)));
     $image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
     $showdate = (int)$showdate;

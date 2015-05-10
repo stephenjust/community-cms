@@ -219,7 +219,7 @@ $page_list = new UISelectPageList(
 );
   $page_list->addOption(null, 'No Page');
   $page_list->addOption('*', 'All Pages');
-  $cur_page = (array_key_exists('page', $_POST)) ? $_POST['page'] : get_config('home');
+  $cur_page = (array_key_exists('page', $_POST)) ? $_POST['page'] : SysConfig::get()->getValue('home');
   $page_list->setChecked($cur_page);
 
   // Change page form
@@ -267,10 +267,10 @@ if (acl::get()->check_permission('news_create')) {
     $form->add_select(
         'date_params', 'Date Settings',
         array(0,1,2), array('Hide','Show','Show Mini'),
-        get_config('news_default_date_setting')
+        SysConfig::get()->getValue('news_default_date_setting')
     );
     if (acl::get()->check_permission('news_publish')) {
-        $form->add_select('publish', 'Publish', array(0,1), array('No','Yes'), get_config('news_default_publish_value'));
+        $form->add_select('publish', 'Publish', array(0,1), array('No','Yes'), SysConfig::get()->getValue('news_default_publish_value'));
     }
     $form->add_text("Only fill in the field below if you want this item to be automatically deleted.");
     $form->add_date_cal('del_date', 'Delete On');
