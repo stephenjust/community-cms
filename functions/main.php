@@ -223,22 +223,3 @@ function format_tel($phone_number)
         return $phone_number;
     }
 }
-
-function validate_int($value) 
-{
-    // FIXME: Stub
-    return $value;
-}
-
-function validate_string($value) 
-{
-    // FIXME: Stub
-    return $value;
-}
-
-function validate_array($value) 
-{
-    // FIXME: Stub
-    return $value;
-}
-?>
