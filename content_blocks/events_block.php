@@ -6,12 +6,15 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
 
-$event_widget = new widget;
+$event_widget = new Widget;
 $event_block = new Block;
 $event_block->block_id = $block_info['id'];
 $bl_return = null;
