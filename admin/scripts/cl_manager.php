@@ -127,11 +127,10 @@ for ($i = 0; $i < $num_contacts; $i++) {
     $cl_add_select->addOption($cl_result['id'], $cl_result['name']);
 }
 $content .= $cl_add_select;
-$contact_ids = array2csv($contact_ids);
+$contact_ids = implode(',', $contact_ids);
 $content .= '<input type="hidden" id="cl_contact_ids" value="'.$contact_ids.'" name="contact_ids" />'."\n";
 $content .= '<input type="button" value="Add" onClick="update_cl_manager_add()" /><br />'."\n";
 
 echo $content;
 
 clean_up();
-?>

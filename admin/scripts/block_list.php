@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -89,11 +94,11 @@ if (DEBUG === 1) { echo 'Left: '.$blocks_left.' /Right: '.$blocks_right.'<br />'
 }
 
 // Turn the lists into arrays
-$blocks_left = csv2array($blocks_left);
-$blocks_right = csv2array($blocks_right);
+$blocks_left = explode(',', $blocks_left);
+$blocks_right = explode(',', $blocks_right);
 
 // Function to generate tables to add/remove blocks
-function block_table($current_blocks, $side) 
+function block_table(array $current_blocks, $side)
 {
     global $db;
     $return = '<a href="#" onClick="block_list_add(0,\''.$side.'\')"><img src="admin/templates/default/images/add.png" width="16px" height="16px" border="0"></a><br />';
@@ -143,7 +148,6 @@ echo '</td>'."\n";
 echo '</tr></table>'."\n";
 
 
-echo '<input type="hidden" name="blocks_left" id="adm_blocklist_left" value="'.array2csv($blocks_left).'" />'."\n";
-echo '<input type="hidden" name="blocks_right" id="adm_blocklist_right" value="'.array2csv($blocks_right).'" />'."\n";
+echo '<input type="hidden" name="blocks_left" id="adm_blocklist_left" value="'.implode(',', $blocks_left).'" />'."\n";
+echo '<input type="hidden" name="blocks_right" id="adm_blocklist_right" value="'.implode(',', $blocks_right).'" />'."\n";
 clean_up();
-?>

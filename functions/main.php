@@ -94,67 +94,6 @@ function truncate($text,$numb)
 }
 
 /**
- * array2csv - Convert an array to a list of comma separated values
- * @global Debug $debug Debug object
- * @param array $array Array of values that will appear in the result string
- * @return string Comma separated list of values
- */
-function array2csv($array) 
-{
-    global $debug;
-    if (count($array) == 0) {
-        if (is_object($debug)) {
-            $debug->addMessage('Array provided is empty', true); 
-        }
-        return '';
-    }
-    if (is_object($debug)) {
-        $debug->addMessage('Array provided has '.count($array).' entries', false); 
-    }
-    $string = null;
-    $array_count = count($array);
-    for ($i = 0; $i < $array_count; $i++) {
-        // The array may have empty indices. Increase the index number, and
-        // increase the limit of the for loop
-        while (!isset($array[$i])) {
-            $i++;
-            $array_count++;
-        }
-        if (strlen($array[$i]) > 0) {
-            $string .= $array[$i];
-        } else {
-            if (is_object($debug)) {
-                $debug->addMessage('Empty array element found', false); 
-            }
-        }
-        if ($i != $array_count - 1) {
-            $string .= ',';
-        }
-    }
-    return $string;
-}
-
-/**
- * csv2array - Convert a comma separated list of values to an array
- * @param string $string Comma separated list of values to insert into result array
- * @return array Array of values
- */
-function csv2array($string) 
-{
-    if (strlen($string) == 0) {
-        return array();
-    }
-    $array = array();
-    $temp_array = explode(',', $string);
-    for ($i = 0; $i < count($temp_array); $i++) {
-        if (strlen($temp_array[$i]) != 0) {
-            $array[] = $temp_array[$i];
-        }
-    }
-    return $array;
-}
-
-/**
  * str_replace_count - Replace substrings a specified number of times
  * @param string $search
  * @param string $replace

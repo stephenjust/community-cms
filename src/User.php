@@ -62,7 +62,7 @@ class User
         $this->address = $result['address'];
         $this->last_login_date = $result['lastlogin'];
         $this->pass_change_date = $result['password_date'];
-        $this->groups = csv2array($result['groups']);
+        $this->groups = explode(',', $result['groups']);
         $this->type = $result['type'];
     }
 
@@ -119,7 +119,7 @@ class User
         $real_name = $db->sql_escape_string("$l_name, $f_name");
         $title = $db->sql_escape_string($title);
         $groups = (is_array($groups))
-        ? array2csv($groups) : null;
+        ? implode(',', $groups) : null;
         $address = $db->sql_escape_string($address);
 
         $time = time();

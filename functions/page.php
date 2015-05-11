@@ -41,7 +41,7 @@ function page_get_info($id,$fields = array('*'))
             $fields[$i] = '`'.$fields[$i].'`';
         }
     }
-    $fields = array2csv($fields);
+    $fields = implode(',', $fields);
     $page_info_query = 'SELECT '.$fields.' FROM `' . PAGE_TABLE .'`
 		WHERE `id` = '.$id.' LIMIT 1';
     $page_info_handle = $db->sql_query($page_info_query);

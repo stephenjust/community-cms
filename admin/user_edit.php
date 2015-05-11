@@ -53,7 +53,7 @@ if ($db->sql_num_rows($current_data_handle) == 0) {
         $email = addslashes($_POST['email']);
         $title = addslashes($_POST['title']);
         $groups = (isset($_POST['groups']) && is_array($_POST['groups']))
-        ? array2csv($_POST['groups']) : null;
+        ? implode(',', $_POST['groups']) : null;
         $error = 0;
         if (strlen($telephone) <= 11 || !preg_match('/^[0-9\-]+\-[0-9]+\-[0-9]+$/i', $telephone)) {
             echo 'Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.<br />';

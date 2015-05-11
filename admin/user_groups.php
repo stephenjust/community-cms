@@ -21,7 +21,7 @@ function perm_list($group = 0)
     $return = null;
     $permission_list = acl::get()->permission_list;
     $form_var_list = array_keys($permission_list);
-    $form_var_list = array2csv($form_var_list);
+    $form_var_list = implode(',', $form_var_list);
     $return .= '<input type="hidden" name="var_list" value="'.$form_var_list.'" />';
 
     $return .= permission_list(acl::get()->permission_list, $group, true);
@@ -76,7 +76,7 @@ if ($_GET['action'] == 'permsave') {
     if (!isset($_POST['id']) || !isset($_POST['var_list'])) {
         echo '<span class="errormessage">Failed to update permissions.</span><br />';
     } else {
-        $var_list = csv2array($_POST['var_list']);
+        $var_list = explode(',', $_POST['var_list']);
         $id = (int)$_POST['id'];
         unset($_POST['id']);
         foreach ($var_list as $form_var) {

@@ -152,7 +152,7 @@ class UserSession
         $_SESSION['pass'] = $password;
         $_SESSION['name'] = $result['realname'];
         $_SESSION['type'] = $result['type'];
-        $_SESSION['groups'] = csv2array($result['groups']);
+        $_SESSION['groups'] = explode(',', $result['groups']);
         $_SESSION['last_login'] = time();
         if (!defined('USERINFO')) {
             define('USERINFO', $result['id'].','.$result['realname'].','.$result['type']);
