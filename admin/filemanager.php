@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -185,8 +187,7 @@ for ($i = 0; $i < count($fs_folders); $i++) {
 		<input type="text" name="category" value="'.HTML::schars(File::getDirProperty($fs_folders[$i], 'category')).'" /><input type="submit" value="Save" /></form>';
     $fs_rows[] = array($fs_folders[$i], $fs_dir_prop_icons, $fs_cat);
 }
-    $fs_tab = create_table($fs_table_columns, $fs_rows); 
+    $fs_tab = TableComponent::create($fs_table_columns, $fs_rows);
     $tab_layout->add_tab('Folder Settings', $fs_tab);
 
     echo $tab_layout;
-?>

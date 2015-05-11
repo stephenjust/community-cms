@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -122,7 +124,7 @@ if (acl::get()->check_permission('block_delete')) {
 if (acl::get()->check_permission('block_edit')) {
     $heading_list[] = 'Edit'; 
 }
-$tab_content['manage'] = create_table($heading_list, $block_list_rows);
+$tab_content['manage'] = TableComponent::create($heading_list, $block_list_rows);
 $tabs['manage'] = $tab_layout->add_tab('Manage Blocks', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------

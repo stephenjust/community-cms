@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 /**#@+
  * @ignore
  */
@@ -19,7 +21,6 @@ define('ROOT', '../../');
 
 require_once ROOT.'vendor/autoload.php';
 require_once ROOT . 'include.php';
-require_once ROOT . 'functions/admin.php';
 
 initialize('ajax');
 
@@ -92,10 +93,9 @@ if (acl::get()->check_permission('news_publish')) {
     $label_array[] = 'Publish';
 }
 $label_array[] = 'Priority';
-$content = create_table($label_array, $list_rows);
+$content = TableComponent::create($label_array, $list_rows);
 $content .= '<input type="hidden" name="page" value="'.$_GET['page'].'" />';
 
 echo $content;
 
 clean_up();
-?>

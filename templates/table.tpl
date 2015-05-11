@@ -14,7 +14,9 @@
                 {/foreach}
             </tr>
         {foreachelse}
-            {$no_data_message}
+            <tr>
+                <td colspan="{count($cols)}">{$no_data_message}</td>
+            </tr>
         {/foreach}
     </tbody>
 </table>

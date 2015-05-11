@@ -18,7 +18,6 @@ define('ROOT', '../');
 /**#@-*/
 require ROOT.'vendor/autoload.php';
 require ROOT.'include.php';
-require ROOT.'functions/admin.php';
 require ROOT.'functions/error.php';
 initialize();
 if (!acl::get()->check_permission('admin_access')) {

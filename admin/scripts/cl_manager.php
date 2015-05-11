@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 /**#@+
  * @ignore
  */
@@ -20,7 +22,6 @@ define('ROOT', '../../');
 $content = null;
 require_once ROOT.'vendor/autoload.php';
 require ROOT . 'include.php';
-require ROOT . 'functions/admin.php';
 
 initialize('ajax');
 
@@ -102,7 +103,7 @@ if (acl::get()->check_permission('contacts_edit_lists')) {
 }
 $label_array[] = 'Order';
 
-$content .= create_table($label_array, $list_rows);
+$content .= TableComponent::create($label_array, $list_rows);
 $content .= '<input type="hidden" name="page" value="'.$page_id.'" />'."\n";
 $content .= 'Add contact: '."\n";
 $cl_query = 'SELECT `id`,`name`

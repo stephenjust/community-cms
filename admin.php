@@ -44,7 +44,6 @@ if (!isset($_GET['ui'])) {
 if (!acl::get()->check_permission('admin_access')) {
 	err_page(3004);
 }
-require(ROOT.'functions/admin.php');
 require(ROOT.'includes/admin_page_class.php');
 
 $module = (isset($_GET['module'])) ? $_GET['module'] : NULL;

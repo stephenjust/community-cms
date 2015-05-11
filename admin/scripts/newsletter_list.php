@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 /**#@+
  * @ignore
  */
@@ -19,7 +21,6 @@ define('ROOT', '../../');
 
 require_once ROOT.'vendor/autoload.php';
 require ROOT . 'include.php';
-require ROOT . 'functions/admin.php';
 
 initialize('ajax');
 
@@ -67,11 +68,10 @@ try {
         $label_list[] = 'Delete';
     }
     $label_list[] = 'Edit';
-    echo create_table($label_list, $list_rows);
+    echo TableComponent::create($label_list, $list_rows);
 }
 catch (NewsletterException $e) {
     echo '<span class="errormessage">'.$e->getMessage().'</span>';
 }
 
 clean_up();
-?>

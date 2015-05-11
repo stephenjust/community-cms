@@ -17,7 +17,6 @@ define('ROOT','../../');
 $content = NULL;
 include (ROOT . 'config.php');
 include (ROOT . 'include.php');
-include (ROOT . 'functions/admin.php');
 
 initialize('ajax');
 

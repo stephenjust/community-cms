@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 /**#@+
  * @ignore
  */
@@ -19,7 +21,6 @@ define('ROOT', '../../');
 
 require_once ROOT.'vendor/autoload.php';
 require_once ROOT.'include.php';
-require_once ROOT.'functions/admin.php';
 initialize('ajax');
 
 acl::get()->require_permission('adm_page_message');
@@ -63,7 +64,7 @@ foreach ($messages AS $message) {
     $table_rows[] = $current_row;
 }
 
-$content = create_table($table_headings, $table_rows);
+$content = TableComponent::create($table_headings, $table_rows);
 
 echo $content;
 

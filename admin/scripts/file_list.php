@@ -19,7 +19,6 @@ define('ROOT', '../../');
 
 require_once ROOT.'vendor/autoload.php';
 require ROOT . 'include.php';
-require ROOT . 'functions/admin.php';
 
 initialize('ajax');
 

@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -41,7 +43,6 @@ for ($i = 1; $i <= $num_entries; $i++) {
 
 // Draw the interface
 $tab_layout = new Tabs;
-$tab_layout->add_tab('View Configuration', create_table(array('Name','Value'), $config_table_values));
+$tab_layout->add_tab('View Configuration', TableComponent::create(array('Name','Value'), $config_table_values));
 
 echo $tab_layout;
-?>

@@ -115,7 +115,6 @@ $return = null;
 // (Un)publish articles on request
 if (acl::get()->check_permission('news_publish')) {
     include_once ROOT . 'functions/news.php';
-    include_once ROOT . 'functions/admin.php';
     if (isset($_GET['publish']) || isset($_GET['unpublish'])) {
         if (isset($_GET['publish'])) {
             $publish = (int)$_GET['publish'];
