@@ -13,17 +13,6 @@ if (@SECURITY != 1) {
 }
 
 /**
- * Display an error message
- * @param string $message Error message
- * @return string HTML for message
- */
-function errormesg($message = "An error has occured.") 
-{
-    $message = '<div class="errormessage">'.$message.'</div>';
-    return $message;
-}
-
-/**
  * err_page - Generate an error page based on the error code. Error codes
  * are listed in './docs/errorcodes.txt'
  * @param int $code Error code
