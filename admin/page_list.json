@@ -9,8 +9,7 @@
 				},
 				{
 					"label": "View Site",
-					"url": "index.php",
-					"target": "_blank"
+					"url": "index.php"
 				},
 				{
 					"label": "Configuration",

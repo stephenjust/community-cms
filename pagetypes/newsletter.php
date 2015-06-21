@@ -3,40 +3,26 @@
  * Community CMS
  *
  * @copyright Copyright (C) 2007-2013 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.main
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.main
  */
+
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1) {
-	die ('You cannot access this page directly.');
+    die ('You cannot access this page directly.');
 }
 
-require_once(ROOT.'includes/content/Newsletter.class.php');
-
-$return = NULL;
-
+$tpl = new Tpl();
 try {
-	$newsletters = Newsletter::getByPage(Page::$id);
-	if (count($newsletters) == 0) {
-		$return .= "No newsletters to display";
-	} else {
-		$currentyear = $newsletters[0]->getYear();
-		$return .= "<div class='newsletter'><span class='newsletter_year'>".$currentyear."</span><br />\n";
-	}
-	foreach ($newsletters AS $newsletter) {
-		if ($currentyear != $newsletter->getYear()) {
-			$currentyear = $newsletter->getYear();
-			$return .= "<span class='newsletter_year'>".$currentyear."</span><br />\n";
-		}
-		if (!$newsletter->getHidden()) {
-			$return .= HTML::link($newsletter->getPath(), $newsletter->getLabel())."<br />\n";
-		} else {
-			$return .= $newsletter->getLabel()."<br />\n";
-		}
-	}
+    $newsletters = Newsletter::getByPage(Page::$id);
+    $grouped_newsletters = array();
+    foreach ($newsletters as $newsletter) {
+        $grouped_newsletters[$newsletter->getYear()][] = $newsletter;
+    }
+    $tpl->assign("entries", $grouped_newsletters);
+    return $tpl->fetch("newsletters.tpl");
+} catch (\Exception $ex) {
+    return '<span class="errormessage">'.$e->getMessage().'</span>';
 }
-catch (NewsletterException $e) {
-	$return .= '<span class="errormessage">'.$e->getMessage().'</span>';
-}
-return $return."</div>";
-?>

@@ -2,10 +2,17 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.admin
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
+ * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
+
+namespace CommunityCMS;
 
 /**
  * @ignore
@@ -18,11 +25,7 @@ require_once('vendor/autoload.php');
 
 // Load required includes
 require(ROOT.'functions/error.php');
-require(ROOT.'config.php');
 require(ROOT.'include.php');
-// Check if site is disabled.
-if ($CONFIG['disabled'] == 1)
-	err_page(1);
 
 initialize();
 
@@ -43,10 +46,9 @@ if (!isset($_GET['ui'])) {
 	$_GET['ui'] = 0;
 }
 // Run login checks.
-if (!$acl->check_permission('admin_access')) {
+if (!acl::get()->check_permission('admin_access')) {
 	err_page(3004);
 }
-require(ROOT.'functions/admin.php');
 require(ROOT.'includes/admin_page_class.php');
 
 $module = (isset($_GET['module'])) ? $_GET['module'] : NULL;

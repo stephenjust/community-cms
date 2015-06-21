@@ -3,16 +3,17 @@
  * Community CMS
  *
  * @copyright Copyright (C) 2007-2013 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.main
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.main
  */
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1) {
-	die ('You cannot access this page directly.');
+    die ('You cannot access this page directly.');
 }
 
-require_once(ROOT.'includes/ui/UISelectDirList.class.php');
-include(ROOT.'functions/files_class.php');
+require_once ROOT.'includes/ui/UISelectDirList.class.php';
 
 // Include PEAR class required for tar file extraction
 // FIXME: Do we need this?
@@ -22,53 +23,54 @@ include(ROOT.'functions/files_class.php');
 
 /**
  * file_upload_box - Create a file upload form
- * @global object $acl
  * @param integer $show_dirs
- * @param string $dir
- * @param string $extra_vars
+ * @param string  $dir
+ * @param string  $extra_vars
  * @return string Form HTML
- * @throws Exception
+ * @throws \Exception
  */
-function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
-	global $acl;
-	if (!$acl->check_permission('file_upload'))
-		throw new Exception('You are not allowed to upload files.');
+function file_upload_box($show_dirs = 0, $dir = null, $extra_vars = null) 
+{
+    if (!acl::get()->check_permission('file_upload')) {
+        throw new \Exception('You are not allowed to upload files.'); 
+    }
 
-	$query_string = $_SERVER['QUERY_STRING'];
-	$query_string = str_replace('upload=upload', NULL, $query_string);
-	$query_string = preg_replace('/action=.+\&?/i',NULL,$query_string);
-	$return = '<form enctype="multipart/form-data"
+    $query_string = $_SERVER['QUERY_STRING'];
+    $query_string = str_replace('upload=upload', null, $query_string);
+    $query_string = preg_replace('/action=.+\&?/i', null, $query_string);
+    $return = '<form enctype="multipart/form-data"
 		action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&amp;'.
-		$query_string.'" method="post">
+    $query_string.'" method="post">
 		<!-- Limit file size to 64MB -->
 		<input type="hidden" name="MAX_FILE_SIZE" value="67108864" />
 		Please choose a file: <input name="upload" type="file" /><br />'.
-		"\n";
-	if ($dir != NULL) {
-		$return .= '<input type="hidden" name="path" value="'.$dir.'" />'."\n";
-	}
-	if ($show_dirs == 1) {
-		// Remember path from previous upload
-		if (isset($_POST['path'])) {
-			$current_dir = $_POST['path'];
-		} else {
-			$current_dir = '';
-		}
-		$return .= 'Where would you like to save the file?<br />';
-		$dir_list = new UISelectDirList(array('name' => 'path'));
-		$dir_list->setChecked($current_dir);
-		$return .= $dir_list.'<br />'."\n";
-	}
-	if (is_array($extra_vars)) {
-		for ($i = 0; $i < count($extra_vars); $i++) {
-			$return .= '<input type="hidden" name="'.key($extra_vars).'" value="'.current($extra_vars).'" />'."\n";
-			if ($i < count($extra_vars)) next($extra_vars);
-		}
-	}
-	$return .= '<input type="submit" value="Upload" />
+    "\n";
+    if ($dir != null) {
+        $return .= '<input type="hidden" name="path" value="'.$dir.'" />'."\n";
+    }
+    if ($show_dirs == 1) {
+        // Remember path from previous upload
+        if (isset($_POST['path'])) {
+            $current_dir = $_POST['path'];
+        } else {
+            $current_dir = '';
+        }
+        $return .= 'Where would you like to save the file?<br />';
+        $dir_list = new UISelectDirList(array('name' => 'path'));
+        $dir_list->setChecked($current_dir);
+        $return .= $dir_list.'<br />'."\n";
+    }
+    if (is_array($extra_vars)) {
+        for ($i = 0; $i < count($extra_vars); $i++) {
+            $return .= '<input type="hidden" name="'.key($extra_vars).'" value="'.current($extra_vars).'" />'."\n";
+            if ($i < count($extra_vars)) { next($extra_vars); 
+            }
+        }
+    }
+    $return .= '<input type="submit" value="Upload" />
 		</form>';
-	// Don't forget to send same 'GET' vars to script!
-	return $return;
+    // Don't forget to send same 'GET' vars to script!
+    return $return;
 }
 
 /**
@@ -76,26 +78,27 @@ function file_upload_box($show_dirs = 0, $dir = NULL, $extra_vars = NULL) {
  * @param string $directory
  * @return string
  */
-function file_list($directory = "") {
-	$return = NULL;
-	try {
-		$files = File::getDirFiles($directory);
-	} catch (FileException $e) {
-		$return .= $e->getMessage().'<br />';
-	}
-	$num_files = count($files);
-	
-	// Check if any files were displayed
-	if ($num_files == 0) {
-		return 'There are no files to display.';
-	}
-	
-	$return .= '<select name="file_list">';
-	for ($i = 0; $i < $num_files; $i++) {
-		$return .= '<option value="'.$directory.'/'.$files[$i].'" />'.$files[$i].'</option>';
-	}
-	$return .= '</select>';
-	return $return;
+function file_list($directory = "") 
+{
+    $return = null;
+    try {
+        $files = File::getDirFiles($directory);
+    } catch (FileException $e) {
+        $return .= $e->getMessage().'<br />';
+    }
+    $num_files = count($files);
+    
+    // Check if any files were displayed
+    if ($num_files == 0) {
+        return 'There are no files to display.';
+    }
+    
+    $return .= '<select name="file_list">';
+    for ($i = 0; $i < $num_files; $i++) {
+        $return .= '<option value="'.$directory.'/'.$files[$i].'" />'.$files[$i].'</option>';
+    }
+    $return .= '</select>';
+    return $return;
 }
 
 // ----------------------------------------------------------------------------
@@ -106,25 +109,26 @@ function file_list($directory = "") {
  * @param string $root
  * @return string
  */
-function dynamic_file_list($directory = '') {
-	// Write folder list
-	$current = $directory;
+function dynamic_file_list($directory = '') 
+{
+    // Write folder list
+    $current = $directory;
 
-	if (preg_match('#./#',$directory)) {
-		return 'Error retrieving folder list.';
-	}
-	$return = NULL;
-	$dir_dropdown = new UISelectDirList(
-			array('name' => 'folder_dropdown_box',
-				'id' => 'dynamic_folder_dropdown_box',
-				'onChange' => 'update_dynamic_file_list()'));
-	$dir_dropdown->setChecked($current);
+    if (preg_match('#./#', $directory)) {
+        return 'Error retrieving folder list.';
+    }
+    $return = null;
+    $dir_dropdown = new UISelectDirList(
+        array('name' => 'folder_dropdown_box',
+                'id' => 'dynamic_folder_dropdown_box',
+                'onChange' => 'update_dynamic_file_list()')
+    );
+    $dir_dropdown->setChecked($current);
 
-	$return .= $dir_dropdown.'<br />';
+    $return .= $dir_dropdown.'<br />';
 
-	// Generate file list
-	$return .= file_list($directory);
-	return $return;
+    // Generate file list
+
+    $return .= file_list($directory);
+    return $return;
 }
-
-?>

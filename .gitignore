@@ -1,3 +1,6 @@
+*~
+\#*\#
+
 # Exclude /config.php
 /config.php
 
@@ -12,4 +15,11 @@
 
 # Exclude Composer vendor files
 /vendor/
+
+/deps/
+/build/
+/reports/
 /templates_c/
+composer.lock
+auth.json
+build.tar.gz

@@ -3,25 +3,26 @@
  * Community CMS
  *
  * @copyright Copyright (C) 2007-2009 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.admin
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.admin
  */
 
+namespace CommunityCMS;
 header("Content-type: text/plain");
 
 if (!isset($_GET['term'])) {
-	exit;
+    exit;
 }
 /**#@+
  * @ignore
  */
-define('ROOT','../../');
-define('SECURITY',1);
+define('ROOT', '../../');
+define('SECURITY', 1);
 /**#@-*/
 
-include('../../config.php');
-include('../../include.php');
-require_once(ROOT.'includes/content/CalLocation.class.php');
+require_once ROOT.'vendor/autoload.php';
+require '../../include.php';
+require_once ROOT.'includes/content/CalLocation.class.php';
 
 initialize('ajax');
 

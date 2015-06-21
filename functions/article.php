@@ -3,12 +3,13 @@
  * Community CMS
  *
  * @copyright Copyright (C) 2007-2010 Stephen Just
- * @author stephenjust@users.sourceforge.net
- * @package CommunityCMS.main
+ * @author    stephenjust@users.sourceforge.net
+ * @package   CommunityCMS.main
  */
+namespace CommunityCMS;
 // Security Check
 if (@SECURITY != 1) {
-	die ('You cannot access this page directly.');
+    die ('You cannot access this page directly.');
 }
 
 /**
@@ -16,8 +17,9 @@ if (@SECURITY != 1) {
  * @param int $id Article ID
  * @return string URL
  */
-function article_url_nopage($id) {
-	return articl_url_ownpage($id);
+function article_url_nopage($id) 
+{
+    return article_url_ownpage($id);
 }
 
 /**
@@ -26,20 +28,21 @@ function article_url_nopage($id) {
  * @param int $id Article ID
  * @return string URL
  */
-function article_url_onpage($id) {
-	global $db;
-	if (!is_numeric($id)) {
-		return '#';
-	}
+function article_url_onpage($id) 
+{
+    global $db;
+    if (!is_numeric($id)) {
+        return '#';
+    }
 
-	$page_query = 'SELECT `page` FROM `'.NEWS_TABLE.'`
+    $page_query = 'SELECT `page` FROM `'.NEWS_TABLE.'`
 		WHERE `id` = '.$id;
-	$page_handle = $db->sql_query($page_query);
-	if ($db->sql_num_rows($page_handle) == 0) {
-		return '#';
-	}
-	$page_result = $db->sql_fetch_assoc($page_handle);
-	return 'index.php?id='.$page_result['page'].'&amp;article='.$id.'#article-'.$id;
+    $page_handle = $db->sql_query($page_query);
+    if ($db->sql_num_rows($page_handle) == 0) {
+        return '#';
+    }
+    $page_result = $db->sql_fetch_assoc($page_handle);
+    return 'index.php?id='.$page_result['page'].'&amp;article='.$id.'#article-'.$id;
 }
 
 /**
@@ -47,10 +50,11 @@ function article_url_onpage($id) {
  * @param int $id Article ID
  * @return string URL
  */
-function article_url_ownpage($id) {
-	if (!is_numeric($id)) {
-		return '#';
-	}
+function article_url_ownpage($id) 
+{
+    if (!is_numeric($id)) {
+        return '#';
+    }
 
-	return 'index.php?showarticle='.$id;
+    return 'index.php?showarticle='.$id;
 }
