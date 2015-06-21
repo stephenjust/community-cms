@@ -89,6 +89,12 @@ class Image extends File
         }
 
         $thumb_image = imageCreateTrueColor($new_x, $new_y);
+		
+		imagealphablending($thumb_image, false);
+		imagesavealpha($thumb_image, true);
+		$transparent = imagecolorallocatealpha($thumb_image, 255, 255, 255, 127);
+		imagefilledrectangle($thumb_image, 0, 0, $new_x, $new_y, $transparent);
+		
         imagecopyresampled($thumb_image, $image, 0, 0, 0, 0, $new_x, $new_y, $image_x, $image_y);
         if ($imagetype == 'png') {
             imagepng($thumb_image, File::$file_root.$destination);
@@ -100,4 +106,3 @@ class Image extends File
     }
 
 }
-?>
