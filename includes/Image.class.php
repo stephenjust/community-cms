@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2013 Stephen Just
+ * @copyright Copyright (C) 2013-2015 Stephen Just
  * @author stephenjust@users.sourceforge.net
  * @package CommunityCMS.main
  */
@@ -81,6 +81,14 @@ class Image extends File {
 		}
 
 		$thumb_image = imageCreateTrueColor($new_x, $new_y);
+		
+		// Ensure that transparency is preserved
+		imagealphablending($thumb_image, false);
+		imagesavealpha($thumb_image, true);
+		$transparent = imagecolorallocatealpha($thumb_image, 255, 255, 255, 127);
+		imagefilledrectangle($thumb_image, 0, 0, $new_x, $new_y, $transparent);
+		
+		// Resize image
 		imagecopyresampled($thumb_image, $image, 0, 0, 0, 0, $new_x, $new_y, $image_x, $image_y);
 		if ($imagetype == 'png') {
 			imagepng($thumb_image, File::$file_root.$destination);
@@ -92,4 +100,3 @@ class Image extends File {
 	}
 
 }
-?>
