@@ -59,12 +59,12 @@ for ($i = 1; $i <= $db->sql_num_rows($text_handle); $i++) {
     $date_unix = mktime(0, 0, 0, $date_month, $date_day, $date_year);
     $date_month_text = date('M', $date_unix);
     $template_text_block = new template;
-    $template_text_block->load_file('news_scroller_content');
+    $template_text_block->loadFile('news_scroller_content');
     $template_text_block->article_id = $text['id'];
     
     // Hide date if requested
     if ($text['showdate'] != 1) {
-        $template_text_block->replace_range('full_date', null);
+        $template_text_block->replaceRange('full_date', null);
     } else {
         $template_text_block->full_date_start = null;
         $template_text_block->full_date_end = null;
@@ -74,7 +74,7 @@ for ($i = 1; $i <= $db->sql_num_rows($text_handle); $i++) {
 
     // Hide author if requested
     if (SysConfig::get()->getValue('news_show_author') == 0) {
-        $template_text_block->replace_range('article_author', null);
+        $template_text_block->replaceRange('article_author', null);
     } else {
         $template_text_block->article_author = stripslashes($text['author']);
         $template_text_block->article_author_start = null;

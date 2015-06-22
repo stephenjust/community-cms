@@ -16,7 +16,7 @@ class Template
     public $path;
     public $return;
 
-    function __construct() 
+    public function __construct()
     {
         global $db;
         global $debug;
@@ -45,12 +45,16 @@ class Template
         }
     }
 
-    public function __set($name,$value) 
+    public function __set($name, $value)
     {
         if ($name == 'template' || $name == 'path' || $name == 'return') {
             $this->$name = $value;
         } elseif (isset($this->template) && isset($this->path)) {
-            $this->template = str_replace('<!-- $'.mb_convert_case($name, MB_CASE_UPPER, "UTF-8").'$ -->', $value, $this->template);
+            $this->template = str_replace(
+                '<!-- $'.mb_convert_case($name, MB_CASE_UPPER, "UTF-8").'$ -->',
+                $value,
+                $this->template
+            );
         } else {
             echo 'Template file not loaded yet when trying to set \''.$name.'\'.';
         }
@@ -59,11 +63,11 @@ class Template
     /**
      * load_file - Loads a template file from the current frontend template
      */
-    public function load_file($file = 'index') 
+    public function loadFile($file = 'index')
     {
         $this->path = ROOT.$this->path;
         $file .= '.html';
-        if ($this->load_template($file)) {
+        if ($this->loadTemplate($file)) {
             return true;
         } else {
             return false;
@@ -73,18 +77,18 @@ class Template
     /**
      * load_admin_file - Loads a template file from the admin template
      */
-    public function load_admin_file($file = 'index') 
+    public function loadAdminFile($file = 'index')
     {
         $this->path = ROOT.'admin/'.$this->path;
         $file .= '.html';
-        if ($this->load_template($file)) {
+        if ($this->loadTemplate($file)) {
             return true;
         } else {
             return false;
         }
     }
 
-    private function load_template($file) 
+    private function loadTemplate($file)
     {
         if (!file_exists($this->path.$file)) {
             throw new \Exception('Template file does not exist.');
@@ -100,7 +104,7 @@ class Template
         return true;
     }
 
-    function replace_range($field,$string) 
+    public function replaceRange($field, $string)
     {
         $start_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_START$ -->';
         $end_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_END$ -->';
@@ -118,7 +122,7 @@ class Template
      * @param string $field Marker name
      * @return mixed Content string, or false on failure
      */
-    function get_range($field) 
+    public function getRange($field)
     {
         global $debug;
 
@@ -135,7 +139,7 @@ class Template
         return false;
     }
 
-    function replace_variable($variable,$replacement) 
+    public function replaceVariable($variable, $replacement)
     {
         if (!is_string($variable)) {
             return false;
@@ -160,9 +164,7 @@ class Template
                 }
                 try {
                     eval('$newvalue = '.$replacement);
-                }
-                catch (Exception $e)
-                {
+                } catch (Exception $e) {
                     $newvalue = $e->getMessage();
                 }
                 $this->template = str_replace($match[$i], $newvalue, $this->template);
@@ -170,7 +172,7 @@ class Template
         }
     }
 
-    function split($split_marker) 
+    public function split($split_marker)
     {
         $content = $this->template;
         $temp = explode('<!-- $'.mb_convert_case($split_marker, MB_CASE_UPPER, "UTF-8").'$ -->', $content);
@@ -194,11 +196,11 @@ class Template
      * @param string $range Name of start and end markers
      * @return Template New template
      */
-    public function split_range($range) 
+    public function splitRange($range)
     {
         global $debug;
 
-        $content = $this->get_range($range);
+        $content = $this->getRange($range);
         if ($content === false) {
             $debug->addMessage('Failed to get segment of template', true);
             return false;
@@ -206,21 +208,21 @@ class Template
         $return = new Template;
         $return->path = $this->path;
         $return->template = $content;
-        $this->replace_range($range, null);
+        $this->replaceRange($range, null);
         return $return;
     }
 
-    function __toString() 
+    public function __toString()
     {
         // Replace things that should be replaced at all times
         if (isset($this->path)) {
             $this->image_path = $this->path.'images/';
             // Don't replace the following in admin view
             if (!defined('ADMIN')) {
-                $this->replace_variable('article_url_onpage', '\\CommunityCMS\\article_url_onpage($a);');
-                $this->replace_variable('article_url_ownpage', '\\CommunityCMS\\article_url_ownpage($a);');
-                $this->replace_variable('article_url_nopage', '\\CommunityCMS\\article_url_nopage($a);');
-                $this->replace_variable('gallery_embed', '(string) new \\CommunityCMS\\Gallery($a);');
+                $this->replaceVariable('article_url_onpage', '\\CommunityCMS\\article_url_onpage($a);');
+                $this->replaceVariable('article_url_ownpage', '\\CommunityCMS\\article_url_ownpage($a);');
+                $this->replaceVariable('article_url_nopage', '\\CommunityCMS\\article_url_nopage($a);');
+                $this->replaceVariable('gallery_embed', '(string) new \\CommunityCMS\\Gallery($a);');
             }
         }
         $return = (string)$this->template;

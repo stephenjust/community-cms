@@ -29,7 +29,7 @@ case 'upcoming':
 			ORDER BY start ASC LIMIT '.$event_block->attribute['num'];
     $event_widget->setTitle('Upcoming Events');
     $template_events = new template;
-    $template_events->load_file('mini_events_upcoming');
+    $template_events->loadFile('mini_events_upcoming');
     break;
 case 'past':
     $event_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
@@ -37,7 +37,7 @@ case 'past':
 			ORDER BY `start` DESC LIMIT '.$event_block->attribute['num'];
     $event_widget->setTitle('Past Events');
     $template_events = new template;
-    $template_events->load_file('mini_events_past');
+    $template_events->loadFile('mini_events_past');
     break;
 }
 $event_handle = $db->sql_query($event_query);
@@ -49,7 +49,7 @@ if($db->sql_num_rows($event_handle) == 0) {
     $event_widget->setContent('No dates to list.<br />');
     return (string) $event_widget;
 }
-$bl_single_event = $template_events->get_range('event');
+$bl_single_event = $template_events->getRange('event');
 $bl_all_events = null;
 
 for($i = 1; $i <= $db->sql_num_rows($event_handle); $i++) {
@@ -69,7 +69,7 @@ for($i = 1; $i <= $db->sql_num_rows($event_handle); $i++) {
 }
 unset($event_handle);
 unset($event);
-$template_events->replace_range('event', $bl_all_events);
+$template_events->replaceRange('event', $bl_all_events);
 
 // Change the message in the block depending if you're on a calendar page or not
 if (Page::$type == 'calendar.php') {

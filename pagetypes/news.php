@@ -35,7 +35,7 @@ function format_content(Content $content)
     assert($content->getID());
     
     $template_article = new Template;
-    $template_article->load_file('article');
+    $template_article->loadFile('article');
     if (!empty($content->getImage())) {
         $im_file = new File($content->getImage());
         $im_info = $im_file->getInfo();
@@ -48,7 +48,7 @@ function format_content(Content $content)
         $template_article->full_date_start = null;
         $template_article->full_date_end = null;
     } else {
-        $template_article->replace_range('full_date', null);
+        $template_article->replaceRange('full_date', null);
     }
 
     // Edit bar permission check
@@ -94,14 +94,14 @@ function format_content(Content $content)
     $template_article->article_date_year = date('Y', $date);
     $template_article->article_date = date('d-m-Y', $date);
     if (SysConfig::get()->getValue('news_show_author') == 0) {
-        $template_article->replace_range('article_author', null);
+        $template_article->replaceRange('article_author', null);
     } else {
         $template_article->article_author = $content->getAuthor();
     }
 
     // Remove info div entirely if author and date are hidden
     if (!SysConfig::get()->getValue('news_show_author') && !$content->isDateVisible()) {
-        $template_article->replace_range('article_details', null);
+        $template_article->replaceRange('article_details', null);
     } else {
         $template_article->article_details_start = null;
         $template_article->article_details_end = null;

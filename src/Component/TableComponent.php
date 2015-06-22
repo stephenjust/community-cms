@@ -24,7 +24,8 @@ class TableComponent extends BaseComponent
     protected $columns = array();
     protected $rows = array();
 
-    protected $id, $class;
+    protected $id;
+    protected $class;
     protected $no_data_msg = "No data.";
 
     public static function create(array $columns, array $values, $class = "admintable")

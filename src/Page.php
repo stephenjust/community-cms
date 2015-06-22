@@ -296,7 +296,7 @@ class Page
     public static function displayHeader() 
     {
         $template = new Template;
-        $template->load_file('header');
+        $template->loadFile('header');
 
         // Include javascript
         $js_include = '<script language="javascript" type="text/javascript"
@@ -367,20 +367,20 @@ class Page
 
         // Prepare menu and submenu templates
         $template = new Template;
-        if (!$template->load_file('nav_bar')) {
+        if (!$template->loadFile('nav_bar')) {
             return false;
         }
-        $menu_template = $template->split_range('nav_menu');
-        $submenu_template = $template->split_range('nav_submenu');
+        $menu_template = $template->splitRange('nav_menu');
+        $submenu_template = $template->splitRange('nav_submenu');
         unset($template);
 
         // Handle main menu
         // Split template into components
         $menu_template->nav_menu_id = 'nav-menu';
-        $menu_item_template = $menu_template->split_range('menu_item');
-        $cmenu_item_template = $menu_template->split_range('current_menu_item');
-        $menus_item_template = $menu_template->split_range('menu_item_with_child');
-        $cmenus_item_template = $menu_template->split_range('current_menu_item_with_child');
+        $menu_item_template = $menu_template->splitRange('menu_item');
+        $cmenu_item_template = $menu_template->splitRange('current_menu_item');
+        $menus_item_template = $menu_template->splitRange('menu_item_with_child');
+        $cmenus_item_template = $menu_template->splitRange('current_menu_item_with_child');
 
         $nav_menu = page_list(0, true);
 
@@ -449,16 +449,16 @@ class Page
 
         // Read template
         $template = new Template();
-        $template->load_file('nav_bar');
+        $template->loadFile('nav_bar');
         // Grab the sub-menu part of the template
-        $sub_template = $template->split_range('nav_submenu');
+        $sub_template = $template->splitRange('nav_submenu');
         unset($template);
 
         // Pull out the styles for the types of items contained within
-        $item_temp = $sub_template->split_range('menu_item');
-        $currentitem_temp = $sub_template->split_range('current_menu_item');
-        $itemchild_temp = $sub_template->split_range('menu_item_with_child');
-        $currentitemchild_temp = $sub_template->split_range('current_menu_item_with_child');
+        $item_temp = $sub_template->splitRange('menu_item');
+        $currentitem_temp = $sub_template->splitRange('current_menu_item');
+        $itemchild_temp = $sub_template->splitRange('menu_item_with_child');
+        $currentitemchild_temp = $sub_template->splitRange('current_menu_item_with_child');
 
         $sub_template->nav_menu_id = 'nav-menu-sub-'.$parent;
 
@@ -558,7 +558,7 @@ class Page
     public static function displayLeft() 
     {
         $template = new Template;
-        $template->load_file('left');
+        $template->loadFile('left');
         $template->nav_bar = Page::navMenu();
 
         // Hide login box when it may cause issues
@@ -581,7 +581,7 @@ class Page
     public static function displayRight() 
     {
         $template = new Template;
-        $template->load_file('right');
+        $template->loadFile('right');
 
         // Prepare blocks
         $right_blocks_content = null;
@@ -598,7 +598,7 @@ class Page
         global $db;
 
         $template = new Template;
-        $template->load_file('content');
+        $template->loadFile('content');
         $template->page_path = page_path(Page::$id);
 
         // Display the page title if the configuration says to
@@ -609,7 +609,7 @@ class Page
             $template->body_title_end = null;
         } else {
             // Remove comments referring to 'body_title'
-            $template->replace_range('body_title', null);
+            $template->replaceRange('body_title', null);
         }
 
         // Display page edit bar
@@ -631,7 +631,7 @@ class Page
             $template->notification_start = null;
             $template->notification_end = null;
         } else {
-            $template->replace_range('notification', null);
+            $template->replaceRange('notification', null);
         }
 
         if (Page::$type != 'special.php') {
@@ -655,7 +655,7 @@ class Page
     public static function displayFooter()
     {
         $template = new Template;
-        $template->load_file('footer');
+        $template->loadFile('footer');
         $template->footer = SysConfig::get()->getValue('footer');
         echo $template;
         unset($template);
@@ -667,7 +667,7 @@ class Page
         global $debug;
 
         $template = new Template;
-        $template->load_file('debug');
+        $template->loadFile('debug');
         $template->debug_queries = $db->print_queries();
         $template->debug_query_stats = $db->print_query_stats();
         $template->debug_log = $debug->display_traces();

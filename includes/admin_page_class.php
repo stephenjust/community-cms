@@ -28,7 +28,7 @@ class AdminPage extends Page
     public static function display_header() 
     {
         $template = new Template;
-        $template->load_admin_file('header');
+        $template->loadAdminFile('header');
 
         // Include javascript
         // Don't cache compressed TinyMCE when debugging
@@ -88,7 +88,7 @@ class AdminPage extends Page
     {
         global $db;
         $template_page = new Template;
-        $template_page->load_admin_file();
+        $template_page->loadAdminFile();
 
         $nav = new Component\AdminNavComponent();
         $template_page->nav_bar = $nav->render();
@@ -114,7 +114,7 @@ class AdminPage extends Page
         global $debug;
 
         $template = new Template;
-        $template->load_admin_file('debug');
+        $template->loadAdminFile('debug');
         $template->debug_queries = $db->print_queries();
         $template->debug_query_stats = $db->print_query_stats();
         $template->debug_log = $debug->display_traces();
@@ -125,7 +125,7 @@ class AdminPage extends Page
     public static function display_footer() 
     {
         $template = new Template;
-        $template->load_admin_file('footer');
+        $template->loadAdminFile('footer');
         $template->footer = 'Powered by Community CMS';
         echo $template;
     }

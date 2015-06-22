@@ -56,7 +56,7 @@ class FileListComponent extends BaseComponent
 
         $result = array();
         $files = scandir(FILES_ROOT.$this->directory);
-        foreach ($files AS $file) {
+        foreach ($files as $file) {
             if ($file == '.' || $file == '..') {
                 continue;
             }

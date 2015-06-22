@@ -22,7 +22,7 @@ $category_block->get_block_information();
 $category_query = 'SELECT * FROM ' . CALENDAR_CATEGORY_TABLE;
 $category_handle = $db->sql_query($category_query);
 $block_template = new template;
-$block_template->load_file('mini_categories');
+$block_template->loadFile('mini_categories');
 for($i = 1; $i <= $db->sql_num_rows($category_handle); $i++) {
     $category = $db->sql_fetch_assoc($category_handle);
     $cats .= '<img src="<!-- $IMAGE_PATH$ -->icon_'.$category['colour'].'.png"

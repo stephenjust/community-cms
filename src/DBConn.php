@@ -31,7 +31,7 @@ class DBConn
     const FETCH = 3;
     const ROW_COUNT = 4;
 
-    private function __construct() 
+    private function __construct()
     {
         $conn_string = sprintf("mysql:host=%s;dbname=%s", Config::DB_HOST, Config::DB_NAME);
         $this->conn = new \PDO($conn_string, Config::DB_USER, Config::DB_PASS);
@@ -43,7 +43,7 @@ class DBConn
      * Get the DBConn instance
      * @return DBConn
      */
-    public static function get() 
+    public static function get()
     {
         if (!DBConn::$instance) {
             DBConn::$instance = new DBConn();
@@ -52,25 +52,25 @@ class DBConn
         return DBConn::$instance;
     }
 
-    public function query($query, $params = null, $return_type = DBConn::NOTHING) 
+    public function query($query, $params = null, $return_type = DBConn::NOTHING)
     {
-        if(empty($query)) {
-            throw new Exceptions\DBException("Empty Query"); 
-        }     
-        try{
+        if (empty($query)) {
+            throw new Exceptions\DBException("Empty Query");
+        }
+        try {
             $sth = $this->conn->prepare($query);
             $sth->execute($params);
             switch ($return_type) {
-            case self::NOTHING:
-                return;
-            case self::ROW_COUNT:
-                return $sth->rowCount();
-            case self::FETCH_ALL:
-                return $sth->fetchAll(\PDO::FETCH_ASSOC);
-            case self::FETCH:
-                return $sth->fetch(\PDO::FETCH_ASSOC);
+                case self::NOTHING:
+                    return;
+                case self::ROW_COUNT:
+                    return $sth->rowCount();
+                case self::FETCH_ALL:
+                    return $sth->fetchAll(\PDO::FETCH_ASSOC);
+                case self::FETCH:
+                    return $sth->fetch(\PDO::FETCH_ASSOC);
             }
-        } catch (\PDOException $e){
+        } catch (\PDOException $e) {
             throw new Exceptions\DBException($e->errorInfo[0], $e->getCode(), $e);
         }
     }
@@ -80,7 +80,7 @@ class DBConn
      * @param string $stmt
      * @return \PDOStatement
      */
-    public function prepare($stmt) 
+    public function prepare($stmt)
     {
         return $this->conn->prepare($stmt);
     }
@@ -89,19 +89,19 @@ class DBConn
     {
         $sth->execute();
         switch ($return_type) {
-        case self::NOTHING:
-            return;
-        case self::ROW_COUNT:
-            return $sth->rowCount();
-        case self::FETCH_ALL:
-            return $sth->fetchAll(\PDO::FETCH_ASSOC);
-        case self::FETCH:
-            return $sth->fetch(\PDO::FETCH_ASSOC);
+            case self::NOTHING:
+                return;
+            case self::ROW_COUNT:
+                return $sth->rowCount();
+            case self::FETCH_ALL:
+                return $sth->fetchAll(\PDO::FETCH_ASSOC);
+            case self::FETCH:
+                return $sth->fetch(\PDO::FETCH_ASSOC);
         }
     }
 
     public function lastInsertId()
     {
-        return $this->conn->lastInsertId();  
+        return $this->conn->lastInsertId();
     }
 }

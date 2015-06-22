@@ -91,12 +91,12 @@ case "day":
         break;
     }
     $day_template = new Template;
-    $day_template->load_file('calendar_day');
+    $day_template->loadFile('calendar_day');
     $day_template->day_heading = date('l, F j', strtotime($event_day_s));
     $event_template = new Template;
     $event_template->path = $day_template->path;
-    $event_template->template = $day_template->get_range('event');
-    $day_template->replace_range('event', '<!-- $EVENT$ -->');
+    $event_template->template = $day_template->getRange('event');
+    $day_template->replaceRange('event', '<!-- $EVENT$ -->');
 
     $event_rows = null;
     for ($i = 1; $db->sql_num_rows($day_events_handle) >= $i; $i++) {

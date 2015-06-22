@@ -63,16 +63,16 @@ if($db->sql_num_rows($text_handle) == 0) {
     // Load appropriate template for each setting
     // FIXME: We should be able to do this with one file eventually
     if ($text_block->attribute['show_border'] == 'no') {
-        $template_text_block->load_file('mini_text');
+        $template_text_block->loadFile('mini_text');
     } else {
-        $template_text_block->load_file('mini_text_border');
+        $template_text_block->loadFile('mini_text_border');
     }
 
     $template_text_block->article_id = $text['id'];
 
     // Hide date if requested
     if ($text['showdate'] != 1) {
-        $template_text_block->replace_range('full_date', null);
+        $template_text_block->replaceRange('full_date', null);
     } else {
         $template_text_block->full_date_start = null;
         $template_text_block->full_date_end = null;
@@ -82,7 +82,7 @@ if($db->sql_num_rows($text_handle) == 0) {
 
     // Hide author if requested
     if (SysConfig::get()->getValue('news_show_author') == 0) {
-        $template_text_block->replace_range('article_author', null);
+        $template_text_block->replaceRange('article_author', null);
     } else {
         $template_text_block->article_author = stripslashes($text['author']);
         $template_text_block->article_author_start = null;

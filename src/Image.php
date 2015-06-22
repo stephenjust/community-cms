@@ -22,28 +22,33 @@ class Image extends File
      * @return \Image
      * @throws FileException
      */
-    public function generateThumbnail($destination, $min_w = 1, $min_h = 1, $max_w = 0, $max_h = 0) 
-    {
+    public function generateThumbnail(
+        $destination,
+        $min_w = 1,
+        $min_h = 1,
+        $max_w = 0,
+        $max_h = 0
+    ) {
         if (!$this->file) {
-            throw new FileException('Cannot generate thumbnail.'); 
+            throw new FileException('Cannot generate thumbnail.');
         }
 
         if ($destination != $this->file && file_exists(File::$file_root.$destination)) {
-            throw new FileException('Desination file already exists.'); 
+            throw new FileException('Desination file already exists.');
         }
 
         if ($min_w == 0 || $min_h == 0) {
-            throw new FileException('Minimum dimensions must be greater than zero.'); 
+            throw new FileException('Minimum dimensions must be greater than zero.');
         }
 
         if (preg_match('/\.png$/i', $this->file)) {
-            $image = imageCreateFromPNG(File::$file_root.$this->file);
+            $image     = imageCreateFromPNG(File::$file_root.$this->file);
             $imagetype = 'png';
         } elseif (preg_match('/\.(jpg|jpeg)$/i', $this->file)) {
-            $image = imageCreateFromJPEG(File::$file_root.$this->file);
+            $image     = imageCreateFromJPEG(File::$file_root.$this->file);
             $imagetype = 'jpg';
         } else {
-            throw new FileException('Cannot create thumbnail from file.'); 
+            throw new FileException('Cannot create thumbnail from file.');
         }
 
         $image_x = imagesx($image);
@@ -89,13 +94,24 @@ class Image extends File
         }
 
         $thumb_image = imageCreateTrueColor($new_x, $new_y);
-		
-		imagealphablending($thumb_image, false);
-		imagesavealpha($thumb_image, true);
-		$transparent = imagecolorallocatealpha($thumb_image, 255, 255, 255, 127);
-		imagefilledrectangle($thumb_image, 0, 0, $new_x, $new_y, $transparent);
-		
-        imagecopyresampled($thumb_image, $image, 0, 0, 0, 0, $new_x, $new_y, $image_x, $image_y);
+
+        imagealphablending($thumb_image, false);
+        imagesavealpha($thumb_image, true);
+        $transparent = imagecolorallocatealpha($thumb_image, 255, 255, 255, 127);
+        imagefilledrectangle($thumb_image, 0, 0, $new_x, $new_y, $transparent);
+
+        imagecopyresampled(
+            $thumb_image,
+            $image,
+            0,
+            0,
+            0,
+            0,
+            $new_x,
+            $new_y,
+            $image_x,
+            $image_y
+        );
         if ($imagetype == 'png') {
             imagepng($thumb_image, File::$file_root.$destination);
         } else {
@@ -104,5 +120,4 @@ class Image extends File
 
         return new Image($destination);
     }
-
 }

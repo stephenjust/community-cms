@@ -220,7 +220,7 @@ class calendar_month extends calendar
     private function load_template() 
     {
         $this->template = new Template;
-        $this->template->load_file('calendar_month');
+        $this->template->loadFile('calendar_month');
 
         // Replace template placeholders that should not be altered
         // beyond this point
@@ -259,17 +259,17 @@ class calendar_month extends calendar
         // Week template
         $template_week = new Template;
         $template_week->path = $this->template->path;
-        $template_week->template = $this->template->get_range('week');
+        $template_week->template = $this->template->getRange('week');
 
         // Extract templates for each type of day
-        $template_empty_day = $this->template->get_range('empty_day');
-        $template_day = $this->template->get_range('day');
-        $template_today = $this->template->get_range('today');
+        $template_empty_day = $this->template->getRange('empty_day');
+        $template_day = $this->template->getRange('day');
+        $template_today = $this->template->getRange('today');
 
         // Remove day templates
-        $template_week->replace_range('empty_day', '');
-        $template_week->replace_range('day', '<!-- $DAY$ -->');
-        $template_week->replace_range('today', '');
+        $template_week->replaceRange('empty_day', '');
+        $template_week->replaceRange('day', '<!-- $DAY$ -->');
+        $template_week->replaceRange('today', '');
         
         $this->template_week = $template_week;
         $this->template_day = $template_day;
@@ -382,7 +382,7 @@ class calendar_month extends calendar
             $all_weeks .= (string)$current_week;
         }
         
-        $this->template->replace_range('week', $all_weeks);
+        $this->template->replaceRange('week', $all_weeks);
     }
     
     public function __toString() 
