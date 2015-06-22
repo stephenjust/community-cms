@@ -388,7 +388,6 @@ class Form
      */
     function add_icon_list($name,$label,$folder,$selected = null) 
     {
-        global $debug;
         
         if (preg_match('/[.]/', $folder)) {
             return;
@@ -418,7 +417,7 @@ class Form
 							alt="'.$file_info['label'].'" />';
                     }
                 } catch (FileException $e) {
-                    $debug->add_trace('Image error: '.$e->getMessage());
+                    Debug::get()->addMessage('Image error: '.$e->getMessage(), true);
                 }
                 $options .= '</div>';
             }

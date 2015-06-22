@@ -153,14 +153,12 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate)
 /**
  * delete_article - Deletes one or more news articles
  * @global db $db
- * @global Debug $debug
  * @param mixed $article
  * @return boolean
  */
 function delete_article($article) 
 {
     global $db;
-    global $debug;
 
     if (!acl::get()->check_permission('news_delete')) {
         return false;
@@ -179,7 +177,7 @@ function delete_article($article)
 
         // Check data type
         if (!is_numeric($current)) {
-            $debug->addMessage('Given non-numeric input', false);
+            Debug::get()->addMessage('Given non-numeric input', false);
             unset($current);
             continue;
         }
@@ -190,11 +188,11 @@ function delete_article($article)
 			`news`.`id` = '.$current.' LIMIT 1';
         $info_handle = $db->sql_query($info_query);
         if ($db->error[$info_handle] === 1) {
-            $debug->addMessage('Query failed', true);
+            Debug::get()->addMessage('Query failed', true);
             return false;
         }
         if ($db->sql_num_rows($info_handle) === 0) {
-            $debug->addMessage('Article not found', true);
+            Debug::get()->addMessage('Article not found', true);
             return false;
         }
         $info = $db->sql_fetch_assoc($info_handle);
@@ -224,7 +222,6 @@ function delete_article($article)
 function move_article($article,$new_location) 
 {
     global $db;
-    global $debug;
 
     $id = array();
     if (is_numeric($article)) {
@@ -235,7 +232,7 @@ function move_article($article,$new_location)
     unset($article);
 
     if (!is_numeric($new_location)) {
-        $debug->addMessage('Given non-numeric input for new location', true);
+        Debug::get()->addMessage('Given non-numeric input for new location', true);
     }
 
     for ($i = 0; $i < count($id); $i++) {
@@ -243,7 +240,7 @@ function move_article($article,$new_location)
 
         // Check data type
         if (!is_numeric($current)) {
-            $debug->addMessage('Given non-numeric input', true);
+            Debug::get()->addMessage('Given non-numeric input', true);
             unset($current);
             continue;
         }
@@ -254,11 +251,11 @@ function move_article($article,$new_location)
 			`news`.`id` = '.$current.' LIMIT 1';
         $info_handle = $db->sql_query($info_query);
         if ($db->error[$info_handle] === 1) {
-            $debug->addMessage('Query failed', true);
+            Debug::get()->addMessage('Query failed', true);
             return false;
         }
         if ($db->sql_num_rows($info_handle) === 0) {
-            $debug->addMessage('Article not found', true);
+            Debug::get()->addMessage('Article not found', true);
             return false;
         }
         $info = $db->sql_fetch_assoc($info_handle);
@@ -289,7 +286,6 @@ function move_article($article,$new_location)
 function copy_article($article,$new_location) 
 {
     global $db;
-    global $debug;
 
     $id = array();
     if (is_numeric($article)) {
@@ -300,7 +296,7 @@ function copy_article($article,$new_location)
     unset($article);
 
     if (!is_numeric($new_location)) {
-        $debug->addMessage('Given non-numeric input for new location', true);
+        Debug::get()->addMessage('Given non-numeric input for new location', true);
     }
 
     for ($i = 0; $i < count($id); $i++) {
@@ -308,7 +304,7 @@ function copy_article($article,$new_location)
 
         // Check data type
         if (!is_numeric($current)) {
-            $debug->addMessage('Given non-numeric input', true);
+            Debug::get()->addMessage('Given non-numeric input', true);
             unset($current);
             continue;
         }
@@ -319,11 +315,11 @@ function copy_article($article,$new_location)
 			`id` = '.$current.' LIMIT 1';
         $info_handle = $db->sql_query($info_query);
         if ($db->error[$info_handle] === 1) {
-            $debug->addMessage('Query failed', true);
+            Debug::get()->addMessage('Query failed', true);
             return false;
         }
         if ($db->sql_num_rows($info_handle) === 0) {
-            $debug->addMessage('Article not found', true);
+            Debug::get()->addMessage('Article not found', true);
             return false;
         }
         $info = $db->sql_fetch_assoc($info_handle);
@@ -381,22 +377,21 @@ function save_priorities($form_array)
 function news_publish($article_id,$publish = true) 
 {
     global $db;
-    global $debug;
 
     // Validate parameters
     if (!is_numeric($article_id)) {
-        $debug->addMessage('Article ID is not numeric', true);
+        Debug::get()->addMessage('Article ID is not numeric', true);
         return false;
     }
     if (!is_bool($publish)) {
-        $debug->addMessage('Publishing state is not a boolean', true);
+        Debug::get()->addMessage('Publishing state is not a boolean', true);
         return false;
     }
     $article_id = (int)$article_id;
 
     // Check for permission
     if (!acl::get()->check_permission('news_publish')) {
-        $debug->addMessage('Insufficient permissions', true);
+        Debug::get()->addMessage('Insufficient permissions', true);
         return false;
     }
 
@@ -441,4 +436,3 @@ function news_publish($article_id,$publish = true)
     }
     return true;
 }
-?>

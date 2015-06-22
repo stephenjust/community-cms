@@ -14,8 +14,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-global $debug;
-
 if (!acl::get()->check_permission('adm_gallery_manager')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
@@ -24,10 +22,8 @@ if (!acl::get()->check_permission('adm_gallery_manager')) {
 
 function gallery_upload_box($gallery_id,$gallery_dir) 
 {
-    global $debug;
-
     if (!is_numeric($gallery_id)) {
-        $debug->addMessage('Gallery ID not numeric', true);
+        Debug::get()->addMessage('Gallery ID not numeric', true);
         return false;
     }
     if (!file_exists(ROOT.$gallery_dir)) {
@@ -47,15 +43,13 @@ function gallery_upload_box($gallery_id,$gallery_dir)
 
 function gallery_photo_manager($gallery_id) 
 {
-    global $debug;
-
     $gallery = new Gallery($gallery_id);
     if (!file_exists(ROOT.$gallery->getImageDir())) {
-        $debug->addMessage('Gallery folder does not exist', true);
+        Debug::get()->addMessage('Gallery folder does not exist', true);
         return false;
     }
     if (!file_exists(ROOT.$gallery->getImageDir().'/thumbs')) {
-        $debug->addMessage('Gallery thumbnail dir does not exist', true);
+        Debug::get()->addMessage('Gallery thumbnail dir does not exist', true);
         return false;
     }
 
@@ -217,7 +211,7 @@ case 'simpleviewer':
     // Check if 'example' folder still exists
     $example_file = ROOT.$gallery_dir.'/examples/simpleviewer.swf';
     if (file_exists($example_file)) {
-        $debug->addMessage('The SimpleViewer example folder still exists', false);
+        Debug::get()->addMessage('The SimpleViewer example folder still exists', false);
     }
     // Continue with same procedure as 'built-in'...
 
@@ -268,5 +262,3 @@ case 'built-in':
     echo $tab_layout;
     break;
 }
-
-?>

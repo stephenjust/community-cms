@@ -111,13 +111,12 @@ class AdminPage extends Page
     public static function display_debug() 
     {
         global $db;
-        global $debug;
 
         $template = new Template;
         $template->loadAdminFile('debug');
         $template->debug_queries = $db->print_queries();
         $template->debug_query_stats = $db->print_query_stats();
-        $template->debug_log = $debug->display_traces();
+        $template->debug_log = Debug::get()->displayTraces();
         echo $template;
         unset($template);
     }
@@ -144,4 +143,3 @@ class AdminPage extends Page
         AdminPage::$module = $module;
     }
 }
-?>

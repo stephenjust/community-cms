@@ -93,7 +93,7 @@ if ($_GET['action'] == 'permsave') {
                 }
                 unset($set_perm);
             } else {
-                $debug->addMessage('Permission \''.$form_var.'\' does not exist', true);
+                Debug::get()->addMessage('Permission \''.$form_var.'\' does not exist', true);
             }
         }
         unset($form_var);

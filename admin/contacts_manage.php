@@ -23,24 +23,22 @@ $tab_layout = new Tabs;
 /**
  * Get contact list
  * @global db $db Database object
- * @global Debug $debug Debugging object
  * @param integer $page Page ID
  * @return array Contact information (or false on failure)
  */
 function contact_list($page = '*') 
 {
     global $db;
-    global $debug;
     // Check parameters
     if (!is_numeric($page) && $page != '*') {
-        $debug->addMessage('Invalid parameter', true);
+        Debug::get()->addMessage('Invalid parameter', true);
         return false;
     }
     $query_page = ($page != '*') ? ' WHERE `page` = '.$page : null;
     $contact_list_query = 'SELECT * FROM `'.CONTACTS_TABLE.'`'.$query_page;
     $contact_list_handle = $db->sql_query($contact_list_query);
     if ($db->error[$contact_list_handle] === 1) {
-        $debug->addMessage('SQL error: failed to read contact list', true);
+        Debug::get()->addMessage('SQL error: failed to read contact list', true);
         return false;
     }
     $num_contacts = $db->sql_num_rows($contact_list_handle);

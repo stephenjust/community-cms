@@ -88,42 +88,40 @@ class db_mysqli extends db
 
     function sql_prepare($name,$query) 
     {
-        global $debug;
         // Validate parameters
         if (!is_string($name)) {
-            $debug->addMessage('$name is not a string', true);
+            Debug::get()->addMessage('$name is not a string', true);
             return false;
         }
         if (!is_string($query)) {
-            $debug->addMessage('$query is not a string', true);
+            Debug::get()->addMessage('$query is not a string', true);
             return false;
         }
         $prepare_query = 'PREPARE `'.$name.'` FROM "'.$query.'"';
         $prepare_handle = $this->sql_query($prepare_query);
         if (!$this->error[$prepare_handle] === 1) {
-            $debug->addMessage('Failed to create prepared statement', true);
+            Debug::get()->addMessage('Failed to create prepared statement', true);
             return false;
         }
         return true;
     }
     function sql_prepare_exec($name,$variables,$datatypes) 
     {
-        global $debug;
         // Validate parameters
         if (!is_string($name)) {
-            $debug->addMessage('$name is not a string', true);
+            Debug::get()->addMessage('$name is not a string', true);
             return false;
         }
         if (!is_array($variables)) {
-            $debug->addMessage('$variables is not an array', true);
+            Debug::get()->addMessage('$variables is not an array', true);
             return false;
         }
         if (!is_array($datatypes)) {
-            $debug->addMessage('$datatypes is not an array', true);
+            Debug::get()->addMessage('$datatypes is not an array', true);
             return false;
         }
         if (count($variables) !== count($datatypes)) {
-            $debug->addMessage('Length of $variables and $datatypes are not equal', true);
+            Debug::get()->addMessage('Length of $variables and $datatypes are not equal', true);
             return false;
         }
         // Add quotation marks to strings
@@ -137,22 +135,21 @@ class db_mysqli extends db
         $exec_query = 'EXECUTE `'.$name.'` USING "'.$variables_string.'"';
         $exec_handle = $this->sql_query($exec_query);
         if ($this->error[$exec_handle] === 1) {
-            $debug->addMessage('Failed to execute prepared statement', true);
+            Debug::get()->addMessage('Failed to execute prepared statement', true);
             return false;
         }
         return true;
     }
     function sql_prepare_close($name) 
     {
-        global $debug;
         if (!is_string($name)) {
-            $debug->addMessage('$name is not a string', true);
+            Debug::get()->addMessage('$name is not a string', true);
             return false;
         }
         $prepare_close_query = 'DEALLOCATE PREPARE `'.$name.'`';
         $prepare_close_handle = $this->sql_query($prepare_close_query);
         if ($this->error[$prepare_close_handle] === 1) {
-            $debug->addMessage('Failed to deallocate prepared statement', true);
+            Debug::get()->addMessage('Failed to deallocate prepared statement', true);
             return false;
         }
         return true;
@@ -170,4 +167,3 @@ class db_mysqli extends db
         return mysqli_error($this->connect);
     }
 }
-?>

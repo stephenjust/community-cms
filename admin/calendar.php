@@ -140,7 +140,7 @@ case 'save_settings':
             echo 'Updated calendar settings.<br />'."\n";
             Log::addMessage('Updated calendar settings');
         } catch (\Exception $ex) {
-            Debug::addMessage("Exception: " . $ex->getMessage(), true);
+            Debug::get()->addMessage("Exception: " . $ex->getMessage(), true);
             echo 'Failed to save settings.<br />'."\n";
         }
     }

@@ -182,7 +182,6 @@ function block_delete($id)
 /**
  * Generate the form for block management
  * @global db $db
- * @global Debug $debug
  * @param string $type Block type
  * @param array  $vars Array of parameters to set as form defaults
  * @return string HTML for form (or false on failure)
@@ -190,11 +189,10 @@ function block_delete($id)
 function block_edit_form($type,$vars = array()) 
 {
     global $db;
-    global $debug;
 
     $return = null;
     if (!is_array($vars)) {
-        $debug->addMessage('Invalid set of variables', true);
+        Debug::get()->addMessage('Invalid set of variables', true);
         return false;
     }
     switch ($type) {
@@ -214,7 +212,7 @@ function block_edit_form($type,$vars = array())
 				ORDER BY `news`.`page` ASC, `news`.`name` ASC';
         $news_handle = $db->sql_query($news_query);
         if ($db->error[$news_handle] === 1) {
-            $debug->addMessage('Failed to read news articles', true);
+            Debug::get()->addMessage('Failed to read news articles', true);
             return false;
         }
         $num_articles = $db->sql_num_rows($news_handle);
@@ -259,7 +257,7 @@ function block_edit_form($type,$vars = array())
 				ORDER BY `title` ASC';
         $news_handle = $db->sql_query($news_query);
         if ($db->error[$news_handle] === 1) {
-            $debug->addMessage('Failed to read pages', true);
+            Debug::get()->addMessage('Failed to read pages', true);
             return false;
         }
         $num_articles = $db->sql_num_rows($news_handle);

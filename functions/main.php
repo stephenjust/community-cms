@@ -19,7 +19,6 @@ if (@SECURITY != 1) {
  * Initializes many required variables
  *
  * @global db $db
- * @global Debug $debug
  */
 function initialize($mode = null) 
 {
@@ -38,10 +37,6 @@ function initialize($mode = null)
     }
 
     global $db;
-    global $debug;
-
-    include_once ROOT . 'includes/debug.php';
-    $debug = Debug::get();
 
     // Must initialize DB class before ACL class
     $db->sql_connect();
@@ -122,16 +117,13 @@ function str_replace_count($search,$replace,$subject,$times)
 
 /**
  * format_tel - Format North American phone numbers
- * @global Debug $debug
  * @param integer $phone_number Phone number with no punctuation
  * @return string Phone number to display
  */
 function format_tel($phone_number) 
 {
-    global $debug;
-
     if (!is_numeric($phone_number)) {
-        $debug->addMessage('Phone number display function given non-numeric value');
+        Debug::get()->addMessage('Phone number display function given non-numeric value');
         return $phone_number;
     }
 
@@ -158,7 +150,7 @@ function format_tel($phone_number)
     case '###.###.####':
         return substr($phone_number, 0, 3).'.'.substr($phone_number, 3, 3).'.'.substr($phone_number, 6, 4);
     default:
-        $debug->addMessage('Invalid phone number format', true);
+        Debug::get()->addMessage('Invalid phone number format', true);
         return $phone_number;
     }
 }

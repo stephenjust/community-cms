@@ -19,7 +19,6 @@ class Template
     public function __construct()
     {
         global $db;
-        global $debug;
         global $template_cache;
 
         if (!isset($template_cache)) {
@@ -30,7 +29,7 @@ class Template
 				WHERE id = '.SysConfig::get()->getValue('site_template').' LIMIT 1';
             $template_handle = $db->sql_query($template_query);
             if ($db->sql_num_rows($template_handle) != 1) {
-                $debug->addMessage('Current template not found in database', true);
+                Debug::get()->addMessage('Current template not found in database', true);
                 $this->path = 'default';
             } else {
                 $template_result = $db->sql_fetch_assoc($template_handle);
@@ -118,14 +117,11 @@ class Template
 
     /**
      * get_range - Returns the content between two markers in a template file
-     * @global Debug $debug
      * @param string $field Marker name
      * @return mixed Content string, or false on failure
      */
     public function getRange($field)
     {
-        global $debug;
-
         $start_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_START$ -->';
         $end_string = '<!-- $'.mb_convert_case($field, MB_CASE_UPPER, "UTF-8").'_END$ -->';
         $start = strpos($this->template, $start_string);
@@ -135,7 +131,7 @@ class Template
             $length = $end - $start - strlen($start_string);
             return substr($this->template, $start + strlen($start_string), $length);
         }
-        $debug->addMessage('Could not find start or end of range '.$field, true);
+        Debug::get()->addMessage('Could not find start or end of range '.$field, true);
         return false;
     }
 
@@ -198,11 +194,9 @@ class Template
      */
     public function splitRange($range)
     {
-        global $debug;
-
         $content = $this->getRange($range);
         if ($content === false) {
-            $debug->addMessage('Failed to get segment of template', true);
+            Debug::get()->addMessage('Failed to get segment of template', true);
             return false;
         }
         $return = new Template;

@@ -67,7 +67,6 @@ class CalLocation
     
     /**
      * Save a new location entry if it does not already exist
-     * @global Debug $debug
      * @global db $db
      * @param string $location (unescaped)
      * @return void

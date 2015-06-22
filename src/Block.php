@@ -32,14 +32,13 @@ class Block
             return false;
         }
         global $db;
-        global $debug;
 
         $block_attribute_query = 'SELECT * FROM ' . BLOCK_TABLE . '
 			WHERE id = '.$this->block_id.' LIMIT 1';
         $block_attribute_handle = $db->sql_query($block_attribute_query);
         $block = $db->sql_fetch_assoc($block_attribute_handle);
         $this->type = $block['type'];
-        $debug->addMessage('Block type is '.$this->type, false);
+        Debug::get()->addMessage('Block type is '.$this->type, false);
         $block_attribute_temp = $block['attributes'];
         if (strlen($block_attribute_temp) > 0) {
             $block_attribute_temp = explode(",", $block_attribute_temp);
@@ -50,7 +49,7 @@ class Block
         for ($i = 0; $i < $block_attribute_count; $i++) {
             $attribute_temp = explode('=', $block_attribute_temp[$i]);
             $this->attribute[$attribute_temp[0]] = $attribute_temp[1];
-            $debug->addMessage('Block '.$this->block_id.' has attribute '.$attribute_temp[0].' = '.$attribute_temp[1], false);
+            Debug::get()->addMessage('Block '.$this->block_id.' has attribute '.$attribute_temp[0].' = '.$attribute_temp[1], false);
         }
         return;
     }
@@ -60,4 +59,3 @@ class Block
 
     }
 }
-?>

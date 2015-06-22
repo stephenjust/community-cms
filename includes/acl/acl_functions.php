@@ -84,7 +84,6 @@ function permission_file_read()
 
 /**
  * Create a permission list with HTML tables
- * @global Debug $debug
  * @param array   $permission_list
  * @param integer $group
  * @param boolean $form
@@ -92,8 +91,6 @@ function permission_file_read()
  */
 function permission_list($permission_list,$group = 0,$form = false) 
 {
-    global $debug;
-
     $permission_file_array = permission_file_read();
     $xml_file = ROOT.'includes/acl/permission_list.xml';
     $sorted_permissions = array();
@@ -169,7 +166,7 @@ function permission_list($permission_list,$group = 0,$form = false)
         }
     }
     foreach($permission_list AS $leftover_permission) {
-        $debug->addMessage('Permission \''.$leftover_permission.'\' exists in the database but it is not found in the permission_list.xml file', true);
+        Debug::get()->addMessage('Permission \''.$leftover_permission.'\' exists in the database but it is not found in the permission_list.xml file', true);
     }
     return $return;
 }
@@ -177,13 +174,11 @@ function permission_list($permission_list,$group = 0,$form = false)
 /**
  * Update permission list to reflect the XML file
  * @global db $db
- * @global Debug $debug
  * @return mixed Number of changes, or false on failure
  */
 function permission_list_refresh() 
 {
     global $db;
-    global $debug;
 
     $num_changes = 0;
     $regex_list = array();
@@ -214,7 +209,7 @@ function permission_list_refresh()
 						WHERE `acl_id` = '.$db_perm['id'];
                     $update_handle = $db->sql_query($update_query);
                     if ($db->error[$update_handle] === 1) {
-                        $debug->addMessage('Failed to update permission \''.$db_perm['shortname'].'\'', true);
+                        Debug::get()->addMessage('Failed to update permission \''.$db_perm['shortname'].'\'', true);
                     } else {
                         Log::addMessage('Modified permission key \''.$db_perm['longname'].'\'');
                         $num_changes++;
@@ -232,7 +227,7 @@ function permission_list_refresh()
 					'.(int)$permission_list['items'][$i]['default'].')';
                 $create_handle = $db->sql_query($create_query);
                 if ($db->error[$create_handle] === 1) {
-                    $debug->addMessage('Failed to create permission key \''.$permission_list['items'][$i]['name'].'\'', true);
+                    Debug::get()->addMessage('Failed to create permission key \''.$permission_list['items'][$i]['name'].'\'', true);
                 } else {
                     Log::addMessage('Created permission key \''.$permission_list['items'][$i]['title'].'\'');
                     $num_changes++;
@@ -254,14 +249,14 @@ function permission_list_refresh()
 			WHERE `acl_id` = '.$db_list['id'];
         $recdel_handle = $db->sql_query($recdel_query);
         if ($db->error[$recdel_handle] === 1) {
-            $debug->addMessage('Failed to delete permission records associated with \''.$db_list['shortname'].'\'', true);
+            Debug::get()->addMessage('Failed to delete permission records associated with \''.$db_list['shortname'].'\'', true);
         } else {
             // Delete key
             $del_query = 'DELETE FROM `'.ACL_KEYS_TABLE.'`
 				WHERE `acl_id` = '.$db_list['id'];
             $del_handle = $db->sql_query($del_query);
             if ($db->error[$del_handle] === 1) {
-                $debug->addMessage('Failed to delete key \''.$db_list['longname'].'\'', true);
+                Debug::get()->addMessage('Failed to delete key \''.$db_list['longname'].'\'', true);
             } else {
                 Log::addMessage('Deleted permission key \''.$db_list['longname'].'\'');
                 $num_changes++;

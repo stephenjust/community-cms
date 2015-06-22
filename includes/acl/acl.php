@@ -60,13 +60,11 @@ class acl
      * @param int     $group       Group to check (current user's group if not set)
      * @param boolean $true_if_all Automatically return true if the group has 'All Permissions' set
      * @global db $db Database connection object
-     * @global Debug $debug Debug object
      * @return boolean True if allowed to complete action, false if not.
      */
     public function check_permission($acl_key, $group = 0, $true_if_all = true) 
     {
         global $db;
-        global $debug;
 
         if (!is_numeric($group)) {
             return false;
@@ -83,7 +81,7 @@ class acl
 
         // See if permission exists
         if (!isset($this->permission_list[$acl_key])) {
-            $debug->addMessage('Permission \''.$acl_key.'\' does not exist', true);
+            Debug::get()->addMessage('Permission \''.$acl_key.'\' does not exist', true);
         }
 
         if ($true_if_all == true) {
@@ -159,7 +157,6 @@ class acl
     /**
      * set_permission - Set permissions for a certain group
      * @global db $db
-     * @global Debug $debug
      * @param string  $acl_key
      * @param integer $value
      * @param integer $group
@@ -168,11 +165,10 @@ class acl
     public function set_permission($acl_key, $value, $group) 
     {
         global $db;
-        global $debug;
 
         $value = (int)$value;
         if (!array_key_exists($acl_key, $this->permission_list)) {
-            $debug->addMessage('The key \''.$acl_key.'\' does not exist.', true);
+            Debug::get()->addMessage('The key \''.$acl_key.'\' does not exist.', true);
             return false;
         }
         if (!$this->check_permission('set_permissions')) {
@@ -194,7 +190,7 @@ class acl
 
         // Make sure that you did not remove the permission necessary to change permissions
         if (!$this->check_permission('set_permissions')) {
-            $debug->addMessage('Removed vital permission \''.$acl_key.'.\' Reverting.', true);
+            Debug::get()->addMessage('Removed vital permission \''.$acl_key.'.\' Reverting.', true);
             $revert_permission_query = 'UPDATE `' . ACL_TABLE . '`
 				SET `value` = 1
 				WHERE `acl_id` = '.$this->permission_list[$acl_key]['id'].' AND `group` = '.$group;
@@ -242,7 +238,6 @@ class acl
     /**
      * create_key - Create an ACL key if it does not exist already
      * @global db $db Database connection object
-     * @global Debug $debug Debug object
      * @param string $name          Name of key (lowercase)
      * @param string $longname      More descriptive name
      * @param string $description   Description of what the key allows
@@ -252,27 +247,26 @@ class acl
     public function create_key($name,$longname,$description,$default_value = 0) 
     {
         global $db;
-        global $debug;
         // Validate parameters
         if (!is_string($name)) {
-            $debug->addMessage('$name is not a string', true);
+            Debug::get()->addMessage('$name is not a string', true);
             return false;
         }
         if (!is_string($longname)) {
-            $debug->addMessage('$longname is not a string', true);
+            Debug::get()->addMessage('$longname is not a string', true);
             return false;
         }
         if (!is_string($description)) {
-            $debug->addMessage('$description is not a string', true);
+            Debug::get()->addMessage('$description is not a string', true);
             return false;
         }
         if (!is_int($default_value)) {
-            $debug->addMessage('$default_value is not an integer', true);
+            Debug::get()->addMessage('$default_value is not an integer', true);
             return false;
         }
         // Check if key already exists
         if (isset($this->permission_list[$name])) {
-            $debug->addMessage('The ACL key '.$name.' already exists', true);
+            Debug::get()->addMessage('The ACL key '.$name.' already exists', true);
             return false;
         }
         

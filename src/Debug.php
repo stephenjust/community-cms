@@ -31,7 +31,7 @@ class Debug
     
     /**
      * Get instance of debug class
-     * @return \Debug
+     * @return Debug
      */
     public static function get() 
     {
@@ -83,7 +83,7 @@ class Debug
      * Return a list of traces formatted in HTML
      * @return string List of traces
      */
-    public function display_traces() 
+    public function displayTraces() 
     {
         $stack = null;
         if (count(Debug::$message_list) === 0) {
@@ -99,4 +99,3 @@ class Debug
         return $stack;
     }
 }
-?>

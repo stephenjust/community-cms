@@ -109,7 +109,6 @@ function format_content(Content $content)
     return (string) $template_article;
 }
 
-global $debug;
 $return = null;
 
 // (Un)publish articles on request

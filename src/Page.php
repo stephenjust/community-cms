@@ -116,22 +116,19 @@ class Page
 
     /**
      * set_page - Set the current page by whatever identifier is provided
-     * @global Debug $debug Debug object
      * @param mixed   $reference Numeric ID or String
      * @param boolean $is_id     If $reference is a numeric ID or special page, true; else a text ID
      * @return boolean Success
      */
     public static function setPage($reference, $is_id = true) 
     {
-        global $debug;
-
         if ($is_id == true) {
             if (!is_numeric($reference)) {
                 // Handle special page types
                 switch ($reference) {
                 default:
                     // Error case
-                    $debug->addMessage('Unknown special page type', true);
+                    Debug::get()->addMessage('Unknown special page type', true);
                     Page::$exists = false;
                     Page::getPageContent();
                     return false;
@@ -160,13 +157,11 @@ class Page
     /**
      * If a page exists, collect all information about it from the database.
      * @global db $db Database connection object
-     * @global Debug $debug Debug object
      * @return void
      */
     public static function getPageInformation() 
     {
         global $db;
-        global $debug;
 
         // Article Page
         if (isset($_GET['showarticle'])) {
@@ -177,10 +172,10 @@ class Page
 
         // Get either the page ID or text ID for use in the section below
         if (Page::$id > 0 && strlen(Page::$text_id) == 0) {
-            $debug->addMessage('Using numeric ID to get page information', false);
+            Debug::get()->addMessage('Using numeric ID to get page information', false);
             $page_query_id = '`page`.`id` = '.Page::$id;
         } elseif (strlen(Page::$text_id) > 0) {
-            $debug->addMessage('Using text ID to get page information', false);
+            Debug::get()->addMessage('Using text ID to get page information', false);
             $page_query_id = '`page`.`text_id` = \''.Page::$text_id.'\'';
         } else {
             return;
@@ -195,12 +190,12 @@ class Page
         $page_handle = $db->sql_query($page_query);
         if ($db->error[$page_handle] == 1) {
             header("HTTP/1.0 404 Not Found");
-            $debug->addMessage('Error looking up page information', true);
+            Debug::get()->addMessage('Error looking up page information', true);
             return;
         }
         if ($db->sql_num_rows($page_handle) != 1) {
             header("HTTP/1.0 404 Not Found");
-            $debug->addMessage('Page is not listed in database', true);
+            Debug::get()->addMessage('Page is not listed in database', true);
             return;
         }
         $page = $db->sql_fetch_assoc($page_handle);
@@ -237,7 +232,7 @@ class Page
                 header("HTTP/1.0 404 Not Found");
                 Page::$exists = false;
                 Page::$notification = '<strong>Error: </strong>System file not found.<br />';
-                $debug->addMessage('Including '.Page::$type.' returned false', true);
+                Debug::get()->addMessage('Including '.Page::$type.' returned false', true);
             }
         }
         return;
@@ -245,12 +240,9 @@ class Page
 
     /**
      * Handle "special" pages (i.e. change password page)
-     * @global Debug $debug
      */
     private static function getSpecialPage() 
     {
-        global $debug;
-
         Page::$type = 'special.php';
         Page::$showtitle = false;
         Page::$blocksleft = null;
@@ -262,7 +254,7 @@ class Page
             if(!Page::$content) {
                 Page::$exists = false;
                 Page::$notification = '<strong>Error: </strong>System file not found.<br />';
-                $debug->addMessage('Including '.Page::$type.' returned false', true);
+                Debug::get()->addMessage('Including '.Page::$type.' returned false', true);
             }
         }
     }
@@ -357,13 +349,11 @@ class Page
     /**
      * nav_menu - Returns HTML for navigation menu
      * @global db $db Database object
-     * @global Debug $debug Debugging object
      * @return string HTML for menu
      */
     private static function navMenu() 
     {
         global $db;
-        global $debug;
 
         // Prepare menu and submenu templates
         $template = new Template;
@@ -664,13 +654,12 @@ class Page
     public static function displayDebug()
     {
         global $db;
-        global $debug;
 
         $template = new Template;
         $template->loadFile('debug');
         $template->debug_queries = $db->print_queries();
         $template->debug_query_stats = $db->print_query_stats();
-        $template->debug_log = $debug->display_traces();
+        $template->debug_log = Debug::get()->displayTraces();
         echo $template;
         unset($template);
     }

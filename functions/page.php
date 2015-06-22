@@ -11,7 +11,6 @@ namespace CommunityCMS;
 /**
  * page_get_info - Get requested fields for a page entry in the database
  * @global db $db Database connection object
- * @global Debug $debug Debug object
  * @param integer $id     Page ID
  * @param array   $fields Database fields to get, default is all
  * @return mixed Returns false on failure, associative array of row on success
@@ -19,21 +18,20 @@ namespace CommunityCMS;
 function page_get_info($id,$fields = array('*')) 
 {
     global $db;
-    global $debug;
     // Validate parameters
     if (!is_numeric($id)) {
-        $debug->addMessage('ID is not an integer', true);
+        Debug::get()->addMessage('ID is not an integer', true);
         return false;
     }
     if(!is_array($fields)) {
-        $debug->addMessage('Field list is not an array', true);
+        Debug::get()->addMessage('Field list is not an array', true);
         return false;
     }
     // Add backticks to field names and ensure that there are no spaces in field names
     $field_count = count($fields);
     for ($i = 0; $i < $field_count; $i++) {
         if (preg_match('/ /', $fields[$i])) {
-            $debug->addMessage('Removed field "'.$fields[$i].'"', false);
+            Debug::get()->addMessage('Removed field "'.$fields[$i].'"', false);
             unset($fields[$i]);
             continue;
         }
@@ -46,11 +44,11 @@ function page_get_info($id,$fields = array('*'))
 		WHERE `id` = '.$id.' LIMIT 1';
     $page_info_handle = $db->sql_query($page_info_query);
     if ($db->error[$page_info_handle] === 1) {
-        $debug->addMessage('Failure to read page information', true);
+        Debug::get()->addMessage('Failure to read page information', true);
         return false;
     }
     if ($db->sql_num_rows($page_info_handle) != 1) {
-        $debug->addMessage('Page \''.$id.'\' not found', true);
+        Debug::get()->addMessage('Page \''.$id.'\' not found', true);
         return false;
     }
     $page_info = $db->sql_fetch_assoc($page_info_handle);
@@ -60,17 +58,15 @@ function page_get_info($id,$fields = array('*'))
 /**
  * Check if a new text ID is unique
  * @global db $db
- * @global Debug $debug
  * @param string $text_id
  * @return boolean 
  */
 function page_check_unique_id($text_id) 
 {
     global $db;
-    global $debug;
 
     if (strlen($text_id) == 0) {
-        $debug->addMessage('Text ID is empty', true);
+        Debug::get()->addMessage('Text ID is empty', true);
         return false;
     }
     $text_id_query = 'SELECT * FROM `'.PAGE_TABLE.'`
@@ -155,26 +151,25 @@ function page_add_link()
 
 function page_hide($id) 
 {
-    global $debug;
     // Check for permission to execute
     if (!acl::get()->check_permission('page_hide')) {
-        $debug->addMessage('Lacking permission to hide pages', true);
+        Debug::get()->addMessage('Lacking permission to hide pages', true);
         return false;
     }
     // Validate parameters
     if (!is_int($id)) {
-        $debug->addMessage('ID is not an integer', true);
+        Debug::get()->addMessage('ID is not an integer', true);
         return false;
     }
     // Check if page exists
     $page_info = get_page_info($id, array('title','hidden'));
     if (!$page_info) {
-        $debug->addMessage('Failed to retrieve page info', true);
+        Debug::get()->addMessage('Failed to retrieve page info', true);
         return false;
     }
     // Check if page is already hidden
     if ($page_info['hidden'] == 1) {
-        $debug->addMessage('Page is already hidden', true);
+        Debug::get()->addMessage('Page is already hidden', true);
         return false;
     }
     // FIXME: Stub/incomplete
@@ -375,11 +370,9 @@ function page_move_down($id)
 
 function page_path($id) 
 {
-    global $debug;
-
     // Don't execute this for special pages or non-existant pages
     if ($id == 0 || Page::$exists == false) {
-        $debug->addMessage('Not generating page path', false);
+        Debug::get()->addMessage('Not generating page path', false);
         return false;
     }
 

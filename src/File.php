@@ -17,16 +17,13 @@ class File
     
     /**
      * Create a file instance
-     * @global debug $debug
      * @param string $file
      * @throws FileException
      */
     public function __construct($file) 
     {
-        global $debug;
-
         if (!file_exists(File::$file_root.$file)) {
-            $debug->addMessage('Could not find file: '.File::$file_root.$file, true);
+            Debug::get()->addMessage('Could not find file: '.File::$file_root.$file, true);
             throw new FileException('File does not exist.');
         }
         if (preg_match('/\.\./', $file)) {

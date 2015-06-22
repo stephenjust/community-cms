@@ -203,7 +203,6 @@ class Gallery
         $thumb_dir = ROOT.'files/'.$this->thumb_dir;
 
         global $db;
-        global $debug;
 
         // Get file lists
         $gallery_files = scandir($image_dir);
@@ -234,14 +233,12 @@ class Gallery
     /**
      * Get the record ID for the specified gallery image from the database
      * @global db $db
-     * @global Debug $debug
      * @param string $image Filename
      * @return integer ID, or false if no record found
      */
     public function getImageID($image) 
     {
         global $db;
-        global $debug;
 
         $query = 'SELECT `i`.`id`
 			FROM `'.GALLERY_TABLE.'` `g`
@@ -252,7 +249,7 @@ class Gallery
 			LIMIT 1';
         $handle = $db->sql_query($query);
         if ($db->sql_num_rows($handle) == 0) {
-            $debug->addMessage('No image details set for '.$this->image_dir.'/'.$image);
+            Debug::get()->addMessage('No image details set for '.$this->image_dir.'/'.$image);
             return false;
         }
         $result = $db->sql_fetch_assoc($handle);
