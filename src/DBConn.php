@@ -16,14 +16,22 @@
 namespace CommunityCMS;
 
 /**
- * Description of DBConn
+ * Class to manage connections to a database through PDO
  *
  * @author Stephen
  */
 class DBConn
 {
+    /**
+     * Shared instance of the class
+     * @var DBConn
+     */
     private static $instance;
 
+    /**
+     * PDO Connection
+     * @var \PDO
+     */
     private $conn;
 
     const NOTHING = 1;
@@ -45,14 +53,22 @@ class DBConn
      */
     public static function get()
     {
-        if (!DBConn::$instance) {
-            DBConn::$instance = new DBConn();
+        if (!self::$instance) {
+            self::$instance = new self();
         }
 
-        return DBConn::$instance;
+        return self::$instance;
     }
 
-    public function query($query, $params = null, $return_type = DBConn::NOTHING)
+    /**
+     * Execute an SQL query
+     * @param string $query SQL query
+     * @param array $params Query parameters
+     * @param int $return_type
+     * @return mixed Depends on return_type
+     * @throws Exceptions\DBException
+     */
+    public function query($query, array $params = null, $return_type = self::NOTHING)
     {
         if (empty($query)) {
             throw new Exceptions\DBException("Empty Query");
@@ -85,7 +101,13 @@ class DBConn
         return $this->conn->prepare($stmt);
     }
 
-    public function execute(\PDOStatement $sth, $return_type = DBConn::NOTHING)
+    /**
+     * Execute a PDO statement
+     * @param \PDOStatement $sth
+     * @param int $return_type
+     * @return mixed Depends on return_type
+     */
+    public function execute(\PDOStatement $sth, $return_type = self::NOTHING)
     {
         $sth->execute();
         switch ($return_type) {
@@ -100,6 +122,10 @@ class DBConn
         }
     }
 
+    /**
+     * Get the ID of the previously inserted record
+     * @return string
+     */
     public function lastInsertId()
     {
         return $this->conn->lastInsertId();
