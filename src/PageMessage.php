@@ -150,7 +150,7 @@ class PageMessage
      */
     public function getAbbreviatedContent($len = 75) 
     {
-        return truncate(strip_tags($this->content, '<br>'), $len);
+        return StringUtils::ellipsize(strip_tags($this->content, '<br>'), $len);
     }
     
     /**

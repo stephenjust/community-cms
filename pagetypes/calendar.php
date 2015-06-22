@@ -114,7 +114,7 @@ case "day":
         $current_event->event_time = $event_time;
         $current_event->event_start_date = date('Y-m-d', $event_start);
         $current_event->event_heading = $day_events['header'];
-        $current_event->event_description = truncate(strip_tags($day_events['description']), 100);
+        $current_event->event_description = StringUtils::ellipsize(strip_tags($day_events['description']), 100);
         $event_rows .= (string)$current_event;
     }
     $day_template->event = $event_rows;
@@ -124,4 +124,3 @@ case "day":
     break;
 }
 return $page_content;
-?>
