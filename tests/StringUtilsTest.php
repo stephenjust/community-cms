@@ -41,4 +41,35 @@ class PaginationComponentTest extends \PHPUnit_Framework_TestCase
         $ellipsized_string = StringUtils::ellipsize($source_string, 32);
         $this->assertEquals("This string should be truncated...", $ellipsized_string);
     }
+
+    public function testFormat7DigitTelephoneNumber()
+    {
+        $class = new \ReflectionClass("\\CommunityCMS\\StringUtils");
+        $method = $class->getMethod("format7DigitTelephoneNumber");
+        $method->setAccessible(true);
+
+        $number = "1234567";
+        $formatted = $method->invokeArgs(null, [$number, "###.###.####"]);
+        $this->assertEquals("123.4567", $formatted);
+
+        $formatted2 = $method->invokeArgs(null, [$number, "###-###-####"]);
+        $this->assertEquals("123-4567", $formatted2);
+    }
+
+    public function testFormat10DigitTelephoneNumber()
+    {
+        $class = new \ReflectionClass("\\CommunityCMS\\StringUtils");
+        $method = $class->getMethod("format10DigitTelephoneNumber");
+        $method->setAccessible(true);
+
+        $number = "1234567890";
+        $formatted = $method->invokeArgs(null, [$number, "###.###.####"]);
+        $this->assertEquals("123.456.7890", $formatted);
+
+        $formatted2 = $method->invokeArgs(null, [$number, "###-###-####"]);
+        $this->assertEquals("123-456-7890", $formatted2);
+
+        $formatted3 = $method->invokeArgs(null, [$number, "(###) ###-####"]);
+        $this->assertEquals("(123) 456-7890", $formatted3);
+    }
 }

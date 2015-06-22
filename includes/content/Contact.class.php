@@ -331,7 +331,7 @@ class Contact
     
     public function getPhone() 
     {
-        return HTML::schars(format_tel($this->mPhone));
+        return HTML::schars(StringUtils::formatTelephoneNumber($this->mPhone));
     }
     
     public function getTitle() 
