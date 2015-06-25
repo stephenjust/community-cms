@@ -290,29 +290,7 @@ class Page
         $template = new Template;
         $template->loadFile('header');
 
-        // Include javascript
-        $js_include = '<script language="javascript" type="text/javascript"
-			src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-			<script language="javascript" type="text/javascript"
-			src="'.ROOT.'scripts/jquery.js"></script>
-			<script language="javascript" type="text/javascript"
-			src="'.ROOT.'scripts/jquery-ui.js" /></script>
-				<script language="javascript" type="text/javascript"
-			src="'.ROOT.'scripts/jquery-cycle.js" /></script>
-			<script language="javascript" type="text/javascript"
-			src="'.ROOT.'scripts/jquery-fe.js" /></script>
-			<script language="javascript" type="text/javascript"
-			src="'.ROOT.'scripts/ajax.js"></script>
-			<script language="javascript" type="text/javascript"
-			src="'.ROOT.'scripts/cms_fe.js"></script>';
-        if (Page::$type == 'tabs.php') {
-            $js_include .= '<script language="javascript" type="text/javascript"
-			src="'.ROOT.'scripts/jquery-ui.js"></script>
-			<script language="javascript" type="text/javascript"
-			src="'.ROOT.'scripts/jquery-fe.js"></script>';
-        }
-        $template->js_include = $js_include;
-        unset($js_include);
+        $template->js_include = '<script data-main="'.ROOT.'scripts/cms" src="/scripts/require.js"></script>';
 
         // Include StyleSheets
         $css_include =

@@ -43,15 +43,11 @@ class AdminPage extends Page
 
         $scripts = '<link type="text/css"
 			href="./scripts/jquery-ui/jquery-ui.css" rel="stylesheet" />
-			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-			<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-			<script language="javascript" type="text/javascript" src="./scripts/tiny_mce/jquery.tinymce.js"></script>
+                        <script data-main="./scripts/cms" src="./scripts/require.js"></script>
 			<script language="javascript" type="text/javascript"
 			src="./scripts/ajax.js"></script>
 			<script language="javascript" type="text/javascript"
-			src="./admin/scripts/admin.js?t='.$admin_js_mtime.'"></script>
-			<script language="javascript" type="text/javascript"
-			src="./scripts/jquery-custom.js"></script>';
+			src="./admin/scripts/admin.js?t='.$admin_js_mtime.'"></script>';
         $template->scripts = $scripts;
         unset($scripts);
 

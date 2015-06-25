@@ -1,21 +1,3 @@
-window.onload=$(function(){
-	// Nav Menu
-	$('#nav-menu').dropDownMenu({
-		timer: 1000,
-		parentMO: 'menuitem-hover',
-		childMO: 'submenuitem-hover'
-	});
-	
-
-	// News Ticker
-	$('#news-scroller-content').cycle({
-		fx:		'scrollUp',
-		next:	'#scroll_next',
-		prev:	'#scroll_prev',
-		fit:	'1'
-	});
-});
-
 function minipoll_vote(pollid,answerid) {
 	var urlBase = "./scripts/minipoll_vote.php";
 	var answerdiv = document.getElementById("minipoll_answer_block_" + pollid);
