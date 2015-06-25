@@ -6,12 +6,15 @@
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
+
+
+namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
 
-namespace CommunityCMS;
 
 /**
  * Photo gallery class
@@ -176,7 +179,7 @@ class Gallery
      */
     public function getImageDir() 
     {
-        return 'files/'.$this->image_dir;
+        return $this->image_dir;
     }
     
     /**
@@ -185,7 +188,7 @@ class Gallery
      */
     public function getThumbDir() 
     {
-        return 'files/'.$this->thumb_dir;
+        return $this->thumb_dir;
     }
     
     /**
@@ -405,4 +408,3 @@ class Gallery
         }
     }
 }
-?>

@@ -7,6 +7,8 @@
  * @package CommunityCMS.main
  */
 
+namespace CommunityCMS;
+
 /**#@+
  * @ignore
  */
@@ -24,13 +26,14 @@ if (!is_numeric($_GET['id'])) {
 }
 
 require(ROOT.'config.php');
+require_once(ROOT.'vendor/autoload.php');
 require(ROOT.'include.php');
 
 initialize('ajax');
 
 try {
 	$gallery = new Gallery((int) $_GET['id']);
-	$galleryImageDir = $gallery->getImageDir();
+	$galleryImageDir = 'files/'.$gallery->getImageDir();
 }
 catch (GalleryException $e)
 {

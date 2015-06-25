@@ -26,7 +26,7 @@ function gallery_upload_box($gallery_id,$gallery_dir)
         Debug::get()->addMessage('Gallery ID not numeric', true);
         return false;
     }
-    if (!file_exists(ROOT.$gallery_dir)) {
+    if (!file_exists(ROOT.'files/'.$gallery_dir)) {
         return '<span style="font-weight: bold; color: #FF0000;">The gallery folder no longer exists.<br />
 			Please delete this gallery.</span>';
     }
@@ -44,11 +44,11 @@ function gallery_upload_box($gallery_id,$gallery_dir)
 function gallery_photo_manager($gallery_id) 
 {
     $gallery = new Gallery($gallery_id);
-    if (!file_exists(ROOT.$gallery->getImageDir())) {
+    if (!file_exists(ROOT.'files/'.$gallery->getImageDir())) {
         Debug::get()->addMessage('Gallery folder does not exist', true);
         return false;
     }
-    if (!file_exists(ROOT.$gallery->getImageDir().'/thumbs')) {
+    if (!file_exists(ROOT.'files/'.$gallery->getImageDir().'/thumbs')) {
         Debug::get()->addMessage('Gallery thumbnail dir does not exist', true);
         return false;
     }
@@ -59,7 +59,7 @@ function gallery_photo_manager($gallery_id)
         return 'There are currently no images in this gallery.';
     }
     $image_manager = '<table border="0px">';
-    $image_path = ROOT.$gallery->getImageDir().'/';
+    $image_path = ROOT.'files/'.$gallery->getImageDir().'/';
     $thumbs_path = $image_path.'thumbs/';
     for ($i = 0; $i < count($gallery_images); $i++) {
         $image_manager .= '<form method="post" action="?module=gallery_manager&amp;
