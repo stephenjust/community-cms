@@ -54,8 +54,6 @@ if ($_GET['action'] == 'save') {
         SysConfig::get()->setValue('news_show_author', $show_author);
         SysConfig::get()->setValue('news_show_edit_time', $show_edit);
         SysConfig::get()->setValue('news_default_publish_value', $def_pub_val);
-        SysConfig::get()->setValue('gallery_app', $_POST['gallery_app']);
-        SysConfig::get()->setValue('gallery_dir', $_POST['gallery_dir']);
         SysConfig::get()->setValue('contacts_display_mode', $_POST['contacts_display_mode']);
         echo 'Successfully edited site information.<br />'."\n";
         Log::addMessage('Updated site information.');
@@ -117,20 +115,6 @@ $form->add_select(
 $form->add_checkbox('author', 'Show Author', SysConfig::get()->getValue('news_show_author'));
 $form->add_checkbox('etime', 'Show Edit Time', SysConfig::get()->getValue('news_show_edit_time'));
 $form->add_select('default_publish_value', 'Articles default to', array(0,1), array('Un-published','Published'), SysConfig::get()->getValue('news_default_publish_value'));
-
-$form->add_heading('Gallery Settings');
-$form->add_select(
-    'gallery_app',
-    'Gallery Type',
-    array('built-in','simpleviewer'),
-    array('Built-In','SimpleViewer'),
-    SysConfig::get()->getValue('gallery_app')
-);
-$form->add_textbox(
-    'gallery_dir',
-    'Gallery Directory',
-    SysConfig::get()->getValue('gallery_dir')
-);
 
 $form->add_heading('Contact List Settings');
 $form->add_select(

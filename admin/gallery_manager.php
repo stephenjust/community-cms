@@ -85,15 +85,6 @@ function gallery_photo_manager($gallery_id)
 
 $tab_layout = new Tabs;
 
-// Check to make sure a gallery application is selected
-if (SysConfig::get()->getValue('gallery_app') == 'disabled' || SysConfig::get()->getValue('gallery_app') == null) {
-    throw new AdminException(
-        'There is no image gallery application configured. Please copy '.
-        'one of the supported image gallery applications to your server and use '.
-        'the "Gallery Settings" page to configure it.'
-    ); 
-}
-
 // Process actions
 switch ($_GET['action']) {
 case 'create':
@@ -196,24 +187,6 @@ default:
     break;
 
 // ----------------------------------------------------------------------------
-
-case 'simpleviewer':
-    // Check if path is correct
-    $gallery_dir = SysConfig::get()->getValue('gallery_dir');
-    $gallery_file = ROOT.$gallery_dir.'/web/simpleviewer.swf';
-    if (!file_exists($gallery_file)) {
-        echo 'Could not find SimpleViewer application file. Please
-				check your configuration settings. The current configuration
-				says to look here: '.$gallery_file;
-        return true;
-    }
-
-    // Check if 'example' folder still exists
-    $example_file = ROOT.$gallery_dir.'/examples/simpleviewer.swf';
-    if (file_exists($example_file)) {
-        Debug::get()->addMessage('The SimpleViewer example folder still exists', false);
-    }
-    // Continue with same procedure as 'built-in'...
 
 case 'built-in':
     $gallery_list_query = 'SELECT * FROM `'.GALLERY_TABLE.'` ORDER BY `id` DESC';

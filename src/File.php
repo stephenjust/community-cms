@@ -24,7 +24,7 @@ class File
     {
         if (!file_exists(File::$file_root.$file)) {
             Debug::get()->addMessage('Could not find file: '.File::$file_root.$file, true);
-            throw new FileException('File does not exist.');
+            throw new FileException(sprintf('File "%s" does not exist.', File::$file_root.$file));
         }
         if (preg_match('/\.\./', $file)) {
             throw new FileException('Invalid file path.'); 

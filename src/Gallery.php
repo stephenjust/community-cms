@@ -2,19 +2,17 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2011 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
-
 namespace CommunityCMS;
-
-// Security Check
-if (@SECURITY != 1) {
-    die ('You cannot access this page directly.');
-}
-
 
 /**
  * Photo gallery class
@@ -199,7 +197,24 @@ class Gallery
     {
         return Gallery::$engine;
     }
-    
+
+    public function getImages2()
+    {
+        $image_dir = ROOT.'files/'.$this->image_dir;
+        $files = scandir($image_dir);
+
+        $results = array();
+        foreach ($files as $file) {
+            if (is_dir($image_dir . DIRECTORY_SEPARATOR . $file)) {
+                continue;
+            }
+
+            $results[] = new GalleryImage($image_dir . DIRECTORY_SEPARATOR . $file, $this->id);
+        }
+
+        return $results;
+    }
+
     public function getImages() 
     {
         $image_dir = ROOT.'files/'.$this->image_dir;
@@ -382,29 +397,13 @@ class Gallery
     
     function __toString() 
     {
-        switch (Gallery::$engine) {
-        case 'built-in':
-            return '<div id="image_gallery-'.$this->id.'" class="image_gallery">
-					<script type="text/javascript">gallery_load(\''.$this->id.'\');</script>
-					<noscript>You need to enable Javascript to view this image gallery.</noscript>
-					</div>';
-          break;
-        case 'simpleviewer':
-            return '<object width="100%" height="450px">
-					<param name="movie" value="'.SysConfig::get()->getValue('gallery_dir').'/web/svcore/swf/simpleviewer.swf?galleryURL='.$this->info_file.'"></param>
-					<param name="allowFullScreen" value="true"></param>
-					<param name="allowscriptaccess" value="always"></param>
-					<param name="bgcolor" value="FFFFFF"></param>
-					<param name="wmode" value="transparent"></param>
-					<embed src="'.SysConfig::get()->getValue('gallery_dir').'/web/svcore/swf/simpleviewer.swf?galleryURL='.$this->info_file.'"
-					type="application/x-shockwave-flash" allowscriptaccess="always"
-					allowfullscreen="true" width="100%" height="450px" bgcolor="FFFFFF"
-					wmode="transparent">
-					</embed></object>';
-          break;
-        default:
-            return null;
-          break;
+        try {
+            $c = new Component\GalleryComponent();
+            $c->setId($this->id);
+            return $c->render();
+        } catch (\Exception $ex) {
+            Debug::get()->addMessage($ex->getTraceAsString(), true);
+            return $ex->getMessage();
         }
     }
 }
