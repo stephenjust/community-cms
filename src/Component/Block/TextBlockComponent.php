@@ -29,10 +29,10 @@ class TextBlockComponent extends BlockComponent
 
     public function render()
     {
-        $article = News::get($this->attributes['article_id']);
+        $article = News::get($this->block->getAttributes()['article_id']);
         $tpl = new Tpl();
         $tpl->assign('article', $article);
-        $tpl->assign('show_border', $this->attributes['show_border'] == "yes");
+        $tpl->assign('show_border', $this->block->getAttributes()['show_border'] == "yes");
         return $tpl->fetch("textBlock.tpl");
     }
 }

@@ -14,8 +14,6 @@
 
 namespace CommunityCMS;
 
-use CommunityCMS\Component\Block\TextBlockComponent;
-
 /**
  * Class to represent a block
  */
@@ -24,28 +22,6 @@ class Block
     private $block_id;
     private $type;
     private $attributes;
-
-    public static function getComponent($id)
-    {
-        Debug::get()->addMessage(sprintf("Getting component for block %d", $id));
-        $query = "SELECT `type` FROM `".BLOCK_TABLE."` "
-            . "WHERE `id` = :id LIMIT 1";
-        try {
-            $result = DBConn::get()->query(
-                $query,
-                [":id" => $id],
-                DBConn::FETCH
-            );
-            switch ($result['type']) {
-                case "text":
-                    return new TextBlockComponent($id);
-                default:
-                    throw new \Exception(sprintf("Unknown block type '%s'", $result['type']));
-            }
-        } catch (DBException $ex) {
-            throw new \Exception("Failed to get block type", $ex);
-        }
-    }
     
     public function __construct($id)
     {

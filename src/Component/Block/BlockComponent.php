@@ -14,23 +14,35 @@
 
 namespace CommunityCMS\Component\Block;
 
-use CommunityCMS\DBConn;
+use CommunityCMS\Block;
 use CommunityCMS\Component\BaseComponent;
-use CommunityCMS\Exceptions\DBException;
 
 /**
  * Base class for all Blocks
  */
 abstract class BlockComponent extends BaseComponent
 {
-    protected $block_id;
-    protected $attributes;
+    /**
+     * @var Block
+     */
+    protected $block;
 
-    public function __construct($id)
+    public static function getComponent(Block $block)
     {
-        $this->block_id = $id;
+        switch ($block->getType()) {
+            case "text":
+                return new TextBlockComponent($block);
+            case "calendarcategories":
+                return new CalendarCategoryBlockComponent($block);
+            default:
+                throw new \Exception(sprintf("Unknown block type '%s'", $block->getType()));
+        }
+    }
+
+    public function __construct(Block $block)
+    {
+        $this->block = $block;
         $this->validateBlockType();
-        $this->getAttributes();
     }
 
     /**
@@ -39,40 +51,10 @@ abstract class BlockComponent extends BaseComponent
      */
     private function validateBlockType()
     {
-        $query = "SELECT `type` FROM `".BLOCK_TABLE."` "
-            . "WHERE `id` = :id LIMIT 1";
-        try {
-            $result = DBConn::get()->query(
-                $query,
-                [":id" => $this->block_id],
-                DBConn::FETCH
+        if ($this->block->getType() != $this->getType()) {
+            throw new \Exception(
+                sprintf("Block is not of type %s", $this->getType())
             );
-            if ($result['type'] != $this->getType()) {
-                throw new \Exception(
-                    sprintf("Block %d is not of type %s", $this->block_id, $this->getType())
-                );
-            }
-        } catch (DBException $ex) {
-            throw new \Exception("Failed to get block type", $ex);
-        }
-    }
-
-    protected function getAttributes()
-    {
-        $query = "SELECT `attributes` FROM `".BLOCK_TABLE."` "
-            . "WHERE `id` = :id LIMIT 1";
-        try {
-            $result = DBConn::get()->query(
-                $query,
-                [":id" => $this->block_id],
-                DBConn::FETCH);
-            $attribute_pairs = explode(",", $result['attributes']);
-            foreach ($attribute_pairs as $attribute_pair) {
-                list($key, $value) = explode("=", $attribute_pair);
-                $this->attributes[$key] = $value;
-            }
-        } catch (DBException $ex) {
-            throw new \Exception("Failed to get block attributes", $ex);
         }
     }
 

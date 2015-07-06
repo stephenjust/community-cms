@@ -7,10 +7,8 @@
  * @package   CommunityCMS.main
  */
 namespace CommunityCMS;
-// Security Check
-if (@SECURITY != 1) {
-    die ('You cannot access this page directly.');
-}
+
+use CommunityCMS\Component\Block\BlockComponent;
 
 /**
  * get_block - Get contents of a block
@@ -23,7 +21,7 @@ function get_block($block_id = null)
     if ($block_id == null) {
         return null;
     }
-    return Block::getComponent($block_id)->render();
+    return BlockComponent::getComponent(new Block($block_id))->render();
 }
 
 /**
@@ -292,4 +290,3 @@ function block_edit_form($type,$vars = array())
     }
     return $return;
 }
-?>
