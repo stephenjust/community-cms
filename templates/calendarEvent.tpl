@@ -1,5 +1,5 @@
-<a href="?{$page->getURLReference()}&amp;view=month&amp;m={$event->getStart()|date_format:"n"}&amp;y={$event->getStart()|date_format:"Y"}">Back to month view</a><br />
-<a href="?{$page->getURLReference()}&amp;view=day&amp;d={$event->getStart()|date_format:"d"}&amp;m={$event->getStart()|date_format:"n"}&amp;y={$event->getStart()|date_format:"Y"}">Back to day view</a><br />
+<a href="?{$page_url_ref}&amp;view=month&amp;m={$event->getStart()|date_format:"n"}&amp;y={$event->getStart()|date_format:"Y"}">Back to month view</a><br />
+<a href="?{$page_url_ref}&amp;view=day&amp;d={$event->getStart()|date_format:"d"}&amp;m={$event->getStart()|date_format:"n"}&amp;y={$event->getStart()|date_format:"Y"}">Back to day view</a><br />
 <div class="cal_event" itemscope itemtype="http://schema.org/Event">
 	{if isset($editbar)}{$editbar}{/if}
 	<h1 class="cal_event-heading" itemprop="name">{$event->getTitle()}</h1>

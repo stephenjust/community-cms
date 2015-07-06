@@ -115,7 +115,7 @@ class calendar_event
         $eventTpl->assign('event', $event);
         $eventTpl->assign('time_format', SysConfig::get()->getValue('time_format'));
         $eventTpl->assign('show_author', SysConfig::get()->getValue('calendar_show_author'));
-        $eventTpl->assign('page_url', Page::$url_reference);
+        $eventTpl->assign('page_url_ref', Page::$url_reference);
 
         $this->event_text = $eventTpl->fetch('calendarEvent.tpl');
         Page::$title .= ' - '.stripslashes($event->getTitle().' - '.date('M d, Y', $event->getStart()));
