@@ -40,8 +40,8 @@ foreach ($article_ids AS $id) {
 $list_rows = array();
 foreach ($articles AS $article) {
     $current_row = array();
-    $current_row[] = '<input type="checkbox" name="item_'.$article->getId().'" />';
-    $current_row[] = $article->getId();
+    $current_row[] = '<input type="checkbox" name="item_'.$article->getID().'" />';
+    $current_row[] = $article->getID();
     $article_title = $article->getTitle();
     if (!$article->isPublished()) {
         $article_title .= ' (Not published)'; 
@@ -54,25 +54,25 @@ foreach ($articles AS $article) {
     if (acl::get()->check_permission('news_delete')) {
         $current_row[] = '<a href="javascript:confirm_delete(\'?'
         .'module=news&amp;action=delete&amp;id='
-        .$article->getId().'&amp;page='.$_GET['page'].'\')">'
+        .$article->getID().'&amp;page='.$_GET['page'].'\')">'
         .'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
         .'height="16px" border="0px" /></a>';
     }
     if (acl::get()->check_permission('news_edit')) {
         $current_row[] = '<a href="?module=news&amp;action=edit&amp;id='
-        .$article->getId().'"><img src="./admin/templates/default/images/edit.png" '
+        .$article->getID().'"><img src="./admin/templates/default/images/edit.png" '
         .'alt="Edit" width="16px" height="16px" border="0px" /></a>';
     }
     if (acl::get()->check_permission('news_publish')) {
         if ($article->isPublished()) {
-            $current_row[] = '<a href="?module=news&amp;action=unpublish&amp;id='.$article->getId().'&amp;page='.$_GET['page'].'">
+            $current_row[] = '<a href="?module=news&amp;action=unpublish&amp;id='.$article->getID().'&amp;page='.$_GET['page'].'">
 				<img src="./admin/templates/default/images/unpublish.png" alt="Unpublish" width="16px" height="16px" border="0px" /></a>';
         } else {
-            $current_row[] = '<a href="?module=news&amp;action=publish&amp;id='.$article->getId().'&amp;page='.$_GET['page'].'">
+            $current_row[] = '<a href="?module=news&amp;action=publish&amp;id='.$article->getID().'&amp;page='.$_GET['page'].'">
 				<img src="./admin/templates/default/images/publish.png" alt="Publish" width="16px" height="16px" border="0px" /></a>';
         }
     }
-    $current_row[] = '<input type="text" size="3" maxlength="11" name="pri-'.$article->getId().'" value="'.$article->getPriority().'" />';
+    $current_row[] = '<input type="text" size="3" maxlength="11" name="pri-'.$article->getID().'" value="'.$article->getPriority().'" />';
     $list_rows[] = $current_row;
 } // FOR
 

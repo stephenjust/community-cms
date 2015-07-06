@@ -34,7 +34,7 @@ class CalendarEventPage extends Page {
 		if (acl::get()->check_permission('adm_calendar_edit_date')) {
 			$editbar = new EditBar();
 			$editbar->set_label('Event');
-			$editbar->add_control('admin.php?module=calendar_edit_date&id='.$this->event->getId(),
+			$editbar->add_control('admin.php?module=calendar_edit_date&id='.$this->event->getID(),
 					'edit.png', 'Edit', array('adm_calendar_edit_date','admin_access'));
 			$eventTpl->assign('editbar', $editbar);
 		}

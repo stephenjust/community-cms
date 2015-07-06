@@ -77,4 +77,3 @@ function dynamic_article_link_list($page = 0)
     $return .= '</table>';
     return $return;
 }
-?>

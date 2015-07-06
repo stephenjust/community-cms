@@ -104,9 +104,10 @@ class News
         $this->page = $data['page'];
         $this->published = $data['publish'];
         $this->priority = $data['priority'];
+        $this->date = strtotime($data['date']);
     }
     
-    public function getId() 
+    public function getID()
     {
         return $this->id;
     }
@@ -134,5 +135,30 @@ class News
         if ($this->published) { return true; 
         }
         return false;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public function isDateVisible()
+    {
+        return $this->showdate;
+    }
+
+    public function isAuthorVisible()
+    {
+        return SysConfig::get()->getValue("news_show_author");
     }
 }
