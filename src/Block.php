@@ -2,60 +2,87 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2008-2013 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2009-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\Block\TextBlockComponent;
+
+/**
+ * Class to represent a block
+ */
 class Block
 {
-    public $block_id;
-    public $type;
+    private $block_id;
+    private $type;
+    private $attributes;
 
-    /**
-     * $attribute - Array of block attributes
-     * @var array
-     * @access public
-     */
-    public $attribute = array();
-
-    public function __set($name,$value) 
+    public static function getComponent($id)
     {
-        $this->$name = $value;
+        Debug::get()->addMessage(sprintf("Getting component for block %d", $id));
+        $query = "SELECT `type` FROM `".BLOCK_TABLE."` "
+            . "WHERE `id` = :id LIMIT 1";
+        try {
+            $result = DBConn::get()->query(
+                $query,
+                [":id" => $id],
+                DBConn::FETCH
+            );
+            switch ($result['type']) {
+                case "text":
+                    return new TextBlockComponent($id);
+                default:
+                    throw new \Exception(sprintf("Unknown block type '%s'", $result['type']));
+            }
+        } catch (DBException $ex) {
+            throw new \Exception("Failed to get block type", $ex);
+        }
+    }
+    
+    public function __construct($id)
+    {
+        $this->block_id = $id;
+        $this->populateAttributes();
     }
 
-    public function get_block_information() 
+    public function getAttributes()
     {
-        if (!isset($this->block_id)) {
-            return false;
-        }
-        global $db;
-
-        $block_attribute_query = 'SELECT * FROM ' . BLOCK_TABLE . '
-			WHERE id = '.$this->block_id.' LIMIT 1';
-        $block_attribute_handle = $db->sql_query($block_attribute_query);
-        $block = $db->sql_fetch_assoc($block_attribute_handle);
-        $this->type = $block['type'];
-        Debug::get()->addMessage('Block type is '.$this->type, false);
-        $block_attribute_temp = $block['attributes'];
-        if (strlen($block_attribute_temp) > 0) {
-            $block_attribute_temp = explode(",", $block_attribute_temp);
-            $block_attribute_count = count($block_attribute_temp);
-        } else {
-            $block_attribute_count = 0;
-        }
-        for ($i = 0; $i < $block_attribute_count; $i++) {
-            $attribute_temp = explode('=', $block_attribute_temp[$i]);
-            $this->attribute[$attribute_temp[0]] = $attribute_temp[1];
-            Debug::get()->addMessage('Block '.$this->block_id.' has attribute '.$attribute_temp[0].' = '.$attribute_temp[1], false);
-        }
-        return;
+        return $this->attributes;
     }
 
-    function __toString() 
+    public function getType()
     {
+        return $this->type;
+    }
 
+    protected function populateAttributes()
+    {
+        $query = "SELECT `type`, `attributes` FROM `".BLOCK_TABLE."` "
+            . "WHERE `id` = :id LIMIT 1";
+        try {
+            $result = DBConn::get()->query(
+                $query,
+                [":id" => $this->block_id],
+                DBConn::FETCH);
+            $attribute_pairs = explode(",", $result['attributes']);
+            foreach ($attribute_pairs as $attribute_pair) {
+                if ($attribute_pair == null) {
+                    continue;
+                }
+                list($key, $value) = explode("=", $attribute_pair);
+                $this->attributes[$key] = $value;
+            }
+            $this->type = $result['type'];
+        } catch (DBException $ex) {
+            throw new \Exception("Failed to get block attributes", $ex);
+        }
     }
 }

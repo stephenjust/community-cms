@@ -62,17 +62,15 @@ case 'edit':
         break;
     }
     $edit_id = (int)$_GET['id'];
-    $edit_block = new block;
-    $edit_block->block_id = $edit_id;
-    $edit_block->get_block_information();
-    $options = block_edit_form($edit_block->type, $edit_block->attribute);
+    $edit_block = new Block($edit_id);
+    $options = block_edit_form($edit_block->getType(), $edit_block->getAttributes());
 
     $tab_content['edit'] = null;
-    $tab_content['edit'] .= 'Block Type: '.$edit_block->type.'<br />'."\n";
+    $tab_content['edit'] .= 'Block Type: '.$edit_block->getType().'<br />'."\n";
     $tab_content['edit'] .= 'Options:<br />'."\n";
     $tab_content['edit'] .= '<form method="post" action="'.HTML::schars('?module=block_manager&action=edit_save').'">'."\n"
     .$options.'<input type="hidden" name="id" value="'.$edit_id.'" />'."\n";
-    if (count($edit_block->attribute) != 0) {
+    if (count($edit_block->getAttributes()) != 0) {
         $tab_content['edit'] .= '<input type="Submit" value="Save Changes" />';
     }
     $tab_content['edit'] .= '</form><form method="post" action="?module=block_manager"><input type="submit" value="Go back" /></form>'."\n";
