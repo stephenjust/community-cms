@@ -72,4 +72,39 @@ class PaginationComponentTest extends \PHPUnit_Framework_TestCase
         $formatted3 = $method->invokeArgs(null, [$number, "(###) ###-####"]);
         $this->assertEquals("(123) 456-7890", $formatted3);
     }
+
+    public function testParseTime()
+    {
+        $this->assertEquals("12:00", StringUtils::parseTime("12:00"));
+        $this->assertEquals("12:00", StringUtils::parseTime("12:00 p"));
+        $this->assertEquals("12:00", StringUtils::parseTime("12:00 PM"));
+        $this->assertEquals("12:00", StringUtils::parseTime("12:00PM"));
+        $this->assertEquals("12:00", StringUtils::parseTime("12 PM"));
+
+        $this->assertEquals("00:00", StringUtils::parseTime("00:00"));
+        $this->assertEquals("00:00", StringUtils::parseTime("12:00 a"));
+        $this->assertEquals("00:00", StringUtils::parseTime("12:00 AM"));
+        $this->assertEquals("00:00", StringUtils::parseTime("12:00AM"));
+        $this->assertEquals("00:00", StringUtils::parseTime("12 AM"));
+
+        $this->assertEquals("18:04", StringUtils::parseTime("18:04"));
+        $this->assertEquals("18:04", StringUtils::parseTime("6:04p"));
+        $this->assertEquals("18:04", StringUtils::parseTime("6:04 PM"));
+
+        $this->assertEquals("05:10", StringUtils::parseTime("5:10"));
+        $this->assertEquals("05:10", StringUtils::parseTime("05:10"));
+        $this->assertEquals("05:10", StringUtils::parseTime("5:10a"));
+    }
+
+    public function testParseTimeInvalid()
+    {
+        $this->assertEquals(0, StringUtils::parseTime("foobar"));
+    }
+
+    public function testRemoveComments()
+    {
+        $this->assertEquals("Test string", StringUtils::removeComments("Test string<!-- Comment -->"));
+        $this->assertEquals("Test string", StringUtils::removeComments("Test<!-- Comment --> string"));
+        $this->assertEquals("Test string", StringUtils::removeComments("<!-- Comment -->Test string"));
+    }
 }

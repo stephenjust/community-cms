@@ -67,7 +67,7 @@ class CalEvent
                 ':category_hide' => (int) $category_hide,
                 ':start' => $start, ':end' => $end,
                 ':header' => $title,
-                ':description' => remove_comments($description),
+                ':description' => StringUtils::removeComments($description),
                 ':location' => $location,
                 ':location_hide' => (int) $location_hide,
                 ':author' => $author, ':image' => $image,
@@ -164,7 +164,7 @@ class CalEvent
 
         // Sanitize Inputs
         $title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
-        $description = $db->sql_escape_string(remove_comments($description));
+        $description = $db->sql_escape_string(StringUtils::removeComments($description));
         $author = $db->sql_escape_string(htmlspecialchars(strip_tags($author)));
         $category = (int) $category;
         $start = strtotime($start);
@@ -338,7 +338,7 @@ class CalEvent
         $month = $event_date_parts[0];
         $day = $event_date_parts[1];
 
-        $time = parse_time($time_string);
+        $time = StringUtils::parseTime($time_string);
 
         return sprintf('%d-%d-%d %s', $year, $month, $day, $time);
     }

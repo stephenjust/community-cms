@@ -125,4 +125,46 @@ class StringUtils
             substr($phone_number, 6, 4)
         );
     }
+
+    /**
+     * Convert possible time formats to H:i format
+     * @param string $time Time in any format
+     * @return string Time in H:i format
+     */
+    public static function parseTime($time)
+    {
+        $matches = array();
+        if (preg_match('#^([0-1]?[0-9]):([0-5][0-9]) ?([ap]m?)$#i', $time, $matches)) {
+            // Check for time in h:i a format
+            $hour = $matches[1];
+            $minute = $matches[2];
+            if ((stristr($matches[3], "p") && $hour != 12) ||
+                (stristr($matches[3], "a") && $hour == 12)) {
+                $hour = ($hour + 12) % 24;
+            }
+            return sprintf("%02d:%02d", $hour, $minute);
+        } elseif (preg_match('#^([0-2]?[0-9]):([0-5][0-9])$#i', $time, $matches)) {
+            // Check for time in G:i format
+            return sprintf("%02d:%02d", $matches[1], $matches[2]);
+        } elseif (preg_match('#^([0-1]?[0-9]) ?([ap]m?)$#i', $time, $matches)) {
+            // Check for time in g:i a format
+            $hour = $matches[1];
+            if ((stristr($matches[2], "p") && $hour != 12) ||
+                (stristr($matches[2], "a") && $hour == 12)) {
+                $hour = ($hour + 12) % 24;
+            }
+            return sprintf("%02d:%02d", $hour, 0);
+        }
+        return 0;
+    }
+
+    /**
+    * Remove HTML comment tags from a string
+    * @param string $text Input string(s)
+    * @return string Output, without comments
+    */
+   public static function removeComments($text)
+   {
+       return preg_replace('/<!--.+-->/', null, $text);
+   }
 }

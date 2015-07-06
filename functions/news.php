@@ -33,7 +33,7 @@ function news_create($title,$content,$page,$author,$image,$publish,$showdate,$de
 
     // Sanitize inputs
     $title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
-    $content = $db->sql_escape_string(remove_comments($content));
+    $content = $db->sql_escape_string(StringUtils::removeComments($content));
     if ($page != null && $page < 1) {
         throw new \Exception('An invalid page was selected.'); 
     }
@@ -106,7 +106,7 @@ function news_edit($id,$title,$content,$page,$image,$showdate,$deldate)
         throw new \Exception('An invalid article ID was provided.'); 
     }
     $title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
-    $content = $db->sql_escape_string(remove_comments($content));
+    $content = $db->sql_escape_string(StringUtils::removeComments($content));
     if ($page != null && $page < 1) {
         throw new \Exception('An invalid page was selected.'); 
     }

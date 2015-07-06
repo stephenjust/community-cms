@@ -34,8 +34,8 @@ case 'edit':
         $year = $event_date_parts[2];
         $month = $event_date_parts[0];
         $day = $event_date_parts[1];
-        $start_time = parse_time($_POST['stime']);
-        $end_time = parse_time($_POST['etime']);
+        $start_time = StringUtils::parseTime($_POST['stime']);
+        $end_time = StringUtils::parseTime($_POST['etime']);
         $cat_hide = checkbox($_POST['category_check']);
         $loc_hide = checkbox($_POST['location_check']);
         if (!$start_time || !$end_time || $start_time > $end_time) {
