@@ -34,6 +34,8 @@ abstract class BlockComponent extends BaseComponent
                 return new TextBlockComponent($block);
             case "calendarcategories":
                 return new CalendarCategoryBlockComponent($block);
+            case "events":
+                return new EventsBlockComponent($block);
             default:
                 throw new \Exception(sprintf("Unknown block type '%s'", $block->getType()));
         }
