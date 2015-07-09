@@ -206,6 +206,15 @@ class Content
     {
         return (boolean) $this->publish;
     }
+
+    /**
+     * Get the priority of the item
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
     
     /**
      * True if the date should be visible

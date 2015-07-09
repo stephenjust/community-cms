@@ -30,12 +30,7 @@ if (!acl::get()->check_permission('adm_news') || !acl::get()->check_permission('
 
 if (empty($_GET['page'])) { $_GET['page'] = null; 
 }
-$article_ids = Content::getByPage($_GET['page']);
-
-$articles = array();
-foreach ($article_ids AS $id) {
-    $articles[] = new Content($id);
-}
+$articles = Content::getByPage($_GET['page']);
 
 $list_rows = array();
 foreach ($articles AS $article) {
@@ -43,7 +38,7 @@ foreach ($articles AS $article) {
     $current_row[] = '<input type="checkbox" name="item_'.$article->getID().'" />';
     $current_row[] = $article->getID();
     $article_title = $article->getTitle();
-    if (!$article->isPublished()) {
+    if (!$article->published()) {
         $article_title .= ' (Not published)'; 
     }
     $current_row[] = $article_title;
@@ -64,7 +59,7 @@ foreach ($articles AS $article) {
         .'alt="Edit" width="16px" height="16px" border="0px" /></a>';
     }
     if (acl::get()->check_permission('news_publish')) {
-        if ($article->isPublished()) {
+        if ($article->published()) {
             $current_row[] = '<a href="?module=news&amp;action=unpublish&amp;id='.$article->getID().'&amp;page='.$_GET['page'].'">
 				<img src="./admin/templates/default/images/unpublish.png" alt="Unpublish" width="16px" height="16px" border="0px" /></a>';
         } else {
