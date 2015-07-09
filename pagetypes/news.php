@@ -10,6 +10,7 @@
 namespace CommunityCMS;
 
 use CommunityCMS\Component\EditBarComponent;
+use CommunityCMS\Exceptions\ContentNotFoundException;
 
 /**
  * @ignore

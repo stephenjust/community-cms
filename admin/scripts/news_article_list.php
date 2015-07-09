@@ -30,11 +30,11 @@ if (!acl::get()->check_permission('adm_news') || !acl::get()->check_permission('
 
 if (empty($_GET['page'])) { $_GET['page'] = null; 
 }
-$article_ids = News::getByPage($_GET['page']);
+$article_ids = Content::getByPage($_GET['page']);
 
 $articles = array();
 foreach ($article_ids AS $id) {
-    $articles[] = News::get($id);
+    $articles[] = new Content($id);
 }
 
 $list_rows = array();

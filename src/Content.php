@@ -2,14 +2,20 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2014 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2014-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
 
 use CommunityCMS\Component\EditBarComponent;
+use CommunityCMS\Exceptions\ContentNotFoundException;
 
 class Content
 {
@@ -39,9 +45,9 @@ class Content
         }
         $query = sprintf(
             'SELECT `id` FROM `%s` '
-            . 'WHERE `page` = :page %s ORDER BY `priority` DESC, `date` DESC, `id` DESC %s OFFSET %d',
+            . 'WHERE `page` = :page %s ORDER BY `priority` DESC, `date` DESC, `id` DESC %s %s',
             NEWS_TABLE, ($only_published) ? 'AND `publish` = 1' : null,
-            ($num) ? 'LIMIT '.$num : null, $start
+            ($num) ? 'LIMIT '.$num : null, ($start) ? 'OFFSET '.$start : null
         );
         $results = DBConn::get()->query(
             $query,
@@ -214,8 +220,4 @@ class Content
     {
         return SysConfig::get()->getValue('news_show_author');
     }
-}
-
-class ContentNotFoundException extends \Exception
-{
 }
