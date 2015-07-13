@@ -14,6 +14,9 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\acl;
+use CommunityCMS\Exceptions\DBException;
+
 /**
  * Class to represent a block
  */
@@ -59,6 +62,19 @@ class Block
             $this->type = $result['type'];
         } catch (DBException $ex) {
             throw new \Exception("Failed to get block attributes", $ex);
+        }
+    }
+
+    public function delete()
+    {
+        acl::get()->require_permission("block_delete");
+
+        $query = "DELETE FROM `".BLOCK_TABLE."` WHERE `id` = :id";
+        try {
+            DBConn::get()->query($query, [":id" => $this->block_id], DBConn::NOTHING);
+            Log::addMessage(sprintf("Deleted block '%s' %s", $this->type, json_encode($this->attributes)));
+        } catch (DBException $ex) {
+            throw new \Exception("An error occurred while deleting the block.", $ex);
         }
     }
 }

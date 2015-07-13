@@ -28,7 +28,8 @@ default:
 
 case 'delete':
     try {
-        block_delete($_GET['id']);
+        $block = new Block($_GET['id']);
+        $block->delete();
         echo 'Successfully deleted block.<br />';
     }
     catch (\Exception $e) {
@@ -129,41 +130,24 @@ $tabs['manage'] = $tab_layout->add_tab('Manage Blocks', $tab_content['manage']);
 
 if (acl::get()->check_permission('block_create')) {
     $tab_content['create'] = null;
-    $directory = 'content_blocks/';
-    $folder_open = ROOT.$directory;
-    $files = scandir($folder_open);
-    unset($folder_open);
-    unset($directory);
-    $num_files = count($files);
-    $i = 2;
-    if($num_files < 3) { // ( ., .., and a block file)
-        $tab_content['create'] .= 'No installed blocks.';
-        $block_types_list = '<select name="type" disabled>';
-    } else {
-        $block_types_list = '<select name="type" id="adm_block_type_list" onChange="block_options_list_update()">';
-        while($i < $num_files) {
-            $block_type = explode('_', $files[$i]);
-            $block_type = $block_type[0];
-            if(!preg_match('#^\.#', $files[$i]) && !preg_match('#~$#', $files[$i])) {
-                $block_types_list .= '<option value="'.$block_type.'">'.$block_type.'</option>';
-            }
-            $i++;
-            unset($block_type);
-        }
-        $block_types_list .= '</select>';
-
-        // ----------------------------------------------------------------------------
-
-        $tab_content['create'] .= '<form method="post" action="admin.php?module=block_manager&action=new">
-			<table class="admintable">
-			<tr><td>Type:</td><td>'.$block_types_list.'</td></tr>
-			<tr><td>Options:</td><td><noscript>You need JavaScript enabled for the block options view to work properly.</noscript>
-			<div id="adm_block_type_options"></div></td></tr>
-			<tr><td class="empty"></td><td><input type="submit" value="Submit" /></td></tr>
-			</table></form>
-			<script language="javascript" type="text/javascript">
-			block_options_list_update()</script>';
+    $block_types = ["text", "events", "scrolling", "calendarcategories"];
+    $block_types_list = '<select name="type" id="adm_block_type_list" onChange="block_options_list_update()">';
+    foreach ($block_types as $block_type) {
+        $block_types_list .= '<option value="'.$block_type.'">'.$block_type.'</option>';
     }
+    $block_types_list .= '</select>';
+
+    // ----------------------------------------------------------------------------
+
+    $tab_content['create'] .= '<form method="post" action="admin.php?module=block_manager&action=new">
+                    <table class="admintable">
+                    <tr><td>Type:</td><td>'.$block_types_list.'</td></tr>
+                    <tr><td>Options:</td><td><noscript>You need JavaScript enabled for the block options view to work properly.</noscript>
+                    <div id="adm_block_type_options"></div></td></tr>
+                    <tr><td class="empty"></td><td><input type="submit" value="Submit" /></td></tr>
+                    </table></form>
+                    <script language="javascript" type="text/javascript">
+                    block_options_list_update()</script>';
     $tab_layout->add_tab('Create Block', $tab_content['create']);
 }
 

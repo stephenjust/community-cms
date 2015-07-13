@@ -32,7 +32,7 @@ class acl
 
     /**
      * Get instance of acl class
-     * @return \acl
+     * @return acl
      */
     public static function get() 
     {

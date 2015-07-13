@@ -68,7 +68,7 @@ function block_create($type, $attributes)
         throw new \Exception('An error occurred while creating the block.'); 
     }
 
-    Log::addMessage('Created block \''.stripslashes($type).' ('.stripslashes($attb_string).')\'');
+    Log::addMessage('Created block \''.stripslashes($type).'\' ('.stripslashes($attb_string).')');
 }
 
 /**
@@ -114,51 +114,6 @@ function block_edit($id,$attributes)
         throw new \Exception('An error occurred while editing the block.'); 
     }
     Log::addMessage('Edited block \''.$id.' ('.stripslashes($attb_string).')\'');
-}
-
-/**
- * Delete a block record
- * @global db $db Database connection object
- * @param integer $id Block ID
- * @throws \Exception
- */
-function block_delete($id) 
-{
-    global $db;
-
-    if (!acl::get()->check_permission('block_delete')) {
-        throw new \Exception('You are not allowed to delete blocks.'); 
-    }
-
-    // Sanitize inputs
-    $id = (int)$id;
-    if ($id < 1) {
-        throw new \Exception('Invalid block ID.'); 
-    }
-
-    // Check that block exists
-    $block_exists_query = 'SELECT `type`,`attributes`
-		FROM `'.BLOCK_TABLE.'`
-		WHERE `id` = '.$id.'
-		LIMIT 1';
-    $block_exists_handle = $db->sql_query($block_exists_query);
-    if($db->error[$block_exists_handle] === 1) {
-        throw new \Exception('An error occurred while checking if the block exists.'); 
-    }
-    if ($db->sql_num_rows($block_exists_handle) === 0) {
-        throw new \Exception('The block you are trying to delete does not exist.'); 
-    }
-
-    // Delete the block record
-    $delete_block_query = 'DELETE FROM `' . BLOCK_TABLE . '`
-		WHERE `id` = '.$id;
-    $delete_block = $db->sql_query($delete_block_query);
-    if (!$db->error[$delete_block] === 1) {
-        throw new \Exception('An error occurred while deleting the block.'); 
-    }
-    
-    $block_exists = $db->sql_fetch_assoc($block_exists_handle);
-    Log::addMessage('Deleted block \''.$block_exists['type'].' ('.$block_exists['attributes'].')\'');
 }
 
 /**
