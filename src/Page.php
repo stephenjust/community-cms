@@ -15,6 +15,7 @@
 namespace CommunityCMS;
 
 use CommunityCMS\Component\EditBarComponent;
+use CommunityCMS\Component\Block\BlockComponent;
 
 /**
  * Generates a page
@@ -539,8 +540,11 @@ class Page
         // Prepare blocks
         $left_blocks_content = null;
         $left_blocks = explode(',', Page::$blocksleft);
-        for ($bk = 1; $bk <= count($left_blocks); $bk++) {
-            $left_blocks_content .= get_block($left_blocks[$bk - 1]);
+        foreach ($left_blocks as $block) {
+            if ($block == null) {
+                continue;
+            }
+            $left_blocks_content .= BlockComponent::getComponent(new Block($block))->render();
         }
         $template->left_content = $left_blocks_content;
         echo $template;
@@ -554,8 +558,11 @@ class Page
         // Prepare blocks
         $right_blocks_content = null;
         $right_blocks = explode(',', Page::$blocksright);
-        for ($bk = 1; $bk <= count($right_blocks); $bk++) {
-            $right_blocks_content .= get_block($right_blocks[$bk - 1]);
+        foreach ($right_blocks as $block) {
+            if ($block == null) {
+                continue;
+            }
+            $right_blocks_content .= BlockComponent::getComponent(new Block($block))->render();
         }
         $template->right_content = $right_blocks_content;
         echo $template;

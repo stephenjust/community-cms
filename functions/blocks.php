@@ -8,22 +8,6 @@
  */
 namespace CommunityCMS;
 
-use CommunityCMS\Component\Block\BlockComponent;
-
-/**
- * get_block - Get contents of a block
- * @global db $db
- * @param int $block_id ID of block to display
- * @return string
- */
-function get_block($block_id = null) 
-{
-    if ($block_id == null) {
-        return null;
-    }
-    return BlockComponent::getComponent(new Block($block_id))->render();
-}
-
 /**
  * Create a new block record
  * @global db $db
