@@ -2,12 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2015 Stephen Just
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
 
 namespace CommunityCMS;
+
+use CommunityCMS\Component\FileUploadBoxComponent;
 
 /**#@+
  * @ignore
@@ -43,15 +45,14 @@ if(isset($_GET['upload'])) {
 }
 // Display upload form and upload location selector.
 try {
+    $upload_box = new FileUploadBoxComponent();
     if (isset($_GET['dir'])) {
-        $extra_vars = array();
-        if (isset($_GET['thumb'])) {
-            $extra_vars['thumbs'] = 1;
-        }
-        $content .= file_upload_box(0, $_GET['dir'], $extra_vars);
+        $upload_box->setDirectory($_GET['dir']);
+        $upload_box->addExtraField("thumbs", 1);
     } else {
-        $content .= file_upload_box(1);
+        $upload_box->setShowDirectories(true);
     }
+    $content .= $upload_box->render();
 }
 catch (\Exception $e) {
     $content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';

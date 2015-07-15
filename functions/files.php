@@ -22,58 +22,6 @@ require_once ROOT.'includes/ui/UISelectDirList.class.php';
 // ----------------------------------------------------------------------------
 
 /**
- * file_upload_box - Create a file upload form
- * @param integer $show_dirs
- * @param string  $dir
- * @param string  $extra_vars
- * @return string Form HTML
- * @throws \Exception
- */
-function file_upload_box($show_dirs = 0, $dir = null, $extra_vars = null) 
-{
-    if (!acl::get()->check_permission('file_upload')) {
-        throw new \Exception('You are not allowed to upload files.'); 
-    }
-
-    $query_string = $_SERVER['QUERY_STRING'];
-    $query_string = str_replace('upload=upload', null, $query_string);
-    $query_string = preg_replace('/action=.+\&?/i', null, $query_string);
-    $return = '<form enctype="multipart/form-data"
-		action="'.$_SERVER['SCRIPT_NAME'].'?upload=upload&amp;'.
-    $query_string.'" method="post">
-		<!-- Limit file size to 64MB -->
-		<input type="hidden" name="MAX_FILE_SIZE" value="67108864" />
-		Please choose a file: <input name="upload" type="file" /><br />'.
-    "\n";
-    if ($dir != null) {
-        $return .= '<input type="hidden" name="path" value="'.$dir.'" />'."\n";
-    }
-    if ($show_dirs == 1) {
-        // Remember path from previous upload
-        if (isset($_POST['path'])) {
-            $current_dir = $_POST['path'];
-        } else {
-            $current_dir = '';
-        }
-        $return .= 'Where would you like to save the file?<br />';
-        $dir_list = new UISelectDirList(array('name' => 'path'));
-        $dir_list->setChecked($current_dir);
-        $return .= $dir_list.'<br />'."\n";
-    }
-    if (is_array($extra_vars)) {
-        for ($i = 0; $i < count($extra_vars); $i++) {
-            $return .= '<input type="hidden" name="'.key($extra_vars).'" value="'.current($extra_vars).'" />'."\n";
-            if ($i < count($extra_vars)) { next($extra_vars); 
-            }
-        }
-    }
-    $return .= '<input type="submit" value="Upload" />
-		</form>';
-    // Don't forget to send same 'GET' vars to script!
-    return $return;
-}
-
-/**
  * Generate an html list of files
  * @param string $directory
  * @return string

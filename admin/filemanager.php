@@ -9,6 +9,7 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\FileUploadBoxComponent;
 use CommunityCMS\Component\TableComponent;
 
 // Security Check
@@ -161,7 +162,9 @@ if (acl::get()->check_permission('file_upload')) {
 
     // Display upload form and upload location selector.
     try {
-        $tab_content['upload'] .= file_upload_box(1);
+        $upload_box = new FileUploadBoxComponent();
+        $upload_box->setShowDirectories(true);
+        $tab_content['upload'] .= $upload_box->render();
     }
     catch (\Exception $e) {
         $tab_content['upload'] .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
