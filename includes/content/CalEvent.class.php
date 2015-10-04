@@ -87,6 +87,47 @@ class CalEvent
             throw new CalEventException('Failed to create event.');
         }
     }
+
+    /**
+     * Get the number of events in a given date range
+     * @param int $start_range Unix timestamp of start of range
+     * @param int $end_range Unix timestamp of end of range
+     * @return int
+     * @throws CalEventException
+     */
+    public static function count($start_range, $end_range)
+    {
+        $start = date("Y-m-d H:i:s", $start_range);
+        $end = date("Y-m-d H:i:s", $end_range);
+        $query = "SELECT `id` FROM `".CALENDAR_TABLE."` WHERE `start` <= :end_range AND `start` >= :start_range";
+
+        try {
+            return DBConn::get()->query($query, [":start_range" => $start, ":end_range" => $end], DBConn::ROW_COUNT);
+        } catch (Exceptions\DBException $ex) {
+            throw new CalEventException("Failed to perform operation.", $ex);
+        }
+    }
+
+    /**
+     * Delete all of the events within a given date range
+     * @param int $start_range Unix timestamp of start of range
+     * @param int $end_range Unix timestamp of end of range
+     * @throws CalEventException
+     */
+    public static function deleteRange($start_range, $end_range)
+    {
+        $count = self::count($start_range, $end_range);
+        $start = date("Y-m-d H:i:s", $start_range);
+        $end = date("Y-m-d H:i:s", $end_range);
+        $query = "DELETE FROM `".CALENDAR_TABLE."` WHERE `start` <= :end_range AND `start` >= :start_range";
+
+        try {
+            DBConn::get()->query($query, [":start_range" => $start, ":end_range" => $end], DBConn::NOTHING);
+            Log::addMessage("Deleted $count calendar events.");
+        } catch (Exceptions\DBException $ex) {
+            throw new CalEventException("Failed to delete calendar events.", $ex);
+        }
+    }
     
     /**
      * Create CalEvent instance

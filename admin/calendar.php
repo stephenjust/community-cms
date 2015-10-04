@@ -83,16 +83,12 @@ case 'delete':
     }
     break;
 case 'delete_old_entries':
-    $current_year = date('Y');
-    $old_year = $current_year - 3;
-    $delete_old_query = 'DELETE FROM `'.CALENDAR_TABLE.'`
-			WHERE `year` <= '.$old_year;
-    $delete_old_handle = $db->sql_query($delete_old_query);
-    if ($db->error[$delete_old_handle] === 1) {
-        echo 'Failed to delete old calendar entries.<br />'."\n";
-    } else {
-        Log::addMessage('Deleted old calendar entries ('.$old_year.' and previous)');
-        echo 'Successfully deleted old calendar entries.<br />'."\n";
+    try {
+        $range = mktime(23, 59, 59, 12, 31, date('Y') - 3);
+        CalEvent::deleteRange(0, $range);
+        echo 'Successfully deleted old calendar entries.<br />';
+    } catch (CalEventException $ex) {
+        echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
     break;
 case 'create_category':
@@ -328,24 +324,17 @@ if (acl::get()->check_permission('calendar_settings')) {
 
     // ----------------------------------------------------------------------------
 
-    $tab_content['settings'] .= '<h1>Delete Old Entries</h1>'."\n";
+    $tab_content['settings'] .= '<h1>Bulk Delete</h1>'."\n";
     $current_year = date('Y');
     $old_year = $current_year - 3;
-    $num_old_query = 'SELECT `id` FROM `'.CALENDAR_TABLE.'` WHERE `start` <= \''.$old_year.'-12-31 23:59:59\'';
-    $num_old_handle = $db->sql_query($num_old_query);
-    if ($db->error[$num_old_handle] === 1) {
-        $button_label = 'Error';
-        $button_disabled = 1;
+    $old_timestamp = mktime(23, 59, 59, 12, 31, $old_year);
+    $num_old_entries = CalEvent::count(0, $old_timestamp);
+    if ($num_old_entries == 0) {
+        $button_label = "No old entries ($old_year and previous)";
     } else {
-        $button_disabled = 0;
-        if ($db->sql_num_rows($num_old_handle) == 0) {
-            $button_disabled = 1;
-            $button_label = 'No old entries ('.$old_year.' and previous)';
-        } else {
-            $button_label = 'Delete '.$db->sql_num_rows($num_old_handle).' old entries ('.$old_year.' and previous)';
-        }
+        $button_label = "Delete $num_old_entries old entries ($old_year and previous)";
     }
-    $button_disabled = ($button_disabled == 1) ? 'disabled' : null;
+    $button_disabled = ($num_old_entries === 0) ? 'disabled' : null;
     $tab_content['settings'] .= '<form method="POST" action="?module=calendar&amp;action=delete_old_entries">
 	<input type="submit" value="'.$button_label.'" '.$button_disabled.' />
 	</form>';
