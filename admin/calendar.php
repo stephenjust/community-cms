@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -201,51 +203,34 @@ while ($monthcount <= 12) {
     }
 }
 $tab_content['manage'] .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$_POST['year'].'" /><input type="submit" value="Change" /></form>';
-$tab_content['manage'] .= '<table class="admintable">
-<tr><th>Date</th><th>Start Time</th><th>End Time</th><th>Heading</th><th colspan="2" width="40px"></th></tr>';
-$rowcount = 1;
-$start = $_POST['year'].'-'.$_POST['month'].'-01 00:00:00';
-$end = $_POST['year'].'-'.$_POST['month'].'-'.cal_days_in_month(CAL_GREGORIAN, $_POST['month'], $_POST['year']).' 23:59:59';
-$date_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-	WHERE `start` >= \''.$start.'\'
-	AND `start` <= \''.$end.'\'
-	ORDER BY `start` ASC,`end` DESC';
-$date_handle = $db->sql_query($date_query);
-if ($db->sql_num_rows($date_handle) == 0) {
-    $tab_content['manage'] .= '<tr><td colspan="6" class="row1">There are no dates in this month.</td></tr>';
-    $rowcount = 2;
-}
-for ($i = 1; $i <= $db->sql_num_rows($date_handle); $i++) {
-    $cal = $db->sql_fetch_assoc($date_handle);
 
-    // Format start time and end time
-    $starttime = strtotime($cal['start']);
-    $endtime = strtotime($cal['end']);
+$start = gmmktime(0, 0, 0, $_POST['month'], 1, $_POST['year']);
+$end = gmmktime(23, 59, 29, $_POST['month'], cal_days_in_month(CAL_GREGORIAN, $_POST['month'], $_POST['year']), $_POST['year']);
+$events = CalEvent::getRange($start, $end);
 
-    $tab_content['manage'] .= '<tr class="row'.$rowcount.'">
-		<td>'.date('M d, Y', $starttime).'</td>
-		<td>'.date(SysConfig::get()->getValue('time_format'), $starttime).'</td>
-		<td>'.date(SysConfig::get()->getValue('time_format'), $endtime).'</td>
-		<td>'.$cal['header'].'</td>
-		<td>'.HTML::link(
-    sprintf('admin.php?module=calendar_edit_date&id=%d', $cal['id']),
-    HTML::templateImage('edit.png', 'Edit', null, 'width: 16px; height: 16px; border: 0;')
-).'</td>
-		<td>'.HTML::link(
-    sprintf(
-        "javascript:confirm_delete('admin.php?module=calendar&action=delete&date_del=%d&month=%d&year=%d')",
-        $cal['id'], date('m', strtotime($cal['start'])), date('Y', strtotime($cal['start']))
-    ),
-    HTML::templateImage('delete.png', 'Delete', null, 'width: 16px; height: 16px; border: 0;')
-).
-    '</td></tr>';
-    if ($rowcount == 1) {
-        $rowcount = 2;
-    } else {
-        $rowcount = 1;
-    }
+$event_rows = array();
+foreach ($events as $event) {
+    $event_rows[] = [
+        date('M d, Y', $event->getStart()),
+        date(SysConfig::get()->getValue('time_format'), $event->getStart()),
+        date(SysConfig::get()->getValue('time_format'), $event->getEnd()),
+        $event->getTitle(),
+        HTML::link(
+            sprintf('admin.php?module=calendar_edit_date&id=%d', $event->getId()),
+            HTML::templateImage('edit.png', 'Edit', null, 'width: 16px; height: 16px; border: 0;')
+        ),
+        HTML::link(
+            sprintf(
+                "javascript:confirm_delete('admin.php?module=calendar&action=delete&date_del=%d&month=%d&year=%d')",
+                $event->getId(), date('m', $event->getStart()), date('Y', $event->getStart())
+            ),
+            HTML::templateImage('delete.png', 'Delete', null, 'width: 16px; height: 16px; border: 0;')
+        )
+    ];
 }
-$tab_content['manage'] .= '</table>';
+
+$tab_content['manage'] .= TableComponent::create(["Date", "Start Time", "End Time", "Heading", "", ""], $event_rows);
+
 $tab_layout->add_tab('Manage Events', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------

@@ -109,6 +109,33 @@ class CalEvent
     }
 
     /**
+     * Get all of the events within a given date range
+     * @param int $start_range Unix timestamp of start of range
+     * @param int $end_range Unix timestamp of end of range
+     * @return \CommunityCMS\CalEvent Array of events
+     * @throws CalEventException
+     */
+    public static function getRange($start_range, $end_range)
+    {
+        $start = date("Y-m-d H:i:s", $start_range);
+        $end = date("Y-m-d H:i:s", $end_range);
+        $query = "SELECT `id` FROM `".CALENDAR_TABLE."` WHERE `start` <= :end_range AND `start` >= :start_range ORDER BY `start` ASC, `end` DESC";
+
+        try {
+            $ids = DBConn::get()->query($query, [":start_range" => $start, ":end_range" => $end], DBConn::FETCH_ALL);
+
+            $events = array();
+            foreach ($ids as $id) {
+                $events[] = new CalEvent($id['id']);
+            }
+
+            return $events;
+        } catch (Exceptions\DBException $ex) {
+            throw new CalEventException("Failed to retrieve events.", $ex);
+        }
+    }
+
+    /**
      * Delete all of the events within a given date range
      * @param int $start_range Unix timestamp of start of range
      * @param int $end_range Unix timestamp of end of range
