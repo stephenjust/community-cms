@@ -369,19 +369,17 @@ class CalEvent
     private static function convertInputToDatetime($date_string, $time_string) 
     {
         if (!$date_string) {
-            $date_string = date('d/m/Y');
+            $date_string = date('m/d/Y');
         }
-        if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#', $date_string)) {
-            throw new CalEventException('Your event\'s date was formatted invalidly. It should be in the format dd/mm/yyyy.');
+
+        $date = StringUtils::parseDate($date_string);
+        if ($date == 0) {
+            throw new CalEventException('Your event\'s date was formatted invalidly. It should be in the format mm/dd/yyyy.');
         }
-        $event_date_parts = explode('/', $date_string);
-        $year = $event_date_parts[2];
-        $month = $event_date_parts[0];
-        $day = $event_date_parts[1];
 
         $time = StringUtils::parseTime($time_string);
 
-        return sprintf('%d-%d-%d %s', $year, $month, $day, $time);
+        return sprintf('%s %s', gmdate("Y-m-d", $date), $time);
     }
 }
 

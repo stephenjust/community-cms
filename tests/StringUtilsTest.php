@@ -101,6 +101,13 @@ class PaginationComponentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, StringUtils::parseTime("foobar"));
     }
 
+    public function testParseDate()
+    {
+        $this->assertEquals(gmmktime(0, 0, 0, 12, 31, 2015), StringUtils::parseDate("12/31/2015"));
+
+        $this->assertEquals(0, StringUtils::parseDate("Blueberry"));
+    }
+
     public function testRemoveComments()
     {
         $this->assertEquals("Test string", StringUtils::removeComments("Test string<!-- Comment -->"));

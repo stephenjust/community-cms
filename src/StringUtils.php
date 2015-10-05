@@ -159,6 +159,21 @@ class StringUtils
     }
 
     /**
+     * Convert a date string in the form mm/dd/yyyy to a unix timestamp
+     * @param string $date
+     * @return int
+     */
+    public static function parseDate($date)
+    {
+        $matches = array();
+        if (!preg_match('#^([0-1][0-9])/([0-3][0-9])/([1-2][0-9]{3})$#', $date, $matches)) {
+            return 0;
+        }
+
+        return gmmktime(0, 0, 0, $matches[1], $matches[2], $matches[3]);
+    }
+
+    /**
     * Remove HTML comment tags from a string
     * @param string $text Input string(s)
     * @return string Output, without comments

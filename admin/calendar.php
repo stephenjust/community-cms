@@ -93,27 +93,18 @@ case 'delete_old_entries':
     break;
 case 'delete_range':
     try {
-        $start_date = $_POST['start_date'];
-        $end_date   = $_POST['end_date'];
+        $start_date = StringUtils::parseDate($_POST['start_date']);
+        $end_date   = StringUtils::parseDate($_POST['end_date']);
 
-        if (!preg_match('#^([0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3})?$#',
-            $start_date))
-            throw new CalEventException('Your start date was formatted invalidly. It should be in the format dd/mm/yyyy.');
-        if (!preg_match('#^[0-1][0-9]/[0-3][0-9]/[1-2][0-9]{3}$#', $end_date))
-            throw new CalEventException('Your end date was formatted invalidly. It should be in the format dd/mm/yyyy.');
-
-        $start_date_parts = explode('/', $start_date);
-        $end_date_parts   = explode('/', $end_date);
-
-        // Generate start/end dates
-        if (count($start_date_parts) == 3) {
-            $start = gmmktime(0, 0, 0, $start_date_parts[0], $start_date_parts[1], $start_date_parts[2]);
-        } else {
-            $start = 0;
+        if ($_POST['start_date'] != "" && $start_date == 0) {
+            throw new CalEventException('Your start date was formatted invalidly. It should be in the format mm/dd/yyyy.');
         }
-        $end = gmmktime(23, 59, 59, $end_date_parts[0], $end_date_parts[1], $end_date_parts[2]);
 
-        CalEvent::deleteRange($start, $end);
+        if ($end_date == 0) {
+            throw new CalEventException('Your end date was formatted invalidly. It should be in the format mm/dd/yyyy.');
+        }
+
+        CalEvent::deleteRange($start_date, $end_date);
         echo 'Successfully deleted calendar entries.<br />';
     } catch (CalEventException $ex) {
         echo '<span class="errormessage">'.$ex->getMessage().'</span><br />';
