@@ -68,41 +68,32 @@ case "day":
     }
     $page_content = null;
     // Get events for current day from database
-    $event_day_s = $year.'-'.$month.'-'.$day.' 00:00:00';
-    $event_day_e = $year.'-'.$month.'-'.$day.' 23:59:59';
-    $day_events_query = 'SELECT * FROM ' . CALENDAR_TABLE . '
-			WHERE `start` >= \''.$event_day_s.'\'
-			AND `start` <= \''.$event_day_e.'\'
-			ORDER BY `start` ASC, `end` DESC';
-    $day_events_handle = $db->sql_query($day_events_query);
+    $event_day_s = gmmktime(0, 0, 0, $month, $day, $year);
+    $event_day_e = gmmktime(23, 59, 59, $month, $day, $year);
+    $events = CalEvent::getRange($event_day_s, $event_day_e);
     $page_content .= HTML::link(
         sprintf(
             '?%s&view=month&m=%u&y=%u',
             Page::$url_reference, $month, $year
         ), 'Back to month view'
     ).'<br />';
-    if ($db->error[$day_events_handle] === 1) {
-        $page_content .= 'Failed to read list of events from the database.';
-        break;
-    }
-    if ($db->sql_num_rows($day_events_handle) == 0) {
+    if (count($events) == 0) {
         header('HTTP/1.1 404 Not Found');
         $page_content .= 'There are no events to display.';
         break;
     }
     $day_template = new Template;
     $day_template->loadFile('calendar_day');
-    $day_template->day_heading = date('l, F j', strtotime($event_day_s));
+    $day_template->day_heading = gmdate('l, F j', $event_day_s);
     $event_template = new Template;
     $event_template->path = $day_template->path;
     $event_template->template = $day_template->getRange('event');
     $day_template->replaceRange('event', '<!-- $EVENT$ -->');
 
     $event_rows = null;
-    for ($i = 1; $db->sql_num_rows($day_events_handle) >= $i; $i++) {
-        $day_events = $db->sql_fetch_assoc($day_events_handle);
-        $event_start = strtotime($day_events['start']);
-        $event_end = strtotime($day_events['end']);
+    foreach ($events as $event) {
+        $event_start = $event->getStart();
+        $event_end = $event->getEnd();
         if ($event_start == $event_end) {
             $event_time = 'All day';
         } else {
@@ -110,11 +101,11 @@ case "day":
             date(SysConfig::get()->getValue('time_format'), $event_end);
         }
         $current_event = clone $event_template;
-        $current_event->event_id = $day_events['id'];
+        $current_event->event_id = $event->getId();
         $current_event->event_time = $event_time;
         $current_event->event_start_date = date('Y-m-d', $event_start);
-        $current_event->event_heading = $day_events['header'];
-        $current_event->event_description = StringUtils::ellipsize(strip_tags($day_events['description']), 100);
+        $current_event->event_heading = $event->getTitle();
+        $current_event->event_description = StringUtils::ellipsize(strip_tags($event->getDescription()), 100);
         $event_rows .= (string)$current_event;
     }
     $day_template->event = $event_rows;
