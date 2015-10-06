@@ -140,6 +140,28 @@ class User
     }
 
     /**
+     * Get all users
+     * @return \CommunityCMS\User
+     * @throws UserException
+     */
+    public static function getAll()
+    {
+        $query = 'SELECT `id` FROM `'.USER_TABLE.'` ORDER BY `realname` ASC';
+
+        try {
+            $results = DBConn::get()->query($query, [], DBConn::FETCH_ALL);
+
+            $users = [];
+            foreach ($results as $result) {
+                $users[] = new User($result['id']);
+            }
+            return $users;
+        } catch (Exceptions\DBException $ex) {
+            throw new UserException("Failed to load users.", $ex);
+        }
+    }
+
+    /**
      * Remove a user record from the database
      * @global db $db
      * @throws AclException
@@ -197,6 +219,33 @@ class User
         $result = $db->sql_fetch_row($handle);
 
         return $result[0];
+    }
+
+    /**
+     * Get the user ID
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * Get the user's username
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Get the user's name
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->realname;
     }
 
     /**

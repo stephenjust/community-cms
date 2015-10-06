@@ -9,6 +9,8 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\TableComponent;
+
 // Security Check
 if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
@@ -64,41 +66,25 @@ $tab_layout = new Tabs;
 
 // ----------------------------------------------------------------------------
 
-$tab_content['manage'] = '<table class="admintable">
-<tr><th>ID</th><th>Username</th><th width="350">Name</th>';
-$cols = 4;
-if (acl::get()->check_permission('user_delete')) {
-    $tab_content['manage'] .= '<th></th>';
-    $cols++;
+$users = User::getAll();
+$table_cols = ["ID", "Username", "Name", ""];
+if (acl::get()->check_permission("user_delete")) {
+    $table_cols[] = "";
 }
-$tab_content['manage'] .= "<th></th></tr>\n";
-$page_list_query = 'SELECT * FROM ' . USER_TABLE . '
-	ORDER BY realname ASC';
-$page_list_handle = $db->sql_query($page_list_query);
-$page_list_rows = $db->sql_num_rows($page_list_handle);
-if($page_list_rows == 0) {
-    $tab_content['manage'] .= '<tr class="row1"><td colspan="'.$cols.'">An error has occured. No users were found.</td></tr>';
-}
-$rowstyle = 'row1';
-for ($i = 1; $i <= $page_list_rows; $i++) {
-    $page_list = $db->sql_fetch_assoc($page_list_handle);
-    $tab_content['manage'] .= '<tr class="'.$rowstyle.'">
-		<td>'.$page_list['id'].'</td>
-		<td>'.$page_list['username'].'</td>
-		<td>'.stripslashes($page_list['realname']).'</td>';
-    if (acl::get()->check_permission('user_delete')) {
-        $tab_content['manage'] .= '<td><a href="?module=user&action=delete&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a></td>';
+
+$table_rows = [];
+foreach ($users as $user) {
+    $row = [$user->getId(), HTML::schars($user->getUsername()), HTML::schars($user->getName())];
+    if (acl::get()->check_permission("user_delete")) {
+        $row[] = HTML::link("?module=user&action=delete&id={$user->getId()}",
+            HTML::templateImage('delete.png', 'Delete', null, 'width: 16px; height: 16px; border: 0;'));
     }
-    $tab_content['manage'] .= '<td><a href="?module=user_edit&id='.$page_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a></td>
-		</tr>';
-    if ($rowstyle == 'row1') {
-        $rowstyle = 'row2';
-    } else {
-        $rowstyle = 'row1';
-    }
+    $row[] = HTML::link("?module=user_edit&id={$user->getId()}",
+        HTML::templateImage('edit.png', 'Edit', null, 'width: 16px; height: 16px; border: 0;'));
+    $table_rows[] = $row;
 }
-$tab_content['manage'] .= '</table>';
-$tab_layout->add_tab('Manage Users', $tab_content['manage']);
+
+$tab_layout->add_tab('Manage Users', TableComponent::create($table_cols, $table_rows));
 
 // ----------------------------------------------------------------------------
 
@@ -129,9 +115,8 @@ if (acl::get()->check_permission('user_create')) {
         $form->add_multiselect('groups', 'Groups', $group_list_id, $group_list_name, null, 5, 'style="height: 4em;"');
     }
     $form->add_submit('submit', 'Create User');
-    $tab_content['create'] = $form;
-    $tab_layout->add_tab('Create User', $tab_content['create']);
+
+    $tab_layout->add_tab('Create User', $form);
 }
 
 echo $tab_layout;
-?>
