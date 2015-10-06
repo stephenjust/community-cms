@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2013 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -240,18 +245,15 @@ $form_create->set_target('admin.php?module=calendar&action=new');
 $form_create->set_method('post');
 $form_create->add_hidden('author', $_SESSION['name']);
 $form_create->add_textbox('title', 'Heading*', $_POST['title']);
-$category_list_query = 'SELECT cat_id,label FROM ' . CALENDAR_CATEGORY_TABLE . '
-	ORDER BY cat_id ASC';
-$category_list_handle = $db->sql_query($category_list_query);
-if($db->error[$category_list_handle] === 1) {
-    $category_ids = array('0');
-    $category_names = array('Error');
+
+$categories = CalCategory::getAll();
+$category_ids = [];
+$category_names = [];
+foreach ($categories as $c) {
+    $category_ids[] = $c->getId();
+    $category_names[] = $c->getName();
 }
-for ($b = 1; $b <= $db->sql_num_rows($category_list_handle); $b++) {
-    $category_list = $db->sql_fetch_assoc($category_list_handle);
-    $category_ids[$b - 1] = $category_list['cat_id'];
-    $category_names[$b - 1] = $category_list['label'];
-}
+
 if (!isset($_POST['location'])) {
     $new_location = SysConfig::get()->getValue('calendar_default_location');
 } else {
@@ -311,13 +313,12 @@ if (acl::get()->check_permission('calendar_settings')) {
 	<table class="admintable">
 	<tr><td width="150" class="row1">Category:</td><td class="row1">&nbsp;</td></tr>
 	<tr><td colspan="2" class="row2">';
-    $category_query = 'SELECT * FROM ' . CALENDAR_CATEGORY_TABLE;
-    $category_handle = $db->sql_query($category_query);
-    for ($i = 1; $i <= $db->sql_num_rows($category_handle); $i++) {
-        $cat = $db->sql_fetch_assoc($category_handle);
-        $tab_content['settings'] .= '<input type="radio" name="delete_category_id" value="'.$cat['cat_id'].'" />
-			<img src="./admin/templates/default/images/icon_'.$cat['colour'].'.png"
-			width="10px" height="10px" alt="'.$cat['colour'].'" /> '.HTML::schars($cat['label']).'<br />';
+
+    $categories = CalCategory::getAll();
+    foreach ($categories as $c) {
+        $tab_content['settings'] .= '<input type="radio" name="delete_category_id" value="'.$c->getId().'" />
+			<img src="./admin/templates/default/images/icon_'.$c->getIcon().'.png"
+			width="10px" height="10px" alt="'.$c->getIcon().'" /> '.$c->getName().'<br />';
     }
 
     $tab_content['settings'] .= '</td></tr>

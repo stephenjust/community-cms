@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -102,17 +107,16 @@ case 'edit_save':
 $block_list_query = 'SELECT `id`,`type`,`attributes`
 	FROM `'.BLOCK_TABLE.'`
 	ORDER BY `type` ASC';
-$block_list_handle = $db->sql_query($block_list_query);
-$block_list_rows = array();
-for ($i = 1; $i <= $db->sql_num_rows($block_list_handle); $i++) {
-    $block_list = $db->sql_fetch_assoc($block_list_handle);
-    $attribute_list = ($block_list['attributes'] == '') ? null : ' ('.$block_list['attributes'].')';
-    $current_row = array($block_list['type'].$attribute_list);
+$block_list = DBConn::get()->query($block_list_query, [], DBConn::FETCH_ALL);
+foreach ($block_list as $block)
+{
+    $attribute_list = ($block['attributes'] == '') ? null : ' ('.$block['attributes'].')';
+    $current_row = array($block['type'].$attribute_list);
     if (acl::get()->check_permission('block_delete')) {
-        $current_row[] = '<a href="?module=block_manager&action=delete&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a>'; 
+        $current_row[] = '<a href="?module=block_manager&action=delete&id='.$block['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png" alt="Delete" width="16px" height="16px" border="0px" /></a>'; 
     }
     if (acl::get()->check_permission('block_edit')) {
-        $current_row[] = '<a href="?module=block_manager&action=edit&id='.$block_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>'; 
+        $current_row[] = '<a href="?module=block_manager&action=edit&id='.$block['id'].'"><img src="<!-- $IMAGE_PATH$ -->edit.png" alt="Edit" width="16px" height="16px" border="0px" /></a>'; 
     }
     $block_list_rows[] = $current_row;
 }

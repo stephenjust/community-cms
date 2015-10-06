@@ -78,6 +78,15 @@ class SysConfig
     }
 
     /**
+     * Get all configuration values
+     * @return array
+     */
+    public function getAll()
+    {
+        return $this->config_cache;
+    }
+
+    /**
      * Check whether a configuration value is currently cached
      * @param string $key
      * @return boolean
@@ -118,7 +127,7 @@ class SysConfig
      */
     private function populateCache()
     {
-        $query = 'SELECT `config_name`, `config_value` FROM `'.CONFIG_TABLE.'`';
+        $query = 'SELECT `config_name`, `config_value` FROM `'.CONFIG_TABLE.'` ORDER BY `config_name` ASC';
         try {
             $results = DBConn::get()->query($query, null, DBConn::FETCH_ALL);
             foreach ($results as $result) {

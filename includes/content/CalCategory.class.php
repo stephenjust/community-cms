@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2013-2014 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2013-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -14,7 +19,7 @@ class CalCategory
     private $id;
     private $name;
     private $icon;
-        
+
     /**
      * Create a calendar event category
      * @param string $label Name of category
@@ -25,7 +30,7 @@ class CalCategory
     {
         assert(strlen($label), 'Category name is too short.');
         assert(strlen($icon), 'Icon selection is invalid.');
-        
+
         DBConn::get()->query(
             sprintf(
                 'INSERT INTO `%s` '
@@ -34,12 +39,36 @@ class CalCategory
             ),
             array(':label' => $label, ':icon' => $icon)
         );
-        
+
         $created_cat = new CalCategory(DBConn::get()->lastInsertId());
         Log::addMessage('Created event category \''.stripslashes($label).'\'');
         return $created_cat;
     }
-    
+
+    /**
+     * Get all category records
+     * @return \CommunityCMS\CalCategory
+     * @throws CalCategoryException
+     */
+    public static function getAll()
+    {
+        $query = 'SELECT `cat_id` '
+            . 'FROM `'.CALENDAR_CATEGORY_TABLE.'` '
+            . 'ORDER BY `cat_id` ASC';
+
+        try {
+            $results = DBConn::get()->query($query, [], DBConn::FETCH_ALL);
+
+            $categories = [];
+            foreach ($results as $result) {
+                $categories[] = new CalCategory($result['cat_id']);
+            }
+            return $categories;
+        } catch (Exceptions\DBException $ex) {
+            throw new CalCategoryException("Failed to read categories.", $ex);
+        }
+    }
+
     /**
      * Create a new CalCategory instance
      * @param int $id
@@ -57,7 +86,7 @@ class CalCategory
         if (!$result) {
             throw new CalCategoryException('Category does not exist.');
         }
-        
+
         $this->id = (int)$id;
         $this->name = $result['label'];
         $this->icon = $result['colour'];
@@ -66,12 +95,12 @@ class CalCategory
     /**
      * Delete a calendar category entry
      */
-    function delete() 
+    public function delete()
     {
         if (CalCategory::count() == 1) {
             throw new CalCategoryException('Cannot delete last category.');
         }
-        
+
         DBConn::get()->query(
             sprintf(
                 'DELETE FROM `%s` WHERE `cat_id` = :id',
@@ -83,7 +112,7 @@ class CalCategory
         Log::addMessage('Deleted category \''.$this->name.'\'');
         $this->id = null;
     }
-    
+
     /**
      * Get the number of calendar categories
      * @return int
@@ -98,7 +127,16 @@ class CalCategory
         );
         return $result['count'];
     }
-    
+
+    /**
+     * Get category ID
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * Get category icon file name
      * @return string (icon-_____.png)
@@ -107,7 +145,7 @@ class CalCategory
     {
         return HTML::schars($this->icon);
     }
-    
+
     /**
      * Get name of category
      * @return string

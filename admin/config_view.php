@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -23,22 +28,11 @@ if (!acl::get()->check_permission('adm_config_view')) {
 // ----------------------------------------------------------------------------
 
 // Get all configuration values
-$config_query = 'SELECT `config_name`,`config_value`
-	FROM `'.CONFIG_TABLE.'`
-	ORDER BY `config_name` ASC';
-$config_handle = $db->sql_query($config_query);
-if ($db->error[$config_handle] === 1) {
-    throw new AdminException('Failed to read configuration values.'); 
-}
+$config_values = SysConfig::get()->getAll();
 
-// Populate an array with the configuration values
-$num_entries = $db->sql_num_rows($config_handle);
 $config_table_values = array();
-for ($i = 1; $i <= $num_entries; $i++) {
-    $next_row = $db->sql_fetch_row($config_handle);
-    $next_row[0] = HTML::schars($next_row[0]);
-    $next_row[1] = HTML::schars($next_row[1]);
-    $config_table_values[] = $next_row;
+foreach ($config_values as $key => $value) {
+    $config_table_values[] = [HTML::schars($key), HTML::schars($value)];
 }
 
 // Draw the interface
