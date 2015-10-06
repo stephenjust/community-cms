@@ -85,9 +85,6 @@ abstract class db
     abstract function sql_fetch_row($query);
     abstract function sql_escape_string($string);
     abstract function sql_insert_id($table,$field);
-    abstract function sql_prepare($name,$query);
-    abstract function sql_prepare_exec($name,$variables,$datatypes);
-    abstract function sql_prepare_close($name);
     abstract function sql_close();
     /**#@-*/
 }
