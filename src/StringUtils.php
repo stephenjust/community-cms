@@ -54,6 +54,10 @@ class StringUtils
             return $phone_number;
         }
 
+        if ($phone_number == 0) {
+            return "";
+        }
+
         $format = SysConfig::get()->getValue('tel_format');
 
         // Strip country code
