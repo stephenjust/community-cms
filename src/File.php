@@ -177,7 +177,6 @@ class File
     
     /**
      * Get the value of a directory property
-     * @global db $db
      * @param string $directory
      * @param string $property
      * @return mixed
@@ -185,27 +184,23 @@ class File
      */
     public static function getDirProperty($directory, $property) 
     {
-        global $db;
-        
         assert($property != null);
 
-        $directory = $db->sql_escape_string($directory);
-        $property = $db->sql_escape_string($property);
-
         $query = 'SELECT `value`
-			FROM `'.DIR_PROP_TABLE."`
-			WHERE `directory` = '$directory'
-			AND `property` = '$property'
-			LIMIT 1";
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new FileException('Failed to read directory properties. Query: '.$query); 
+            FROM `'.DIR_PROP_TABLE."`
+            WHERE `directory` = :directory
+            AND `property` = :property
+            LIMIT 1";
+        try {
+            $result = DBConn::get()->query($query, [":directory" => $directory, ":property" => $property], DBConn::FETCH);
+        } catch (Exceptions\DBException $ex) {
+            throw new FileException("Failed to read directory properties.", $ex);
         }
-        if ($db->sql_num_rows($handle) == 0) {
-            return false; 
+        if (!$result) {
+            return false;
+        } else {
+            return $result['value'];
         }
-        $result = $db->sql_fetch_row($handle);
-        return $result[0];
     }
     
     /**

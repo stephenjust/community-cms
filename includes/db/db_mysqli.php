@@ -55,35 +55,14 @@ class db_mysqli extends db
     {
         return mysqli_num_rows($this->query[$query]);
     }
-    function sql_affected_rows($query) 
-    {
-        return mysqli_affected_rows($this->connect);
-    }
     function sql_fetch_assoc($query) 
     {
         return mysqli_fetch_assoc($this->query[$query]);
-    }
-    function sql_fetch_row($query) 
-    {
-        return mysqli_fetch_row($this->query[$query]);
     }
     function sql_escape_string($string) 
     {
         assert($this->connect);
         return mysqli_real_escape_string($this->connect, $string);
-    }
-    function sql_insert_id($table,$field) 
-    {
-        $query = 'SELECT MAX(`'.$field.'`) AS `id` FROM `'.$table.'`';
-        $handle = $this->sql_query($query);
-        if ($this->error[$handle] === 1) {
-            return false;
-        }
-        if ($this->sql_num_rows($handle) != 1) {
-            return false;
-        }
-        $result = $this->sql_fetch_assoc($handle);
-        return $result['id'];
     }
 
     /**

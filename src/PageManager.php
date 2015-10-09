@@ -25,7 +25,7 @@ class PageManager
 			WHERE `id` = '.$id;
         $handle = $db->sql_query($query);
         if ($db->error[$handle] === 1) {
-            throw new SQLException('Error loading page.'); 
+            throw new PageException('Error loading page.');
         }
         if ($db->sql_num_rows($handle) == 0) {
             throw new PageException('Page not found.'); 
@@ -56,9 +56,6 @@ class PageManager
         $handle = $db->sql_query($query);
         if ($db->error[$handle] === 1) {
             throw new PageException('Error deleting page.'); 
-        }
-        if ($db->sql_affected_rows($handle) < 1) {
-            throw new PageException('No pages deleted.'); 
         }
         
         Log::addMessage('Deleted page \''.$this->mTitle.'\'');

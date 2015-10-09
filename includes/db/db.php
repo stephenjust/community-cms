@@ -80,17 +80,10 @@ abstract class db
     abstract function sql_server_info();
     abstract function sql_query($query);
     abstract function sql_num_rows($query);
-    abstract function sql_affected_rows($query);
     abstract function sql_fetch_assoc($query);
-    abstract function sql_fetch_row($query);
     abstract function sql_escape_string($string);
-    abstract function sql_insert_id($table,$field);
     abstract function sql_close();
     /**#@-*/
-}
-
-class SQLException extends \Exception
-{
 }
 
 require ROOT.'includes/db/db_'.Config::DB_ENGINE.'.php';

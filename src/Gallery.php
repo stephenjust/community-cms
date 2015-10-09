@@ -64,7 +64,6 @@ class Gallery
     /**
      * Class constructor, and if passed ID is false, create a new gallery with
      * the given parameters
-     * @global db $db
      * @param integer $id        Gallery ID or false
      * @param string  $title
      * @param string  $caption
@@ -72,29 +71,29 @@ class Gallery
      */
     function __construct($id, $title = null, $caption = null, $image_dir = null) 
     {
-        global $db;
-
         if ($id === false) {
+            $image_dir = File::replaceSpecialChars($image_dir);
             // Creating a new gallery
-            $title = $db->sql_escape_string($title);
-            $caption = $db->sql_escape_string($caption);
-            $image_dir = $db->sql_escape_string(
-                File::replaceSpecialChars($image_dir)
-            );
             if (!$title || !$caption || !$image_dir) {
                 throw new GalleryException('You must fill out all of the fields to create an image gallery.'); 
             }
 
             $create_query = "INSERT INTO `".GALLERY_TABLE."`
-				(`title`,`description`,`image_dir`)
-				VALUES
-				('$title','$caption','$image_dir')";
-            $create_handle = $db->sql_query($create_query);
-            if ($db->error[$create_handle] === 1) {
-                throw new GalleryException('Failed to create new gallery.'); 
+                (`title`,`description`,`image_dir`)
+                VALUES
+                (:title, :description, :image_dir)";
+            try {
+                DBConn::get()->query($create_query,
+                    [
+                        ":title" => $title,
+                        ":description" => $caption,
+                        ":image_dir" => $image_dir],
+                    DBConn::NOTHING);
+                $id = DBConn::get()->lastInsertId();
+            } catch (Exceptions\DBException $ex) {
+                throw new GalleryException("Failed to create new gallery.", $ex);
             }
 
-            $id = $db->sql_insert_id(GALLERY_TABLE, 'id');
             // Create gallery directories
             if (!file_exists(ROOT.'files/'.$image_dir)) {
                 mkdir(ROOT.'files/'.$image_dir);

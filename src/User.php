@@ -192,33 +192,28 @@ class User
 
     /**
      * Check whether a user exists
-     * @global db $db
      * @param String $username
      * @return Numeric User ID, 0 if user does not exist
      * @throws UserException
      */
     public static function exists($username)
     {
-        global $db;
-
         if (!Validate::username($username)) {
             throw new UserException('Invalid username.');
         }
 
         $query = 'SELECT `id` FROM `'.USER_TABLE.'`
-			WHERE `username` = \''.$username.'\'';
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new UserException('Failed to look up user.');
+            WHERE `username` = :username';
+        try {
+            $result = DBConn::get()->query($query, [":username" => $username], DBConn::FETCH);
+        } catch (Exceptions\DBException $ex) {
+            throw new UserException("Failed to look up user.", $ex);
         }
-
-        $num_results = $db->sql_num_rows($handle);
-        if ($num_results == 0) {
+        if (!$result) {
             return 0;
+        } else {
+            return $result['id'];
         }
-        $result = $db->sql_fetch_row($handle);
-
-        return $result[0];
     }
 
     /**
