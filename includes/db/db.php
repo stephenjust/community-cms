@@ -77,7 +77,6 @@ abstract class db
     * Abstract functions defined by child classes
     */
     abstract function sql_connect();
-    abstract function sql_server_info();
     abstract function sql_query($query);
     abstract function sql_num_rows($query);
     abstract function sql_fetch_assoc($query);

@@ -130,4 +130,13 @@ class DBConn
     {
         return $this->conn->lastInsertId();
     }
+
+    /**
+     * Get information about the sql server
+     * @return string
+     */
+    public function serverInfo()
+    {
+        return $this->conn->getAttribute(\PDO::ATTR_SERVER_VERSION);
+    }
 }
