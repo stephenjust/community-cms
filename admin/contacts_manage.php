@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2009-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2009-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -22,32 +27,24 @@ $tab_layout = new Tabs;
 
 /**
  * Get contact list
- * @global db $db Database object
  * @param integer $page Page ID
  * @return array Contact information (or false on failure)
  */
 function contact_list($page = '*') 
 {
-    global $db;
     // Check parameters
     if (!is_numeric($page) && $page != '*') {
         Debug::get()->addMessage('Invalid parameter', true);
         return false;
     }
-    $query_page = ($page != '*') ? ' WHERE `page` = '.$page : null;
+    $query_page = ($page != '*') ? ' WHERE `page` = :page' : null;
     $contact_list_query = 'SELECT * FROM `'.CONTACTS_TABLE.'`'.$query_page;
-    $contact_list_handle = $db->sql_query($contact_list_query);
-    if ($db->error[$contact_list_handle] === 1) {
-        Debug::get()->addMessage('SQL error: failed to read contact list', true);
-        return false;
+    try {
+        $results = DBConn::get()->query($contact_list_query, [":page" => $page], DBConn::FETCH_ALL);
+    } catch (Exceptions\DBException $ex) {
+        throw new \Exception("Failed to fetch contact list.", $ex);
     }
-    $num_contacts = $db->sql_num_rows($contact_list_handle);
-    $contacts = array();
-    for ($i = 0; $i < $num_contacts; $i++) {
-        $contact_list = $db->sql_fetch_assoc($contact_list_handle);
-        $contacts[] = $contact_list;
-    }
-    return $contacts;
+    return $results;
 }
 
 // ----------------------------------------------------------------------------
@@ -158,36 +155,28 @@ $tab_layout->add_tab('Manage Contacts', $tab_content['manage']);
 
 // A contact list is the same thing as a contacts page. One list per page.
 $tab_content['manage_lists'] = null;
-// Get current list of Contacts pages
-$current_lists_query = 'SELECT `page`.`id`,`page`.`title`
-	FROM `'.PAGE_TABLE.'` `page`, `'.PAGE_TYPE_TABLE.'` `pt`
-	WHERE `pt`.`id` = `page`.`type`
-	AND `pt`.`name` = \'Contacts\'';
-$current_lists_handle = $db->sql_query($current_lists_query);
-if ($db->error[$current_lists_handle] === 1) {
-    $tab_content['manage_lists'] .= '<span class="errormessage">Failed to search for Contact Lists</span><br />';
+$contact_lists = Contact::getContactLists();
+
+if (count($contact_lists) == 0) {
+    $tab_content['manage_lists'] .= 'No Contact Lists exist. Please create a new Contacts page to add one.<br />';
 } else {
-    if ($db->sql_num_rows($current_lists_handle) == 0) {
-        $tab_content['manage_lists'] .= 'No Contact Lists exist. Please create a new Contacts page to add one.<br />';
-    } else {
-        $cn_select = new UISelect(
-            array('name' => 'cl',
-            'id' => 'adm_cl_list',
-            'onChange' => 'update_cl_manager(\'-\')')
-        );
-        if (array_key_exists('page', $_POST)) { $cn_cur = $_POST['page']; 
-        }
-        for ($i = 0; $i < $db->sql_num_rows($current_lists_handle); $i++) {
-            $current_lists_result = $db->sql_fetch_assoc($current_lists_handle);
-            if (!isset($cn_cur)) { $cn_cur = $current_lists_result['id']; 
-            }
-            $cn_select->addOption($current_lists_result['id'], $current_lists_result['title']);
-        }
-        $cn_select->setChecked($cn_cur);
-        $tab_content['manage_lists'] .= $cn_select."\n";
-        $tab_content['manage_lists'] .= '<div id="adm_contact_list_manager">Loading...</div>'."\n";
-        $tab_content['manage_lists'] .= '<script type="text/javascript">update_cl_manager(\''.$cn_cur.'\');</script>';
+    $cn_select = new UISelect(
+        array('name' => 'cl',
+        'id' => 'adm_cl_list',
+        'onChange' => 'update_cl_manager(\'-\')')
+    );
+    if (array_key_exists('page', $_POST)) { $cn_cur = $_POST['page'];
     }
+    foreach ($contact_lists as $contact_list) {
+        if (!isset($cn_cur)) {
+            $cn_cur = $contact_list;
+        }
+        $cn_select->addOption($contact_list, PageUtil::getTitle($contact_list));
+    }
+    $cn_select->setChecked($cn_cur);
+    $tab_content['manage_lists'] .= $cn_select."\n";
+    $tab_content['manage_lists'] .= '<div id="adm_contact_list_manager">Loading...</div>'."\n";
+    $tab_content['manage_lists'] .= '<script type="text/javascript">update_cl_manager(\''.$cn_cur.'\');</script>';
 }
 $tab_layout->add_tab('Contact Lists', $tab_content['manage_lists']);
 

@@ -45,6 +45,29 @@ class Contact
     }
 
     /**
+     * Get the ids of all contact list pages
+     * @return array
+     * @throws ContactException
+     */
+    public static function getContactLists()
+    {
+        $query = "SELECT `page`.`id` "
+            . "FROM `".PAGE_TABLE."` `page`, `".PAGE_TYPE_TABLE."` `pt` "
+            . "WHERE `page`.`type` = `pt`.`id` "
+            . "AND `pt`.`name` = :page_type";
+        try {
+            $results = DBConn::get()->query($query, [":page_type" => "Contacts"], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+            throw new ContactException("Failed to read contact lists.", $ex);
+        }
+        $ids = [];
+        foreach ($results as $result) {
+            $ids[] = $result['id'];
+        }
+        return $ids;
+    }
+
+    /**
      * Load a contact record
      * @param integer $id
      * @throws ContactException

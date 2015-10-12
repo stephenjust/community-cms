@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2013 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2013-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -25,32 +30,24 @@ class User
 
     /**
      * Create a User object from a User ID
-     * @global db $db
      * @param Integer $user_id
      * @throws UserException
      */
     public function __construct($user_id)
     {
-        global $db;
-
-        if ($user_id == 0 || !is_numeric($user_id)) {
-            throw new UserException('Invalid User ID.');
-        }
-
-        // Query for user
         $query = 'SELECT `type`, `username`, `password_date`, `realname`,
 			`title`, `groups`, `phone`, `email`, `address`, `lastlogin`
 			FROM `'.USER_TABLE."`
-			WHERE `id` = $user_id";
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle]) {
-            throw new UserException('Failed to look up user.');
+			WHERE `id` = :id";
+        try {
+            $result = DBConn::get()->query($query, [":id" => $user_id], DBConn::FETCH);
+        } catch (Exceptions\DBException $ex) {
+            throw new UserException("Failed to look up user.", $ex);
         }
 
-        if ($db->sql_num_rows($handle) == 0) {
-            throw new UserException('User not found.');
+        if (!$result) {
+            throw new UserException("User not found.");
         }
-        $result = $db->sql_fetch_assoc($handle);
 
         // Fill class attributes
         $this->user_id = $user_id;
@@ -68,7 +65,6 @@ class User
 
     /**
      * Create a user
-     * @global db $db
      * @param String $username
      * @param String $password
      * @param String $f_name
@@ -79,19 +75,13 @@ class User
      * @param String $title
      * @param int[]  $groups
      * @return \User
-     * @throws AclException
      * @throws UserException
      */
     public static function create($username, $password,
         $f_name = null, $l_name = null, $tel = null,
         $address = null, $email = null, $title = null, $groups = null
     ) {
-        global $db;
-
-        // Check permissions
-        if (!acl::get()->check_permission('user_create')) {
-            throw new AclException('You do not have the necessary permissions to create a new user.');
-        }
+        acl::get()->require_permission('user_create');
 
         // Validate input
         if (!strlen($username) || !strlen($password)) {
@@ -128,15 +118,26 @@ class User
 			(`type`, `username`, `password`, `password_date`, `realname`,
 			`title`, `groups`, `phone`, `email`, `address`)
 			VALUES
-			(2, '$username', '".md5($password)."', $time, '$real_name',
-			'$title', '$groups', '$tel', '$email', '$address')";
-        $create_user = $db->sql_query($query);
-        if ($db->error[$create_user] === 1) {
-            throw new UserException('Failed to create user.');
+			(2, :username, :password, :time, :real_name,
+			:title, :groups, :tel, :email, :address)";
+        try {
+            DBConn::get()->query($query,
+                [
+                    ":username" => $username,
+                    ":password" => md5($password),
+                    ":time" => $time,
+                    ":real_name" => $real_name,
+                    ":title" => $title,
+                    ":groups" => $groups,
+                    ":tel" => $tel,
+                    ":email" => $email,
+                    ":address" => $address
+                ], DBConn::NOTHING);
+            Log::addMessage("Created user '$real_name' ($username)");
+            return new User(User::exists($username));
+        } catch (Exception $ex) {
+            throw new UserException("Failed to create user.", $ex);
         }
-
-        Log::addMessage('Created user \''.$real_name.'\' ('.$username.')');
-        return new User(User::exists($username));
     }
 
     /**
@@ -163,31 +164,23 @@ class User
 
     /**
      * Remove a user record from the database
-     * @global db $db
-     * @throws AclException
      * @throws UserException
      */
     public function delete()
     {
-        global $db;
-
-        if (!acl::get()->check_permission('user_delete')) {
-            throw new AclException('You do not have the necessary permissions to delete a user.');
-        }
+        acl::get()->require_permission('user_delete');
         if ($this->user_id == 1) {
             throw new UserException('Cannot delete Administrator user.');
         }
 
         $query = 'DELETE FROM `'.USER_TABLE.'`
-			WHERE `id` = '.$this->user_id;
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle]) {
-            throw new UserException('Failed to delete user.');
+			WHERE `id` = :id';
+        try {
+            DBConn::get()->query($query, [':id' => $this->user_id], DBConn::NOTHING);
+            Log::addMessage("Deleted user '$this->realname' ($this->username)");
+        } catch (Exceptions\DBException $ex) {
+            throw new UserException('Failed to delete user.', $ex);
         }
-
-        Log::addMessage("Deleted user '$this->realname' ($this->username)");
-        $this->user_id = 0;
-        $this->username = null;
     }
 
     /**
@@ -266,22 +259,20 @@ class User
 
     /**
      * Set password changed date
-     * @global db $db
      * @throws UserException
      */
     private function setPasswordChangeDate()
     {
-        global $db;
-
         $new_time = time();
         $query = 'UPDATE `'.USER_TABLE."`
-			SET `password_date` = $new_time
-			WHERE `id` = $this->user_id";
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle]) {
-            throw new UserException('Failed to set password creation time.');
+			SET `password_date` = :new_time
+			WHERE `id` = :id";
+        try {
+            DBConn::get()->query($query, [":id" => $this->user_id, ":new_time" => $new_time], DBConn::NOTHING);
+            $this->pass_change_date = $new_time;
+        } catch (Exceptions\DBException $ex) {
+            throw new UserException("Failed to set password creation time.", $ex);
         }
-        $this->pass_change_date = $new_time;
     }
 }
 

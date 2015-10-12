@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -53,15 +58,15 @@ $tab['activity'] = $tab_layout->add_tab('Recent Activity', $tab_content['activit
 $user_query = 'SELECT `username`
 	FROM `'.USER_TABLE.'`
 	ORDER BY `id` DESC';
-$user_handle = $db->sql_query($user_query);
-if ($db->error[$user_handle] !== 1) {
-    $user = $db->sql_fetch_assoc($user_handle);
-    $tab_content['user'] = 'Number of users: '.$db->sql_num_rows($user_handle).'<br />
-		Newest user: '.$user['username'];
-} else {
-    $tab_content['user'] = 'Could not find user information.';
+try {
+    $user_results = DBConn::get()->query($user_query, [], DBConn::FETCH_ALL);
+
+    $tab_content['user'] = 'Number of users: '.count($user_results).'<br />
+		Newest user: '.$user_results[0]['username'];
+    $tab_layout->add_tab('User Summary', $tab_content['user']);
+} catch (Exceptions\DBException $ex) {
+    Debug::get()->addMessage("Failed to load user information.", true);
 }
-$tab['users'] = $tab_layout->add_tab('User Summary', $tab_content['user']);
 
 // ----------------------------------------------------------------------------
 

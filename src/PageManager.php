@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2013-2014 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2013-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -16,50 +21,38 @@ class PageManager
     
     public function __construct($id) 
     {
-        global $db;
-        
-        $id = $db->sql_escape_string($id);
-        
-        $query = 'SELECT `title`
-			FROM `'.PAGE_TABLE.'`
-			WHERE `id` = '.$id;
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new PageException('Error loading page.');
+        $query = 'SELECT `title` FROM `'.PAGE_TABLE.'` WHERE `id` = :id';
+        try {
+            $result = DBConn::get()->query($query, [":id" => $id], DBConn::FETCH);
+            if (!$result) {
+                throw new PageException("Page not found.");
+            }
+            $this->mId = $id;
+            $this->mTitle = $result['title'];
+        } catch (Exceptions\DBException $ex) {
+            throw new PageException("Failed to load page.", $ex);
         }
-        if ($db->sql_num_rows($handle) == 0) {
-            throw new PageException('Page not found.'); 
-        }
-        
-        $result = $db->sql_fetch_assoc($handle);
-        
-        $this->mId = $id;
-        $this->mTitle = $result['title'];
     }
     
     /**
      * Delete a page
-     * @global db $db
      * @throws PageException
      */
     public function delete() 
     {
         acl::get()->require_permission('page_delete');
-        assert($this->mId, 'Invalid page.');
-        global $db;
 
         // FIXME: Check for content on page before deleting
 
         // Delete page entry
         $query = 'DELETE FROM `'.PAGE_TABLE.'`
-			WHERE `id` = '.$this->mId;
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new PageException('Error deleting page.'); 
+			WHERE `id` = :id';
+        try {
+            DBConn::get()->query($query, [":id" => $this->mId], DBConn::NOTHING);
+            Log::addMessage("Deleted page '{$this->mTitle}'");
+        } catch (Exceptions\DBException $ex) {
+            throw new PageException("Failed to delete page.", $ex);
         }
-        
-        Log::addMessage('Deleted page \''.$this->mTitle.'\'');
-        $this->mId = false;
     }
     
     /**

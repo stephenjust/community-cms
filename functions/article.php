@@ -2,10 +2,16 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
+
 namespace CommunityCMS;
 // Security Check
 if (@SECURITY != 1) {
@@ -36,13 +42,17 @@ function article_url_onpage($id)
     }
 
     $page_query = 'SELECT `page` FROM `'.NEWS_TABLE.'`
-		WHERE `id` = '.$id;
-    $page_handle = $db->sql_query($page_query);
-    if ($db->sql_num_rows($page_handle) == 0) {
-        return '#';
+		WHERE `id` = :id';
+    try {
+        $result = DBConn::get()->query($page_query, [":id" => $id], DBConn::FETCH);
+        if(!$result) {
+            return "#";
+        } else {
+            return "index.php?id={$result['page']}&amp;article=$id#article-$id";
+        }
+    } catch (Exceptions\DBException $ex) {
+        throw new \Exception("Failed to query pages.", $ex);
     }
-    $page_result = $db->sql_fetch_assoc($page_handle);
-    return 'index.php?id='.$page_result['page'].'&amp;article='.$id.'#article-'.$id;
 }
 
 /**
