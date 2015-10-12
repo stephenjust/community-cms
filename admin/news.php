@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -156,22 +161,17 @@ case 'edit':
     if (!isset($_GET['id'])) {
         break;
     }
-    if (!is_numeric($_GET['id'])) {
-        echo '<span class="errormessage">Invalid article ID.</span><br />';
-        break;
-    }
-    $article_id = (int)$_GET['id'];
+    $article_id = $_GET['id'];
 
     // Get article information
     $edit_query = 'SELECT * FROM ' . NEWS_TABLE . '
-			WHERE id = '.$article_id.' LIMIT 1';
-    $edit_handle = $db->sql_query($edit_query);
-    if ($db->sql_num_rows($edit_handle) == 0) {
-        echo '<span class="errormessage">The article you are trying to edit does not exist.</span><br />';
-        break;
+			WHERE id = :id LIMIT 1';
+    try {
+        $edit = DBConn::get()->query($edit_query, [":id" => $article_id], DBConn::FETCH);
+    } catch (Exceptions\DBException $ex) {
+        throw new \Exception("Failed to load article.", $ex);
     }
 
-    $edit = $db->sql_fetch_assoc($edit_handle);
     $edit_form = new Form;
     $edit_form->set_method('post');
     $edit_form->set_target('admin.php?module=news&action=editsave');

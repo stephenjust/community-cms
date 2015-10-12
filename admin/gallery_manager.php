@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -14,9 +19,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-if (!acl::get()->check_permission('adm_gallery_manager')) {
-    throw new AdminException('You do not have the necessary permissions to access this module.'); 
-}
+acl::get()->require_permission('adm_gallery_manager');
 
 // ----------------------------------------------------------------------------
 
@@ -190,32 +193,20 @@ default:
 
 case 'built-in':
     $gallery_list_query = 'SELECT * FROM `'.GALLERY_TABLE.'` ORDER BY `id` DESC';
-    $gallery_list_handle = $db->sql_query($gallery_list_query);
-    if ($db->error[$gallery_list_handle] === 1) {
-        echo 'Failed to read galleries table.';
-        return true;
-    }
-    if ($db->sql_num_rows($gallery_list_handle) == 0) {
-        $tab_content['manage'] = 'No galleries currently exist.<br />';
-    } else {
-        // Start gallery list
-        $tab_content['manage'] = '<table class="admintable"><tr>
-				<th>Title</th><th>Image Directory</th><th colspan="2" width="1px"></th></tr>';
-
-        // Populate table
-        for ($i = 1; $i <= $db->sql_num_rows($gallery_list_handle); $i++) {
-            $gallery_list = $db->sql_fetch_assoc($gallery_list_handle);
-            $tab_content['manage'] .= '<tr>
-					<td>'.$gallery_list['title'].'</td>
-					<td>'.$gallery_list['image_dir'].'</td>
-					<td><a href="?module=gallery_manager&amp;action=edit&amp;id='.$gallery_list['id'].'">Edit</a></td>
-					<td><a href="?module=gallery_manager&amp;action=delete&amp;id='.$gallery_list['id'].'">Delete</a></td>';
-        }
-
-        $tab_content['manage'] .= '</table>';
+    try {
+        $gallery_list = DBConn::get()->query($gallery_list_query, [], DBConn::FETCH_ALL);
+    } catch (Exceptions\DBException $ex) {
+        throw new \Exception("Failed to read galleries table.", $ex);
     }
 
-    $tab_layout->add_tab('Manage Galleries', $tab_content['manage']);
+    $gallery_rows = [];
+    foreach ($gallery_list as $gallery_item) {
+        $gallery_rows[] = [$gallery_item['title'], $gallery_item['image_dir'],
+            HTML::link("?module=gallery_manager&action=edit&id={$gallery_item['id']}", "Edit"),
+            HTML::link("?module=gallery_manager&action=delete&id={$gallery_item['id']}", "Delete")];
+    }
+
+    $tab_layout->add_tab('Manage Galleries', Component\TableComponent::create(["Title", "Image Directory", "", ""], $gallery_rows));
 
     // ----------------------------------------------------------------------------
 
