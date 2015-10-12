@@ -94,28 +94,14 @@ if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 $tab_layout = new Tabs;
 if ($_GET['action'] == 'edit') {
     $tab_content['edit'] = null;
-    $file = $db->sql_escape_string($_GET['path'].$_GET['file']);
-    $file_info_query = 'SELECT * FROM ' . FILE_TABLE . '
-		WHERE `path` = \''.$file.'\' LIMIT 1';
-    $file_info_handle = $db->sql_query($file_info_query);
-    if ($db->error[$file_info_handle] === 1) {
-        $tab_content['edit'] .= 'Could not read file information from database.';
-        $file_info['label'] = null;
-        $file_info['id'] = null;
-    } else {
-        if ($db->sql_num_rows($file_info_handle) != 1) {
-            $file_info['label'] = null;
-            $file_info['id'] = null;
-        } else {
-            $file_info = $db->sql_fetch_assoc($file_info_handle);
-        }
-    }
+    $path = $db->sql_escape_string($_GET['path'].$_GET['file']);
+    $file = new File($path);
+
     $form = new Form;
     $form->set_target('admin.php?module=filemanager&action=saveinfo&path='.$_GET['path']);
     $form->set_method('post');
-    $form->add_hidden('id', $file_info['id']);
-    $form->add_hidden('path', $file);
-    $form->add_textbox('label', 'Label', $file_info['label']);
+    $form->add_hidden('path', $path);
+    $form->add_textbox('label', 'Label', $file->getInfo()['label']);
     $form->add_submit('submit', 'Save');
     $tab_content['edit'] .= $form;
     $tab_layout->add_tab('Edit File Properties', $tab_content['edit']);

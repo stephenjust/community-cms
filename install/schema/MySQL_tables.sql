@@ -79,11 +79,10 @@ CREATE TABLE `<!-- $DB_PREFIX$ -->dir_props` (
 ) ENGINE=MYISAM CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (
-	`id` int(11) NOT NULL auto_increment,
+	`path` varchar(255) NOT NULL,
 	`type` int(11) NOT NULL default 0,
 	`label` text NOT NULL,
-	`path` text NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`path`)
 ) ENGINE=MyISAM CHARACTER SET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->galleries` (
