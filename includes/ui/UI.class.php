@@ -20,7 +20,7 @@ class UI
      * Populate common parameters
      * @param array $params
      */
-    public function __construct($params) 
+    public function __construct(array $params)
     {
         if (array_key_exists('id', $params)) {
             $this->id = $params['id']; 
@@ -54,5 +54,3 @@ class UI
     {
     }
 }
-
-?>

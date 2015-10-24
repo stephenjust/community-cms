@@ -22,28 +22,18 @@ class UISelectPageList extends UISelect
     
     protected function preload() 
     {
-        global $db;
-
         if (!$this->pagetype) {
-            $query = 'SELECT *
-				FROM `'.PAGE_TABLE.'`
-				ORDER BY `title` ASC'; 
+            $query = 'SELECT `id`, `title` FROM `'.PAGE_TABLE.'` ORDER BY `title` ASC';
+        } else {
+            $query = 'SELECT `id`, `title` FROM `'.PAGE_TABLE.'` WHERE `type` = :type ORDER BY `title` ASC';
         }
-        else {
-            $query = 'SELECT *
-				FROM `'.PAGE_TABLE.'`
-				WHERE `type` = '.(int)$this->pagetype.'
-				ORDER BY `title` ASC'; 
+        try {
+            $results = DBConn::get()->query($query, [":type" => $this->pagetype], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception('Error reading page list.');
         }
-        
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new \Exception('Error reading page list.'); 
-        }
-        for ($i = 0; $i < $db->sql_num_rows($handle); $i++) {
-            $result = $db->sql_fetch_assoc($handle);
+        foreach ($results as $result) {
             $this->addOption($result['id'], $result['title']);
         }
     }
 }
-?>

@@ -53,31 +53,20 @@ case 'edit':
         echo 'Invalid newsletter ID.<br />'."\n";
         break;
     }
-    $newsletter_info_query = 'SELECT * FROM `'.NEWSLETTER_TABLE.'`
-			WHERE `id` = '.$_GET['id'].' LIMIT 1';
-    $newsletter_info_handle = $db->sql_query($newsletter_info_query);
-    if ($db->error[$newsletter_info_handle] === 1) {
-        echo 'Failed to load newsletter information.<br />'."\n";
-        break;
-    }
-    if ($db->sql_num_rows($newsletter_info_handle) != 1) {
-        echo 'The newsletter you selected does not exist.<br />'."\n";
-        break;
-    }
-    $newsletter_info = $db->sql_fetch_assoc($newsletter_info_handle);
+    $newsletter = new Newsletter($_GET['id']);
     $edit_form = new Form;
     $edit_form->set_target('admin.php?module=newsletter&action=editsave');
     $edit_form->set_method('post');
-    $edit_form->add_textbox('label', 'Label', HTML::schars($newsletter_info['label']));
-    $edit_form->add_hidden('id', $newsletter_info['id']);
-    $edit_form->add_textbox('file', 'File', HTML::schars($newsletter_info['path']), 'size="35" disabled');
+    $edit_form->add_textbox('label', 'Label', $newsletter->getLabel());
+    $edit_form->add_hidden('id', $newsletter->getId());
+    $edit_form->add_textbox('file', 'File', $newsletter->getPath(), 'size="35" disabled');
     $edit_form->add_select(
         'month', 'Month', array(1,2,3,4,5,6,7,8,9,10,11,12), array('January',
         'February','March','April','May','June','July','August','September','October',
-        'November','December'), $newsletter_info['month']
+        'November','December'), $newsletter->getMonth()
     );
-    $edit_form->add_textbox('year', 'Year', $newsletter_info['year'], 'maxlength="4" size="4"');
-    $edit_form->add_page_list('page', 'Page', 2, 0, $newsletter_info['page']);
+    $edit_form->add_textbox('year', 'Year', $newsletter->getYear(), 'maxlength="4" size="4"');
+    $edit_form->add_page_list('page', 'Page', 2, 0, $newsletter->getPage());
     $edit_form->add_submit('submit', 'Save Changes');
     $tab_content['edit'] = $edit_form;
     $tab_layout->add_tab('Edit Newsletter', $tab_content['edit']);
@@ -92,17 +81,17 @@ case 'editsave':
         break;
     }
     $edit_query = 'UPDATE `'.NEWSLETTER_TABLE.'`
-			SET `label` = \''.addslashes($_POST['label']).'\',
-			`month` = '.$_POST['month'].',
-			`year` = '.$_POST['year'].',
-			`page` = '.$_POST['page'].' WHERE `id` = '.$_POST['id'];
-    $edit_handle = $db->sql_query($edit_query);
-    if ($db->error[$edit_handle] === 1) {
-        echo 'Failed to edit newsletter entry.<br />'."\n";
-        break;
-    } else {
+			SET `label` = :label,
+			`month` = :month,
+			`year` = :year,
+			`page` = :page WHERE `id` = :id';
+    try {
+        DBConn::get()->query($edit_query, [":label" => $_POST['label'], ":month" => $_POST['month'], ":year" => $_POST['year'], ":page" => $_POST['page'], ":id" => $_POST['id']], DBConn::NOTHING);
         Log::addMessage('Edited newsletter \''.$_POST['label'].'\'');
         echo 'Updated newsletter entry.<br />'."\n";
+    } catch (Exceptions\DBException $ex) {
+        echo 'Failed to edit newsletter entry.<br />'."\n";
+        break;
     }
     break;
 }
@@ -111,38 +100,16 @@ if (isset($_GET['page'])) {
     $_POST['page'] = $_GET['page'];
 }
 
-$tab_content['manage'] = '<select name="page" id="adm_newsletter_page_list" onChange="update_newsletter_list(\'-\')">';
-$page_query = 'SELECT * FROM ' . PAGE_TABLE . '
-	WHERE type = 2 ORDER BY title ASC';
-$page_query_handle = $db->sql_query($page_query);
-$i = 1;
-$first = 0;
-while ($i <= $db->sql_num_rows($page_query_handle)) {
-    $page = $db->sql_fetch_assoc($page_query_handle);
-    if (!isset($_POST['page'])) {
-        $_POST['page'] = SysConfig::get()->getValue('home');
-        $first = 1;
-    }
-    if ($page['id'] == $_POST['page']) {
-        $tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.stripslashes($page['title']).'</option>'."\n";
-    } else {
-        $tab_content['manage'] .= '<option value="'.$page['id'].'" />'.stripslashes($page['title']).'</option>'."\n";
-        if ($first == 1 && $page['id'] != $_POST['page']) {
-            $_POST['page'] = $page['id'];
-            $first = 0;
-        }
-    }
-    $i++;
+if (!isset($_POST['page'])) {
+    $_POST['page'] = '*';
 }
-
-// All pages
-if ($_POST['page'] == '*') {
-    $tab_content['manage'] .= '<option value="*" selected>All Pages</option>'."\n";
-} else {
-    $tab_content['manage'] .= '<option value="*">All Pages</option>'."\n";
-}
-
-$tab_content['manage'] .= '</select>';
+$page_list = new UISelectPageList([
+    "id" => "adm_newsletter_page_list",
+    "pagetype" => 2,
+    "onChange" => "update_newsletter_list('-')"]);
+$page_list->addOption("*", "All Pages");
+$page_list->setChecked($_POST['page']);
+$tab_content['manage'] = $page_list;
 
 $tab_content['manage'] .= '<div id="adm_newsletter_list">Loading...</div>';
 $tab_content['manage'] .= '<script type="text/javascript">update_newsletter_list(\''.$_POST['page'].'\');</script>';

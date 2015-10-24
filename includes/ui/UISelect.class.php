@@ -82,4 +82,3 @@ class UISelect extends UI
         return $result;
     }
 }
-?>

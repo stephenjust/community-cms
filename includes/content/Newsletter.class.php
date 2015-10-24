@@ -276,7 +276,20 @@ class Newsletter
         
         return HTML::schars($this->mPath);
     }
-    
+
+    /**
+     * Get page
+     * @return int
+     */
+    public function getPage()
+    {
+        if (!$this->mExists) {
+            throw new NewsletterException('Newsletter does not exist!');
+        }
+
+        return $this->mPage;
+    }
+
     /**
      * Get year
      * @return int
