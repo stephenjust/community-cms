@@ -54,10 +54,12 @@ $tab_layout = new Tabs;
 $tab_content['manage'] = '
 	<select id="adm_page_message_page_list" name="page" onChange="update_page_message_list(\'-\')">';
 $page_query = 'SELECT * FROM ' . PAGE_TABLE . ' ORDER BY list ASC';
-$page_query_handle = $db->sql_query($page_query);
-$i = 1;
-while ($i <= $db->sql_num_rows($page_query_handle)) {
-    $page = $db->sql_fetch_assoc($page_query_handle);
+try {
+    $results = DBConn::get()->query($page_query, [], DBConn::FETCH_ALL);
+} catch (Exceptions\DBException $ex) {
+    throw new \Exception("Failed to load page list.");
+}
+foreach ($results as $page) {
     if (!preg_match('/<LINK>/', $page['title'])) {
         if ($page['id'] == $page_id) {
             $tab_content['manage'] .= '<option value="'.$page['id'].'" selected />'.$page['title'].'</option>';
@@ -65,8 +67,8 @@ while ($i <= $db->sql_num_rows($page_query_handle)) {
             $tab_content['manage'] .= '<option value="'.$page['id'].'" />'.$page['title'].'</option>';
         }
     }
-    $i++;
 }
+
 $tab_content['manage'] .= '</select><br />'."\n";
 $tab_content['manage'] .= '<div id="adm_page_message_list">Loading...</div>'."\n";
 $tab_content['manage'] .= '<script type="text/javascript">update_page_message_list(\''.$page_id.'\');</script>';

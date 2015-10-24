@@ -68,6 +68,26 @@ class Contact
     }
 
     /**
+     * Get a list of all contacts
+     * @return \Contact
+     * @throws ContactException
+     */
+    public static function getAll()
+    {
+        $query = "SELECT `id` FROM `".CONTACTS_TABLE."` ORDER BY `name` ASC";
+        try {
+            $results = DBConn::get()->query($query, [], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+            throw new ContactException("Failed to read contacts.", $ex);
+        }
+        $contacts = [];
+        foreach ($results as $result) {
+            $contacts[] = new self($result['id']);
+        }
+        return $contacts;
+    }
+
+    /**
      * Load a contact record
      * @param integer $id
      * @throws ContactException

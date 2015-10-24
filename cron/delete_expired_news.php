@@ -24,5 +24,3 @@ for ($i = 0; $i < $db->sql_num_rows($handle); $i++) {
 	printf('Automated deletion of article "%s"<br />', $result['name']);
 	Log::addMessage(sprintf('Automated deletion of article "%s"', $result['name']));
 }
-
-?>

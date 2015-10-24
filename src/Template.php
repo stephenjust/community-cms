@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -18,23 +23,25 @@ class Template
 
     public function __construct()
     {
-        global $db;
         global $template_cache;
 
         if (!isset($template_cache)) {
             $template_cache = array();
         }
         if (!isset($template_cache['path']) || !isset($template_cache['template_name'])) {
-            $template_query = 'SELECT * FROM ' . TEMPLATE_TABLE . '
-				WHERE id = '.SysConfig::get()->getValue('site_template').' LIMIT 1';
-            $template_handle = $db->sql_query($template_query);
-            if ($db->sql_num_rows($template_handle) != 1) {
+            $query = "SELECT * FROM `".TEMPLATE_TABLE."` "
+                . "WHERE `id` = :id";
+            try {
+                $result = DBConn::get()->query($query, [":id" => SysConfig::get()->getValue('site_template')], DBConn::FETCH);
+            } catch (Exceptions\DBException $ex) {
+                throw new \Exception("Failed to lookup template.");
+            }
+            if (!$result) {
                 Debug::get()->addMessage('Current template not found in database', true);
                 $this->path = 'default';
             } else {
-                $template_result = $db->sql_fetch_assoc($template_handle);
-                $this->path = $template_result['path'];
-                $this->template_name = preg_replace('#(^templates/|/)#i', null, $template_result['path']);
+                $this->path = $result['path'];
+                $this->template_name = preg_replace('#(^templates/|/)#i', null, $result['path']);
             }
             $template_cache['path'] = $this->path;
             $template_cache['template_name'] = $this->template_name;

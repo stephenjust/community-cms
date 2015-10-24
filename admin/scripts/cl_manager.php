@@ -77,23 +77,25 @@ case 'order':
 $contact_list_query = 'SELECT `contacts`.*, `content`.`order`, `content`.`id` AS `cnt_id`
 	FROM `'.CONTACTS_TABLE.'` `contacts`, `'.CONTENT_TABLE.'` `content`
 	WHERE `content`.`ref_id` = `contacts`.`id`
-	AND `content`.`page_id` = '.$page_id.'
+	AND `content`.`page_id` = :page_id
 	ORDER BY `content`.`order` ASC';
-$contact_list_handle = $db->sql_query($contact_list_query);
-$contact_list_rows = $db->sql_num_rows($contact_list_handle);
+try {
+    $results = DBConn::get()->query($contact_list_query, [":page_id" => $page_id], DBConn::FETCH_ALL);
+} catch (Exceptions\DBException $ex) {
+    throw new \Exception("Failed to load contact lists.");
+}
 $list_rows = array();
 $contact_ids = array();
-for ($i = 1; $i <= $contact_list_rows; $i++) {
-    $contact_list = $db->sql_fetch_assoc($contact_list_handle);
+foreach ($results as $result) {
     $current_row = array();
-    $contact_ids[] = $contact_list['id'];
-    $current_row[] = $contact_list['id'];
-    $current_row[] = HTML::schars($contact_list['name']);
+    $contact_ids[] = $result['id'];
+    $current_row[] = $result['id'];
+    $current_row[] = HTML::schars($result['name']);
     if(acl::get()->check_permission('contacts_edit_lists')) {
-        $current_row[] = '<a href="javascript:update_cl_manager_remove(\''.$contact_list['id'].'\')">Remove</a>';
+        $current_row[] = '<a href="javascript:update_cl_manager_remove(\''.$result['id'].'\')">Remove</a>';
     }
 
-    $current_row[] = '<input type="text" size="3" maxlength="11" id="cl_order_'.$contact_list['id'].'" value="'.$contact_list['order'].'" onBlur="update_cl_manager_order(\''.$contact_list['id'].'\')" />';
+    $current_row[] = '<input type="text" size="3" maxlength="11" id="cl_order_'.$result['id'].'" value="'.$result['order'].'" onBlur="update_cl_manager_order(\''.$result['id'].'\')" />';
     $list_rows[] = $current_row;
 } // FOR
 
@@ -106,25 +108,15 @@ $label_array[] = 'Order';
 $content .= TableComponent::create($label_array, $list_rows);
 $content .= '<input type="hidden" name="page" value="'.$page_id.'" />'."\n";
 $content .= 'Add contact: '."\n";
-$cl_query = 'SELECT `id`,`name`
-	FROM `'.CONTACTS_TABLE.'`
-	ORDER BY `name` ASC';
-$cl_handle = $db->sql_query($cl_query);
-if ($db->error[$cl_handle] === 1) {
-    $content .= '<span class="errormessage">Error: Failed to load contacts.</span><br />'."\n";
-    echo $content;
-    exit;
-}
-$num_contacts = $db->sql_num_rows($cl_handle);
-if ($num_contacts === 0) {
+$all_contacts = Contact::getAll();
+if (count($all_contacts) === 0) {
     $content .= 'No contacts exist. Please create some contacts.<br />'."\n";
     echo $content;
     exit;
 }
 $cl_add_select = new UISelect(array('name' => 'cl_add_contact', 'id' => 'cl_add_contact'));
-for ($i = 0; $i < $num_contacts; $i++) {
-    $cl_result = $db->sql_fetch_assoc($cl_handle);
-    $cl_add_select->addOption($cl_result['id'], $cl_result['name']);
+foreach ($all_contacts as $contact) {
+    $cl_add_select->addOption($contact->getId(), $contact->getName());
 }
 $content .= $cl_add_select;
 $contact_ids = implode(',', $contact_ids);
