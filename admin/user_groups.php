@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -33,38 +38,22 @@ if (!acl::get()->check_permission('adm_user_groups')) {
 }
 
 if ($_GET['action'] == 'delete') {
-    if ($_GET['id'] == 1) {
-        echo '<span class="errormessage">Cannot delete Administrator group.</span><br />';
-    } else {
-        $delete_group_query = 'DELETE FROM ' . USER_GROUPS_TABLE . '
-			WHERE id = '.(int)$_GET['id'];
-        $delete_group = $db->sql_query($delete_group_query);
-        if($db->error[$delete_group] === 1) {
-            echo '<span class="errormessage">Failed to delete group.</span><br />';
-        } else {
-            echo 'Successfully deleted group.<br />';
-            Log::addMessage('Deleted group #'.(int)$_GET['id']);
-        }
+    try {
+        $group = new UserGroup($_GET['id']);
+        $group->delete();
+        echo 'Successfully deleted group.<br />';
+    } catch (\Exception $ex) {
+        echo '<span class="errormessage">'.$ex->getMessage().'</span><br />';
     }
-} // IF 'delete'
-
-// ----------------------------------------------------------------------------
+}
 
 if ($_GET['action'] == 'new') {
     if (acl::get()->check_permission('group_create')) {
-        if (strlen($_POST['group_name']) < 2) {
-            echo '<span class="errormessage">Error: Your group name was too short.</span><br />';
-        } else {
-            $create_group_query = 'INSERT INTO ' . USER_GROUPS_TABLE . '
-				(`name`, `label_format`) VALUES
-				(\''.addslashes($_POST['group_name']).'\',\''.addslashes($_POST['label_format']).'\')';
-            $create_group_handle = $db->sql_query($create_group_query);
-            if($db->error[$create_group_handle] === 1) {
-                echo '<span class="errormessage">Error: Failed to create group.</span><br />';
-            } else {
-                echo 'Created group \''.$_POST['group_name'].'\'.<br />';
-                Log::addMessage('Created user group \''.addslashes($_POST['group_name']).'\'');
-            }
+        try {
+            UserGroup::create($_POST['group_name'], $_POST['label_format']);
+            echo 'Created group \''.$_POST['group_name'].'\'.<br />';
+        } catch (\Exception $ex) {
+            echo '<span class="errormessage">'.$ex->getMessage().'</span><br />';
         }
     }
 }
@@ -126,38 +115,20 @@ if ($_GET['action'] == 'perm') {
 
 // ----------------------------------------------------------------------------
 
-$tab_content['manage'] = '<table class="admintable">
-<tr><th>ID</th><th width="350">Name:</th><th colspan="4">&nbsp;</th></tr>';
-$group_list_query = 'SELECT * FROM ' . USER_GROUPS_TABLE . ' ORDER BY name ASC';
-$group_list_handle = $db->sql_query($group_list_query);
-$group_list_rows = $db->sql_num_rows($group_list_handle);
-if ($group_list_rows == 0) {
-    $tab_content['manage'] .= '<tr class="row1"><td colspan="6">
-		An error may have occured. No groups were found.</td></tr>';
+$user_groups = UserGroup::getAll();
+$group_rows = [];
+foreach ($user_groups as $user_group) {
+    $group_rows[] = [
+        $user_group->getId(),
+        sprintf('<span style="%s">%s</span>', $user_group->getLabelCss(), $user_group->getLabel()),
+        HTML::link("admin.php?module=user_groups&action=delete&id={$user_group->getId()}",
+            HTML::templateImage("delete.png", "Delete")),
+        HTML::link("admin.php?module=user_groups&action=perm&id={$user_group->getId()}",
+            Html::templateImage("permissions.png", "Permissions"))
+    ];
 }
-$rowstyle = 'row1';
-for ($i = 1; $i <= $group_list_rows; $i++) {
-    $group_list = $db->sql_fetch_assoc($group_list_handle);
-    $tab_content['manage'] .= '<tr class="'.$rowstyle.'">
-		<td>'.$group_list['id'].'</td>
-		<td><span style="'.stripslashes($group_list['label_format']).'"
-		id="user_group_'.$group_list['id'].'">'.stripslashes($group_list['name']).'</span></td>
-		<td><a href="admin.php?module=user_groups&action=delete&id='.$group_list['id'].'"><img src="<!-- $IMAGE_PATH$ -->delete.png"
-		alt="Delete" width="16px" height="16px" border="0px" />Delete</a></td>
-		<td><strike>Edit</strike></td>
-		<td><a href="admin.php?module=user_groups&action=perm&id='.$group_list['id'].'">
-		<img src="<!-- $IMAGE_PATH$ -->permissions.png"
-		alt="Permissions" width="16px" height="16px" border="0px" /></a></td>
-		<td><strike>Members</strike></td>
-		</tr>';
-    if($rowstyle == 'row1') {
-        $rowstyle = 'row2';
-    } else {
-        $rowstyle = 'row1';
-    }
-}
-$tab_content['manage'] .= '</table>';
-$tab['manage'] = $tab_layout->add_tab('Manage Groups', $tab_content['manage']);
+
+$tab['manage'] = $tab_layout->add_tab('Manage Groups', Component\TableComponent::create(["ID", "Name", "", ""], $group_rows));
 
 // ----------------------------------------------------------------------------
 
@@ -175,4 +146,3 @@ if (acl::get()->check_permission('group_create')) {
 }
 
 echo $tab_layout;
-?>

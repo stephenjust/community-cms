@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -101,16 +106,14 @@ if (acl::get()->check_permission('user_create')) {
     $form->add_textbox('telephone', 'Phone Number');
     $form->add_textbox('address', 'Address');
     $form->add_textbox('email', 'Email Address');
-    $group_list_query = 'SELECT * FROM ' . USER_GROUPS_TABLE . ' ORDER BY name ASC';
-    $group_list_handle = $db->sql_query($group_list_query);
-    $group_list_rows = $db->sql_num_rows($group_list_handle);
-    if ($group_list_rows == 0) {
+    $user_groups = UserGroup::getAll();
+    if (count($user_groups) == 0) {
         $form->add_text(' An error may have occured. No groups were found.');
     } else {
-        for ($i = 0; $i < $group_list_rows; $i++) {
-            $group_list = $db->sql_fetch_assoc($group_list_handle);
-            $group_list_id[$i] = $group_list['id'];
-            $group_list_name[$i] = $group_list['name'];
+        $group_list_id = $group_list_name = [];
+        foreach ($user_groups as $user_group) {
+            $group_list_id[] = $user_group->getId();
+            $group_list_name[] = $user_group->getLabel();
         }
         $form->add_multiselect('groups', 'Groups', $group_list_id, $group_list_name, null, 5, 'style="height: 4em;"');
     }
