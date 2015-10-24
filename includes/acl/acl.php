@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2010 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -59,13 +64,10 @@ class acl
      * @param string  $acl_key     Name of property in Access Control List
      * @param int     $group       Group to check (current user's group if not set)
      * @param boolean $true_if_all Automatically return true if the group has 'All Permissions' set
-     * @global db $db Database connection object
      * @return boolean True if allowed to complete action, false if not.
      */
     public function check_permission($acl_key, $group = 0, $true_if_all = true) 
     {
-        global $db;
-
         if (!is_numeric($group)) {
             return false;
         }
@@ -86,37 +88,8 @@ class acl
 
         if ($true_if_all == true) {
             foreach ($group_array AS $cur_group) {
-                // Check cache
-                if (isset($this->acl_cache[$cur_group][$this->permission_list['all']['id']])) {
-                    if ($this->acl_cache[$cur_group][$this->permission_list['all']['id']] === true) {
-                        return $this->acl_cache[$cur_group][$this->permission_list['all']['id']];
-                    } else {
-                        break;
-                    }
-                }
-
-                // Check if group has the dangerous 'all' property
-                $acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
-					WHERE `acl_id` = '.$this->permission_list['all']['id'].'
-					AND `group` = '.$cur_group;
-                $acl_all_handle = $db->sql_query($acl_all_query);
-                if ($db->error[$acl_all_handle] === 1) {
-                    return false;
-                }
-                if ($db->sql_num_rows($acl_all_handle) === 1) {
-                    $acl_all_result = $db->sql_fetch_assoc($acl_all_handle);
-                    if ($acl_all_result['value'] == 1) {
-                        $this->acl_cache[$cur_group][$this->permission_list['all']['id']] = true;
-                        return true;
-                    } else {
-                        $this->acl_cache[$cur_group][$this->permission_list['all']['id']] = false;
-                    }
-                } else {
-                    $this->acl_cache[$cur_group][$this->permission_list['all']['id']] = false;
-                    unset($acl_all_result);
-                    unset($acl_all_query);
-                    unset($acl_all_handle);
-                    unset($cur_group);
+                if ($this->query_group_permission("all", $cur_group)) {
+                    return true;
                 }
             }
         }
@@ -126,32 +99,43 @@ class acl
                 return false;
             }
 
-            // Check cache
-            if (isset($this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']])) {
-                return $this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']];
+            if ($this->query_group_permission($acl_key, $cur_group)) {
+                return true;
             }
-
-            // Check if user group has the requested property
-            $acl_all_query = 'SELECT `value` FROM `' . ACL_TABLE . '`
-				WHERE `acl_id` = '.$this->permission_list[$acl_key]['id'].'
-				AND `group` = '.$cur_group;
-            $acl_all_handle = $db->sql_query($acl_all_query);
-            if ($db->error[$acl_all_handle] === 1) {
-                return false;
-            }
-            if ($db->sql_num_rows($acl_all_handle) === 1) {
-                $result = $db->sql_fetch_assoc($acl_all_handle);
-                if ($result['value'] == 1) {
-                    $this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']] = true;
-                    return true;
-                }
-            }
-            $this->acl_cache[$cur_group][$this->permission_list[$acl_key]['id']] = false;
-            unset($cur_group);
-            unset($acl_all_query);
-            unset($acl_all_handle);
         }
         return false;
+    }
+
+    /**
+     * Check if a group has a permission granted
+     * @param string $permission_key
+     * @param int $group
+     * @return boolean
+     */
+    private function query_group_permission($permission_key, $group)
+    {
+        // Check for cached value
+        if (isset($this->acl_cache[$group][$this->permission_list[$permission_key]['id']])) {
+            return $this->acl_cache[$group][$this->permission_list[$permission_key]['id']];
+        }
+
+        // Look up in database
+        $query = "SELECT `value` FROM `".ACL_TABLE."` "
+            . "WHERE `acl_id` = :acl_id AND `group` = :group";
+        try {
+            $result = DBConn::get()->query($query,
+                [":acl_id" => $this->permission_list[$permission_key]['id'], ":group" => $group],
+                DBConn::FETCH);
+        } catch (Exceptions\DBException $ex) {
+            return false;
+        }
+        if ($result && $result['value'] == 1) {
+            $this->acl_cache[$group][$this->permission_list[$permission_key]['id']] = true;
+            return true;
+        } else {
+            $this->acl_cache[$group][$this->permission_list[$permission_key]['id']] = false;
+            return false;
+        }
     }
 
     /**
@@ -286,5 +270,4 @@ class acl
 
 class AclException extends \Exception
 {
-    
 }
