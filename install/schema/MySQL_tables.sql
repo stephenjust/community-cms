@@ -7,10 +7,11 @@ CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl` (
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->acl_keys` (
 	`acl_id` INT UNSIGNED NOT NULL auto_increment PRIMARY KEY,
-	`acl_name` TEXT NOT NULL,
+	`acl_name` VARCHAR(255) NOT NULL,
 	`acl_longname` TEXT NOT NULL,
 	`acl_description` TEXT NOT NULL,
-	`acl_value_default` INT(1) NOT NULL DEFAULT 0
+	`acl_value_default` INT(1) NOT NULL DEFAULT 0,
+        UNIQUE (`acl_name`)
 ) ENGINE=InnoDB CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->blocks` (

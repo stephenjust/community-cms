@@ -49,7 +49,7 @@ class acl
     
     function __construct() 
     {
-        $this->permission_list = $this->get_acl_key_names();
+        $this->permission_list = $this->loadKeys();
     }
     
     public function require_permission($acl_key) 
@@ -140,7 +140,6 @@ class acl
 
     /**
      * set_permission - Set permissions for a certain group
-     * @global db $db
      * @param string  $acl_key
      * @param integer $value
      * @param integer $group
@@ -148,89 +147,75 @@ class acl
      */
     public function set_permission($acl_key, $value, $group) 
     {
-        global $db;
-
-        $value = (int)$value;
+        $this->require_permission("set_permissions");
         if (!array_key_exists($acl_key, $this->permission_list)) {
-            Debug::get()->addMessage('The key \''.$acl_key.'\' does not exist.', true);
-            return false;
-        }
-        if (!$this->check_permission('set_permissions')) {
-            echo 'You are not allowed to set permissions.<br />';
-            return false;
-        }
-        $set_permission_query =
-        'INSERT INTO `' . ACL_TABLE . '`
-				(`acl_id`,`group`,`value`)
-				VALUES (\''.$this->permission_list[$acl_key]['id'].'\','.$group.','.$value.')
-				ON DUPLICATE KEY UPDATE `value` = '.$value;
-        $set_permission_handle = $db->sql_query($set_permission_query);
-        if ($db->error[$set_permission_handle] === 1) {
+            Debug::get()->addMessage("The key '$acl_key' does not exist.", true);
             return false;
         }
 
-        // Update cache
+        $old_value = $this->check_permission($acl_key, $group, false);
+
+        // Test that we can change this value safely by updating the cache
         $this->acl_cache[$group][$this->permission_list[$acl_key]['id']] = (bool)$value;
-
-        // Make sure that you did not remove the permission necessary to change permissions
-        if (!$this->check_permission('set_permissions')) {
+        if ($value == 0 && !$this->check_permission('set_permissions')) {
             Debug::get()->addMessage('Removed vital permission \''.$acl_key.'.\' Reverting.', true);
-            $revert_permission_query = 'UPDATE `' . ACL_TABLE . '`
-				SET `value` = 1
-				WHERE `acl_id` = '.$this->permission_list[$acl_key]['id'].' AND `group` = '.$group;
-            $revert_permission_handle = $db->sql_query($revert_permission_query);
-            if ($db->error[$revert_permission_handle] === 1) {
-                die('You no longer have the necessary permission to edit
-					permissions. This is a fatal error. Please repair the
-					database manually.');
-            }
-            echo 'You cannot remove the permission \''.$acl_key.'\' because doing
-				so will prevent you from making further changes.<br />';
-            // Update cache
-            $this->acl_cache[$group][$this->permission_list[$acl_key]['id']] = true;
+            $this->acl_cache[$group][$this->permission_list[$acl_key]['id']] = $old_value;
+            echo "You cannot remove the permission '$acl_key' because doing so "
+                . "will prevent you from making further changes.<br />";
+            return false;
+        }
+
+        // Actually set the new permission value
+        $query = "INSERT INTO `".ACL_TABLE."` "
+            . "(`acl_id`,`group`,`value`) "
+            . "VALUES "
+            . "(:acl_id, :group, :value) "
+            . "ON DUPLICATE KEY UPDATE `value` = :value";
+        try {
+            DBConn::get()->query($query, [":acl_id" => $this->permission_list[$acl_key]['id'], ":group" => $group, ":value" => $value], DBConn::NOTHING);
+        } catch (Exceptions\DBException $ex) {
+            $this->acl_cache[$group][$this->permission_list[$acl_key]['id']] = $old_value;
+            return false;
         }
 
         return true;
     }
 
     /**
-     * get_acl_key_names - Load the list of permissions from the database
-     * @global db $db Database connection object
+     * Load the list of permissions from the database
      * @return array An array of all existing permission keys
      */
-    private function get_acl_key_names() 
+    private function loadKeys()
     {
-        global $db;
-        $load_keys_query = 'SELECT * FROM `' . ACL_KEYS_TABLE . '`';
-        $load_keys_handle = $db->sql_query($load_keys_query);
-        if ($db->error[$load_keys_handle]) {
+        $query = 'SELECT * FROM `'.ACL_KEYS_TABLE.'`';
+        try {
+            $results = DBConn::get()->query($query, [], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
             die('Could not load permission information from the database.');
         }
-        $return = array();
-        for ($i = 0; $i < $db->sql_num_rows($load_keys_handle); $i++) {
-            $key_info = $db->sql_fetch_assoc($load_keys_handle);
-            $return[$key_info['acl_name']] = array();
-            $return[$key_info['acl_name']]['id'] = $key_info['acl_id'];
-            $return[$key_info['acl_name']]['longname'] = $key_info['acl_longname'];
-            $return[$key_info['acl_name']]['description'] = $key_info['acl_description'];
-            $return[$key_info['acl_name']]['default'] = $key_info['acl_value_default'];
-            $return[$key_info['acl_name']]['shortname'] = $key_info['acl_name'];
+        $keys = [];
+        foreach ($results as $key_info) {
+            $keys[$key_info['acl_name']] = [
+                'id' => $key_info['acl_id'],
+                'longname' => $key_info['acl_longname'],
+                'description' => $key_info['acl_description'],
+                'default' => $key_info['acl_value_default'],
+                'shortname' => $key_info['acl_name']
+            ];
         }
-        return $return;
+        return $keys;
     }
 
     /**
-     * create_key - Create an ACL key if it does not exist already
-     * @global db $db Database connection object
+     * Create or update an ACL key record
      * @param string $name          Name of key (lowercase)
      * @param string $longname      More descriptive name
      * @param string $description   Description of what the key allows
      * @param int    $default_value Allow by default? 1 = yes, 0 = no; default 0
      * @return boolean
      */
-    public function create_key($name,$longname,$description,$default_value = 0) 
+    public function createKey($name,$longname,$description,$default_value = 0)
     {
-        global $db;
         // Validate parameters
         if (!is_string($name)) {
             Debug::get()->addMessage('$name is not a string', true);
@@ -248,22 +233,39 @@ class acl
             Debug::get()->addMessage('$default_value is not an integer', true);
             return false;
         }
-        // Check if key already exists
-        if (isset($this->permission_list[$name])) {
-            Debug::get()->addMessage('The ACL key '.$name.' already exists', true);
-            return false;
-        }
-        
+
         // Add key
-        $new_key_query = 'INSERT INTO '.ACL_KEYS_TABLE.'
-			(acl_name,acl_longname,acl_description,acl_value_default)
-			VALUES (\''.$name.'\',\''.addslashes($longname).'\',\''.addslashes($description).'\','.(int)$default_value.')';
-        $new_key_handle = $db->sql_query($new_key_query);
-        if ($db->error[$new_key_handle] === 1) {
+        $new_key_query = "INSERT INTO `".ACL_KEYS_TABLE."` "
+            . "(`acl_name`, `acl_longname`, `acl_description`, `acl_value_default`) VALUES "
+            . "(:name, :longname, :description, :default) "
+            . "ON DUPLICATE KEY UPDATE "
+            . "`acl_longname`=:longname, `acl_description`=:description, `acl_value_default`=:default";
+        try {
+            DBConn::get()->query($new_key_query,
+                [":name" => $name, ":longname" => $longname, ":description" => $description, ":default" => $default_value],
+                DBConn::NOTHING);
+        } catch (Exceptions\DBException $ex) {
             return false;
         }
         // Update permission list
-        $this->permission_list = $this->get_acl_key_names();
+        $this->permission_list = $this->loadKeys();
+        return true;
+    }
+
+    /**
+     * Delete an ACL key
+     * @param int $acl_id
+     * @return boolean
+     */
+    public function deleteKey($acl_id)
+    {
+        $query = "DELETE FROM `".ACL_KEYS_TABLE."` WHERE `acl_id` = :id";
+        try {
+            DBConn::get()->query($query, [":id" => $acl_id]);
+        } catch (Exceptions\DBException $ex) {
+            return false;
+        }
+        $this->loadKeys();
         return true;
     }
 }
