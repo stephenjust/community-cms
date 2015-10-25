@@ -86,8 +86,8 @@ class DBConn
                 case self::FETCH:
                     return $sth->fetch(\PDO::FETCH_ASSOC);
             }
-        } catch (\PDOException $e) {
-            throw new Exceptions\DBException($e->errorInfo[0], $e->getCode(), $e);
+        } catch (\PDOException $ex) {
+            throw new Exceptions\DBException($ex->getMessage(), (int) $ex->getCode(), $ex);
         }
     }
 
