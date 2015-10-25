@@ -574,7 +574,12 @@ class Page
 
         $template = new Template;
         $template->loadFile('content');
-        $template->page_path = page_path(Page::$id);
+        if (Page::$id != 0) {
+            $pm = new PageManager(Page::$id);
+            $template->page_path = $pm->getPath();
+        } else {
+            $template->page_path = Page::$page_title;
+        }
 
         // Display the page title if the configuration says to
         if (Page::$showtitle === true) {
@@ -624,7 +629,6 @@ class Page
         $template->page_ref = Page::$url_reference;
 
         echo $template;
-        unset($template);
     }
 
     public static function displayFooter()
@@ -633,7 +637,6 @@ class Page
         $template->loadFile('footer');
         $template->footer = SysConfig::get()->getValue('footer');
         echo $template;
-        unset($template);
     }
 
     public static function displayDebug()
@@ -646,7 +649,6 @@ class Page
         $template->debug_query_stats = $db->print_query_stats();
         $template->debug_log = Debug::get()->displayTraces();
         echo $template;
-        unset($template);
     }
 
     /**

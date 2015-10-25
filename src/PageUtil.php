@@ -24,7 +24,7 @@ class PageUtil
             array(':id' => $id), DBConn::ROW_COUNT
         ) > 0;
     }
-    
+
     /**
      * Get the title of the given page
      * @param int $id Page ID
@@ -37,5 +37,38 @@ class PageUtil
             array(':id' => $id), DBConn::FETCH
         );
         return $result['title'];
+    }
+
+    /**
+     * Ensure that all pages are in a regular order
+     * @throws \Exception
+     */
+    public static function cleanOrder()
+    {
+        $query = 'SELECT `id`, `parent`, `list` FROM `'.PAGE_TABLE.'` '
+            . 'ORDER BY `parent` ASC, `list` ASC';
+        try {
+            $results = DBConn::get()->query($query, [], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception("Failed to reorder pages.", $ex->getCode(), $ex);
+        }
+
+        $parent = 0;
+        $count = 0;
+        foreach ($results as $result) {
+            if ($result['parent'] != $parent) {
+                $count = 0;
+                $parent = $result['parent'];
+            }
+            $update_query = 'UPDATE `'.PAGE_TABLE.'` '
+                . 'SET `list` = :list '
+                . 'WHERE `id` = :id';
+            try {
+                DBConn::get()->query($update_query, [":id" => $result['id'], ":list" => $count]);
+            } catch (Exceptions\DBException $ex) {
+                throw new \Exception("Failed to reorder pages.", $ex->getCode(), $ex);
+            }
+            $count++;
+        }
     }
 }

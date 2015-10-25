@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.admin
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -24,15 +29,14 @@ if ($_GET['action'] == 'new') {
     $show_title = (isset($_POST['show_title'])) ? (bool)checkbox($_POST['show_title']) : false;
     $show_menu = (isset($_POST['menu'])) ? (bool)checkbox($_POST['menu']) : false;
     try {
-        page_add(
-            $_POST['text_id'],
+        PageManager::create(
             $_POST['title'],
-            $_POST['meta_desc'],
+            $_POST['parent'],
             $_POST['type'],
+            $_POST['text_id'],
+            $_POST['meta_desc'],
             $show_title,
-            $show_menu,
-            $_POST['parent']
-        );
+            $show_menu);
         echo 'Successfully added page.<br />'."\n";
     }
     catch (\Exception $e) {
@@ -43,28 +47,12 @@ if ($_GET['action'] == 'new') {
 // ----------------------------------------------------------------------------
 
 if ($_GET['action'] == 'new_link') {
-    $link = $_POST['url'];
-    if (strlen($link) > 10) {
-        $link = htmlentities($link);
-        $name = addslashes($_POST['title']);
-        $parent = (int)$_POST['parent'];
-        if (strlen($name) > 2) {
-            $title = $name.'<LINK>'.$link;
-            // Add page to database.
-            $new_page_query = 'INSERT INTO ' . PAGE_TABLE . '
-				(title,parent,type,menu) VALUES ("'.$title.'",'.$parent.',0,1)';
-            $new_page = $db->sql_query($new_page_query);
-            if ($db->error[$new_page] === 1) {
-                echo 'Failed to create link to external page.<br />';
-            } else {
-                echo 'Successfully created link to external page.<br />'."\n";
-                Log::addMessage('New menu link to external page \''.$_POST['title'].'\'');
-            }
-        } else {
-            echo 'Failed to create link to external page. Invalid link name.<br />';
-        }
-    } else {
-        echo 'Failed to create link to external page. Invalid address.<br />';
+    try {
+        PageManager::createLink($_POST['title'], $_POST['url'], $_POST['parent']);
+        echo 'Successfully created link to external page.<br />'."\n";
+        Log::addMessage('New menu link to external page \''.$_POST['title'].'\'');
+    } catch (\Exception $ex) {
+        echo '<span class="errormessage">Failed to create link: '.$ex->getMessage().'</span><br />';
     }
 } // IF 'new_link'
 
@@ -144,7 +132,7 @@ case 'editsave':
 // ----------------------------------------------------------------------------
 
 // Clean page list
-page_clean_order();
+PageUtil::cleanOrder();
 
 // Move page down if requested.
 if ($_GET['action'] == 'move_down') {
