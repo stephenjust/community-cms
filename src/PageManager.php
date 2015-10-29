@@ -17,8 +17,12 @@ namespace CommunityCMS;
 class PageManager
 {
     private $id;
+    private $text_id;
     private $title;
     private $parent;
+    private $list;
+    private $type;
+    private $show_menu;
 
     public static function createLink($title, $target, $parent)
     {
@@ -62,7 +66,7 @@ class PageManager
     {
         // Validate text_id
         $text_id = strtolower(str_replace([' ','/','\\','?','&','\'','"'], '_', trim($text_id)));
-        if (!page_check_unique_id($text_id)) {
+        if (PageUtil::textIdExists($text_id)) {
             $text_id = '';
         }
 
@@ -86,17 +90,22 @@ class PageManager
 
     public function __construct($id) 
     {
-        $query = 'SELECT `title`, `parent` FROM `'.PAGE_TABLE.'` WHERE `id` = :id';
+        $query = 'SELECT `id`, `text_id`, `title`, `parent`, `list`, `type`, `menu` '
+            . 'FROM `'.PAGE_TABLE.'` WHERE `id` = :id';
         try {
             $result = DBConn::get()->query($query, [":id" => $id], DBConn::FETCH);
             if (!$result) {
                 throw new PageException("Page not found.");
             }
-            $this->id = $id;
+            $this->id = $result['id'];
+            $this->text_id = $result['text_id'];
             $this->title = $result['title'];
             $this->parent = $result['parent'];
+            $this->type = $result['type'];
+            $this->list = $result['list'];
+            $this->show_menu = $result['menu'];
         } catch (Exceptions\DBException $ex) {
-            throw new PageException("Failed to load page.", $ex);
+            throw new PageException("Failed to load page.", $ex->getCode(), $ex);
         }
     }
 
@@ -117,7 +126,7 @@ class PageManager
             DBConn::get()->query($query, [":id" => $this->id], DBConn::NOTHING);
             Log::addMessage("Deleted page '{$this->title}'");
         } catch (Exceptions\DBException $ex) {
-            throw new PageException("Failed to delete page.", $ex);
+            throw new PageException("Failed to delete page.", $ex->getCode(), $ex);
         }
     }
 
@@ -160,8 +169,33 @@ class PageManager
             SysConfig::get()->setValue('home', $this->id);
             Log::addMessage(sprintf("Set home page to '%s'.", $this->title));
         } catch (\Exception $ex) {
-            throw new PageException("Error setting default page.", $ex);
+            throw new PageException("Error setting default page.", $ex->getCode(), $ex);
         }
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Get the ids of all child pages
+     * @return int
+     * @throws PageException
+     */
+    public function getChildren()
+    {
+        $query = 'SELECT `id` FROM `'.PAGE_TABLE.'` WHERE `parent` = :id ORDER BY `list` ASC';
+        try {
+            $results = DBConn::get()->query($query, [":id" => $this->id], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+            throw new PageException("Failed to get page children.", $ex->getCode(), $ex);
+        }
+        $ids = [];
+        foreach ($results as $result) {
+            $ids[] = $result['id'];
+        }
+        return $ids;
     }
 
     /**
@@ -186,5 +220,47 @@ class PageManager
             $pm = new PageManager(SysConfig::get()->getValue('home'));
         }
         return $pm->getPath().$path_suffix;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getTextId()
+    {
+        return $this->text_id;
+    }
+
+    public function getTitle($show_hints = false)
+    {
+        $hints = "";
+        if ($show_hints) {
+            if ($this->type == 0) {
+                $hints .= " (Link)";
+            }
+            if ($this->id == SysConfig::get()->getValue('home')) {
+                $hints .= " (Default)";
+            }
+            if ($this->show_menu == 0) {
+                $hints .= " (Hidden)";
+            }
+        }
+        // Handle link pages
+        if ($this->type == 0) {
+            $exploded_title = explode('<LINK>', $this->title);
+            return "{$exploded_title[0]}{$hints}";
+        }
+        return "{$this->title}{$hints}";
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function getListOrder()
+    {
+        return $this->list;
     }
 }

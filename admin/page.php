@@ -103,7 +103,7 @@ case 'editsave':
     if(!isset($_POST['text_id'])) {
         $_POST['text_id'] = null;
     }
-    if (page_check_unique_id($_POST['text_id']) && $_POST['text_id'] != null) {
+    if (!PageUtil::textIdExists($_POST['text_id']) && $_POST['text_id'] != null) {
         $set_text_id = "`text_id`='{$_POST['text_id']}', ";
     }
     $title = addslashes($_POST['title']);
@@ -225,8 +225,6 @@ if ($_GET['action'] == 'edit') {
 
 function adm_page_manage_list_row($id) 
 {
-    global $db;
-
     // Create icon instances
     $icon_info = new UIIcon(array('src' => 'info.png', 'alt' => 'Information'));
     $icon_child = new UIIcon(array('src' => 'child.png'));
@@ -242,15 +240,10 @@ function adm_page_manage_list_row($id)
     }
     $id = (int)$id;
 
-    $page_info = page_get_info($id);
+    $pm = new PageManager($id);
 
-    if ($page_info['type'] == 0) {
-        $page_info['title'] = explode('<LINK>', $page_info['title']);
-        $page_info['title'] = $page_info['title'][0].' (Link)';
-    }
     $return = '<tr><td>';
-    $pg = new PageManager($id);
-    $p_level = $pg->getLevel();
+    $p_level = $pm->getLevel();
     for ($i = 0; $i < $p_level; $i++) {
         if ($i == ($p_level - 1)) {
             $return .= $icon_child; 
@@ -259,52 +252,41 @@ function adm_page_manage_list_row($id)
             $return .= $icon_spacer; 
         }
     }
-    if (strlen($page_info['text_id']) == 0 && $page_info['type'] != 0) {
+    if (strlen($pm->getTextId()) == 0 && $pm->getType() != 0) {
         $return .= $icon_info.' ';
     }
-    $return .= $page_info['title'].' ';
-    if ($page_info['id'] == SysConfig::get()->getValue('home')) {
-        $return .= '(Default)';
-    }
-    if ($page_info['menu'] == 0) {
-        $return .= '(Hidden)';
-    }
+    $return .= $pm->getTitle(true);
     $return .= '</td>';
-    if (acl::get()->check_permission('page_delete') && $pg->isEditable()) {
+    if (acl::get()->check_permission('page_delete') && $pm->isEditable()) {
         $return .= '
-			<td><a href="?module=page&action=del&id='.$page_info['id'].'">
+			<td><a href="?module=page&action=del&id='.$pm->getId().'">
 			'.$icon_delete.'Delete</a></td>';
     }
     if (acl::get()->check_permission('page_order')) {
         $return .= '
-			<td><a href="?module=page&action=move_up&id='.$page_info['id'].'">
+			<td><a href="?module=page&action=move_up&id='.$pm->getId().'">
 			'.$icon_up.'Move Up</a></td>
-			<td><a href="?module=page&action=move_down&id='.$page_info['id'].'">
+			<td><a href="?module=page&action=move_down&id='.$pm->getId().'">
 			'.$icon_down.'Move Down</a></td>';
     }
-    if ($page_info['type'] != 0) {
-        if ($pg->isEditable()) {
-            $return .= '<td><a href="?module=page&action=edit&id='.$page_info['id'].'">
+    if ($pm->getType() != 0) {
+        if ($pm->isEditable()) {
+            $return .= '<td><a href="?module=page&action=edit&id='.$pm->getId().'">
 				'.$icon_edit.'Edit</a></td>';
         } else {
             $return .= '<td></td>';
         }
         if (acl::get()->check_permission('page_set_home')) {
-            $return .= '<td><a href="?module=page&action=home&id='.$page_info['id'].'">
+            $return .= '<td><a href="?module=page&action=home&id='.$pm->getId().'">
 				'.$icon_home.'Make Home</a></td>';
         }
     } else {
         $return .= '<td>&nbsp;</td><td>&nbsp;</td>';
     }
     $return .= '</tr>';
-    if (Page::hasChildren($page_info['id']) == true) {
-        $children_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-			WHERE `parent` = '.$page_info['id'].' ORDER BY `list` ASC';
-        $children_handle = $db->sql_query($children_query);
-        for ($i = 1; $i <= $db->sql_num_rows($children_handle); $i++) {
-            $children_result = $db->sql_fetch_assoc($children_handle);
-            $return .= adm_page_manage_list_row($children_result['id']);
-        }
+    $child_ids = $pm->getChildren();
+    foreach ($child_ids as $id) {
+        $return .= adm_page_manage_list_row($id);
     }
     return $return;
 }

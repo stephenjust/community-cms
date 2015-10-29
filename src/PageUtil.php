@@ -25,6 +25,17 @@ class PageUtil
         ) > 0;
     }
 
+    public static function textIdExists($text_id)
+    {
+        if ($text_id == null) {
+            return false;
+        }
+        return DBConn::get()->query(
+            sprintf('SELECT `text_id` FROM `%s` WHERE `text_id` = :id', PAGE_TABLE),
+            array(':id' => $text_id), DBConn::ROW_COUNT
+        ) > 0;
+    }
+
     /**
      * Get the title of the given page
      * @param int $id Page ID
@@ -57,18 +68,23 @@ class PageUtil
         $count = 0;
         foreach ($results as $result) {
             if ($result['parent'] != $parent) {
-                $count = 0;
                 $parent = $result['parent'];
+                $count = 0;
             }
-            $update_query = 'UPDATE `'.PAGE_TABLE.'` '
-                . 'SET `list` = :list '
-                . 'WHERE `id` = :id';
-            try {
-                DBConn::get()->query($update_query, [":id" => $result['id'], ":list" => $count]);
-            } catch (Exceptions\DBException $ex) {
-                throw new \Exception("Failed to reorder pages.", $ex->getCode(), $ex);
-            }
+            self::setPageOrder($result['id'], $count);
             $count++;
+        }
+    }
+
+    private static function setPageOrder($id, $order)
+    {
+        $query = 'UPDATE `'.PAGE_TABLE.'` '
+            . 'SET `list` = :list '
+            . 'WHERE `id` = :id';
+        try {
+            DBConn::get()->query($query, [":id" => $id, ":list" => $order]);
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception("Failed to reorder pages.", $ex->getCode(), $ex);
         }
     }
 }

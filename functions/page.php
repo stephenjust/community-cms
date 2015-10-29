@@ -13,75 +13,6 @@
  */
 
 namespace CommunityCMS;
-/**
- * page_get_info - Get requested fields for a page entry in the database
- * @global db $db Database connection object
- * @param integer $id     Page ID
- * @param array   $fields Database fields to get, default is all
- * @return mixed Returns false on failure, associative array of row on success
- */
-function page_get_info($id,$fields = array('*')) 
-{
-    global $db;
-    // Validate parameters
-    if (!is_numeric($id)) {
-        Debug::get()->addMessage('ID is not an integer', true);
-        return false;
-    }
-    if(!is_array($fields)) {
-        Debug::get()->addMessage('Field list is not an array', true);
-        return false;
-    }
-    // Add backticks to field names and ensure that there are no spaces in field names
-    $field_count = count($fields);
-    for ($i = 0; $i < $field_count; $i++) {
-        if (preg_match('/ /', $fields[$i])) {
-            Debug::get()->addMessage('Removed field "'.$fields[$i].'"', false);
-            unset($fields[$i]);
-            continue;
-        }
-        if ($fields[$i] != '*' && strlen($fields[$i]) > 0) {
-            $fields[$i] = '`'.$fields[$i].'`';
-        }
-    }
-    $fields = implode(',', $fields);
-    $page_info_query = 'SELECT '.$fields.' FROM `' . PAGE_TABLE .'`
-		WHERE `id` = '.$id.' LIMIT 1';
-    $page_info_handle = $db->sql_query($page_info_query);
-    if ($db->error[$page_info_handle] === 1) {
-        Debug::get()->addMessage('Failure to read page information', true);
-        return false;
-    }
-    if ($db->sql_num_rows($page_info_handle) != 1) {
-        Debug::get()->addMessage('Page \''.$id.'\' not found', true);
-        return false;
-    }
-    $page_info = $db->sql_fetch_assoc($page_info_handle);
-    return $page_info;
-}
-
-/**
- * Check if a new text ID is unique
- * @global db $db
- * @param string $text_id
- * @return boolean 
- */
-function page_check_unique_id($text_id) 
-{
-    global $db;
-
-    if (strlen($text_id) == 0) {
-        Debug::get()->addMessage('Text ID is empty', true);
-        return false;
-    }
-    $text_id_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-		WHERE `text_id` = \''.$text_id.'\' LIMIT 1';
-    $text_id_handle = $db->sql_query($text_id_query);
-    if ($db->sql_num_rows($text_id_handle) == 1) {
-        return false;
-    }
-    return true;
-}
 
 /**
  * Generate a page list at a certain level in the page structure
@@ -143,23 +74,20 @@ function page_move_up($id)
     }
     $id = (int)$id;
 
-    $page_info = page_get_info($id, array('id','list','parent'));
-    if (!$page_info) {
-        return false;
-    }
+    $pm = new PageManager($id);
 
-    $start_pos = $page_info['list'];
-    $end_pos = $page_info['list'] - 1;
+    $start_pos = $pm->getListOrder();
+    $end_pos = $pm->getListOrder() - 1;
     $move_down_query1 = 'SELECT id,list FROM ' . PAGE_TABLE . "
 		WHERE `list` = $end_pos
-		AND `parent` = {$page_info['parent']} LIMIT 1";
+		AND `parent` = {$pm->getParent()} LIMIT 1";
     $move_down1 = $db->sql_query($move_down_query1);
     if ($db->sql_num_rows($move_down1) != 1) {
         return false;
     }
     $move_down_handle1 = $db->sql_fetch_assoc($move_down1);
     $move_up_query2 = 'UPDATE ' . PAGE_TABLE . '
-		SET list = '.$end_pos.' WHERE id = '.$page_info['id'];
+		SET list = '.$end_pos.' WHERE id = '.$pm->getId();
     $move_up_query3 = 'UPDATE ' . PAGE_TABLE . '
 		SET list = '.$start_pos.' WHERE id = '.$move_down_handle1['id'];
     $move_up_handle2 = $db->sql_query($move_up_query2);
@@ -188,23 +116,20 @@ function page_move_down($id)
     }
     $id = (int)$id;
 
-    $page_info = page_get_info($id, array('id','list','parent'));
-    if (!$page_info) {
-        return false;
-    }
+    $pm = new PageManager($id);
 
-    $start_pos = $page_info['list'];
-    $end_pos = $page_info['list'] + 1;
+    $start_pos = $pm->getListOrder();
+    $end_pos = $pm->getListOrder() + 1;
     $move_up_query1 = "SELECT id,list FROM " . PAGE_TABLE . "
 		WHERE `list` = $end_pos
-		AND `parent` = {$page_info['parent']} LIMIT 1";
+		AND `parent` = {$pm->getParent()} LIMIT 1";
     $move_up1 = $db->sql_query($move_up_query1);
     if ($db->sql_num_rows($move_up1) != 1) {
         return false;
     }
     $move_up_handle1 = $db->sql_fetch_assoc($move_up1);
     $move_down_query2 = 'UPDATE ' . PAGE_TABLE . '
-		SET list = '.$end_pos.' WHERE id = '.$page_info['id'];
+		SET list = '.$end_pos.' WHERE id = '.$pm->getId();
     $move_down_query3 = 'UPDATE ' . PAGE_TABLE . '
 		SET list = '.$start_pos.' WHERE id = '.$move_up_handle1['id'];
     $move_down_handle2 = $db->sql_query($move_down_query2);
