@@ -17,7 +17,6 @@ require_once(ROOT.'functions/main.php');
 require_once(ROOT.'includes/constants.php');
 require_once(ROOT.'includes/db/db.php');
 require_once(ROOT.'functions/article.php');
-require_once(ROOT.'functions/page.php');
 require_once(ROOT.'functions/blocks.php');
 require_once(ROOT.'functions/files.php');
 require_once(ROOT.'functions/forms.php');

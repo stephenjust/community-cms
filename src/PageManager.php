@@ -310,6 +310,19 @@ class PageManager
         return "{$this->title}{$hints}";
     }
 
+    public function getUrl()
+    {
+        // Handle link pages
+        if ($this->type == 0) {
+            $exploded_title = explode('<LINK>', $this->title);
+            return $exploded_title[1];
+        } else if ($this->text_id) {
+            return "index.php?page={$this->text_id}";
+        } else {
+            return "index.php?id={$this->id}";
+        }
+    }
+
     public function getType()
     {
         return $this->type;

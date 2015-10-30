@@ -13,6 +13,32 @@ namespace CommunityCMS;
 class PageUtil
 {
     /**
+     * Get a list of pages with a given parent and whether they have children
+     * @param int $parent
+     * @param bool $visible_only
+     * @return array
+     */
+    public static function getPagesAndChildren($parent = 0, $visible_only = false)
+    {
+        if ($visible_only) {
+            $query = 'SELECT `id` FROM `'.PAGE_TABLE.'` WHERE `parent` = :parent AND `menu` = 1 ORDER BY `list` ASC';
+        } else {
+            $query = 'SELECT `id` FROM `'.PAGE_TABLE.'` WHERE `parent` = :parent ORDER BY `list` ASC';
+        }
+        try {
+            $results = DBConn::get()->query($query, [":parent" => $parent], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+
+        }
+
+        for ($i = 0; $i < count($results); $i++) {
+            $results[$i]['has_children'] = Page::hasChildren($results[$i]['id'], $visible_only);
+        }
+
+        return $results;
+    }
+
+    /**
      * Check whether the given page exists
      * @param int $id Page ID
      * @return boolean

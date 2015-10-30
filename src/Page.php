@@ -351,7 +351,7 @@ class Page
         $menus_item_template = $menu_template->splitRange('menu_item_with_child');
         $cmenus_item_template = $menu_template->splitRange('current_menu_item_with_child');
 
-        $nav_menu = page_list(0, true);
+        $nav_menu = PageUtil::getPagesAndChildren(0, true);
 
         $menu = null;
         foreach ($nav_menu AS $nav_menu_item) {
@@ -367,21 +367,9 @@ class Page
             } else {
                 $item_template = clone $menu_item_template;
             }
-            if ($nav_menu_item['type'] == 0) {
-                $link = explode('<LINK>', $nav_menu_item['title']); // Check if menu entry is a link
-                $link_path = $link[1];
-                $link_name = $link[0];
-                unset($link);
-            } else {
-                if(strlen($nav_menu_item['text_id']) > 0) {
-                    $link_path = "index.php?page=".$nav_menu_item['text_id'];
-                } else {
-                    $link_path = "index.php?id=".$nav_menu_item['id'];
-                }
-                $link_name = $nav_menu_item['title'];
-            }
-            $item_template->menu_item_url = $link_path;
-            $item_template->menu_item_label = $link_name;
+            $pm = new PageManager($nav_menu_item['id']);
+            $item_template->menu_item_url = $pm->getUrl();
+            $item_template->menu_item_label = $pm->getTitle();
             $item_template->menu_item_id = 'menuitem_'.$nav_menu_item['id'];
             // Generate hidden child div
             if ($haschild == 1) {
