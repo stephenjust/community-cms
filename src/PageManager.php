@@ -173,6 +173,62 @@ class PageManager
         }
     }
 
+    /**
+     * Move this page up in the page list
+     */
+    public function moveUp()
+    {
+        $this->reorder(-1);
+    }
+
+    /**
+     * Move this page down in the page list
+     */
+    public function moveDown()
+    {
+        $this->reorder(1);
+    }
+
+    private function reorder($offset)
+    {
+        assert(abs($offset) <= 1);
+        $swap_id = $this->getPageAtOffset($offset);
+        if ($swap_id === false) {
+            return;
+        }
+
+        PageUtil::setPageOrder($swap_id, $this->list);
+        PageUtil::setPageOrder($this->id, $this->list + $offset);
+        $this->list = $this->list + $offset;
+    }
+
+    /**
+     * Get the ID of the page at the given offset in the page list
+     * @param int $offset
+     * @return int Page id or 'false' if page not found
+     * @throws PageException
+     */
+    private function getPageAtOffset($offset)
+    {
+        $query = 'SELECT `id` FROM `'.PAGE_TABLE.'` '
+            . 'WHERE `list` = :list '
+            . 'AND `parent` = :parent';
+        try {
+            $result = DBConn::get()->query(
+                $query,
+                [":list" => $this->list + $offset, ":parent" => $this->parent],
+                DBConn::FETCH
+            );
+        } catch (Exceptions\DBException $ex) {
+            throw new PageException("Failed to get page at offset", $ex->getCode(), $ex);
+        }
+        if ($result) {
+            return $result['id'];
+        } else {
+            return false;
+        }
+    }
+
     public function getParent()
     {
         return $this->parent;

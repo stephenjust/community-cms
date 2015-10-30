@@ -76,7 +76,7 @@ class PageUtil
         }
     }
 
-    private static function setPageOrder($id, $order)
+    public static function setPageOrder($id, $order)
     {
         $query = 'UPDATE `'.PAGE_TABLE.'` '
             . 'SET `list` = :list '

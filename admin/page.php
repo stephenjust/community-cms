@@ -136,19 +136,23 @@ PageUtil::cleanOrder();
 
 // Move page down if requested.
 if ($_GET['action'] == 'move_down') {
-    if (page_move_down($page_id)) {
+    try {
+        $pm = new PageManager($page_id);
+        $pm->moveDown();
         echo 'Successfully moved page down.';
-    } else {
-        echo 'Failed to move page down.';
+    } catch (\Exception $ex) {
+        echo '<span class="errormessage">Failed to move page down: '.$ex->getMessage().'</span>';
     }
 }
 
 // Move page up if requested.
 if ($_GET['action'] == 'move_up') {
-    if (page_move_up($page_id)) {
+    try {
+        $pm = new PageManager($page_id);
+        $pm->moveUp();
         echo 'Successfully moved page up.';
-    } else {
-        echo 'Failed to move page up.';
+    } catch (\Exception $ex) {
+        echo '<span class="errormessage">Failed to move page up: '.$ex->getMessage().'</span>';
     }
 }
 
