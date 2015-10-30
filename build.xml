@@ -34,7 +34,6 @@
   <!-- ============================================  -->
   <target name="build" depends="prepare">
 	<echo msg="Running composer..." />
-	<composer command="update" composer="./deps/composer.phar" />
 	<composer command="install" composer="./deps/composer.phar" />
 	
     <echo msg="Copying files to build directory..." />

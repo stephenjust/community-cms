@@ -1,27 +1,31 @@
-{function name='menu' level=0}
-	{if count($data->getChildren())}
-		{if $level == 0}
-			<ul id="nav-menu" class="nav_menu">
-		{else}
-			<ul id="nav-menu-sub-{$data->getID()}" class="nav_submenu">
-		{/if}
-		{foreach from=$data->getChildren() item=menu_item}
-			{if $menu_item->getChildren()}
-				{assign 'class' "`$class` haschild"}
-			{/if}
-			{if $menu_item->isCurrent()}
-				{assign 'class' 'menuitem_current'}
-			{else}
-				{assign 'class' 'menuitem'}
-			{/if}
-			{if !$menu_item->getChildren()}
-				<li id="menuitem_{$menu_item->getID()}" class="{$class}"><a href="{$menu_item->getTarget()}">{$menu_item->getLabel()}</a></li>
-			{else}
-				<li id="menuitem_{$menu_item->getID()}" class="{$class}_haschild">{menu data=$menu_item level=$level+1}<a href="{$menu_item->getTarget()}">{$menu_item->getLabel()}</a><div class="childarrow"></div></li>
-			{/if}
-		{/foreach}
-		</ul>
-	{/if}
-{/function}
+{assign 'prev_level' 0}
+<ul id="nav-menu" class="nav_menu">
+{foreach $pages item=page}
+    {if ($page->getLevel() > $prev_level)}
+        <ul id="nav-menu-sub-{$page->getId()}" class="nav_submenu">
+    {elseif ($page->getLevel() < $prev_level)}
+        </ul>
+        </li>
+    {else}
+        </li>
+    {/if}
+    {assign 'prev_level' $page->getLevel()}
 
-{menu data=$menu}
+    {assign 'class' 'menuitem'}
+    {if $page->getId() == $current}
+        {assign 'class' "`$class` current"}
+    {/if}
+    {if $page->getChildren()}
+        {assign 'class' "`$class` haschild"}
+    {/if}
+
+    <li id="menuitem_{$page->getId()}" class="{$class}">
+        <a href="{$page->getUrl()}">{$page->getTitle()}</a>
+        {if $page->getChildren()}
+            <div class="childarrow"></div>
+        {/if}
+{/foreach}
+{if count($pages)}
+</li>
+{/if}
+</ul>

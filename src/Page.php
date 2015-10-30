@@ -15,6 +15,7 @@
 namespace CommunityCMS;
 
 use CommunityCMS\Component\EditBarComponent;
+use CommunityCMS\Component\PageNavComponent;
 use CommunityCMS\Component\Block\BlockComponent;
 
 /**
@@ -331,95 +332,8 @@ class Page
      */
     private static function navMenu() 
     {
-        // Prepare menu and submenu templates
-        $template = new Template;
-        if (!$template->loadFile('nav_bar')) {
-            return false;
-        }
-        $menu_template = $template->splitRange('nav_menu');
-        $submenu_template = $template->splitRange('nav_submenu');
-        unset($template);
-
-        // Handle main menu
-        // Split template into components
-        $menu_template->nav_menu_id = 'nav-menu';
-        $menu_item_template = $menu_template->splitRange('menu_item');
-        $cmenu_item_template = $menu_template->splitRange('current_menu_item');
-        $menus_item_template = $menu_template->splitRange('menu_item_with_child');
-        $cmenus_item_template = $menu_template->splitRange('current_menu_item_with_child');
-
-        $nav_menu = PageUtil::getPagesAndChildren(0, true);
-
-        $menu = null;
-        foreach ($nav_menu AS $nav_menu_item) {
-            $pm = new PageManager($nav_menu_item['id']);
-            if ($nav_menu_item['has_children'] == true && Page::$id == $nav_menu_item['id']) {
-                $item_template = clone $cmenus_item_template;
-                $item_template->child_placeholder = Page::navChildMenu($nav_menu_item['id']);
-            } elseif ($nav_menu_item['has_children'] == true) {
-                $item_template = clone $menus_item_template;
-                $item_template->child_placeholder = Page::navChildMenu($nav_menu_item['id']);
-            } elseif (Page::$id == $nav_menu_item['id']) {
-                $item_template = clone $cmenu_item_template;
-                $item_template->child_placeholder = null;
-            } else {
-                $item_template = clone $menu_item_template;
-                $item_template->child_placeholder = null;
-            }
-            $item_template->menu_item_url = $pm->getUrl();
-            $item_template->menu_item_label = $pm->getTitle();
-            $item_template->menu_item_id = 'menuitem_'.$nav_menu_item['id'];
-            $menu .= (string)$item_template;
-            unset($item_template);
-        } // FOR
-        $menu_template->menu_placeholder = $menu;
-        return $menu_template;
-    }
-
-    private static function navChildMenu($parent) 
-    {
-        $nav_menu = PageUtil::getPagesAndChildren($parent, true);
-
-        // Read template
-        $template = new Template();
-        $template->loadFile('nav_bar');
-        // Grab the sub-menu part of the template
-        $sub_template = $template->splitRange('nav_submenu');
-
-        // Pull out the styles for the types of items contained within
-        $item_temp = $sub_template->splitRange('menu_item');
-        $currentitem_temp = $sub_template->splitRange('current_menu_item');
-        $itemchild_temp = $sub_template->splitRange('menu_item_with_child');
-        $currentitemchild_temp = $sub_template->splitRange('current_menu_item_with_child');
-
-        $sub_template->nav_menu_id = 'nav-menu-sub-'.$parent;
-
-        // Populate the menu with items
-        $menu_items = "";
-        foreach ($nav_menu as $menu_item) {
-            $pm = new PageManager($menu_item['id']);
-            // Select the proper template
-            if ($menu_item['has_children'] && Page::$id !== $menu_item['id']) {
-                $this_item = clone $itemchild_temp;
-                $this_item->child_placeholder = Page::navChildMenu($menu_item['id']);
-            } elseif ($menu_item['has_children'] && Page::$id === $menu_item['id']) {
-                $this_item = clone $currentitemchild_temp;
-                $this_item->child_placeholder = Page::navChildMenu($menu_item['id']);
-            } elseif (!$menu_item['has_children'] && Page::$id !== $menu_item['id']) {
-                $this_item = clone $item_temp;
-            } else {
-                $this_item = clone $currentitem_temp; 
-            }
-
-            $this_item->menu_item_id = 'menuitem_'.$menu_item['id'];
-            $this_item->menu_item_url = $pm->getUrl();
-            $this_item->menu_item_label = $pm->getTitle();
-            $menu_items .= (string)$this_item;
-        }
-        $sub_template->menu_placeholder = $menu_items;
-
-        // Output the template
-        return $sub_template;
+        $c = new PageNavComponent();
+        return $c->render();
     }
 
     public static function displayLeft() 
@@ -468,8 +382,6 @@ class Page
 
     public static function displayContent()
     {
-        global $db;
-
         $template = new Template;
         $template->loadFile('content');
         if (Page::$id != 0) {
@@ -540,7 +452,6 @@ class Page
     public static function displayDebug()
     {
         global $db;
-
         $template = new Template;
         $template->loadFile('debug');
         $template->debug_queries = $db->print_queries();
@@ -551,7 +462,6 @@ class Page
 
     /**
     * displayLoginBox - Generate and return content of login box area
-    * @global db $db
     * @return string
     */
     public static function displayLoginBox()

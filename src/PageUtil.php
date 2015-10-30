@@ -13,6 +13,27 @@ namespace CommunityCMS;
 class PageUtil
 {
     /**
+     * Get pages in their display order
+     * @return int
+     * @throws \Exception
+     */
+    public static function getPagesInOrder()
+    {
+        $query = 'SELECT `id` FROM `'.PAGE_TABLE.'` '
+            . 'ORDER BY `parent` ASC, `list` ASC';
+        try {
+            $results = DBConn::get()->query($query, [], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception("Failed to get pages.", $ex->getCode(), $ex);
+        }
+        $ids = [];
+        foreach ($results as $result) {
+            $ids[] = $result['id'];
+        }
+        return $ids;
+    }
+
+    /**
      * Get a list of pages with a given parent and whether they have children
      * @param int $parent
      * @param bool $visible_only
