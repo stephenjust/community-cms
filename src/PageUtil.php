@@ -32,10 +32,28 @@ class PageUtil
         }
 
         for ($i = 0; $i < count($results); $i++) {
-            $results[$i]['has_children'] = Page::hasChildren($results[$i]['id'], $visible_only);
+            $results[$i]['has_children'] = self::hasChildren($results[$i]['id'], $visible_only);
         }
 
         return $results;
+    }
+
+    private static function hasChildren($id, $visible_only)
+    {
+        $pm = new PageManager($id);
+        $children = $pm->getChildren();
+        if ($children && !$visible_only) {
+            return true;
+        }
+
+        foreach ($children as $child) {
+            $pm_child = new PageManager($child);
+            if ($pm_child->isOnMenu()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

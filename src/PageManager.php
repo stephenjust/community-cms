@@ -332,4 +332,9 @@ class PageManager
     {
         return $this->list;
     }
+
+    public function isOnMenu()
+    {
+        return $this->show_menu;
+    }
 }

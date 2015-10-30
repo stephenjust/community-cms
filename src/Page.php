@@ -327,13 +327,10 @@ class Page
 
     /**
      * nav_menu - Returns HTML for navigation menu
-     * @global db $db Database object
      * @return string HTML for menu
      */
     private static function navMenu() 
     {
-        global $db;
-
         // Prepare menu and submenu templates
         $template = new Template;
         if (!$template->loadFile('nav_bar')) {
@@ -355,28 +352,23 @@ class Page
 
         $menu = null;
         foreach ($nav_menu AS $nav_menu_item) {
-            $haschild = 0;
+            $pm = new PageManager($nav_menu_item['id']);
             if ($nav_menu_item['has_children'] == true && Page::$id == $nav_menu_item['id']) {
                 $item_template = clone $cmenus_item_template;
-                $haschild = 1;
+                $item_template->child_placeholder = Page::navChildMenu($nav_menu_item['id']);
             } elseif ($nav_menu_item['has_children'] == true) {
                 $item_template = clone $menus_item_template;
-                $haschild = 1;
+                $item_template->child_placeholder = Page::navChildMenu($nav_menu_item['id']);
             } elseif (Page::$id == $nav_menu_item['id']) {
                 $item_template = clone $cmenu_item_template;
+                $item_template->child_placeholder = null;
             } else {
                 $item_template = clone $menu_item_template;
+                $item_template->child_placeholder = null;
             }
-            $pm = new PageManager($nav_menu_item['id']);
             $item_template->menu_item_url = $pm->getUrl();
             $item_template->menu_item_label = $pm->getTitle();
             $item_template->menu_item_id = 'menuitem_'.$nav_menu_item['id'];
-            // Generate hidden child div
-            if ($haschild == 1) {
-                $item_template->child_placeholder = Page::navChildMenu($nav_menu_item['id']);
-            } else {
-                $item_template->child_placeholder = null;
-            }
             $menu .= (string)$item_template;
             unset($item_template);
         } // FOR
@@ -386,30 +378,13 @@ class Page
 
     private static function navChildMenu($parent) 
     {
-        global $db;
-
-        if (!is_numeric($parent) || is_array($parent)) {
-            return false;
-        }
-        $parent = (int)$parent;
-        $return = null;
-
-        $items_query = 'SELECT * FROM `'.PAGE_TABLE.'`
-			WHERE `parent` = '.$parent.' AND `menu` = 1 ORDER BY `list` ASC';
-        $items_handle = $db->sql_query($items_query);
-        if ($db->error[$items_handle] == 1) {
-            return false;
-        }
-        if ($db->sql_num_rows($items_handle) == 0) {
-            return false;
-        }
+        $nav_menu = PageUtil::getPagesAndChildren($parent, true);
 
         // Read template
         $template = new Template();
         $template->loadFile('nav_bar');
         // Grab the sub-menu part of the template
         $sub_template = $template->splitRange('nav_submenu');
-        unset($template);
 
         // Pull out the styles for the types of items contained within
         $item_temp = $sub_template->splitRange('menu_item');
@@ -420,96 +395,31 @@ class Page
         $sub_template->nav_menu_id = 'nav-menu-sub-'.$parent;
 
         // Populate the menu with items
-        $menu_items = null;
-        for ($i = 1; $i <= $db->sql_num_rows($items_handle); $i++) {
-            $items_result = $db->sql_fetch_assoc($items_handle);
-            $haschild = 0;
-            $extra_text = null;
+        $menu_items = "";
+        foreach ($nav_menu as $menu_item) {
+            $pm = new PageManager($menu_item['id']);
             // Select the proper template
-            if (Page::hasChildren($items_result['id']) === true && Page::$id !== $items_result['id']) {
+            if ($menu_item['has_children'] && Page::$id !== $menu_item['id']) {
                 $this_item = clone $itemchild_temp;
-                $this_item->child_placeholder = Page::navChildMenu($items_result['id']);
-            } elseif (Page::hasChildren($items_result['id']) === true && Page::$id === $items_result['id']) {
+                $this_item->child_placeholder = Page::navChildMenu($menu_item['id']);
+            } elseif ($menu_item['has_children'] && Page::$id === $menu_item['id']) {
                 $this_item = clone $currentitemchild_temp;
-                $this_item->child_placeholder = Page::navChildMenu($items_result['id']);
-            } elseif (Page::hasChildren($items_result['id']) === false && Page::$id !== $items_result['id'])
-            $this_item = clone $item_temp;
-            else {
+                $this_item->child_placeholder = Page::navChildMenu($menu_item['id']);
+            } elseif (!$menu_item['has_children'] && Page::$id !== $menu_item['id']) {
+                $this_item = clone $item_temp;
+            } else {
                 $this_item = clone $currentitem_temp; 
             }
 
-            $this_item->menu_item_id = 'menuitem_'.$items_result['id'];
-            if ($items_result['type'] == 0) {
-                $link = explode('<LINK>', $items_result['title']); // Check if menu entry is a link
-                $link_path = $link[1];
-                $link_name = $link[0];
-                unset($link);
-            } else {
-                if(strlen($items_result['text_id']) > 0) {
-                    $link_path = "index.php?page=".$items_result['text_id'];
-                } else {
-                    $link_path = "index.php?id=".$items_result['id'];
-                }
-                $link_name = $items_result['title'];
-            } // IF is link
-            $this_item->menu_item_url = $link_path;
-            $this_item->menu_item_label = $link_name;
+            $this_item->menu_item_id = 'menuitem_'.$menu_item['id'];
+            $this_item->menu_item_url = $pm->getUrl();
+            $this_item->menu_item_label = $pm->getTitle();
             $menu_items .= (string)$this_item;
-            unset($this_item);
         }
         $sub_template->menu_placeholder = $menu_items;
 
         // Output the template
         return $sub_template;
-    }
-
-    /**
-    * Test if there are any children to the given page
-    * @global db $db Database connection object
-    * @param integer $id                    Page ID of page to test
-    * @param boolean $visible_children_only Only consider items that will appear in the menu
-    * @return boolean
-    */
-    public static function hasChildren($id, $visible_children_only = false) 
-    {
-        global $db;
-
-        if (!is_numeric($id) || is_array($id)) {
-            return false;
-        }
-        $id = (int)$id;
-
-        if (isset(Page::$page_properties[$id]['haschild']) && !$visible_children_only) {
-            return Page::$page_properties[$id]['haschild'];
-        } elseif (isset(Page::$page_properties[$id]['haschild_vis']) && $visible_children_only) {
-            return Page::$page_properties[$id]['haschild_vis'];
-        }
-        
-        $visible = null;
-        if ($visible_children_only == true) {
-            $visible = 'AND `menu` = 1 ';
-        }
-
-        $query = 'SELECT * FROM `'.PAGE_TABLE.'`
-			WHERE `parent` = '.$id.' '.$visible.'LIMIT 1';
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            return false;
-        }
-        if ($db->sql_num_rows($handle) == 0) {
-            $return = false; 
-        }
-        else {
-            $return = true; 
-        }
-
-        if (!$visible_children_only) {
-            Page::$page_properties[$id]['haschild'] = $return; 
-        }
-        else {
-            Page::$page_properties[$id]['haschild_vis'] = $return; 
-        }
-        return $return;
     }
 
     public static function displayLeft() 
