@@ -49,13 +49,13 @@ function contact_list($page = '*')
 
 // ----------------------------------------------------------------------------
 
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 default:
     break;
 
 case 'delete':
     try {
-        $c = new Contact($_GET['id']);
+        $c = new Contact(FormUtil::get('id'));
         $c->delete();
         echo 'Successfully deleted contact.<br />';
     }
@@ -82,7 +82,7 @@ case 'create':
 
 case 'edit':
     try {
-        $c = new Contact($_GET['id']);
+        $c = new Contact(FormUtil::get('id'));
 
         // Create form
         $edit_form = new Form;
@@ -107,7 +107,7 @@ case 'edit':
 
 case 'editsave':
     try {
-        $c = new Contact($_GET['id']);
+        $c = new Contact(FormUtil::get('id'));
         $c->edit(
             $_POST['name'],
             $_POST['title'],

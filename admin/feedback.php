@@ -18,12 +18,9 @@ if (SysConfig::get()->getValue('admin_email') == null) {
     throw new AdminException('You need to set an admin email in the website configuration to use this feature.'); 
 }
 
-if (!isset($_GET['send'])) {
-    $_GET['send'] = 0;
-}
-if ($_GET['send'] == 1) {
+if (FormUtil::get('send') == 1) {
     $to = 'communitycms-feedback@lists.sourceforge.net';
-    switch ($_POST['topic']) {
+    switch (FormUtil::post('topic')) {
     default:
         $subject = 'Other comment';
         break;
@@ -35,7 +32,7 @@ if ($_GET['send'] == 1) {
         break;
     }
     $subject .= ' from '.$_SERVER['SERVER_ADDR'].' ('.$_SERVER['SERVER_NAME'].')';
-    $message = addslashes(strip_tags($_POST['content']));
+    $message = FormUtil::post('content');
     $headers = 'From: '.SysConfig::get()->getValue('admin_email').''."\r\n".
     'X-Mailer: PHP/' . phpversion();
     if(mail($to, $subject, $message, $headers)) {
@@ -62,4 +59,3 @@ $form->add_select('topic', 'Topic', array('bug','feature','comment'), array('Bug
 $form->add_textarea('content', 'Content', null, 'class="mceNoEditor" rows="10" cols="60"');
 $form->add_submit('submit', 'Send Message');
 echo $form;
-?>

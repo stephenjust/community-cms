@@ -7,29 +7,18 @@
  */
 
 namespace CommunityCMS;
-
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
-global $page_content_info;
-global $view;
 
-$day = (isset($_GET['d']) && $_GET['d'] >= 1 && $_GET['d'] <= 31) ? (int)$_GET['d'] : date('d');
-$month = (isset($_GET['m']) && $_GET['m'] >= 0 && $_GET['m'] <= 13) ? (int)$_GET['m'] : date('n');
-$year = (isset($_GET['y']) && $_GET['y'] >= 2000 && $_GET['y'] <= 9999) ? (int)$_GET['y'] : date('Y');
-/**#@+
- * Include necessary functions to complete tasks in this file
- */
+$view = FormUtil::get('view', FILTER_DEFAULT, ['month', 'day', 'event'],
+    SysConfig::get()->getValue('calendar_default_view'));
+$day = FormUtil::get('d', FILTER_VALIDATE_INT, null, date('d'));
+$month = FormUtil::get('m', FILTER_VALIDATE_INT, null, date('m'));
+$year = FormUtil::get('y', FILTER_VALIDATE_INT, null, date('Y'));
+
 require_once ROOT.'pagetypes/calendar_class.php';
-/**#@-*/
-if ($view == null) {
-    $view = SysConfig::get()->getValue('calendar_defualt_view');
-}
-if ($view != 'month' && $view != 'day' && $view != 'event') {
-    $view = SysConfig::get()->getValue('calendar_default_view');
-}
-
 switch ($view) {
     // MONTH VIEW
 case "month":

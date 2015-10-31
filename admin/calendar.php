@@ -23,20 +23,7 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 acl::get()->require_permission('adm_calendar');
 
-// Save form information from previously created entry
-$_POST['title'] = (isset($_POST['title'])) ? $_POST['title'] : null;
-$category = (isset($_POST['category'])) ? $_POST['category'] : null;
-$_POST['category_check'] = (isset($_POST['category_check'])) ? checkbox($_POST['category_check']) : 0;
-$_POST['stime'] = (isset($_POST['stime'])) ? $_POST['stime'] : null;
-$_POST['etime'] = (isset($_POST['etime'])) ? $_POST['etime'] : null;
-$_POST['date'] = (isset($_POST['date'])) ? $_POST['date'] : null;
-$_POST['content'] = (isset($_POST['content'])) ? $_POST['content'] : null;
-$_POST['location'] = (isset($_POST['location'])) ? $_POST['location'] : null;
-$_POST['location_check'] = (isset($_POST['location_check'])) ? checkbox($_POST['location_check']) : 0;
-$hide = (isset($_POST['hide'])) ? checkbox($_POST['hide']) : 0;
-$image = (isset($_POST['image'])) ? $_POST['image'] : null;
-
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 default:
 
     break;
@@ -44,18 +31,18 @@ default:
 case 'new':
     try {
         CalEvent::create(
-            $_POST['title'],
-            $_POST['content'],
-            $_POST['author'],
-            $_POST['stime'],
-            $_POST['etime'],
-            $_POST['date'],
-            $_POST['category'],
-            $_POST['category_check'],
-            $_POST['location'],
-            $_POST['location_check'],
-            $image,
-            $hide
+            FormUtil::post('title'),
+            FormUtil::post('content', FILTER_UNSAFE_RAW),
+            FormUtil::post('author'),
+            FormUtil::post('stime'),
+            FormUtil::post('etime'),
+            FormUtil::post('date'),
+            FormUtil::post('category'),
+            FormUtil::postCheckbox('category_check'),
+            FormUtil::post('location'),
+            FormUtil::postCheckbox('location_check'),
+            FormUtil::post('image'),
+            FormUtil::postCheckbox('hide')
         );
         echo 'Successfully created event.<br />';
     }
@@ -65,23 +52,17 @@ case 'new':
 
     // Parse the event date so that 'manage' tab can default to the
     // correct place
-    $event_date_parts = explode('/', $_POST['date']);
+    $event_date_parts = explode('/', FormUtil::post('date'));
     $year = isset($event_date_parts[2]) ? $event_date_parts[2] : date('Y');
     $month = isset($event_date_parts[0]) ? $event_date_parts[0] : date('m');
 
-    if (!isset($_POST['month'])) {
-        $_POST['month'] = $month;
-    }
-    if (!isset($_POST['year'])) {
-        $_POST['year'] = $year;
-    }
     break;
 
 // ----------------------------------------------------------------------------
 
 case 'delete':
     try {
-        $ev = new CalEvent($_GET['date_del']);
+        $ev = new CalEvent(FormUtil::get('date_del'));
         $ev->delete();
         echo 'Successfully deleted date entry.<br />';
     }
@@ -100,10 +81,10 @@ case 'delete_old_entries':
     break;
 case 'delete_range':
     try {
-        $start_date = StringUtils::parseDate($_POST['start_date']);
-        $end_date   = StringUtils::parseDate($_POST['end_date']);
+        $start_date = StringUtils::parseDate(FormUtil::post('start_date'));
+        $end_date   = StringUtils::parseDate(FormUtil::post('end_date'));
 
-        if ($_POST['start_date'] != "" && $start_date == 0) {
+        if (FormUtil::post('start_date') != "" && $start_date == 0) {
             throw new CalEventException('Your start date was formatted invalidly. It should be in the format mm/dd/yyyy.');
         }
 
@@ -118,8 +99,8 @@ case 'delete_range':
     }
     break;
 case 'create_category':
-    $cat_name = $_POST['category_name'];
-    $cat_icon = (isset($_POST['colour'])) ? $_POST['colour'] : null;
+    $cat_name = FormUtil::post('category_name');
+    $cat_icon = FormUtil::post('colour');
     try {
         CalCategory::create($cat_name, $cat_icon);
         echo 'Created category '.HTML::schars($cat_name).'.';
@@ -128,12 +109,8 @@ case 'create_category':
     }
     break;
 case 'delete_category':
-    if (!isset($_POST['delete_category_id'])) {
-        echo 'No category selected to delete.<br />'."\n";
-        break;
-    }
     try {
-        $cat = new CalCategory($_POST['delete_category_id']);
+        $cat = new CalCategory(FormUtil::post('delete_category_id'));
         $cat->delete();
         echo 'Successfully deleted category entry.<br />';
     } catch (CalCategoryException $e) {
@@ -142,23 +119,15 @@ case 'delete_category':
     break;
 case 'save_settings':
     if (acl::get()->check_permission('calendar_settings')) {
-        $new_fields['default_view'] = addslashes($_POST['default_view']);
-        $new_fields['month_show_stime'] = (isset($_POST['month_show_stime'])) ? checkbox($_POST['month_show_stime']) : 0;
-        $new_fields['month_show_cat_icons'] = (isset($_POST['month_show_cat_icons'])) ? checkbox($_POST['month_show_cat_icons']) : 0;
-        $new_fields['save_locations'] = (isset($_POST['save_locations'])) ? checkbox($_POST['save_locations']) : 0;
-        $new_fields['month_day_format'] = (int)$_POST['month_day_format'];
-        $new_fields['month_time_sep'] = $_POST['month_time_sep'];
-        $new_fields['default_location'] = $_POST['default_location'];
-        $new_fields['cal_show_author'] = (isset($_POST['cal_show_author'])) ? checkbox($_POST['cal_show_author']) : 0;
         try {
-            SysConfig::get()->setValue('calendar_default_view', $new_fields['default_view']);
-            SysConfig::get()->setValue('calendar_month_show_stime', $new_fields['month_show_stime']);
-            SysConfig::get()->setValue('calendar_month_show_cat_icons', $new_fields['month_show_cat_icons']);
-            SysConfig::get()->setValue('calendar_month_day_format', $new_fields['month_day_format']);
-            SysConfig::get()->setValue('calendar_save_locations', $new_fields['save_locations']);
-            SysConfig::get()->setValue('calendar_month_time_sep', $new_fields['month_time_sep']);
-            SysConfig::get()->setValue('calendar_default_location', $new_fields['default_location']);
-            SysConfig::get()->setValue('calendar_show_author', $new_fields['cal_show_author']);
+            SysConfig::get()->setValue('calendar_default_view', FormUtil::post('default_view', FILTER_DEFAULT, ['month', 'day', 'event']));
+            SysConfig::get()->setValue('calendar_month_show_stime', FormUtil::postCheckbox('month_show_stime'));
+            SysConfig::get()->setValue('calendar_month_show_cat_icons', FormUtil::postCheckbox('month_show_cat_icons'));
+            SysConfig::get()->setValue('calendar_month_day_format', FormUtil::post('month_day_format'));
+            SysConfig::get()->setValue('calendar_save_locations', FormUtil::postCheckbox('save_locations'));
+            SysConfig::get()->setValue('calendar_month_time_sep', FormUtil::post('month_time_sep'));
+            SysConfig::get()->setValue('calendar_default_location', FormUtil::post('default_location'));
+            SysConfig::get()->setValue('calendar_show_author', FormUtil::postCheckbox('cal_show_author'));
             echo 'Updated calendar settings.<br />'."\n";
             Log::addMessage('Updated calendar settings');
         } catch (\Exception $ex) {
@@ -171,34 +140,20 @@ case 'save_settings':
 
 // ----------------------------------------------------------------------------
 
-if (isset($_GET['month']) && !isset($_POST['month'])) {
-    $_POST['month'] = $_GET['month'];
+if (!isset($month)) {
+    $month = FormUtil::get('month', FILTER_VALIDATE_INT, null, FormUtil::post('month', FILTER_VALIDATE_INT, null, date('m')));
 }
-if (isset($_GET['year']) && !isset($_POST['year'])) {
-    $_POST['year'] = $_GET['year'];
+if (!isset($year)) {
+    $year = FormUtil::get('year', FILTER_VALIDATE_INT, null, FormUtil::post('year', FILTER_VALIDATE_INT, null, date('Y')));
 }
 
-if (isset($_POST['month'])) {
-    if ($_POST['month'] > 12 || $_POST['month'] < 1) {
-        $_POST['month'] = date('m');
-    }
-} else {
-    $_POST['month'] = date('m');
-}
-if (isset($_POST['year'])) {
-    if ($_POST['year'] < 1 || $_POST['year'] > 9999) {
-        $_POST['year'] = date('Y');
-    }
-} else {
-    $_POST['year'] = date('Y');
-}
 $tab_layout = new Tabs;
 $tab_content['manage'] = '<form method="post" action="?module=calendar"><select name="month">';
 $months = array('January','February','March','April','May','June','July',
     'August','September','October','November','December');
 $monthcount = 1; 
 while ($monthcount <= 12) {
-    if ($_POST['month'] == $monthcount) {
+    if (FormUtil::post('month') == $monthcount) {
         $tab_content['manage'] .= "<option value='".$monthcount."' selected >"
         .$months[$monthcount-1]."</option>"; // Need [$monthcount-1] as arrays start at 0.
         $monthcount++;
@@ -207,10 +162,10 @@ while ($monthcount <= 12) {
         $monthcount++;
     }
 }
-$tab_content['manage'] .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$_POST['year'].'" /><input type="submit" value="Change" /></form>';
+$tab_content['manage'] .= '</select><input type="text" name="year" maxlength="4" size="4" value="'.$year.'" /><input type="submit" value="Change" /></form>';
 
-$start = gmmktime(0, 0, 0, $_POST['month'], 1, $_POST['year']);
-$end = gmmktime(23, 59, 29, $_POST['month'], cal_days_in_month(CAL_GREGORIAN, $_POST['month'], $_POST['year']), $_POST['year']);
+$start = gmmktime(0, 0, 0, $month, 1, $year);
+$end = gmmktime(23, 59, 29, $month, cal_days_in_month(CAL_GREGORIAN, $month, $year), $year);
 $events = CalEvent::getRange($start, $end);
 
 $event_rows = array();
@@ -244,7 +199,7 @@ $form_create = new Form;
 $form_create->set_target('admin.php?module=calendar&action=new');
 $form_create->set_method('post');
 $form_create->add_hidden('author', $_SESSION['name']);
-$form_create->add_textbox('title', 'Heading*', $_POST['title']);
+$form_create->add_textbox('title', 'Heading*', FormUtil::post('title'));
 
 $categories = CalCategory::getAll();
 $category_ids = [];
@@ -254,19 +209,15 @@ foreach ($categories as $c) {
     $category_names[] = $c->getName();
 }
 
-if (!isset($_POST['location'])) {
-    $new_location = SysConfig::get()->getValue('calendar_default_location');
-} else {
-    $new_location = addslashes($_POST['location']);
-}
-$form_create->add_select('category', 'Category', $category_ids, $category_names, $category, null, 'Hide', $_POST['category_check']);
-$form_create->add_textbox('stime', 'Start Time*', $_POST['stime'], 'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"');
-$form_create->add_textbox('etime', 'End Time*', $_POST['etime'], 'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
-$form_create->add_date_cal('date', 'Date', $_POST['date'], 'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
-$form_create->add_textarea('content', 'Description', $_POST['content']);
-$form_create->add_textbox('location', 'Location', $new_location, null, 'Hide', $_POST['location_check']);
-$form_create->add_icon_list('image', 'Image', 'newsicons', $image);
-$form_create->add_checkbox('hide', 'Hidden', $hide);
+$new_location = FormUtil::post('location', FILTER_DEFAULT, null, SysConfig::get()->getValue('calendar_default_location'));
+$form_create->add_select('category', 'Category', $category_ids, $category_names, FormUtil::post('category'), null, 'Hide', FormUtil::postCheckbox('category_check'));
+$form_create->add_textbox('stime', 'Start Time*', FormUtil::post('stime'), 'onChange="validate_form_field(\'calendar\',\'time\',\'_stime\')"');
+$form_create->add_textbox('etime', 'End Time*', FormUtil::post('etime'), 'onChange="validate_form_field(\'calendar\',\'time\',\'_etime\')"');
+$form_create->add_date_cal('date', 'Date', FormUtil::post('date'), 'onChange="validate_form_field(\'calendar\',\'date\',\'_date\')"');
+$form_create->add_textarea('content', 'Description', FormUtil::post('content', FILTER_UNSAFE_RAW));
+$form_create->add_textbox('location', 'Location', $new_location, null, 'Hide', FormUtil::postCheckbox('location_check'));
+$form_create->add_icon_list('image', 'Image', 'newsicons', FormUtil::post('image'));
+$form_create->add_checkbox('hide', 'Hidden', FormUtil::postCheckbox('hide'));
 $form_create->add_submit('submit', 'Create Event');
 $tab_content['create'] = $form_create;
 $tab_layout->add_tab('Create Event', $tab_content['create']);

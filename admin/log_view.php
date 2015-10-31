@@ -21,7 +21,7 @@ if (!acl::get()->check_permission('adm_log_view')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 case 'delete':
     if (!acl::get()->check_permission('log_clear')) {
         echo '<span class="errormessage">You are not authorized to clear the log.</span><br />'."\n";

@@ -23,46 +23,22 @@ require_once ROOT.'functions/news.php';
 
 acl::get()->require_permission('adm_news');
 
-/**
- * get_selected_items - Return the IDs of the selected form items
- * @param string $prefix Form name prefix
- * @return array Array of all IDs
- */
-// FIXME: Check if empty form vars are sent in other browsers (not firefox)
-function get_selected_items($prefix = 'item') 
-{
-    $form_keys = array_keys($_POST);
-    $item_keys = array();
-    for ($i = 0; $i < count($form_keys); $i++) {
-        if (preg_match('/^'.$prefix.'_/', $form_keys[$i])) {
-            $item_keys[] = $form_keys[$i];
-        }
-    }
-    $items = array();
-    for ($i = 0; $i < count($item_keys); $i++) {
-        $items[] = str_replace($prefix.'_', null, $item_keys[$i]);
-    }
-    return $items;
-}
-
-// ----------------------------------------------------------------------------
-
 $tab_layout = new Tabs;
 
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 default:
 
     break;
 case 'multi':
-    if (isset($_POST['pri'])) {
-        if (save_priorities($_POST)) {
+    if (FormUtil::post('pri')) {
+        if (save_priorities(FormUtil::postArray('priority'))) {
             echo 'Updated priorities.<br />';
         } else {
             echo 'Failed to update priorities.<br />';
         }
         break;
     }
-    $selected_items = get_selected_items();
+    $selected_items = FormUtil::postArray('selected', FILTER_VALIDATE_INT);
 
     // Check if any items are selected
     if (count($selected_items) == 0) {
@@ -70,48 +46,35 @@ case 'multi':
         break;
     }
 
-    // Check if an action is selected
-    if (!isset($_POST['news_action'])) {
-        echo 'No action was selected.<br />'."\n";
-        break;
-    }
-
-    // Check if a valid action was given
-    if ($_POST['news_action'] != 'del' &    $_POST['news_action'] != 'move' &        $_POST['news_action'] != 'copy'
-    ) {
-        echo 'Invalid action.<br />'."\n";
-        break;
-    }
-
-    if ($_POST['news_action'] == 'del') {
-        if (!delete_article($selected_items)) {
-            echo '<span class="errormessage">Failed to delete article(s)</span><br />'."\n";
-        } else {
-            echo 'Successfully deleted article(s)<br />'."\n";
-        }
-        break;
-    }
-
-    if (!isset($_POST['where'])) {
-        echo 'No location provided.<br />'."\n";
-        break;
-    }
-    if (!is_numeric($_POST['where'])) {
-        echo 'Invalid location.<br />'."\n";
-        break;
-    }
-    if ($_POST['news_action'] == 'move') {
-        move_article($selected_items, $_POST['where']);
-    }
-    if ($_POST['news_action'] == 'copy') {
-        copy_article($selected_items, $_POST['where']);
+    $news_action = FormUtil::post('news_action');
+    $where = FormUtil::post('where', FILTER_VALIDATE_INT);
+    switch ($news_action) {
+        case 'del':
+            if (!delete_article($selected_items)) {
+                echo '<span class="errormessage">Failed to delete article(s)</span><br />'."\n";
+            } else {
+                echo 'Successfully deleted article(s)<br />'."\n";
+            }
+            break;
+        case 'move':
+            if (!$where) {
+                break;
+            }
+            move_article($selected_items, $where);
+            break;
+        case 'copy':
+            if (!$where) {
+                break;
+            }
+            copy_article($selected_items, $where);
+            break;
     }
     break;
 
 // ----------------------------------------------------------------------------
 
 case 'delete':
-    if (!delete_article($_GET['id'])) {
+    if (!delete_article(FormUtil::get('id'))) {
         echo 'Failed to delete article<br />'."\n";
     } else {
         echo 'Successfully deleted article<br />'."\n";
@@ -123,9 +86,9 @@ case 'delete':
 case 'new':
     try {
         news_create(
-            $_POST['title'], $_POST['content'],
-            $_POST['page'], $_POST['author'], $_POST['image'],
-            $_POST['publish'], $_POST['date_params'], $_POST['del_date']
+            FormUtil::post('title'), FormUtil::post('content', FILTER_UNSAFE_RAW),
+            FormUtil::post('page'), FormUtil::post('author'), FormUtil::post('image'),
+            FormUtil::post('publish'), FormUtil::post('date_params'), FormUtil::post('del_date')
         );
         echo 'Successfully added article.<br />';
     }
@@ -137,14 +100,14 @@ case 'new':
 // ----------------------------------------------------------------------------
 
 case 'publish':
-    if (!news_publish($_GET['id'])) {
+    if (!news_publish(FormUtil::get('id'))) {
         echo '<span class="errormessage">Failed to publish article.</span><br />'."\n";
         break;
     }
     echo 'Successfully published article.<br />'."\n";
     break;
 case 'unpublish':
-    if (!news_publish($_GET['id'], false)) {
+    if (!news_publish(FormUtil::get('id'), false)) {
         echo '<span class="errormessage">Failed to unpublish article</span><br />'."\n";
         break;
     }
@@ -158,10 +121,10 @@ case 'edit':
         echo '<span class="errormessage">You do not have the necessary permissions to edit this article.</span><br />';
         break;
     }
-    if (!isset($_GET['id'])) {
+    $article_id = FormUtil::get('id');
+    if (!$article_id) {
         break;
     }
-    $article_id = $_GET['id'];
 
     // Get article information
     $edit_query = 'SELECT * FROM ' . NEWS_TABLE . '
@@ -195,9 +158,9 @@ case 'edit':
 case 'editsave':
     try {
         news_edit(
-            $_POST['id'], $_POST['title'],
-            $_POST['update_content'], $_POST['page'],
-            $_POST['image'], $_POST['date_params'], $_POST['del_date']
+            FormUtil::post('id'), FormUtil::post('title'),
+            FormUtil::post('update_content', FILTER_UNSAFE_RAW), FormUtil::post('page'),
+            FormUtil::post('image'), FormUtil::post('date_params'), FormUtil::post('del_date')
         );
         echo 'Successfully edited article.<br />';
     }
@@ -219,7 +182,7 @@ $page_list = new UISelectPageList(
 );
   $page_list->addOption(null, 'No Page');
   $page_list->addOption('*', 'All Pages');
-  $cur_page = (array_key_exists('page', $_POST)) ? $_POST['page'] : SysConfig::get()->getValue('home');
+  $cur_page = FormUtil::post('page', FILTER_DEFAULT, null, SysConfig::get()->getValue('home'));
   $page_list->setChecked($cur_page);
 
   // Change page form

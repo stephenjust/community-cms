@@ -27,13 +27,13 @@ if (!acl::get()->check_permission('adm_block_manager')) {
 
 $tab_layout = new Tabs;
 
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 default:
     break;
 
 case 'delete':
     try {
-        $block = new Block($_GET['id']);
+        $block = new Block(FormUtil::get('id'));
         $block->delete();
         echo 'Successfully deleted block.<br />';
     }
@@ -44,11 +44,7 @@ case 'delete':
 
 case 'new':
     try {
-        if (!isset($_POST['type'])) { $_POST['type'] = null; 
-        }
-        if (!isset($_POST['attributes'])) { $_POST['attributes'] = null; 
-        }
-        block_create($_POST['type'], $_POST['attributes']);
+        block_create(FormUtil::post('type'), FormUtil::post('attributes'));
         echo 'Successfully created block.<br />';
     }
     catch (\Exception $e) {
@@ -59,15 +55,10 @@ case 'new':
 // ----------------------------------------------------------------------------
 
 case 'edit':
-    if (!isset($_GET['id'])) {
-        echo 'No block to edit.<br />'."\n";
+    $edit_id = FormUtil::get('id', FILTER_VALIDATE_INT);
+    if (!$edit_id) {
         break;
     }
-    if (!is_numeric($_GET['id'])) {
-        echo 'Invalid block ID.<br />'."\n";
-        break;
-    }
-    $edit_id = (int)$_GET['id'];
     $edit_block = new Block($edit_id);
     $options = block_edit_form($edit_block->getType(), $edit_block->getAttributes());
 
@@ -89,11 +80,7 @@ case 'edit':
 
 case 'edit_save':
     try {
-        if (!isset($_POST['id'])) { $_POST['id'] = null; 
-        }
-        if (!isset($_POST['attributes'])) { $_POST['attributes'] = null; 
-        }
-        block_edit($_POST['id'], $_POST['attributes']);
+        block_edit(FormUtil::post('id'), FormUtil::post('attributes'));
         echo 'Successfully edited block.<br />'."\n";
     }
     catch (\Exception $e) {
@@ -156,4 +143,3 @@ if (acl::get()->check_permission('block_create')) {
 }
 
 echo $tab_layout;
-?>

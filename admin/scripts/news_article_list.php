@@ -35,7 +35,7 @@ $articles = Content::getByPage($_GET['page']);
 $list_rows = array();
 foreach ($articles AS $article) {
     $current_row = array();
-    $current_row[] = '<input type="checkbox" name="item_'.$article->getID().'" />';
+    $current_row[] = '<input type="checkbox" name="selected[]" value="'.$article->getID().'" />';
     $current_row[] = $article->getID();
     $article_title = $article->getTitle();
     if (!$article->published()) {
@@ -67,7 +67,7 @@ foreach ($articles AS $article) {
 				<img src="./admin/templates/default/images/publish.png" alt="Publish" width="16px" height="16px" border="0px" /></a>';
         }
     }
-    $current_row[] = '<input type="text" size="3" maxlength="11" name="pri-'.$article->getID().'" value="'.$article->getPriority().'" />';
+    $current_row[] = '<input type="text" size="3" maxlength="11" name="priority['.$article->getID().']" value="'.$article->getPriority().'" />';
     $list_rows[] = $current_row;
 } // FOR
 

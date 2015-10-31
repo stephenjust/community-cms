@@ -34,34 +34,17 @@ if (SysConfig::get()->getValue('site_active') == 0) {
     err_page(12);
 }
 
-// Initialize some variables to keep PHP from complaining
-$view = (isset($_GET['view'])) ? $_GET['view'] : null;
-unset($_GET['view']);
-
-// Figure out which page to fetch from the provided variables
-if (!isset($_GET['id']) && !isset($_GET['page'])) {
-    // No page provided - go to home page
-    $page_id      = SysConfig::get()->getValue('home');
-    $page_text_id = null;
-} else {
-    if (isset($_GET['page'])) {
-        $page_id      = null;
-        $page_text_id = addslashes($_GET['page']);
-    } else {
-        // Don't cast (int) on $page_id because it could be a special page (text)
-        $page_id      = $_GET['id'];
-        $page_text_id = null;
-    }
-}
-unset($_GET['page'], $_GET['id']);
+$page_id = FormUtil::get('id', FILTER_VALIDATE_INT, null, SysConfig::get()->getValue('home'));
+$page_text_id = FormUtil::get('page');
 
 // Load page information.
 $page = new Page();
-if ($page_id == null && $page_text_id != null) {
+if ($page_text_id != null) {
     Page::setPage($page_text_id, false);
 } else {
     Page::setPage($page_id);
 }
+
 if (file_exists('./install')) {
     Debug::get()->addMessage('The ./install directory still exists', true);
 }

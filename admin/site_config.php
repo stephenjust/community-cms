@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2012 Stephen Just
+ * @copyright Copyright (C) 2007-2015 Stephen Just
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
@@ -18,43 +18,26 @@ if (!acl::get()->check_permission('adm_site_config')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
-if ($_GET['action'] == 'save') {
-    // We don't really need to escape any of this because the SysConfig::get()->setValue()
-    // function already does that. This will just cause issues from double-
-    // escaping. Only not escaping footer for now.
-    $site_name = addslashes(strip_tags($_POST['site_name']));
-    $site_desc = addslashes(strip_tags($_POST['site_desc']));
-    $site_url = addslashes(strip_tags($_POST['site_url']));
-    $admin_email = addslashes(strip_tags($_POST['admin_email']));
-    $cookie_name = addslashes($_POST['cookie_name']);
-    $cookie_path = addslashes($_POST['cookie_path']);
-    $password_expire = addslashes($_POST['password_expire']);
-    $time_format = addslashes($_POST['time_format']);
-    $tel_format = addslashes($_POST['tel_format']);
-    $num_articles = (int)$_POST['num_articles'];
-    $def_date = (int)$_POST['date'];
-    $show_author = (isset($_POST['author'])) ? checkbox($_POST['author']) : 0;
-    $show_edit = (isset($_POST['etime'])) ? checkbox($_POST['etime']) : 0;
-    $def_pub_val = (int)$_POST['default_publish_value'];
-
+$action = FormUtil::get('action');
+if ($action == 'save') {
     try {
-        SysConfig::get()->setValue('site_name', $site_name);
-        SysConfig::get()->setValue('site_url', $site_url);
-        SysConfig::get()->setValue('admin_email', $admin_email);
-        SysConfig::get()->setValue('comment', $site_desc);
-        SysConfig::get()->setValue('site_active', checkbox($_POST['active']));
-        SysConfig::get()->setValue('cookie_name', $cookie_name);
-        SysConfig::get()->setValue('cookie_path', $cookie_path);
-        SysConfig::get()->setValue('password_expire', $password_expire);
-        SysConfig::get()->setValue('time_format', $time_format);
-        SysConfig::get()->setValue('tel_format', $tel_format);
-        SysConfig::get()->setValue('footer', $_POST['footer']);
-        SysConfig::get()->setValue('news_num_articles', $num_articles);
-        SysConfig::get()->setValue('news_default_date_setting', $def_date);
-        SysConfig::get()->setValue('news_show_author', $show_author);
-        SysConfig::get()->setValue('news_show_edit_time', $show_edit);
-        SysConfig::get()->setValue('news_default_publish_value', $def_pub_val);
-        SysConfig::get()->setValue('contacts_display_mode', $_POST['contacts_display_mode']);
+        SysConfig::get()->setValue('site_name', FormUtil::post('site_name', FILTER_SANITIZE_STRING));
+        SysConfig::get()->setValue('site_url', FormUtil::post('site_url', FILTER_SANITIZE_URL));
+        SysConfig::get()->setValue('admin_email', FormUtil::post('admin_email', FILTER_SANITIZE_EMAIL));
+        SysConfig::get()->setValue('comment', FormUtil::post('site_desc', FILTER_SANITIZE_STRING));
+        SysConfig::get()->setValue('site_active', FormUtil::postCheckbox('active'));
+        SysConfig::get()->setValue('cookie_name', FormUtil::post('cookie_name', FILTER_SANITIZE_STRING));
+        SysConfig::get()->setValue('cookie_path', FormUtil::post('cookie_path', FILTER_SANITIZE_STRING));
+        SysConfig::get()->setValue('password_expire', FormUtil::post('password_expire', FILTER_SANITIZE_NUMBER_INT));
+        SysConfig::get()->setValue('time_format', FormUtil::post('time_format', FILTER_SANITIZE_STRING));
+        SysConfig::get()->setValue('tel_format', FormUtil::post('tel_format', FILTER_SANITIZE_STRING));
+        SysConfig::get()->setValue('footer', FormUtil::post('footer', FILTER_UNSAFE_RAW));
+        SysConfig::get()->setValue('news_num_articles', FormUtil::post('num_articles', FILTER_SANITIZE_NUMBER_INT));
+        SysConfig::get()->setValue('news_default_date_setting', FormUtil::post('date', FILTER_SANITIZE_NUMBER_INT));
+        SysConfig::get()->setValue('news_show_author', FormUtil::postCheckbox('author'));
+        SysConfig::get()->setValue('news_show_edit_time', FormUtil::postCheckbox('etime'));
+        SysConfig::get()->setValue('news_default_publish_value', FormUtil::post('default_publish_value', FILTER_SANITIZE_NUMBER_INT));
+        SysConfig::get()->setValue('contacts_display_mode', FormUtil::post('contacts_display_mode', FILTER_SANITIZE_STRING));
         echo 'Successfully edited site information.<br />'."\n";
         Log::addMessage('Updated site information.');
     } catch (\Exception $ex) {
@@ -128,5 +111,3 @@ $form->add_submit('submit', 'Save Configuration');
 $tab_content['config'] .= $form;
 $tab['config'] = $tab_layout->add_tab('Configuration', $tab_content['config']);
 echo $tab_layout;
-
-?>

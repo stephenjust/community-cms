@@ -21,7 +21,8 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-if ($_GET['action'] == 'new_log') {
+$action = FormUtil::get('action');
+if ($action == 'new_log') {
     try {
         if (!acl::get()->check_permission('log_post_custom_message')) {
             throw new \Exception('You are not authorized to post custom log messages.'); 

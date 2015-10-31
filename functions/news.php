@@ -348,28 +348,17 @@ function copy_article($article,$new_location)
 
 // ----------------------------------------------------------------------------
 
-function save_priorities($form_array) 
+function save_priorities(array $priorities)
 {
-    global $db;
-
-    if (!is_array($form_array)) {
-        return false;
-    }
-    foreach($form_array AS $key => $value) {
-        if (preg_match('/^pri\-/', $key)) {
-            $key = str_replace('pri-', '', $key);
-            $pri_save_query = 'UPDATE `'.NEWS_TABLE.'`
-				SET `priority` = '.(int)$value.'
-				WHERE `id` = '.(int)$key;
-            $pri_save_handle = $db->sql_query($pri_save_query);
-            if ($db->error[$pri_save_handle] === 1) {
-                return false;
-            }
+    try {
+        foreach($priorities AS $key => $value) {
+            $query = 'UPDATE `'.NEWS_TABLE.'` '
+                . 'SET `priority` = :priority '
+                . 'WHERE `id` = :id';
+            DBConn::get()->query($query, [':priority' => $value, ':id' => $key]);
         }
-        unset($key);
-        unset($value);
-        unset($pri_save_query);
-        unset($pri_save_handle);
+    } catch (Exceptions\DBException $ex) {
+        return false;
     }
     return true;
 }
