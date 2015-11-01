@@ -13,6 +13,7 @@ if (@SECURITY != 1) {
 if(!preg_match('#^[\/\\\\\.]+$#',ROOT)) {
     die ('Invalid ROOT value.');
 }
+require_once(ROOT.'functions/error.php');
 require_once(ROOT.'functions/main.php');
 require_once(ROOT.'includes/constants.php');
 require_once(ROOT.'includes/db/db.php');

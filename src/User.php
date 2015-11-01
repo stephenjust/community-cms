@@ -142,6 +142,27 @@ class User
     }
 
     /**
+     * Get a user by their username
+     * @param string $username
+     * @return \CommunityCMS\User
+     * @throws UserException
+     */
+    public static function getByUsername($username)
+    {
+        $query = 'SELECT `id` FROM `'.USER_TABLE.'` WHERE `username` = :username';
+
+        try {
+            $result = DBConn::get()->query($query, [':username' => $username], DBConn::FETCH);
+            if (!$result) {
+                return null;
+            }
+            return new User($result['id']);
+        } catch (Exceptions\DBException $ex) {
+            throw new UserException("Failed to load user.", $ex);
+        }
+    }
+
+    /**
      * Get all users
      * @return \CommunityCMS\User
      * @throws UserException
@@ -320,6 +341,18 @@ class User
             $this->pass_change_date = $new_time;
         } catch (Exceptions\DBException $ex) {
             throw new UserException("Failed to set password creation time.", $ex);
+        }
+    }
+
+    public function setLoginTime($time)
+    {
+        $query = 'UPDATE `'.USER_TABLE.'` '
+            . 'SET `lastlogin` = :last_login WHERE `id` = :id';
+        try {
+            DBConn::get()->query($query, [':last_login' => $time, ':id' => $this->getId()]);
+            return true;
+        } catch (Exceptions\DBException $ex) {
+            return false;
         }
     }
 }
