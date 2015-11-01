@@ -5,29 +5,6 @@ if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
 }
 
-/**
- * checkbox - Convert between the checkbox response, and boolean, or from boolean to HTML
- * @param mixed $var     current state
- * @param int   $reverse Switch from form response -> boolean to boolean -> HTML code
- * @return mixed
- */
-function checkbox($var,$reverse = 0) 
-{
-    // Interperet form information
-    if ($reverse == 0) {
-        if ($var == "on") {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-    // Turn boolean into input parameter
-    if ($var == 1) {
-        return 'checked';
-    } else {
-        return null;
-    }
-}
 
 function dynamic_article_link_list($page = 0) 
 {

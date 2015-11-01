@@ -28,8 +28,8 @@ $page_id = FormUtil::get('id', FILTER_VALIDATE_INT, null,
 $action = FormUtil::get('action');
 
 if ($action == 'new') {
-    $show_title = (isset($_POST['show_title'])) ? (bool)checkbox($_POST['show_title']) : false;
-    $show_menu = (isset($_POST['menu'])) ? (bool)checkbox($_POST['menu']) : false;
+    $show_title = FormUtil::postCheckbox('show_title');
+    $show_menu = FormUtil::postCheckbox('menu');
     try {
         PageManager::create(
             $_POST['title'],
@@ -96,8 +96,8 @@ case 'editsave':
     $title = addslashes($_POST['title']);
     $meta_desc = addslashes($_POST['meta_desc']);
     $parent = (int)$_POST['parent'];
-    $menu = (isset($_POST['hidden'])) ? checkbox($_POST['hidden']) : 0;
-    $show_title = (isset($_POST['show_title'])) ? checkbox($_POST['show_title']) : 0;
+    $menu = FormUtil::postCheckbox('hidden');
+    $show_title = FormUtil::postCheckbox('show_title');
     $blocks_left = addslashes($_POST['blocks_left']);
     $blocks_right = addslashes($_POST['blocks_right']);
     $save_query = 'UPDATE ' . PAGE_TABLE . "
@@ -159,8 +159,8 @@ if ($action == 'edit') {
         $tab_content['edit'] .= 'Failed to load page data.';
     } else {
         $edit_page = $db->sql_fetch_assoc($edit_page_handle);
-        $show_title = checkbox($edit_page['show_title'], 1);
-        $hidden = checkbox($edit_page['menu'], 1);
+        $show_title = ($edit_page['show_title']) ? "checked" : null;
+        $hidden = ($edit_page['menu']) ? "checked" : null;
         $tab_content['edit'] .= '<form method="POST" action="admin.php?module=page&action=editsave">
 			<table class="admintable">
 			<input type="hidden" name="id" id="adm_page" value="'.$page_id.'" />';

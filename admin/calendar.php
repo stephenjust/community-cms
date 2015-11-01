@@ -141,10 +141,12 @@ case 'save_settings':
 // ----------------------------------------------------------------------------
 
 if (!isset($month)) {
-    $month = FormUtil::get('month', FILTER_VALIDATE_INT, null, FormUtil::post('month', FILTER_VALIDATE_INT, null, date('m')));
+    $month = FormUtil::get('month', FILTER_VALIDATE_INT, null,
+        FormUtil::post('month', FILTER_VALIDATE_INT, null, date('m')));
 }
 if (!isset($year)) {
-    $year = FormUtil::get('year', FILTER_VALIDATE_INT, null, FormUtil::post('year', FILTER_VALIDATE_INT, null, date('Y')));
+    $year = FormUtil::get('year', FILTER_VALIDATE_INT, null,
+        FormUtil::post('year', FILTER_VALIDATE_INT, null, date('Y')));
 }
 
 $tab_layout = new Tabs;
@@ -153,7 +155,7 @@ $months = array('January','February','March','April','May','June','July',
     'August','September','October','November','December');
 $monthcount = 1; 
 while ($monthcount <= 12) {
-    if (FormUtil::post('month') == $monthcount) {
+    if ($month == $monthcount) {
         $tab_content['manage'] .= "<option value='".$monthcount."' selected >"
         .$months[$monthcount-1]."</option>"; // Need [$monthcount-1] as arrays start at 0.
         $monthcount++;

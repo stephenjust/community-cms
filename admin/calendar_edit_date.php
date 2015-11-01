@@ -21,11 +21,6 @@ if (!acl::get()->check_permission('adm_calendar_edit_date')) {
 switch (FormUtil::get('action')) {
 case 'edit':
     try {
-        // Format date for insertion...
-        if (!isset($_POST['category_check'])) { $_POST['category_check'] = null; 
-        }
-        if (!isset($_POST['location_check'])) { $_POST['location_check'] = null; 
-        }
         $event_date = (isset($_POST['date'])) ? $_POST['date'] : date('d/m/Y');
         if (!preg_match('#^[0-1]?[0-9]/[0-3]?[0-9]/[1-2][0-9]{3}$#i', $event_date)) {
             throw new \Exception('Invalid date. Must be formatted DD/MM/YYYY'); 
@@ -36,8 +31,8 @@ case 'edit':
         $day = $event_date_parts[1];
         $start_time = StringUtils::parseTime($_POST['stime']);
         $end_time = StringUtils::parseTime($_POST['etime']);
-        $cat_hide = checkbox($_POST['category_check']);
-        $loc_hide = checkbox($_POST['location_check']);
+        $cat_hide = FormUtil::postCheckbox('category_check');
+        $loc_hide = FormUtil::postCheckbox('location_check');
         if (!$start_time || !$end_time || $start_time > $end_time) {
             throw new \Exception('You did not fill out one or more of the times properly. Please fix the problem and resubmit.'); 
         }
