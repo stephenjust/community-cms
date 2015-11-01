@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2014 Stephen Just
+ * @copyright Copyright (C) 2007-2015 Stephen Just
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
@@ -16,30 +16,23 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 acl::get()->require_permission('adm_page_message');
 
-// Get current page ID
-if (!isset($_POST['page']) && !isset($_GET['page'])) {
-    $page_id = SysConfig::get()->getValue('home');
-} elseif (!isset($_POST['page']) && isset($_GET['page'])) {
-    $page_id = (int)$_GET['page'];
-    unset($_GET['page']);
-} else {
-    $page_id = (int)$_POST['page'];
-    unset($_POST['page']);
-}
+$page_id = FormUtil::get('page', FILTER_VALIDATE_INT, null,
+    FormUtil::post('page', FILTER_VALIDATE_INT, null,
+        SysConfig::get()->getValue('home')));
 
 try {
-    switch ($_GET['action']) {
+    switch (FormUtil::get('action')) {
     default: 
         break;
 
     case 'delete':
-        $pm = new PageMessage($_GET['id']);
+        $pm = new PageMessage(FormUtil::get('id'));
         $pm->delete();
         echo 'Successfully deleted page message.<br />';
         break;
         
     case 'create':
-        PageMessage::create($page_id, $_POST['text']);
+        PageMessage::create($page_id, FormUtil::post('text', FILTER_UNSAFE_RAW));
         echo 'Successfully created page message.<br />';
         break;
     }

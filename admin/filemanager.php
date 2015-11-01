@@ -22,7 +22,7 @@ if (!acl::get()->check_permission('adm_filemanager')) {
 }
 
 try {
-    switch ($_GET['action']) {
+    switch (FormUtil::get('action')) {
     default: 
         break;
 
@@ -45,11 +45,11 @@ try {
 
      // Save folder property
     case 'save_folder_prop':
-        File::setDirProperty($_GET['dir'], $_GET['prop'], $_GET['value']);
+        File::setDirProperty(FormUtil::get('dir'), FormUtil::get('prop'), FormUtil::get('value'));
         echo 'Saved folder properties.<br />';
         break;
     case 'save_cat':
-        File::setDirProperty($_GET['dir'], 'category', $_POST['category']);
+        File::setDirProperty(FormUtil::get('dir'), 'category', FormUtil::post('category'));
         echo 'Saved folder category.<br />';
         break;
     }
@@ -62,12 +62,12 @@ catch (\Exception $e) {
 // ----------------------------------------------------------------------------
 
 // Upload file
-if (isset($_GET['upload'])) {
+if (FormUtil::get('upload')) {
     try {
-        if (!isset($_POST['path'])) {
+        if (FormUtil::post('path') === null) {
             throw new \Exception('No path was given. This may occur if the uploaded file is too big.'); 
         }
-        echo File::upload($_POST['path']);
+        echo File::upload(FormUtil::post('path'));
     }
     catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
@@ -75,14 +75,14 @@ if (isset($_GET['upload'])) {
 }
 
 // Delete files
-if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
-    if (!isset($_GET['file']) && !isset($_GET['path'])) {
+if (FormUtil::get('action') == 'delete' && FormUtil::get('upload') === null) {
+    if (FormUtil::get('file') === null && FormUtil::get('path') === null) {
         echo 'No file was specified to delete.<br />';
     } else {
         try {
-            $file = new File($_GET['path'].$_GET['file']);
+            $file = new File(FormUtil::get('path').FormUtil::get('file'));
             $file->delete();
-            echo 'Suucessfully deleted "'.$_GET['file'].'".<br />';
+            echo 'Suucessfully deleted "'.FormUtil::get('file').'".<br />';
         } catch (FileException $e) {
             echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
         }
@@ -92,13 +92,13 @@ if ($_GET['action'] == 'delete' && !isset($_GET['upload'])) {
 // ----------------------------------------------------------------------------
 
 $tab_layout = new Tabs;
-if ($_GET['action'] == 'edit') {
+if (FormUtil::get('action') == 'edit') {
     $tab_content['edit'] = null;
-    $path = $db->sql_escape_string($_GET['path'].$_GET['file']);
+    $path = $db->sql_escape_string(FormUtil::get('path').FormUtil::get('file'));
     $file = new File($path);
 
     $form = new Form;
-    $form->set_target('admin.php?module=filemanager&action=saveinfo&path='.$_GET['path']);
+    $form->set_target('admin.php?module=filemanager&action=saveinfo&path='.FormUtil::get('path'));
     $form->set_method('post');
     $form->add_hidden('path', $path);
     $form->add_textbox('label', 'Label', $file->getInfo()['label']);
@@ -107,8 +107,8 @@ if ($_GET['action'] == 'edit') {
     $tab_layout->add_tab('Edit File Properties', $tab_content['edit']);
 }
 if (!isset($_POST['folder_list']) && !isset($_POST['path'])) {
-    if (isset($_GET['path'])) {
-        $_POST['folder_list'] = $_GET['path'];
+    if (FormUtil::get('path')) {
+        $_POST['folder_list'] = FormUtil::get('path');
     } else {
         $_POST['folder_list'] = null;
     }

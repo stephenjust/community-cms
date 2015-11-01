@@ -26,12 +26,7 @@ initialize('ajax');
 acl::get()->require_permission('adm_page_message');
 acl::get()->require_permission('admin_access');
 
-// Get current page ID
-if (!isset($_GET['page'])) {
-    die('<span class="errormessage">No page provided.</span><br />');
-} else {
-    $page_id = (int)$_GET['page'];
-}
+$page_id = FormUtil::get('page');
 
 $messages = PageMessage::getByPage($page_id);
 

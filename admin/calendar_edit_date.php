@@ -18,7 +18,7 @@ if (!acl::get()->check_permission('adm_calendar_edit_date')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 case 'edit':
     try {
         // Format date for insertion...
@@ -64,7 +64,7 @@ case 'edit':
 
 default:
     try {
-        $ev = new CalEvent($_GET['id']);
+        $ev = new CalEvent(FormUtil::get('id'));
         $form = new Form;
         $form->set_method('post');
         $form->set_target('admin.php?module=calendar_edit_date&action=edit');

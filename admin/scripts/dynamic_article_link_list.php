@@ -32,14 +32,10 @@ $current_directory = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'
 
 $referer_dir_root = str_replace('/scripts/tiny_mce/plugins/comcmslink', null, $referer_directory);
 
-$page = (isset($_GET['page'])) ? $_GET['page'] : 0;
-if (!is_numeric($page)) {
-    $page = 0;
-}
+$page = FormUtil::get('page', FILTER_VALIDATE_INT, null, 0);
 
 if($current_directory == $referer_dir_root.'/admin/scripts') {
     echo dynamic_article_link_list($page);
 } else {
     die('Security breach 2.');
 }
-?>

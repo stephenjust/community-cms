@@ -28,9 +28,7 @@ if (!acl::get()->check_permission('adm_news') || !acl::get()->check_permission('
     die ('You do not have the necessary permissions to access this page.');
 }
 
-if (empty($_GET['page'])) { $_GET['page'] = null; 
-}
-$articles = Content::getByPage($_GET['page']);
+$articles = Content::getByPage(FormUtil::get('page'));
 
 $list_rows = array();
 foreach ($articles AS $article) {
@@ -42,14 +40,14 @@ foreach ($articles AS $article) {
         $article_title .= ' (Not published)'; 
     }
     $current_row[] = $article_title;
-    if (!is_numeric($_GET['page'])) {
+    if (!is_numeric(FormUtil::get('page'))) {
         $current_row[] = $article->getPageTitle(); 
     }
 
     if (acl::get()->check_permission('news_delete')) {
         $current_row[] = '<a href="javascript:confirm_delete(\'?'
         .'module=news&amp;action=delete&amp;id='
-        .$article->getID().'&amp;page='.$_GET['page'].'\')">'
+        .$article->getID().'&amp;page='.FormUtil::get('page').'\')">'
         .'<img src="./admin/templates/default/images/delete.png" alt="Delete" width="16px" '
         .'height="16px" border="0px" /></a>';
     }
@@ -60,10 +58,10 @@ foreach ($articles AS $article) {
     }
     if (acl::get()->check_permission('news_publish')) {
         if ($article->published()) {
-            $current_row[] = '<a href="?module=news&amp;action=unpublish&amp;id='.$article->getID().'&amp;page='.$_GET['page'].'">
+            $current_row[] = '<a href="?module=news&amp;action=unpublish&amp;id='.$article->getID().'&amp;page='.FormUtil::get('page').'">
 				<img src="./admin/templates/default/images/unpublish.png" alt="Unpublish" width="16px" height="16px" border="0px" /></a>';
         } else {
-            $current_row[] = '<a href="?module=news&amp;action=publish&amp;id='.$article->getID().'&amp;page='.$_GET['page'].'">
+            $current_row[] = '<a href="?module=news&amp;action=publish&amp;id='.$article->getID().'&amp;page='.FormUtil::get('page').'">
 				<img src="./admin/templates/default/images/publish.png" alt="Publish" width="16px" height="16px" border="0px" /></a>';
         }
     }
@@ -74,7 +72,7 @@ foreach ($articles AS $article) {
 $label_array = array('','ID','Title');
 
 // Add "Page" column when in "All Pages" view
-if (!is_numeric($_GET['page'])) {
+if (!is_numeric(FormUtil::get('page'))) {
     $label_array[] = 'Page';
 }
 
@@ -89,7 +87,7 @@ if (acl::get()->check_permission('news_publish')) {
 }
 $label_array[] = 'Priority';
 $content = TableComponent::create($label_array, $list_rows);
-$content .= '<input type="hidden" name="page" value="'.$_GET['page'].'" />';
+$content .= '<input type="hidden" name="page" value="'.FormUtil::get('page').'" />';
 
 echo $content;
 

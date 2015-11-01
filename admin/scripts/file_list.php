@@ -25,11 +25,8 @@ initialize('ajax');
 if (!acl::get()->check_permission('adm_filemanager') || !acl::get()->check_permission('admin_access')) {
     die ('You do not have the necessary permissions to access this page.');
 }
-if (!isset($_GET['directory'])) {
-    die ('No page ID provided to script.');
-} else {
-    $dir = File::replaceSpecialChars($_GET['directory']);
-}
+
+$dir = File::replaceSpecialChars(FormUtil::get('directory', FILTER_DEFAULT, null, ''));
 
 // Show special info about newsicons folder
 if (File::getDirProperty($dir, 'icons_only')) {

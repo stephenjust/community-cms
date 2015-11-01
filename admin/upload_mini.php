@@ -31,12 +31,12 @@ $template->root = ROOT;
 $template->dialog_title = 'Upload File';
 $content = null;
 // Check if the form has been submitted.
-if(isset($_GET['upload'])) {
+if(FormUtil::get('upload')) {
     try {
-        if (isset($_POST['thumbs'])) {
-            $content .= File::upload($_POST['path'], true);
+        if (FormUtil::post('thumbs') !== null) {
+            $content .= File::upload(FormUtil::post('path'), true);
         } else {
-            $content .= File::upload($_POST['path']);
+            $content .= File::upload(FormUtil::post('path'));
         }
     }
     catch (\Exception $e) {
@@ -46,8 +46,9 @@ if(isset($_GET['upload'])) {
 // Display upload form and upload location selector.
 try {
     $upload_box = new FileUploadBoxComponent();
-    if (isset($_GET['dir'])) {
-        $upload_box->setDirectory($_GET['dir']);
+    $dir = FormUtil::get('dir');
+    if ($dir !== null) {
+        $upload_box->setDirectory($dir);
         $upload_box->addExtraField("thumbs", 1);
     } else {
         $upload_box->setShowDirectories(true);

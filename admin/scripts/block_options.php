@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2015 Stephen Just
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
@@ -39,6 +39,5 @@ if($current_directory != $referer_directory.'/admin/scripts') {
 
 
 initialize();
-echo block_edit_form($_GET['blocktype']);
+echo block_edit_form(FormUtil::get('blocktype'));
 clean_up();
-?>

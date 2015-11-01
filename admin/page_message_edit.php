@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2014 Stephen Just
+ * @copyright Copyright (C) 2007-2015 Stephen Just
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.admin
  */
@@ -16,21 +16,18 @@ if (@SECURITY != 1 || @ADMIN != 1) {
 
 acl::get()->require_permission('adm_page_message_edit');
 
-if ($_GET['action'] == 'edit') {
+if (FormUtil::get('action') == 'edit') {
     try {
-        $pm = new PageMessage($_POST['id']);
-        $pm->edit($_POST['page_id'], $_POST['update_content']);
+        $pm = new PageMessage(FormUtil::post('id'));
+        $pm->edit(FormUtil::post('page_id'), FormUtil::post('update_content', FILTER_UNSAFE_RAW));
         echo 'Successfully edited page message.<br />';
-        echo HTML::link('admin.php?module=page_message&page='.$_POST['page_id'], 'Back');
+        echo HTML::link('admin.php?module=page_message&page='.FormUtil::post('page_id'), 'Back');
     }
     catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
 } else {
-    if (!isset($_GET['id']) || $_GET['id'] == '') {
-        $_GET['id'] = 0;
-    }
-    $page_message = new PageMessage($_GET['id']);
+    $page_message = new PageMessage(FormUtil::get('id', FILTER_VALIDATE_INT));
     echo '<form method="POST" action="admin.php?module=page_message_edit&action=edit">
 		<h1>Edit Page Message</h1>
 		<table class="admintable">

@@ -25,10 +25,10 @@ if (!acl::get()->check_permission('adm_user')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 case 'delete':
     try {
-        $u = new User($_GET['id']);
+        $u = new User(FormUtil::get('id'));
         $u->delete();
         echo 'Successfully deleted user.<br />';
     }

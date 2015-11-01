@@ -36,11 +36,7 @@ $current_directory = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'
 $referer_dir_root = str_replace('/scripts/tiny_mce/plugins/comcmslink', null, $referer_directory);
 
 if($current_directory == $referer_dir_root.'/admin/scripts') {
-    if ($referer_dir_root != $referer_directory) {
-        echo dynamic_file_list($_GET['newfolder']);
-    } else {
-        echo dynamic_file_list($_GET['newfolder']);
-    }
+    echo dynamic_file_list(FormUtil::get('newfolder'));
 } else {
     die('Security breach 2.');
 }

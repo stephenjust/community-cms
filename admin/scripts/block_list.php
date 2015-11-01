@@ -43,35 +43,21 @@ if(!$current_directory == $referer_directory.'/admin/scripts') {
 }
 
 initialize();
-if (!isset($_GET['page'])) {
-    die('Error: Page not set.<br />');
-}
-if (!isset($_GET['left']) || !isset($_GET['right'])) {
-    die('Error: Blocks not set.<br />');
-}
-
-if ($_GET['left'] == '0' || $_GET['right'] == '0') {
-    if (DEBUG === 1) { echo 'Loading initial values...<br />'; 
-    }
-    $blocks_query = 'SELECT `blocks_left`,`blocks_right` FROM `'.PAGE_TABLE.'`
-		WHERE `id` = '.(int)$_GET['page'].' LIMIT 1';
-    $blocks_handle = $db->sql_query($blocks_query);
-    if ($db->error[$blocks_handle] === 1) {
-        die ('Failed to load block information.');
-    }
-    if ($db->sql_num_rows($blocks_handle) != 1) {
+if (FormUtil::get('left') == '0' || FormUtil::get('right') == '0') {
+    $query = "SELECT `blocks_left`, `blocks_right` "
+        . "FROM `".PAGE_TABLE."` "
+        . "WHERE `id` = :id";
+    $result = DBConn::get()->query($query, [":id" => FormUtil::get('page')], DBConn::FETCH);
+    if (!$result) {
         die ('The selected page does not exist.');
     }
-    $blocks_result = $db->sql_fetch_assoc($blocks_handle);
-    $blocks_left = $blocks_result['blocks_left'];
-    $blocks_right = $blocks_result['blocks_right'];
-    unset($blocks_query);
-    unset($blocks_handle);
-    unset($blocks_result);
+    $blocks_left = $result['blocks_left'];
+    $blocks_right = $result['blocks_right'];
 } else {
-    $blocks_left = $_GET['left'];
-    $blocks_right = $_GET['right'];
+    $blocks_left = FormUtil::get('left');
+    $blocks_right = FormUtil::get('right');
 }
+
 // Get list of blocks available to add
 $block_list_query = 'SELECT * FROM `'.BLOCK_TABLE.'`';
 $block_list_handle = $db->sql_query($block_list_query);

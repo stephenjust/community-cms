@@ -27,14 +27,8 @@ initialize('ajax');
 if (!acl::get()->check_permission('adm_newsletter') || !acl::get()->check_permission('admin_access')) {
     die ('You do not have the necessary permissions to access this page.');
 }
-if (!isset($_GET['page'])) {
-    die ('No page ID provided to script.');
-} else {
-    $page_id = $_GET['page'];
-    if ($page_id != '*') {
-        $page_id = (int)$page_id;
-    }
-}
+
+$page_id = FormUtil::get('page', FILTER_DEFAULT, null, '*');
 
 try {
     if (!is_numeric($page_id)) {

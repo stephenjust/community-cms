@@ -29,25 +29,17 @@ if (!acl::get()->check_permission('adm_contacts_manage') || !acl::get()->check_p
     die ('You do not have the necessary permissions to access this page.');
 }
 
-if (!isset($_GET['page'])) {
+$page_id = FormUtil::get('page', FILTER_VALIDATE_INT);
+if ($page_id === null) {
     die ('No page ID provided to script.');
-} else {
-    $page_id = $_GET['page'];
-    $page_id = (int)$page_id;
 }
 
-if (!isset($_GET['action'])) {
-    $_GET['action'] = null;
-}
-if (!isset($_GET['id'])) {
-    $_GET['id'] = 0;
-}
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 default:
     break;
 case 'add':
     try {
-        $c = new Contact($_GET['id']);
+        $c = new Contact(FormUtil::get('id'));
         $c->addToList($page_id);
         $content .= 'Successfully added contact to the list.<br />';
     } catch (ContactException $e) {
@@ -56,7 +48,7 @@ case 'add':
     break;
 case 'remove':
     try {
-        $c = new Contact($_GET['id']);
+        $c = new Contact(FormUtil::get('id'));
         $c->deleteFromList($page_id);
         $content .= 'Successfully removed contact from the list.<br />';
     } catch (ContactException $e) {
@@ -65,8 +57,8 @@ case 'remove':
     break;
 case 'order':
     try {
-        $c = new Contact($_GET['id']);
-        $c->setListOrder($_GET['order'], $page_id);
+        $c = new Contact(FormUtil::get('id'));
+        $c->setListOrder(FormUtil::get('order'), $page_id);
         $content .= 'Saved list order.<br />';
     } catch (ContactException $e) {
         $content .= '<span class="errormessage">'.$e->getMessage().'</span><br />';
@@ -119,8 +111,7 @@ foreach ($all_contacts as $contact) {
     $cl_add_select->addOption($contact->getId(), $contact->getName());
 }
 $content .= $cl_add_select;
-$contact_ids = implode(',', $contact_ids);
-$content .= '<input type="hidden" id="cl_contact_ids" value="'.$contact_ids.'" name="contact_ids" />'."\n";
+$content .= '<input type="hidden" id="cl_contact_ids" value="'.implode(',', $contact_ids).'" name="contact_ids" />'."\n";
 $content .= '<input type="button" value="Add" onClick="update_cl_manager_add()" /><br />'."\n";
 
 echo $content;

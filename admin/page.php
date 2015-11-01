@@ -23,9 +23,11 @@ if (!acl::get()->check_permission('adm_page')) {
     throw new AdminException('You do not have the necessary permissions to access this module.'); 
 }
 
-$page_id = (isset($_GET['id']) && (int)$_GET['id'] != 0) ? (int)$_GET['id'] : null;
-$page_id = (isset($_POST['id']) && (int)$_POST['id'] != 0 && $page_id == null) ? (int)$_POST['id'] : $page_id;
-if ($_GET['action'] == 'new') {
+$page_id = FormUtil::get('id', FILTER_VALIDATE_INT, null,
+    FormUtil::post('id', FILTER_VALIDATE_INT, null, 0));
+$action = FormUtil::get('action');
+
+if ($action == 'new') {
     $show_title = (isset($_POST['show_title'])) ? (bool)checkbox($_POST['show_title']) : false;
     $show_menu = (isset($_POST['menu'])) ? (bool)checkbox($_POST['menu']) : false;
     try {
@@ -46,7 +48,7 @@ if ($_GET['action'] == 'new') {
 
 // ----------------------------------------------------------------------------
 
-if ($_GET['action'] == 'new_link') {
+if ($action == 'new_link') {
     try {
         PageManager::createLink($_POST['title'], $_POST['url'], $_POST['parent']);
         echo 'Successfully created link to external page.<br />'."\n";
@@ -58,7 +60,7 @@ if ($_GET['action'] == 'new_link') {
 
 // ----------------------------------------------------------------------------
 
-switch ($_GET['action']) {
+switch ($action) {
 default:
     break;
 
@@ -73,11 +75,6 @@ case 'home':
     break; // case 'home'
 
 case 'del':
-    if ((int)$_GET['id'] == $_GET['id']) {
-        $page_id = (int)$_GET['id'];
-    } else {
-        break;
-    }
     try {
         $pg = new PageManager($page_id);
         $pg->delete();
@@ -87,24 +84,14 @@ case 'del':
     }
     break; // case 'del'
 
-case 'hide':
-    // FIXME: Implement page hiding
-    break;
-
-case 'unhide':
-    // FIXME: Implement page hiding
-    break;
-
 // ----------------------------------------------------------------------------
 
 case 'editsave':
     // TODO: Make sure you have permission to edit this page
     $set_text_id = null;
-    if(!isset($_POST['text_id'])) {
-        $_POST['text_id'] = null;
-    }
-    if (!PageUtil::textIdExists($_POST['text_id']) && $_POST['text_id'] != null) {
-        $set_text_id = "`text_id`='{$_POST['text_id']}', ";
+    $text_id = FormUtil::post('text_id');
+    if (!PageUtil::textIdExists($text_id) && $text_id != null) {
+        $set_text_id = "`text_id`='{$text_id}', ";
     }
     $title = addslashes($_POST['title']);
     $meta_desc = addslashes($_POST['meta_desc']);
@@ -135,7 +122,7 @@ case 'editsave':
 PageUtil::cleanOrder();
 
 // Move page down if requested.
-if ($_GET['action'] == 'move_down') {
+if ($action == 'move_down') {
     try {
         $pm = new PageManager($page_id);
         $pm->moveDown();
@@ -146,7 +133,7 @@ if ($_GET['action'] == 'move_down') {
 }
 
 // Move page up if requested.
-if ($_GET['action'] == 'move_up') {
+if ($action == 'move_up') {
     try {
         $pm = new PageManager($page_id);
         $pm->moveUp();
@@ -162,7 +149,7 @@ $tab_layout = new Tabs;
 
 // ----------------------------------------------------------------------------
 
-if ($_GET['action'] == 'edit') {
+if ($action == 'edit') {
     // TODO: Make sure you have permission to edit this page group
     $tab_content['edit'] = null;
     $edit_page_query = 'SELECT * FROM ' . PAGE_TABLE . "

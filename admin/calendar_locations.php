@@ -97,5 +97,5 @@ class AdminCalLocationModule extends AdminModule
 }
 
 $module = new AdminCalLocationModule();
-$module->onLoadEvent($_GET['action'], $_POST);
+$module->onLoadEvent(FormUtil::get('action'), $_POST);
 $module->display();

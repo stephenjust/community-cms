@@ -18,6 +18,7 @@ class User
 {
     private $user_id;
     private $username;
+    private $password_hash;
     private $realname;
     private $title;
     private $phone;
@@ -35,7 +36,7 @@ class User
      */
     public function __construct($user_id)
     {
-        $query = 'SELECT `type`, `username`, `password_date`, `realname`,
+        $query = 'SELECT `type`, `username`, `password`, `password_date`, `realname`,
 			`title`, `groups`, `phone`, `email`, `address`, `lastlogin`
 			FROM `'.USER_TABLE."`
 			WHERE `id` = :id";
@@ -52,6 +53,7 @@ class User
         // Fill class attributes
         $this->user_id = $user_id;
         $this->username = $result['username'];
+        $this->password_hash = $result['password'];
         $this->realname = $result['realname'];
         $this->title = $result['title'];
         $this->phone = $result['phone'];
@@ -108,8 +110,7 @@ class User
         }
         $real_name = $db->sql_escape_string("$l_name, $f_name");
         $title = $db->sql_escape_string($title);
-        $groups = (is_array($groups))
-        ? implode(',', $groups) : null;
+        $groups = (is_array($groups)) ? implode(',', $groups) : null;
         $address = $db->sql_escape_string($address);
 
         $time = time();
@@ -236,6 +237,53 @@ class User
         return $this->realname;
     }
 
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getPhone()
+    {
+        return StringUtils::formatTelephoneNumber($this->phone);
+    }
+
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    public function isPasswordCorrect($password)
+    {
+        return md5($password) == $this->password_hash;
+    }
+
+    public function changePassword($old_password, $new_password)
+    {
+        if (!$this->isPasswordCorrect($old_password)) {
+            throw new UserException("Incorrect password.");
+        }
+        if (!Validate::password($new_password)) {
+            throw new UserException("New password is not long enough.");
+        }
+        $query = "UPDATE `".USER_TABLE."` SET `password` = :password WHERE `id` = :id";
+        try {
+            DBConn::get()->query($query, [':password' => md5($new_password), ':id' => $this->user_id]);
+            $this->setPasswordChangeDate();
+        } catch (Exceptions\DBException $ex) {
+            throw new UserException('Failed to change password.');
+        }
+    }
+
     /**
      * Check if password is past its expiration date
      * @return boolean
@@ -264,9 +312,9 @@ class User
     private function setPasswordChangeDate()
     {
         $new_time = time();
-        $query = 'UPDATE `'.USER_TABLE."`
-			SET `password_date` = :new_time
-			WHERE `id` = :id";
+        $query = 'UPDATE `'.USER_TABLE."` "
+            . "SET `password_date` = :new_time "
+            . "WHERE `id` = :id";
         try {
             DBConn::get()->query($query, [":id" => $this->user_id, ":new_time" => $new_time], DBConn::NOTHING);
             $this->pass_change_date = $new_time;

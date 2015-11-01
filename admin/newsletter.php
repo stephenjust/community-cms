@@ -20,7 +20,7 @@ if (!acl::get()->check_permission('adm_newsletter')) {
 
 $tab_layout = new Tabs;
 
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 default:
 
     break;
@@ -40,7 +40,7 @@ case 'new':
     break;
 case 'delete':
     try {
-        $nl = new Newsletter($_GET['id']);
+        $nl = new Newsletter(FormUtil::get('id'));
         $nl->delete();
         echo 'Successfully deleted newsletter entry.<br />'."\n";
     }
@@ -49,11 +49,7 @@ case 'delete':
     }
     break;
 case 'edit':
-    if (!is_numeric($_GET['id'])) {
-        echo 'Invalid newsletter ID.<br />'."\n";
-        break;
-    }
-    $newsletter = new Newsletter($_GET['id']);
+    $newsletter = new Newsletter(FormUtil::get('id'));
     $edit_form = new Form;
     $edit_form->set_target('admin.php?module=newsletter&action=editsave');
     $edit_form->set_method('post');
@@ -96,23 +92,18 @@ case 'editsave':
     break;
 }
 
-if (isset($_GET['page'])) {
-    $_POST['page'] = $_GET['page'];
-}
+$page = FormUtil::get('page', FILTER_DEFAULT, null, FormUtil::post('page', FILTER_DEFAULT, null, '*'));
 
-if (!isset($_POST['page'])) {
-    $_POST['page'] = '*';
-}
 $page_list = new UISelectPageList([
     "id" => "adm_newsletter_page_list",
     "pagetype" => 2,
     "onChange" => "update_newsletter_list('-')"]);
 $page_list->addOption("*", "All Pages");
-$page_list->setChecked($_POST['page']);
+$page_list->setChecked($page);
 $tab_content['manage'] = $page_list;
 
 $tab_content['manage'] .= '<div id="adm_newsletter_list">Loading...</div>';
-$tab_content['manage'] .= '<script type="text/javascript">update_newsletter_list(\''.$_POST['page'].'\');</script>';
+$tab_content['manage'] .= '<script type="text/javascript">update_newsletter_list(\''.$page.'\');</script>';
 $tab_layout->add_tab('Manage Newsletters', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------

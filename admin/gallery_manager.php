@@ -89,62 +89,37 @@ function gallery_photo_manager($gallery_id)
 $tab_layout = new Tabs;
 
 // Process actions
-switch ($_GET['action']) {
+switch (FormUtil::get('action')) {
 case 'create':
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $image_dir = $_POST['image_dir'];
     try {
-        $gallery = new Gallery(false, $title, $description, $image_dir);
+        $gallery = new Gallery(
+            false,
+            FormUtil::post('title'),
+            FormUtil::post('description', FILTER_UNSAFE_RAW),
+            FormUtil::post('image_dir'));
         echo 'Successfully created gallery.<br />'."\n";
-        $_GET['action'] = 'edit';
-        $_POST['gallery'] = $gallery->getID();
-        unset($gallery);
     }
     catch (GalleryException $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
-    }
-
-case 'edit':
-    // Set gallery id for future use
-    if (isset($_GET['id']) && !isset($_POST['gallery'])) {
-        $_POST['gallery'] = $_GET['id'];
-        unset($_GET['id']);
-    }
-    if (!isset($_POST['gallery'])) {
-        echo '<span class="errormessage">No gallery selected.</span><br />'."\n";
         break;
     }
-    if (!isset($_GET['edit'])) {
-        $_GET['edit'] = null; 
+    // Fall through to edit
+case 'edit':
+    if (!isset($gallery)) {
+        $gallery = new Gallery(FormUtil::get('id'));
     }
 
-    $gallery_id = (int)$_POST['gallery'];
-    unset($_POST['gallery']);
-
     try {
-        // Get gallery information
-        $gallery = new Gallery($gallery_id);
-            
         // Save image caption
-        if ($_GET['edit'] === 'desc') {
-            if (!isset($_POST['desc'])
-                || !isset($_POST['file_name'])
-            ) {
-                throw new GalleryException('Unable to set image caption.'); 
-            }
+        if (FormUtil::get('edit') === 'desc') {
             $gallery->setImageCaption(
-                $gallery->getImageID($_POST['file_name']),
-                $_POST['desc'], $_POST['file_name']
+                $gallery->getImageID(FormUtil::post('file_name')),
+                FormUtil::post('desc', FILTER_UNSAFE_RAW), FormUtil::post('file_name')
             );
             echo 'Successfully edited image caption.<br />'."\n";
-        } elseif ($_GET['edit'] === 'del') {
-            if (!isset($_POST['file_name'])) {
-                throw new GalleryException('Unable to delete image.'); 
-            }
-
+        } elseif (FormUtil::get('edit') === 'del') {
             // Delete image caption if it exists
-            $gallery->deleteImage($_POST['file_name']);
+            $gallery->deleteImage(FormUtil::post('file_name'));
             echo 'Successfully deleted image.<br />'."\n";
         }
     }
@@ -163,12 +138,8 @@ case 'edit':
     break;
 
 case 'delete':
-    if (!isset($_GET['id'])) {
-        echo 'No gallery selected.<br />'."\n";
-        break;
-    }
     try {
-        $gallery = new Gallery($_GET['id']);
+        $gallery = new Gallery(FormUtil::get('id'));
         $gallery->delete();
         unset($gallery);
         echo 'Successfully deleted gallery.<br />'."\n";
