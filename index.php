@@ -34,7 +34,7 @@ if (SysConfig::get()->getValue('site_active') == 0) {
     err_page(12);
 }
 
-$page_id = FormUtil::get('id', FILTER_VALIDATE_INT, null, SysConfig::get()->getValue('home'));
+$page_id = FormUtil::get('id', FILTER_DEFAULT, null, SysConfig::get()->getValue('home'));
 $page_text_id = FormUtil::get('page');
 
 // Load page information.

@@ -35,10 +35,7 @@ case "month":
 // EVENT VIEW
 case "event":
     $page_content = null;
-    if (!isset($_GET['a'])) {
-        $_GET['a'] = null;
-    }
-    $event_id = (int)$_GET['a'];
+    $event_id = FormUtil::get('a', FILTER_VALIDATE_INT);
     $event = new calendar_event;
     $event->get_event($event_id);
     $page_content .= $event;

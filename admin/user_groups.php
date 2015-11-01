@@ -33,84 +33,64 @@ function perm_list($group = 0)
     return $return;
 }
 
-if (!acl::get()->check_permission('adm_user_groups')) {
-    throw new AdminException('You do not have the necessary permissions to access this module.'); 
-}
+acl::get()->require_permission('adm_user_groups');
 
-if ($_GET['action'] == 'delete') {
-    try {
-        $group = new UserGroup($_GET['id']);
-        $group->delete();
-        echo 'Successfully deleted group.<br />';
-    } catch (\Exception $ex) {
-        echo '<span class="errormessage">'.$ex->getMessage().'</span><br />';
-    }
-}
+$tab_layout = new Tabs;
 
-if ($_GET['action'] == 'new') {
-    if (acl::get()->check_permission('group_create')) {
+switch (FormUtil::get('action')) {
+    case 'delete':
         try {
-            UserGroup::create($_POST['group_name'], $_POST['label_format']);
-            echo 'Created group \''.$_POST['group_name'].'\'.<br />';
+            $group = new UserGroup(FormUtil::get('id'));
+            $group->delete();
+            echo 'Successfully deleted group.<br />';
         } catch (\Exception $ex) {
             echo '<span class="errormessage">'.$ex->getMessage().'</span><br />';
         }
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-if ($_GET['action'] == 'permsave') {
-    $set_perm_error = 0;
-    if (!isset($_POST['id']) || !isset($_POST['var_list'])) {
-        echo '<span class="errormessage">Failed to update permissions.</span><br />';
-    } else {
-        $var_list = explode(',', $_POST['var_list']);
-        $id = (int)$_POST['id'];
-        unset($_POST['id']);
-        foreach ($var_list as $form_var) {
-            if (!isset($_POST[$form_var])) {
-                $form_var_value = null;
-            } else {
-                $form_var_value = $_POST[$form_var];
+        break;
+    case 'new':
+        if (acl::get()->check_permission('group_create')) {
+            try {
+                UserGroup::create($_POST['group_name'], $_POST['label_format']);
+                echo 'Created group \''.$_POST['group_name'].'\'.<br />';
+            } catch (\Exception $ex) {
+                echo '<span class="errormessage">'.$ex->getMessage().'</span><br />';
             }
-            $new_setting = checkbox($form_var_value);
+        }
+        break;
+    case 'permsave':
+        $set_perm_error = 0;
+        if (!FormUtil::post('id') || !FormUtil::post('var_list')) {
+            echo '<span class="errormessage">Failed to update permissions.</span><br />';
+            break;
+        }
+        $var_list = explode(',', FormUtil::post('var_list'));
+        $id = FormUtil::post('id');
+        foreach ($var_list as $form_var) {
+            $new_setting = FormUtil::postCheckbox($form_var);
             if (array_key_exists($form_var, acl::get()->permission_list)) {
                 $set_perm = acl::get()->set_permission($form_var, $new_setting, $id, true);
                 if (!$set_perm) {
                     $set_perm_error = 1;
                 }
-                unset($set_perm);
             } else {
                 Debug::get()->addMessage('Permission \''.$form_var.'\' does not exist', true);
             }
         }
-        unset($form_var);
-        unset($form_var_value);
         if ($set_perm_error == 0) {
             echo 'Updated permissions for group.<br />';
             Log::addMessage('Updated group permissions');
         } else {
             echo '<span class="errormessage">Failed to update permissions.</span><br />';
         }
-    }
-    // in_array($string,$array)
-}
+        break;
+    case 'perm':
+        $tab_content['permission'] = '<form method="post" action="admin.php?module=user_groups&action=permsave">
+            <input type="hidden" name="id" value="'.FormUtil::get('id').'" />';
+        $tab_content['permission'] .= perm_list(FormUtil::get('id'));
+        $tab_content['permission'] .= '<input type="submit" value="Save" /></form>';
 
-// ----------------------------------------------------------------------------
-
-$tab_layout = new Tabs;
-
-// ----------------------------------------------------------------------------
-
-if ($_GET['action'] == 'perm') {
-    $tab_content['permission'] = '<form method="post" action="admin.php?module=user_groups&action=permsave">
-		<input type="hidden" name="id" value="'.(int)$_GET['id'].'" />';
-    $tab_content['permission'] .= perm_list((int)$_GET['id']);
-    $tab_content['permission'] .= '<input type="submit" value="Save" /></form>';
-    unset($permission);
-
-    $tab_layout->add_tab('Manage Group Permissions', $tab_content['permission']);
+        $tab_layout->add_tab('Manage Group Permissions', $tab_content['permission']);
+        break;
 }
 
 // ----------------------------------------------------------------------------

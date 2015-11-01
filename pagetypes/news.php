@@ -2,9 +2,14 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2014 Stephen Just
- * @author    stephenjust@users.sourceforge.net
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
  * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2007-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
  */
 
 namespace CommunityCMS;
@@ -115,25 +120,24 @@ $return = null;
 // (Un)publish articles on request
 if (acl::get()->check_permission('news_publish')) {
     include_once ROOT . 'functions/news.php';
-    if (isset($_GET['publish']) || isset($_GET['unpublish'])) {
-        if (isset($_GET['publish'])) {
-            $publish = (int)$_GET['publish'];
-            news_publish($publish, true);
-        } elseif (isset($_GET['unpublish'])) {
-            $publish = (int)$_GET['unpublish'];
-            news_publish($publish, false);
-        }
+    if (FormUtil::get('publish')) {
+        news_publish(FormUtil::get('publish'), true);
+    }
+    if (FormUtil::get('unpublish')) {
+        news_publish(FormUtil::get('unpublish'), false);
     }
 }
 
 // Handle first article offset value
-$start = (empty($_GET['start'])) ? 0 : $_GET['start'];
+$start = FormUtil::get('start', FILTER_VALIDATE_INT, null, 0);
 
 // Check for display mode
-if (isset($_GET['showarticle'])) {
+$showarticle = FormUtil::get('showarticle', FILTER_VALIDATE_INT, null);
+$article = FormUtil::get('article', FILTER_VALIDATE_INT, null);
+if ($showarticle) {
     Page::$showtitle = false;
     try {
-        $c = new Content($_GET['showarticle']);
+        $c = new Content($showarticle);
         if (!$c->published() && !acl::get()->check_permission('news_fe_show_unpublished')) {
             throw new ContentNotFoundException();
         }
@@ -148,11 +152,11 @@ if (isset($_GET['showarticle'])) {
         return $return.' ';
     }
     $article_list = array($c);
-    $content_id_array = array($_GET['showarticle']);
+    $content_id_array = array($showarticle);
     Page::$title = $c->getTitle();
-} elseif (isset($_GET['article'])) {
+} elseif ($article) {
     try {
-        $c = new Content($_GET['article']);
+        $c = new Content($article);
         if (!$c->published() && !acl::get()->check_permission('news_fe_show_unpublished')) {
             throw new ContentNotFoundException();
         }
@@ -167,7 +171,7 @@ if (isset($_GET['showarticle'])) {
         return $return.' ';
     }
     $content_id_array = Content::getContentIDsByPage(Page::$id, !acl::get()->check_permission('news_fe_show_unpublished'));
-    $article_pos = array_search($_GET['article'], $content_id_array);
+    $article_pos = array_search($article, $content_id_array);
     $start = floor($article_pos / SysConfig::get()->getValue('news_num_articles')) * SysConfig::get()->getValue('news_num_articles');
     $article_list = get_article_list(Page::$id, $start);
 } else {

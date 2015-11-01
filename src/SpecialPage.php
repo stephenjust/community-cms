@@ -38,7 +38,7 @@ class SpecialPage extends Page
     private function setupChangePasswordPage() 
     {
         $this->title = 'Change Password';
-        if (isset($_GET['action']) && $_GET['action'] == 'save') {
+        if (FormUtil::get('action') == 'save') {
             $this->savePassword();
         } else {
             $this->changePasswordPrompt();
@@ -47,49 +47,24 @@ class SpecialPage extends Page
 
     private function savePassword() 
     {
-        if (empty($_POST['cp_user']) || empty($_POST['cp_oldpass']) 
-            || empty($_POST['cp_newpass']) || empty($_POST['cp_confpass'])
-        ) {
-            $this->content .= '<strong>You failed to fill in one or more fields.</strong>';
-            $this->changePasswordPrompt();
-            return;
-        }
-        if ($_POST['cp_newpass'] != $_POST['cp_confpass']) {
+        if (FormUtil::post('cp_newpass') != FormUtil::post('cp_confpass')) {
             $this->content .= '<strong>Your new password does not match.</strong>';
             $this->changePasswordPrompt();
             return;
         }
-        if ($_POST['cp_newpass'] == $_POST['cp_oldpass']) {
+        if (FormUtil::post('cp_newpass') == FormUtil::post('cp_oldpass')) {
             $this->content .= '<strong>Your password did not change.</strong>';
             $this->changePasswordPrompt();
             return;
         }
-        if (!$check_oldpass = DBConn::get()->query(
-            sprintf(
-                'SELECT `id` FROM `%s` '
-                . 'WHERE `username` = :username '
-                . 'AND `password` = :password', USER_TABLE
-            ),
-            array(':username' => $_POST['cp_user'],
-            ':password' => md5($_POST['cp_oldpass'])),
-            DBConn::FETCH
-        )) {
+        $user = new User(FormUtil::post('cp_user'));
+        if (!$user->isPassword(FormUtil::post('cp_oldpass'))) {
             $this->content .= '<strong>Your username and password combination is invalid.</strong>';
             $this->changePasswordPrompt();
             return;
         }
-        DBConn::get()->query(
-            sprintf(
-                'UPDATE `%s` '
-                . 'SET `password` = :password, '
-                . '`password_date` = :password_date '
-                . 'WHERE `id` = :user_id', USER_TABLE
-            ),
-            array(':password' => md5($_POST['cp_newpass']),
-            ':password_date' => time(),
-            ':user_id' => $check_oldpass['id'])
-        );
-        $this->content = '<strong>Changed your password. You may now log in.</strong>';
+        $user->setPassword(FormUtil::post('cp_oldpass'), FormUtil::post('cp_newpass'));
+        $this->content .= '<strong>Changed your password. You may now log in.</strong>';
         UserSession::get()->logout();
     }
     
