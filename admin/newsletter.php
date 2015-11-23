@@ -90,6 +90,27 @@ case 'editsave':
         break;
     }
     break;
+
+case 'multi':
+    $selected_items = FormUtil::postArray('selected', FILTER_VALIDATE_INT);
+    $target_page = FormUtil::post('bulk_op_page', FILTER_VALIDATE_INT);
+    if (!PageUtil::exists($target_page)) {
+        break;
+    }
+
+    $edit_query = 'UPDATE `'.NEWSLETTER_TABLE.'`
+                SET `page` = :page WHERE `id` = :id';
+    foreach ($selected_items as $item) {
+        $n = new Newsletter($item);
+        try {
+            DBConn::get()->query($edit_query, [":page" => $target_page, ":id" => $item], DBConn::NOTHING);
+            Log::addMessage("Moved newsletter '{$n->getLabel()}'");
+        } catch (Exceptions\DBException $ex) {
+            echo 'Failed to edit newsletter entry.<br />'."\n";
+            break;
+        }
+    }
+    break;
 }
 
 $page = FormUtil::get('page', FILTER_DEFAULT, null, FormUtil::post('page', FILTER_DEFAULT, null, '*'));
@@ -101,9 +122,18 @@ $page_list = new UISelectPageList([
 $page_list->addOption("*", "All Pages");
 $page_list->setChecked($page);
 $tab_content['manage'] = $page_list;
+$tab_content['manage'] .= '<form method="post" action="admin.php?module=newsletter&amp;action=multi">';
 
 $tab_content['manage'] .= '<div id="adm_newsletter_list">Loading...</div>';
 $tab_content['manage'] .= '<script type="text/javascript">update_newsletter_list(\''.$page.'\');</script>';
+
+$bulk_op_page_list = new UISelectPageList([
+    "id" => "adm_newsletter_bulk_op_page_list",
+    "name" => "bulk_op_page",
+    "pagetype" => 2
+]);
+$bulk_op_submit = '<input type="submit" value="Submit" />';
+$tab_content['manage'] .= "Move selected items to: $bulk_op_page_list $bulk_op_submit";
 $tab_layout->add_tab('Manage Newsletters', $tab_content['manage']);
 
 // ----------------------------------------------------------------------------

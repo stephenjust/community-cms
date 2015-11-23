@@ -41,6 +41,7 @@ try {
     $list_rows = array();
     foreach ($newsletters AS $newsletter) {
         $current_row = array();
+        $current_row[] = '<input type="checkbox" name="selected[]" value="'.$newsletter->getId().'" />';
         $current_row[] = $newsletter->getLabel();
         $current_row[] = $newsletter->getMonthString();
         $current_row[] = $newsletter->getYear();
@@ -57,7 +58,7 @@ try {
         $list_rows[] = $current_row;
     }
     
-    $label_list = array('Label','Month','Year');
+    $label_list = array('', 'Label','Month','Year');
     if (acl::get()->check_permission('newsletter_delete')) {
         $label_list[] = 'Delete';
     }
