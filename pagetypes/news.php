@@ -14,7 +14,7 @@
 
 namespace CommunityCMS;
 
-use CommunityCMS\Component\EditBarComponent;
+use CommunityCMS\Component\ContentComponent;
 use CommunityCMS\Exceptions\ContentNotFoundException;
 
 /**
@@ -34,85 +34,6 @@ function get_article_list($page, $start = 1)
     } else {
         return Content::getPublishedByPage($page, $start, (int)SysConfig::get()->getValue('news_num_articles'));
     }
-}
-
-function format_content(Content $content) 
-{
-    assert($content->getID());
-    
-    $template_article = new Template;
-    $template_article->loadFile('article');
-    if (!empty($content->getImage())) {
-        $im_file = new File($content->getImage());
-        $im_info = $im_file->getInfo();
-        $template_article->article_image = HTML::image('./files/'.$content->getImage(), $im_info['label'], 'news_image');
-    } else {
-        $template_article->article_image = null;
-    }
-
-    if ($content->isDateVisible()) {
-        $template_article->full_date_start = null;
-        $template_article->full_date_end = null;
-    } else {
-        $template_article->replaceRange('full_date', null);
-    }
-
-    // Edit bar permission check
-    $editbar = new EditBarComponent;
-    $editbar->setLabel('Article');
-    $editbar->addControl(
-        'admin.php?module=news&action=edit&amp;id='.$content->getID(),
-        'edit.png',
-        'Edit',
-        array('news_edit','adm_news','admin_access')
-    );
-
-    // Get current url
-    $query_string = preg_replace('/\&(amp;)?(login|(un)?publish)=[0-9]+/i', null, $_SERVER['QUERY_STRING']);
-    if ($content->published()) {
-        // Currently published
-        $editbar->addControl(
-            'index.php?'.$query_string.'&unpublish='.$content->getID(),
-            'unpublish.png', 'Unpublish', array('news_publish')
-        );
-    } else {
-        // Currently unpublished
-        $editbar->addControl(
-            'index.php?'.$query_string.'&publish='.$content->getID(),
-            'publish.png', 'Publish', array('news_publish')
-        );
-    }
-    $template_article->edit_bar = $editbar->render();
-
-    $article_title = $content->getTitle();
-    if (!$content->published()) {
-        $article_title .= ' <span class="news_not_published_label">NOT PUBLISHED</span>';
-    }
-
-    $date = strtotime($content->getDate());
-    $template_article->article_title = '<a href="index.php?showarticle='.$content->getID().'">'.$article_title.'</a>';
-    $template_article->article_title_nolink = $content->getTitle();
-    $template_article->article_content = $content->getContent();
-    $template_article->article_id = $content->getID();
-    $template_article->article_date_month = date('m', $date);
-    $template_article->article_date_month_text = strtoupper(date('M', $date));
-    $template_article->article_date_day = date('j', $date);
-    $template_article->article_date_year = date('Y', $date);
-    $template_article->article_date = date('d-m-Y', $date);
-    if (SysConfig::get()->getValue('news_show_author') == 0) {
-        $template_article->replaceRange('article_author', null);
-    } else {
-        $template_article->article_author = $content->getAuthor();
-    }
-
-    // Remove info div entirely if author and date are hidden
-    if (!SysConfig::get()->getValue('news_show_author') && !$content->isDateVisible()) {
-        $template_article->replaceRange('article_details', null);
-    } else {
-        $template_article->article_details_start = null;
-        $template_article->article_details_end = null;
-    }
-    return (string) $template_article;
 }
 
 $return = null;
@@ -185,7 +106,10 @@ if (count($article_list) == 0) {
 }
 
 foreach ($article_list AS $article_record) {
-    $return .= format_content($article_record)."\n\n";
+
+    $cc = new ContentComponent();
+    $cc->setContent($article_record);
+    $return .= $cc->render()."\n\n";
 }
 
 $pagination = new Component\PaginationComponent();
