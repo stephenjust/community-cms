@@ -62,6 +62,39 @@ class PageManager
         }
     }
 
+    public static function edit($id, $title, $parent, $text_id, $meta_desc,
+        $show_title, $show_menu, $blocks_left, $blocks_right)
+    {
+        $set_text_id = "";
+        if (!PageUtil::textIdExists($text_id) && $text_id != null) {
+            $set_text_id = "`text_id` = :text_id, ";
+        }
+        $query = "UPDATE `".PAGE_TABLE."` "
+            . "SET {$set_text_id} `title` = :title, `meta_desc` = :meta_desc, "
+            . "`menu`= :show_menu, `show_title` = :show_title, "
+            . "`parent` = :parent, `blocks_left` = :blocks_left,"
+            . "`blocks_right` = :blocks_right WHERE `id` = :id";
+        $params = [
+            ":title" => $title,
+            ":meta_desc" => $meta_desc,
+            ":show_menu" => $show_menu,
+            ":show_title" => $show_title,
+            ":parent" => $parent,
+            ":blocks_left" => $blocks_left,
+            ":blocks_right" => $blocks_right,
+            ":id" => $id
+        ];
+        if ($set_text_id) {
+            $params[":text_id"] = $text_id;
+        }
+        try {
+            DBConn::get()->query($query, $params);
+            Log::addMessage("Updated information for page '$title'");
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception("Failed to edit page: {$ex->getMessage()}", $ex->getCode(), $ex);
+        }
+    }
+
     private static function validatePageParams(&$title, &$parent, &$type, &$text_id, &$meta_desc)
     {
         // Validate text_id

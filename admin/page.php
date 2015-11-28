@@ -27,28 +27,28 @@ $page_id = FormUtil::get('id', FILTER_VALIDATE_INT, null,
     FormUtil::post('id', FILTER_VALIDATE_INT, null, 0));
 $action = FormUtil::get('action');
 
-if ($action == 'new') {
-    $show_title = FormUtil::postCheckbox('show_title');
-    $show_menu = FormUtil::postCheckbox('menu');
+switch ($action) {
+default:
+    break;
+
+case 'new':
     try {
         PageManager::create(
-            $_POST['title'],
-            $_POST['parent'],
-            $_POST['type'],
-            $_POST['text_id'],
-            $_POST['meta_desc'],
-            $show_title,
-            $show_menu);
+            FormUtil::post('title'),
+            FormUtil::post('parent'),
+            FormUtil::post('type'),
+            FormUtil::post('text_id'),
+            FormUtil::post('meta_desc'),
+            FormUtil::postCheckbox('show_title'),
+            FormUtil::postCheckbox('menu'));
         echo 'Successfully added page.<br />'."\n";
     }
     catch (\Exception $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />'."\n";
     }
-}
+    break;
 
-// ----------------------------------------------------------------------------
-
-if ($action == 'new_link') {
+case 'new_link':
     try {
         PageManager::createLink($_POST['title'], $_POST['url'], $_POST['parent']);
         echo 'Successfully created link to external page.<br />'."\n";
@@ -56,12 +56,6 @@ if ($action == 'new_link') {
     } catch (\Exception $ex) {
         echo '<span class="errormessage">Failed to create link: '.$ex->getMessage().'</span><br />';
     }
-} // IF 'new_link'
-
-// ----------------------------------------------------------------------------
-
-switch ($action) {
-default:
     break;
 
 case 'home':
@@ -82,37 +76,25 @@ case 'del':
     } catch (PageException $e) {
         echo '<span class="errormessage">'.$e->getMessage().'</span><br />';
     }
-    break; // case 'del'
-
-// ----------------------------------------------------------------------------
+    break;
 
 case 'editsave':
-    // TODO: Make sure you have permission to edit this page
-    $set_text_id = null;
-    $text_id = FormUtil::post('text_id');
-    if (!PageUtil::textIdExists($text_id) && $text_id != null) {
-        $set_text_id = "`text_id`='{$text_id}', ";
+    try {
+        PageManager::edit(
+            $page_id,
+            FormUtil::post('title'),
+            FormUtil::post('parent'),
+            FormUtil::post('text_id'),
+            FormUtil::post('meta_desc'),
+            FormUtil::postCheckbox('show_title'),
+            FormUtil::postCheckbox('hidden'),
+            FormUtil::post('blocks_left'),
+            FormUtil::post('blocks_right')
+        );
+        echo 'Updated page information.<br />'."\n";
+    } catch (\Exception $ex) {
+        echo '<span class="errormessage">'.$ex->getMessage().'</span><br />'."\n";
     }
-    $title = addslashes($_POST['title']);
-    $meta_desc = addslashes($_POST['meta_desc']);
-    $parent = (int)$_POST['parent'];
-    $menu = FormUtil::postCheckbox('hidden');
-    $show_title = FormUtil::postCheckbox('show_title');
-    $blocks_left = addslashes($_POST['blocks_left']);
-    $blocks_right = addslashes($_POST['blocks_right']);
-    $save_query = 'UPDATE ' . PAGE_TABLE . "
-			SET {$set_text_id}`title`='$title', `meta_desc`='$meta_desc',
-			`menu`=$menu, `show_title`=$show_title, `parent`=$parent,
-			`blocks_left`='$blocks_left',
-			`blocks_right`='$blocks_right'
-			WHERE id = $page_id";
-    $save_handle = $db->sql_query($save_query);
-    if ($db->error[$save_handle] === 1) {
-        echo '<span class="errormessage">Failed to edit page.</span><br />'."\n";
-        break;
-    }
-    echo 'Updated page information.<br />'."\n";
-    Log::addMessage('Updated information for page \''.stripslashes($title).'\'');
     break;
 }
 
