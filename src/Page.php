@@ -15,6 +15,7 @@
 namespace CommunityCMS;
 
 use CommunityCMS\Component\EditBarComponent;
+use CommunityCMS\Component\LoginBoxComponent;
 use CommunityCMS\Component\PageNavComponent;
 use CommunityCMS\Component\Block\BlockComponent;
 
@@ -466,16 +467,18 @@ class Page
     */
     public static function displayLoginBox()
     {
-        $tpl = new Tpl();
-        $tpl->assign("login_target", "index.php?{$_SERVER['QUERY_STRING']}&amp;login=1");
-        $tpl->assign("logout_target", "index.php?{$_SERVER['QUERY_STRING']}&amp;login=2");
-        $tpl->assign("change_password_target", "index.php?id=change_password");
-        $tpl->assign("admin_target", "admin.php");
-        $tpl->assign("admin_status", acl::get()->check_permission("admin_access"));
-        $tpl->assign("user", (isset($_SESSION['name'])) ? $_SESSION['name'] : "Anonymous");
         if (!UserSession::get()->logged_in) {
-            return $tpl->fetch("login.tpl");
+            $c = new LoginBoxComponent();
+            $c->setLoginTarget("index.php?{$_SERVER['QUERY_STRING']}&amp;login=1");
+            return $c->render();
         } else {
+            $tpl = new Tpl();
+            $tpl->assign("login_target", "index.php?{$_SERVER['QUERY_STRING']}&amp;login=1");
+            $tpl->assign("logout_target", "index.php?{$_SERVER['QUERY_STRING']}&amp;login=2");
+            $tpl->assign("change_password_target", "index.php?id=change_password");
+            $tpl->assign("admin_target", "admin.php");
+            $tpl->assign("admin_status", acl::get()->check_permission("admin_access"));
+            $tpl->assign("user", (isset($_SESSION['name'])) ? $_SESSION['name'] : "Anonymous");
             return $tpl->fetch("userbox.tpl");
         }
     }
