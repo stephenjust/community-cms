@@ -1,5 +1,19 @@
 <?php
+/**
+ * Community CMS
+ *
+ * PHP Version 5
+ *
+ * @category  CommunityCMS
+ * @package   CommunityCMS.main
+ * @author    Stephen Just <stephenjust@gmail.com>
+ * @copyright 2010-2015 Stephen Just
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, 2.0
+ * @link      https://github.com/stephenjust/community-cms
+ */
+
 namespace CommunityCMS;
+
 // Security Check
 if (@SECURITY != 1) {
     die ('You cannot access this page directly.');
@@ -8,49 +22,30 @@ if (@SECURITY != 1) {
 
 function dynamic_article_link_list($page = 0) 
 {
-    global $db;
-
     $return = '<table style="border: 0px;">'."\n";
 
-    $page_query = 'SELECT `id`,`title` FROM `'.PAGE_TABLE.'`
-		WHERE `type` = 1 ORDER BY `title` ASC';
-    $page_handle = $db->sql_query($page_query);
-    if ($db->sql_num_rows($page_handle) == 0) {
-        $return .= '<tr><td>There are no news pages available.</td></tr></table>';
-        return $return;
-    }
-    $pagelist = '<select name="page" id="page_select" onChange="update_dynamic_article_link_list();">';
-    for ($i = 1; $i <= $db->sql_num_rows($page_handle); $i++) {
-        $page_result = $db->sql_fetch_assoc($page_handle);
-        $pagelist .= '<option value="'.$page_result['id'].'"';
-        if ($page == $page_result['id']) {
-            $pagelist .= ' selected';
-        }
-        $pagelist .= '>'.stripslashes($page_result['title']).'</option>';
-    }
-    $no_page_selected = null;
-    if ($page == 0) {
-        $no_page_selected = ' selected';
-    }
-    $pagelist .= '<option value="0"'.$no_page_selected.'>No Page</option>';
-    $pagelist .= '</select>';
-    $return .= '<tr><td>Article Page</td><td>'.$pagelist.'</td></tr>';
+    $page_list = new UISelectPageList(
+        [
+            'name' => 'page',
+            'id' => 'page_select',
+            'pagetype' => 1,
+            'onChange' => 'update_dynamic_article_link_list();'
+        ]);
+    $page_list->addOption(0, "No Page");
+    $page_list->setChecked($page);
 
-    $article_query = 'SELECT `id`,`name` FROM `'.NEWS_TABLE.'`
-		WHERE `page` = '.$page.' ORDER BY `name` ASC';
-    $article_handle = $db->sql_query($article_query);
-    if ($db->sql_num_rows($article_handle) == 0) {
+    $return .= '<tr><td>Article Page</td><td>'.$page_list.'</td></tr>';
+
+    $articles = Content::getByPage($page);
+    if (count($articles) == 0) {
         $return .= '<tr><td colspan="2">There are no articles on this page.</td></tr></table>';
         return $return;
     }
-    $articlelist = '<select name="article" id="article_select">';
-    for ($i = 1; $i <= $db->sql_num_rows($article_handle); $i++) {
-        $article_result = $db->sql_fetch_assoc($article_handle);
-        $articlelist .= '<option value="'.$article_result['id'].'">'.
-        stripslashes($article_result['name']).'</option>';
+    $article_list = new UISelect(['name' => 'article', 'id' => 'article_select']);
+    foreach ($articles as $article) {
+        $article_list->addOption($article->getID(), $article->getTitle());
     }
-    $articlelist .= '</select>';
-    $return .= '<tr><td>Article Title</td><td>'.$articlelist.'</td></tr>';
+    $return .= '<tr><td>Article Title</td><td>'.$article_list.'</td></tr>';
     $return .= '</table>';
     return $return;
 }
