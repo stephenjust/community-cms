@@ -73,10 +73,9 @@ CREATE TABLE `<!-- $DB_PREFIX$ -->content` (
 
 CREATE TABLE `<!-- $DB_PREFIX$ -->dir_props` (
 	`directory` VARCHAR(255) NOT NULL,
-	`property` VARCHAR(255) NOT NULL,
-	`value` int(4) UNSIGNED default 0,
-	INDEX (`directory`),
-	INDEX (`property`)
+	`property` VARCHAR(50) NOT NULL,
+	`value` VARCHAR(50) NOT NULL,
+	PRIMARY KEY (`directory`,`property`)
 ) ENGINE=MYISAM CHARACTER SET=utf8;
 
 CREATE TABLE IF NOT EXISTS `<!-- $DB_PREFIX$ -->files` (

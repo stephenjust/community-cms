@@ -82,13 +82,10 @@ class File
     
     /**
      * Delete the open file
-     * @global db $db
      * @throws FileException
      */
     public function delete() 
     {
-        global $db;
-
         if (!acl::get()->check_permission('file_delete')) {
             throw new FileException('You are not allowed to delete files.'); 
         }
@@ -103,14 +100,13 @@ class File
         }
 
         // Attempt to delete database record associated with file
-        $query = 'DELETE FROM `'.FILE_TABLE.'`
-			WHERE `path` = \''.$db->sql_escape_string(File::$file_root.$this->file).'\'';
-        $handle = $db->sql_query($query);
-        if($db->error[$handle] === 1) {
-            throw new FileException('Failed to delete database record for file "'.$this->file.'".'); 
+        $query = "DELETE FROM `".FILE_TABLE."` WHERE `path` = :path";
+        try {
+            DBConn::get()->query($query, [":path" => File::$file_root.$this->file]);
+            Log::addMessage("Deleted file '{$this->file}'");
+        } catch (Exceptions\DBException $ex) {
+            throw new FileException("Failed to delete database record for file '{$this->file}'.");
         }
-
-        Log::addMessage('Deleted file \''.$this->file.'\'');
 
         $this->file = false;
     }
@@ -210,26 +206,22 @@ class File
     
     /**
      * Get properties for open file
-     * @global db $db
      * @return array
      * @throws FileException
      */
     public function getInfo() 
     {
-        global $db;
-        
-        $path = $db->sql_escape_string($this->file);
-        $query = 'SELECT * FROM `'.FILE_TABLE."`
-			WHERE `path` = '$path' LIMIT 1";
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new FileException('Failed to read file info.'); 
+        $query = 'SELECT * FROM `'.FILE_TABLE."` WHERE `path` = :path LIMIT 1";
+        try {
+            $result = DBConn::get()->query($query, [":path" => $this->file], DBConn::FETCH);
+        } catch (Exceptions\DBException $ex) {
+            throw new FileException('Failed to read file info.');
         }
 
-        if ($db->sql_num_rows($handle) != 1) {
-            $file_info['label'] = null;
+        if (!$result) {
+            $file_info = ["label" => null];
         } else {
-            $file_info = $db->sql_fetch_assoc($handle);
+            $file_info = $result;
         }
         return $file_info;
     }
@@ -241,13 +233,11 @@ class File
      */
     public static function replaceSpecialChars($filename) 
     {
-        $filename = str_replace(array('\'','"','?','+','@','#','$','!','^',' ','\\'), '_', $filename);
-        return $filename;
+        return str_replace(array('\'','"','?','+','@','#','$','!','^',' ','\\'), '_', $filename);
     }
-    
+
     /**
      * Set directory property
-     * @global db $db
      * @param string $directory
      * @param string $property
      * @param string $value
@@ -255,68 +245,37 @@ class File
      */
     public static function setDirProperty($directory, $property, $value) 
     {
-        global $db;
-
-        $directory = $db->sql_escape_string($directory);
-        $property = $db->sql_escape_string($property);
-        $value = $db->sql_escape_string($value);
-
-        // Check if a value is already set
-        $query = 'SELECT `value`
-			FROM `'.DIR_PROP_TABLE."`
-			WHERE `directory` = '$directory'
-			AND `property` = '$property'
-			LIMIT 1";
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new FileException('Error reading directory properties.'); 
+        $query = "INSERT INTO `".DIR_PROP_TABLE."` "
+            . "(`directory`, `property`, `value`) "
+            . "VALUES "
+            . "(:directory, :property, :value) "
+            . "ON DUPLICATE KEY UPDATE `value` = :value";
+        try {
+            DBConn::get()->query($query,
+                [":directory" => $directory, ":property" => $property, ":value" => $value]);
+            Log::addMessage(sprintf("Set directory property '%s' to '%s' for '%s'",
+                $property, $value, $directory));
+        } catch (Exceptions\DBException $ex) {
+            throw new FileException('Failed to set directory property: '.$ex->getMessage());
         }
-
-        if ($db->sql_num_rows($handle) == 0) {
-            $set_query = 'INSERT INTO `'.DIR_PROP_TABLE."`
-				(`directory`,`property`,`value`)
-				VALUES
-				('$directory', '$property', '$value')"; 
-        }
-        else {
-            $set_query = 'UPDATE `'.DIR_PROP_TABLE."`
-				SET `value` = '$value'
-				WHERE `directory` = '$directory'
-				AND `property` = '$property'
-				LIMIT 1"; 
-        }
-        $set_handle = $db->sql_query($set_query);
-        if ($db->error[$set_handle] === 1) {
-            throw new FileException('Failed to set directory property.'); 
-        }
-
-        Log::addMessage(
-            'Set directory property \''.stripslashes($property)
-            .'\' to \''.stripslashes($value).'\' for \''.stripslashes($directory).'\''
-        );
     }
-    
+
     /**
      * Set file information for open file
-     * @global db $db
      * @param array $props
      * @throws FileException
      */
     public function setInfo($props) 
     {
-        global $db;
-
-        $label = $db->sql_escape_string($props['label']);
-        
         $query = 'INSERT INTO `'.FILE_TABLE.'` (`path`, `label`)
-			VALUES (\''.$this->file.'\', \''.$label.'\')
-			ON DUPLICATE KEY UPDATE `label` = \''.$label.'\'';
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new FileException('Failed to set file properties.'); 
+                VALUES (:path, :label)
+                ON DUPLICATE KEY UPDATE `label` = :label';
+        try {
+            DBConn::get()->query($query, [":path" => $this->file, ":label" => $props['label']]);
+            Log::addMessage('Edited file properties for file \''.$this->file.'\'');
+        } catch (Exception $ex) {
+            throw new FileException('Failed to set file properties.');
         }
-        
-        Log::addMessage('Edited file properties for file \''.$this->file.'\'');
     }
 
     /**
