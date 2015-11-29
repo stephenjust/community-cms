@@ -40,7 +40,7 @@ class Log
         try {
             DBConn::get()->query(
                 $query, array(':user_id' => $user,
-                ':action' => $message, ':date' => DATE_TIME, ':ip' => $ip)
+                ':action' => HTML::schars($message), ':date' => DATE_TIME, ':ip' => $ip)
             );
         } catch (Exceptions\DBException $e) {
             return false;
