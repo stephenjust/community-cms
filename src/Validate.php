@@ -32,7 +32,7 @@ class Validate
      */
     public static function name($string)
     {
-        return preg_match('/^[a-z\'\\-\\.]+$/i', $string);
+        return preg_match('/^[a-z\'\\-\\.]*$/i', $string);
     }
 
     /**

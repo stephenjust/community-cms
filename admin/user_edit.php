@@ -42,37 +42,19 @@ if (FormUtil::get('action') == 'edit') {
     } else {
         echo 'Password not changed.<br />';
     }
-    $telephone = addslashes($_POST['telephone']);
-    $email = addslashes($_POST['email']);
-    $title = addslashes($_POST['title']);
-    $groups = (isset($_POST['groups']) && is_array($_POST['groups']))
-    ? implode(',', $_POST['groups']) : null;
-    $error = 0;
-    if (strlen($telephone) <= 11 || !preg_match('/^[0-9\-]+\-[0-9]+\-[0-9]+$/i', $telephone)) {
-        echo 'Your telephone number should include the area code, and should be in the format 555-555-1234 or 1-555-555-1234.<br />';
-        $error = 1;
-    }
-    if (!preg_match('/^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/i', $email)) {
-        echo 'You did not enter a valid email address.<br />';
-        $error = 1;
-    }
-    if ($_POST['surname'] == '' || $_POST['first_name'] == '') {
-        $realname = $_POST['surname'].$_POST['first_name'];
-    } else {
-        $realname = $_POST['surname'].', '.$_POST['first_name'];
-    }
-    if ($error == 0) {
-        $edit_query = 'UPDATE `' . USER_TABLE . '`
-                            SET realname=\''.$realname.'\', title=\''.$title.'\',
-                            groups=\''.$groups.'\', phone=\''.$telephone.'\',
-                            email=\''.$email.'\', address=\''.addslashes($_POST['address']).'\'
-                            WHERE id = '.FormUtil::get('id');
-        $edit_handle = $db->sql_query($edit_query);
-        if($db->error[$edit_handle] === 1) {
-            echo 'Failed to update user information. ';
-        } else {
-            echo 'Successfully updated user information.';
-        }
+    try {
+        User::edit(
+            FormUtil::get('id'),
+            FormUtil::post('first_name'),
+            FormUtil::post('surname'),
+            FormUtil::post('telephone'),
+            FormUtil::post('address'),
+            FormUtil::post('email'),
+            FormUtil::post('title'),
+            FormUtil::postArray('groups'));
+        echo 'Successfully updated user information.';
+    } catch (\Exception $ex) {
+        echo '<span class="errormessage">'.$ex->getMessage().'</span>';
     }
 } else { // IF 'edit'
 

@@ -108,10 +108,8 @@ class User
         if (!Validate::name($l_name) || !Validate::name($f_name)) {
             throw new UserException('Name contains invalid characters.');
         }
-        $real_name = $db->sql_escape_string("$l_name, $f_name");
-        $title = $db->sql_escape_string($title);
+        $real_name = (strlen($f_name) > 0 && strlen($l_name) > 0) ? "$l_name, $f_name" : trim("$l_name $f_name");
         $groups = (is_array($groups)) ? implode(',', $groups) : null;
-        $address = $db->sql_escape_string($address);
 
         $time = time();
 
@@ -138,6 +136,46 @@ class User
             return new User(User::exists($username));
         } catch (Exception $ex) {
             throw new UserException("Failed to create user.", $ex);
+        }
+    }
+
+    public static function edit($id,
+        $f_name = null, $l_name = null, $tel = null,
+        $address = null, $email = null, $title = null, $groups = null)
+    {
+        // Validate input
+        if ($email != null && !Validate::email($email)) {
+            throw new UserException('Email address is invalid.');
+        }
+        if ($tel != null && !Validate::telephone($tel)) {
+            throw new UserException('Telephone number is invalid. Most 10 or 11 digit formats are acceptable.');
+        }
+        $tel = Validate::telephone($tel);
+        if (!Validate::name($l_name) || !Validate::name($f_name)) {
+            throw new UserException('Name contains invalid characters.');
+        }
+        $real_name = (strlen($f_name) > 0 && strlen($l_name) > 0) ? "$l_name, $f_name" : trim("$l_name $f_name");
+        $groups = (is_array($groups)) ? implode(',', $groups) : null;
+
+        $query = 'UPDATE `' . USER_TABLE . '`
+                    SET realname=:real_name, title=:title,
+                    groups=:groups, phone=:tel,
+                    email=:email, address=:address
+                    WHERE id = :id';
+        try {
+            DBConn::get()->query($query,
+                [
+                    ":id" => $id,
+                    ":real_name" => $real_name,
+                    ":title" => $title,
+                    ":groups" => $groups,
+                    ":tel" => $tel,
+                    ":email" => $email,
+                    ":address" => $address
+                ], DBConn::NOTHING);
+            Log::addMessage("Edited user '$real_name'");
+        } catch (Exception $ex) {
+            throw new UserException("Failed to edit user: {$ex->getMessage()}", $ex->getCode(), $ex);
         }
     }
 
