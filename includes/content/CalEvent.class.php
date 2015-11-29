@@ -160,7 +160,7 @@ class CalEvent
             throw new CalEventException("Failed to delete calendar events.", $ex);
         }
     }
-    
+
     /**
      * Create CalEvent instance
      * @param int $id
@@ -169,7 +169,7 @@ class CalEvent
     public function __construct($id) 
     {
         assert(is_numeric($id));
-        
+
         $result = DBConn::get()->query(
             sprintf('SELECT * FROM `%s` WHERE `id` = :id', CALENDAR_TABLE),
             array(':id' => $id), DBConn::FETCH
@@ -213,10 +213,9 @@ class CalEvent
             throw new CalEventException('Failed to delete event.');
         }
     }
-    
+
     /**
      * Edit an event entry
-     * @global db $db
      * @param string  $title
      * @param string  $description
      * @param string  $author
@@ -232,74 +231,64 @@ class CalEvent
      */
     public function edit($title, $description, $author, $start, $end, $category, $category_hide, $location, $location_hide, $image, $hide) 
     {
-        global $db;
         acl::get()->require_permission('acl_calendar_edit_date');
 
-        // Sanitize Inputs
-        $title = $db->sql_escape_string(htmlspecialchars(strip_tags($title)));
-        $description = $db->sql_escape_string(StringUtils::removeComments($description));
-        $author = $db->sql_escape_string(htmlspecialchars(strip_tags($author)));
-        $category = (int) $category;
-        $start = strtotime($start);
-        $end = strtotime($end);
-        $category_hide = ($category_hide == true) ? 1 : 0;
-        $location = $db->sql_escape_string(htmlspecialchars(strip_tags($location)));
-        $location_hide = ($location_hide == true) ? 1 : 0;
-        $image = $db->sql_escape_string(htmlspecialchars(strip_tags($image)));
-        $hide = ($hide === true) ? 1 : 0;
+        CalLocation::save($location);
 
-        CalLocation::save(stripslashes($location));
-
-        // Generate new start/end string
-        $start_t = date('Y-m-d H:i:s', $start);
-        $end_t = date('Y-m-d H:i:s', $end);
-
-        $edit_date_query = 'UPDATE ' . CALENDAR_TABLE . "
-		SET `category`='$category', `category_hide`='$category_hide',
-		`start`='$start_t', `end`='$end_t',
-		`header`='$title', `description`='$description',
-		`location`='$location', `location_hide`='$location_hide',
-		author='$author',image='$image',hidden='$hide' WHERE id = {$this->id} LIMIT 1";
-        $edit_date = $db->sql_query($edit_date_query);
-        if ($db->error[$edit_date] === 1) {
-            throw new CalEventException('An error occurred while updating the event record.'); 
+        $query = "UPDATE `".CALENDAR_TABLE." "
+            . "SET `category` = :category, `category_hide` = :category_hide, "
+            . "`start` = :start, `end` = :end, "
+            . "`header` = :header, `description` = :description, "
+            . "`location` = :location, `location_hide` = :location_hide, "
+            . "`author` = :author, `image` = :image, `hidden` = :hide "
+            . "WHERE `id` = :id LIMIT 1";
+        try {
+            DBConn::get()->query($query, [
+                ":category" => $category,
+                ":category_hide" => $category_hide,
+                ":start" => date('Y-m-d H:i:s', $start),
+                ":end" => date('Y-m-d H:i:s', $end),
+                ":header" => HTML::schars($title),
+                ":description" => StringUtils::removeComments($description),
+                ":location" => HTML::schars($location),
+                ":location_hide" => $location_hide,
+                ":author" => HTML::schars($author),
+                ":image" => HTML::schars($image),
+                ":hidden" => $hide,
+                ":id" => $this->id
+            ], DBConn::NOTHING);
+            Log::addMessage(sprintf("Edited date entry on %s '%s'",
+                date('Y-m-d', $start), $title));
+        } catch (Exceptions\DBException $ex) {
+            throw new CalEventException(
+                'An error occurred while updating the event record: '.$ex->getMessage(), $ex->getCode(), $ex);
         }
-
-        Log::addMessage('Edited date entry on ' . date('Y-m-d', $start) . ' \'' . stripslashes($title) . '\'');
     }
 
     public function getCategoryHide() 
     {
         return $this->category_hidden;
     }
-    
+
     /**
      * Get list of event categories
-     * @global db $db
      * @return array
      * @throws CalEventException
      */
     public static function getCategoryList() 
     {
-        global $db;
-
         $query = 'SELECT `cat_id` AS `id`,`label`
 			FROM `'.CALENDAR_CATEGORY_TABLE.'`
 			ORDER BY `cat_id` ASC';
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle]) {
-            throw new CalEventException('Error reading category list.'); 
+        try {
+            $results = DBConn::get()->query($query, [], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+            throw new CalEventException('Error reading category list.');
         }
-        
-        $categories = array();
-        for ($i = 0; $i < $db->sql_num_rows($handle); $i++) {
-            $result = $db->sql_fetch_assoc($handle);
-            $categories[] = $result;
-        }
-        
-        return $categories;
+
+        return $results;
     }
-    
+
     /**
      * Get category
      * @return string
@@ -309,17 +298,17 @@ class CalEvent
         $cat = new CalCategory($this->category);
         return $cat->getName();
     }
-    
+
     public function getCategoryID() 
     {
         return $this->category;
     }
-    
+
     public function getDescription() 
     {
         return $this->description;
     }
-    
+
     /**
      * Get event end time
      * @return int
@@ -328,17 +317,17 @@ class CalEvent
     {
         return strtotime($this->end_time);
     }
-    
+
     public function getHidden() 
     {
         return !$this->publish;
     }
-    
-    public function getAuthor() 
+
+    public function getAuthor()
     {
         return $this->author;
     }
-    
+
     /**
      * Get ID
      * @return int
@@ -348,7 +337,7 @@ class CalEvent
     {        
         return $this->id;
     }
-    
+
     /**
      * Get event image
      * @return string
@@ -357,7 +346,7 @@ class CalEvent
     {
         return $this->image;
     }
-    
+
     /**
      * Get event location
      * @return string
@@ -366,12 +355,12 @@ class CalEvent
     {
         return HTML::schars($this->location);
     }
-    
+
     public function getLocationHide() 
     {
         return $this->location_hidden;
     }
-    
+
     /**
      * Get event start time
      * @return integer
@@ -380,7 +369,7 @@ class CalEvent
     {
         return strtotime($this->start_time);
     }
-    
+
     /**
      * Get title
      * @return string

@@ -56,12 +56,7 @@ class CalLocation
             throw new CalLocationException('Error getting all location values: '.$ex->getMessage(), $ex->getCode(), $ex);
         }
 
-        $locations = [];
-        foreach ($results as $result) {
-            $locations[] = $result;
-        }
-
-        return $locations;
+        return $results;
     }
 
     /**
@@ -121,12 +116,7 @@ class CalLocation
             throw new CalLocationException('Could not search for term: '.$ex->getMessage(), $ex->getCode(), $ex);
         }
 
-        $locations = array();
-        foreach ($results as $result) {
-            $locations[] = $result;
-        }
-
-        return $locations;
+        return $results;
     }
 }
 
