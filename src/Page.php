@@ -159,15 +159,12 @@ class Page
 
     /**
      * If a page exists, collect all information about it from the database.
-     * @global db $db Database connection object
      * @return void
      */
     public static function getPageInformation() 
     {
-        global $db;
-
         // Article Page
-        if (isset($_GET['showarticle'])) {
+        if (FormUtil::get('showarticle')) {
             Page::$exists = true;
             Page::$content = include ROOT.'pagetypes/news.php';
             return;
@@ -190,18 +187,19 @@ class Page
 			WHERE '.$page_query_id.'
 			AND `page`.`type` = `pt`.`id`
 			LIMIT 1';
-        $page_handle = $db->sql_query($page_query);
-        if ($db->error[$page_handle] == 1) {
+        try {
+            $page = DBConn::get()->query($page_query, [], DBConn::FETCH);
+        } catch (Exceptions\DBException $ex) {
             header("HTTP/1.0 404 Not Found");
             Debug::get()->addMessage('Error looking up page information', true);
             return;
         }
-        if ($db->sql_num_rows($page_handle) != 1) {
+
+        if (!$page) {
             header("HTTP/1.0 404 Not Found");
             Debug::get()->addMessage('Page is not listed in database', true);
             return;
         }
-        $page = $db->sql_fetch_assoc($page_handle);
 
         // Page was found; populate the class fields
         Page::$id = $page['id'];
@@ -215,7 +213,7 @@ class Page
         if (strlen(Page::$text_id) == 0) {
             Page::$url_reference = 'id='.Page::$id;
         } else {
-            if(isset($_GET['id'])) {
+            if(FormUtil::get('id')) {
                 header("HTTP/1.1 301 Moved Permanently");
                 $matches = null;
                 $old_page_address = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];

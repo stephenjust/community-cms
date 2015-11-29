@@ -175,13 +175,10 @@ class calendar_month extends calendar
     
     /**
      * Pull all of the event records for the current month from the database
-     * @global db $db
      * @throws \Exception 
      */
     private function load_events() 
     {
-        global $db;
-
         // Fetch records from the database
         $month_start = $this->year.'-'.$this->month.'-01 00:00:00';
         $month_end = $this->year.'-'.$this->month.'-'.$this->month_days.' 23:59:59';
@@ -192,15 +189,15 @@ class calendar_month extends calendar
 			WHERE `date`.`start` >= \''.$month_start.'\'
 			AND `date`.`start` <= \''.$month_end.'\'
 			ORDER BY `date`.`start` ASC, `date`.`end` DESC';
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) { 
-            throw new \Exception('An error occurred while reading dates from the calendar.'); 
+        try {
+            $results = DBConn::get()->query($query,
+                [":month_start" => $month_start, ":month_end" => $month_end], DBConn::FETCH_ALL);
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception('An error occurred while reading dates from the calendar.');
         }
-        $num_events = $db->sql_num_rows($handle);
 
         // Add each record to the event array
-        for ($i = 1; $i <= $num_events; $i++) {
-            $event = $db->sql_fetch_assoc($handle);
+        foreach ($results as $event) {
             $start = strtotime($event['start']);
             $end = strtotime($event['end']);
             
