@@ -121,22 +121,19 @@ class Gallery
      */
     function loadProperties() 
     {
-        global $db;
-
-        $info_query = 'SELECT `title`,`description`,`image_dir`
-			FROM `'.GALLERY_TABLE.'`
-			WHERE `id` = '.$this->id.'
-			LIMIT 1';
-        $info_handle = $db->sql_query($info_query);
-        if ($db->error[$info_handle] === 1) {
-            throw new GalleryException('Failed to load gallery information.'); 
+        $info_query = "SELECT `title`,`description`,`image_dir` "
+            . "FROM `".GALLERY_TABLE."` "
+            . "WHERE `id` = :id LIMIT 1";
+        try {
+            $info = DBConn::get()->query($info_query, [":id" => $this->id], DBConn::FETCH);
+        } catch (Exceptions\DBException $ex) {
+            throw new GalleryException('Failed to load gallery information.');
         }
 
-        if ($db->sql_num_rows($info_handle) != 1) {
-            throw new GalleryException('Gallery '.$this->id.' does not exist'); 
+        if (!$info) {
+            throw new GalleryException('Gallery '.$this->id.' does not exist');
         }
 
-        $info = $db->sql_fetch_assoc($info_handle);
         $this->info_file = 'scripts/gallery.php?id='.$this->id;
         $this->title = $info['title'];
         $this->description = $info['description'];
@@ -145,10 +142,10 @@ class Gallery
         
         // Check to make sure directories exist
         if (!file_exists(ROOT.'files/'.$this->image_dir)) {
-            throw new GalleryException('The gallery\'s image directory does not exist.'); 
+            throw new GalleryException('The gallery\'s image directory does not exist.');
         }
         if (!file_exists(ROOT.'files/'.$this->thumb_dir)) {
-            throw new GalleryException('The gallery\'s thumbnail directory does not exist.'); 
+            throw new GalleryException('The gallery\'s thumbnail directory does not exist.');
         }
     }
 
@@ -160,7 +157,7 @@ class Gallery
     {
         return $this->id;
     }
-    
+
     /**
      * Get the gallery title
      * @return string
@@ -169,7 +166,7 @@ class Gallery
     {
         return $this->title;
     }
-    
+
     /**
      * Get the gallery image directory
      * @return string
@@ -178,7 +175,7 @@ class Gallery
     {
         return $this->image_dir;
     }
-    
+
     /**
      * Get the gallery thumbnail directory
      * @return string
@@ -187,7 +184,7 @@ class Gallery
     {
         return $this->thumb_dir;
     }
-    
+
     /**
      * Get the gallery engine
      * @return string
@@ -219,8 +216,6 @@ class Gallery
         $image_dir = ROOT.'files/'.$this->image_dir;
         $thumb_dir = ROOT.'files/'.$this->thumb_dir;
 
-        global $db;
-
         // Get file lists
         $gallery_files = scandir($image_dir);
         $thumbs_files = scandir($thumb_dir);
@@ -249,113 +244,95 @@ class Gallery
 
     /**
      * Get the record ID for the specified gallery image from the database
-     * @global db $db
      * @param string $image Filename
      * @return integer ID, or false if no record found
      */
     public function getImageID($image) 
     {
-        global $db;
-
         $query = 'SELECT `i`.`id`
 			FROM `'.GALLERY_TABLE.'` `g`
 			LEFT JOIN `'.GALLERY_IMAGE_TABLE.'` `i`
 			ON `g`.`id` = `i`.`gallery_id`
-			WHERE `g`.`id` = '.$this->id.'
-			AND `i`.`file` = \''.$db->sql_escape_string($image).'\'
+			WHERE `g`.`id` = :id
+			AND `i`.`file` = :file
 			LIMIT 1';
-        $handle = $db->sql_query($query);
-        if ($db->sql_num_rows($handle) == 0) {
-            Debug::get()->addMessage('No image details set for '.$this->image_dir.'/'.$image);
+        $result = DBConn::get()->query($query, [":id" => $this->id, ":file" => $image], DBConn::FETCH);
+        if (!$result) {
             return false;
         }
-        $result = $db->sql_fetch_assoc($handle);
         return $result['id'];
     }
-    
+
     /**
      * Get the caption for the specified image
-     * @global db $db
      * @param string $image_id Image ID
      * @return string Caption
      */
     public function getImageCaption($image_id) 
     {
-        global $db;
-
         if ($image_id === false) {
             return false;
         }
 
         $query = 'SELECT `caption`
 			FROM `'.GALLERY_IMAGE_TABLE.'`
-			WHERE `id` = '.(int) $image_id.'
+			WHERE `id` = :id
 			LIMIT 1';
-        $handle = $db->sql_query($query);
-        if ($db->sql_num_rows($handle) == 0) {
-            throw new GalleryException('Could not find caption for gallery image with existing record.'); 
+        $result = DBConn::get()->query($query, [":id" => $image_id], DBConn::FETCH);
+        if (!$result) {
+            throw new GalleryException('Could not find caption for gallery image with existing record.');
         }
 
-        $result = $db->sql_fetch_assoc($handle);
         return $result['caption'];
     }
-    
+
     /**
      * Set the caption for the specified image
      * @param mixed  $image_id  Integer image ID if record exists, false if record does not exist
      * @param string $caption   New image caption
      * @param string $file_name Image file name
-     * @global db $db
      */
-    public function setImageCaption($image_id,$caption,$file_name) 
+    public function setImageCaption($image_id, $caption, $file_name)
     {
-        global $db;
-
         if (!is_numeric($image_id) && $image_id !== false) {
             throw new GalleryException('Invalid image ID.'); 
         }
-        
-        $caption = $db->sql_escape_string($caption);
-        $file_name = $db->sql_escape_string($file_name);
-        
+
         if ($image_id === false) {
             // Create new entry
-            $query = 'INSERT INTO `'.GALLERY_IMAGE_TABLE."`
-				(`gallery_id`,`file`,`caption`)
-				VALUES
-				({$this->id},'$file_name','$caption')";
+            $query = "INSERT INTO `".GALLERY_IMAGE_TABLE."` "
+                . "(`gallery_id`,`file`,`caption`) "
+                . "VALUES "
+                . "(:id, :file, :caption)";
+            $args = [":id" => $this->id, ":file" => $file_name, ":caption" => $caption];
         } else {
             // Update existing entry
-            $query = 'UPDATE `'.GALLERY_IMAGE_TABLE."`
-				SET `caption` = '$caption'
-				WHERE `id` = $image_id";
+            $query = "UPDATE `".GALLERY_IMAGE_TABLE."` "
+                . "SET `caption` = :caption WHERE `id` = :id";
+            $args = [":id" => $image_id, ":caption" => $caption];
         }
-
-        // Execute query
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new GalleryException('Failed to set image caption.'); 
+        try {
+            DBConn::get()->query($query, $args);
+            Log::addMessage('Changed image caption for \''.$file_name.'\'');
+        } catch (Exceptions\DBException $ex) {
+            throw new GalleryException('Failed to set image caption.');
         }
-
-        Log::addMessage('Changed image caption for \''.$file_name.'\'');
     }
-    
+
     public function deleteImageCaption($image_id) 
     {
-        global $db;
-
         if ($image_id === false) {
             return; 
         }
-        
-        $query = 'DELETE FROM `'.GALLERY_IMAGE_TABLE.'`
-			WHERE `id` = '.(int)$image_id;
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new GalleryException('Failed to delete image caption.'); 
+
+        $query = "DELETE FROM `".GALLERY_IMAGE_TABLE."` WHERE `id` = :id";
+        try {
+            DBConn::get()->query($query, [":id" => $image_id]);
+        } catch (Exceptions\DBException $ex) {
+            throw new GalleryException('Failed to delete image caption.');
         }
     }
-    
+
     public function deleteImage($image) 
     {
         // Remove caption
@@ -375,25 +352,22 @@ class Gallery
 
         Log::addMessage('Deleted image from gallery \''.$image.'\'');
     }
-    
+
     /**
      * Deletes the current photo gallery
-     * @global db $db
      */
     public function delete() 
     {
-        global $db;
-
         // Delete article
-        $query = 'DELETE FROM `'.GALLERY_TABLE.'`
-			WHERE `id` = '.$this->id;
-        $handle = $db->sql_query($query);
-        if ($db->error[$handle] === 1) {
-            throw new GalleryException('Failed to delete gallery.'); 
+        $query = 'DELETE FROM `'.GALLERY_TABLE.'` WHERE `id` = :id';
+        try {
+            DBConn::get()->query($query, [":id" => $this->id]);
+            Log::addMessage('Deleted photo gallery \''.$this->title.'\' ('.$this->id.')');
+        } catch (Exception $ex) {
+            throw new GalleryException('Failed to delete gallery.');
         }
-        Log::addMessage('Deleted photo gallery \''.$this->title.'\' ('.$this->id.')');
     }
-    
+
     function __toString() 
     {
         try {

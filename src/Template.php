@@ -167,7 +167,7 @@ class Template
                 }
                 try {
                     eval('$newvalue = '.$replacement);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $newvalue = $e->getMessage();
                 }
                 $this->template = str_replace($match[$i], $newvalue, $this->template);
