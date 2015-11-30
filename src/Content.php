@@ -31,7 +31,93 @@ class Content
     private $priority;
     private $show_date;
     private $delete_date;
-    
+
+    /**
+     * Create a content record
+     * @param string $title
+     * @param string $content
+     * @param integer $page
+     * @param string $author
+     * @param string $image
+     * @param boolean $publish
+     * @param boolean $showdate
+     * @param string $deldate
+     * @throws \Exception
+     */
+    public static function create($title,$content,$page,$author,$image,$publish,$showdate,$deldate)
+    {
+        acl::get()->require_permission('news_create');
+
+        $query = "INSERT INTO `".NEWS_TABLE."` "
+            . "(`page`,`name`,`description`,`author`,`image`,`date`,`showdate`,`publish`,`delete_date`) "
+            . "VALUES "
+            . "(:page, :name, :description, :author, :image, :date, :showdate, :publish, :delete_date)";
+        try {
+            DBConn::get()->query($query, [
+                ":page" => (($page != 0) ? $page : null),
+                ":name" => HTML::schars($title),
+                ":description" => StringUtils::removeComments($content),
+                ":author" => HTML::schars($author),
+                ":image" => HTML::schars($image),
+                ":date" => DATE_TIME,
+                ":showdate" => $showdate,
+                ":publish" => ((acl::get()->check_permission('news_publish')) ?
+                    $publish : SysConfig::get()->getValue('news_default_publish_value')),
+                ":delete_date" => ((strlen($deldate) == 10) ?
+                    DateTime::createFromFormat('m/d/Y', $deldate)->format('Y-m-d') : null)
+            ]);
+
+            if ($page != 0) {
+                $page_title = PageUtil::getTitle($page);
+            } else {
+                $page_title = "No Page";
+            }
+            Log::addMessage("Content '$title' added to '$page_title'");
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception("Failed to create content.", $ex->getCode(), $ex);
+        }
+    }
+
+    /**
+     * Edit a content record
+     * @param integer $id
+     * @param string $title
+     * @param string $content
+     * @param integer $page
+     * @param string $author
+     * @param string $image
+     * @param boolean $publish
+     * @param boolean $showdate
+     * @param string $deldate
+     * @throws \Exception
+     */
+    public static function edit($id, $title,$content,$page,$image,$showdate,$deldate)
+    {
+        acl::get()->require_permission('news_edit');
+
+        $query = "UPDATE `".NEWS_TABLE."` "
+            . "SET `name` = :name, `description` = :description, `page` = :page, "
+            . "`image` = :image, `date_edited` = :date, `showdate` = :showdate, "
+            . "`delete_date` = :delete_date WHERE `id` = :id";
+        try {
+            DBConn::get()->query($query, [
+                ":id" => $id,
+                ":page" => (($page != 0) ? $page : null),
+                ":name" => HTML::schars($title),
+                ":description" => StringUtils::removeComments($content),
+                ":image" => HTML::schars($image),
+                ":date" => DATE_TIME,
+                ":showdate" => $showdate,
+                ":delete_date" => ((strlen($deldate) == 10) ?
+                    DateTime::createFromFormat('m/d/Y', $deldate)->format('Y-m-d') : null)
+            ]);
+
+            Log::addMessage("Edited content '$title'");
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception("Failed to edit content.", $ex->getCode(), $ex);
+        }
+    }
+
     /**
      * Get all of the content items on a page
      * @param int $page_id
@@ -41,18 +127,28 @@ class Content
      */
     public static function getByPage($page_id, $start = 0, $num = 0, $only_published = false) 
     {
-        if ($start < 0) { $start = 0; 
+        if ($start < 0) {
+            $start = 0;
         }
-        $query = sprintf(
-            'SELECT `id` FROM `%s` '
-            . 'WHERE `page` = :page %s ORDER BY `priority` DESC, `date` DESC, `id` DESC %s %s',
-            NEWS_TABLE, ($only_published) ? 'AND `publish` = 1' : null,
-            ($num) ? 'LIMIT '.$num : null, ($start) ? 'OFFSET '.$start : null
-        );
-        $results = DBConn::get()->query(
-            $query,
-            array(':page' => $page_id), DBConn::FETCH_ALL
-        );
+        if ($page_id == "*") {
+            $query = sprintf(
+                'SELECT `id` FROM `%s` '
+                . '%s ORDER BY `priority` DESC, `date` DESC, `id` DESC %s %s',
+                NEWS_TABLE, ($only_published) ? 'WHERE `publish` = 1' : null,
+                ($num) ? 'LIMIT '.$num : null, ($start) ? 'OFFSET '.$start : null
+            );
+            $args = [];
+        } else {
+            $query = sprintf(
+                'SELECT `id` FROM `%s` '
+                . 'WHERE `page` = :page %s ORDER BY `priority` DESC, `date` DESC, `id` DESC %s %s',
+                NEWS_TABLE, ($only_published) ? 'AND `publish` = 1' : null,
+                ($num) ? 'LIMIT '.$num : null, ($start) ? 'OFFSET '.$start : null
+            );
+            $args = [":page" => $page_id];
+        }
+
+        $results = DBConn::get()->query($query, $args, DBConn::FETCH_ALL);
         $items = array();
         foreach ($results AS $result) {
             $items[] = new Content($result['id']);
@@ -82,6 +178,20 @@ class Content
         }
         return $items;
     }
+
+    public static function savePriorities(array $priorities)
+    {
+        try {
+            foreach($priorities AS $key => $value) {
+                $query = 'UPDATE `'.NEWS_TABLE.'` '
+                    . 'SET `priority` = :priority '
+                    . 'WHERE `id` = :id';
+                DBConn::get()->query($query, [':priority' => $value, ':id' => $key]);
+            }
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception("Failed to save priorities.", $ex->getCode(), $ex);
+        }
+    }
     
     public function __construct($id) 
     {
@@ -105,7 +215,64 @@ class Content
         $this->show_date = $result['showdate'];
         $this->delete_date = $result['delete_date'];
     }
-    
+
+    /**
+     * Delete the content item
+     * @throws \Exception
+     */
+    public function delete()
+    {
+        acl::get()->require_permission('news_delete');
+
+        $query = 'DELETE FROM `' . NEWS_TABLE . '` WHERE `id` = :id';
+        try {
+            DBConn::get()->query($query, [":id" => $this->id]);
+            Log::addMessage("Deleted content '{$this->title}' ({$this->id})");
+        } catch (Exceptions\DBException $ex) {
+            throw new \Exception("Failed to delete content.", $ex->getCode(), $ex);
+        }
+    }
+
+    /**
+     * Move this content to a different page
+     * @param integer $target
+     * @throws \Exception
+     */
+    public function move($target)
+    {
+        $query = 'UPDATE `' . NEWS_TABLE . '` SET `page` = :page WHERE `id` = :id';
+        try {
+            DBConn::get()->query($query, [":page" => (($target != 0) ? $target : null), ":id" => $this->id]);
+            $this->page_id = $target;
+            Log::addMessage("Moved content '{$this->title}' ({$this->id})");
+        } catch (Exception $ex) {
+            throw new \Exception("Failed to move content.", $ex->getCode(), $ex);
+        }
+    }
+
+    /**
+     * Duplicate this content to a different page
+     * @param integer $target
+     */
+    public function copy($target)
+    {
+        self::create($this->title, $this->content, (($target != 0) ? $target : null), $this->author,
+            $this->image, $this->publish, $this->show_date, $this->delete_date);
+    }
+
+    public function publish($publish)
+    {
+        if ($publish != $this->published()) {
+            $query = "UPDATE `".NEWS_TABLE."` SET `publish` = :publish WHERE `id` = :id";
+            try {
+                DBConn::get()->query($query, [":id" => $this->id, ":publish" => $publish]);
+                $this->publish = $publish;
+            } catch (Exceptions\DBException $ex) {
+                throw new \Exception("Failed to edit content.");
+            }
+        }
+    }
+
     public function getEditBar() 
     {
         $editbar = new EditBarComponent();

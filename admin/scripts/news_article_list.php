@@ -41,7 +41,7 @@ foreach ($articles AS $article) {
     }
     $current_row[] = $article_title;
     if (!is_numeric(FormUtil::get('page'))) {
-        $current_row[] = $article->getPageTitle(); 
+        $current_row[] = PageUtil::getTitle($article->getPage());
     }
 
     if (acl::get()->check_permission('news_delete')) {

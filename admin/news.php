@@ -19,8 +19,6 @@ if (@SECURITY != 1 || @ADMIN != 1) {
     die ('You cannot access this page directly.');
 }
 
-require_once ROOT.'functions/news.php';
-
 acl::get()->require_permission('adm_news');
 
 $tab_layout = new Tabs;
@@ -31,9 +29,10 @@ default:
     break;
 case 'multi':
     if (FormUtil::post('pri')) {
-        if (save_priorities(FormUtil::postArray('priority'))) {
+        try {
+            Content::savePriorities(FormUtil::postArray('priority'));
             echo 'Updated priorities.<br />';
-        } else {
+        } catch (\Exception $ex) {
             echo 'Failed to update priorities.<br />';
         }
         break;
@@ -50,23 +49,27 @@ case 'multi':
     $where = FormUtil::post('where', FILTER_VALIDATE_INT);
     switch ($news_action) {
         case 'del':
-            if (!delete_article($selected_items)) {
-                echo '<span class="errormessage">Failed to delete article(s)</span><br />'."\n";
-            } else {
+            try {
+                foreach ($selected_items as $item) {
+                    $c = new Content($item);
+                    $c->delete();
+                }
                 echo 'Successfully deleted article(s)<br />'."\n";
+            } catch (\Exception $ex) {
+                echo '<span class="errormessage">Failed to delete article(s)</span><br />'."\n";
             }
             break;
         case 'move':
-            if (!$where) {
-                break;
+            foreach ($selected_items as $item) {
+                $c = new Content($item);
+                $c->move($where);
             }
-            move_article($selected_items, $where);
             break;
         case 'copy':
-            if (!$where) {
-                break;
+            foreach ($selected_items as $item) {
+                $c = new Content($item);
+                $c->copy($where);
             }
-            copy_article($selected_items, $where);
             break;
     }
     break;
@@ -74,10 +77,12 @@ case 'multi':
 // ----------------------------------------------------------------------------
 
 case 'delete':
-    if (!delete_article(FormUtil::get('id'))) {
-        echo 'Failed to delete article<br />'."\n";
-    } else {
+    try {
+        $c = new Content(FormUtil::get('id'));
+        $c->delete();
         echo 'Successfully deleted article<br />'."\n";
+    } catch (\Exception $ex) {
+        echo '<span class="errormessage">Failed to delete article</span><br />'."\n";
     }
     break;
 
@@ -85,7 +90,7 @@ case 'delete':
 
 case 'new':
     try {
-        news_create(
+        Content::create(
             FormUtil::post('title'), FormUtil::post('content', FILTER_UNSAFE_RAW),
             FormUtil::post('page'), FormUtil::post('author'), FormUtil::post('image'),
             FormUtil::post('publish'), FormUtil::post('date_params'), FormUtil::post('del_date')
@@ -100,18 +105,22 @@ case 'new':
 // ----------------------------------------------------------------------------
 
 case 'publish':
-    if (!news_publish(FormUtil::get('id'))) {
+    try {
+        $c = new Content(FormUtil::get('id'));
+        $c->publish(true);
+        echo 'Successfully published article.<br />'."\n";
+    } catch (\Exception $ex) {
         echo '<span class="errormessage">Failed to publish article.</span><br />'."\n";
-        break;
     }
-    echo 'Successfully published article.<br />'."\n";
     break;
 case 'unpublish':
-    if (!news_publish(FormUtil::get('id'), false)) {
-        echo '<span class="errormessage">Failed to unpublish article</span><br />'."\n";
-        break;
+    try {
+        $c = new Content(FormUtil::get('id'));
+        $c->publish(false);
+        echo 'Successfully unpublished article.<br />'."\n";
+    } catch (\Exception $ex) {
+        echo '<span class="errormessage">Failed to unpublish article.</span><br />'."\n";
     }
-    echo 'Successfully unpublished article<br />'."\n";
     break;
 
 // ----------------------------------------------------------------------------
@@ -157,7 +166,7 @@ case 'edit':
 
 case 'editsave':
     try {
-        news_edit(
+        Content::edit(
             FormUtil::post('id'), FormUtil::post('title'),
             FormUtil::post('update_content', FILTER_UNSAFE_RAW), FormUtil::post('page'),
             FormUtil::post('image'), FormUtil::post('date_params'), FormUtil::post('del_date')

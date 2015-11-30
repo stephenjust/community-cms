@@ -40,12 +40,13 @@ $return = null;
 
 // (Un)publish articles on request
 if (acl::get()->check_permission('news_publish')) {
-    include_once ROOT . 'functions/news.php';
     if (FormUtil::get('publish')) {
-        news_publish(FormUtil::get('publish'), true);
+        $c = new Content(FormUtil::get('publish'));
+        $c->publish(true);
     }
     if (FormUtil::get('unpublish')) {
-        news_publish(FormUtil::get('unpublish'), false);
+        $c = new Content(FormUtil::get('unpublish'));
+        $c->publish(false);
     }
 }
 

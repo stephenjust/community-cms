@@ -6,7 +6,7 @@ define('ROOT', '../');
 define('SECURITY',1);
 require(ROOT.'config.php');
 require(ROOT.'include.php');
-require(ROOT.'functions/news.php');
+require(ROOT.'vendor/autoload.php');
 initialize();
 
 $query = "SELECT `id`, `name` FROM `".NEWS_TABLE."` "
@@ -21,7 +21,8 @@ try {
 }
 
 foreach ($results as $result) {
-    delete_article($result['id']);
+    $c = new Content($result['id']);
+    $c->delete();
     printf('Automated deletion of article "%s"<br />', $result['name']);
     Log::addMessage(sprintf('Automated deletion of article "%s"', $result['name']));
 }
