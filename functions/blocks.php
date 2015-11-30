@@ -2,7 +2,7 @@
 /**
  * Community CMS
  *
- * @copyright Copyright (C) 2007-2009 Stephen Just
+ * @copyright Copyright (C) 2007-2015 Stephen Just
  * @author    stephenjust@users.sourceforge.net
  * @package   CommunityCMS.main
  */
@@ -10,107 +10,83 @@ namespace CommunityCMS;
 
 /**
  * Create a new block record
- * @global db $db
  * @param string $type
  * @param string $attributes Comma separated list
  * @throws \Exception 
  */
 function block_create($type, $attributes) 
 {
-    global $db;
+    acl::get()->require_permission('block_create');
 
-    if (!acl::get()->check_permission('block_create')) {
-        throw new \Exception('You are not allowed to create blocks.'); 
-    }
-
-    // Sanitize inputs
-    $type = $db->sql_escape_string($type);
-    if (strlen($type) == 0) {
-        throw new \Exception('Invalid block type.'); 
-    }
-    $attributes = explode(',', $attributes);
-    $attb_count = count($attributes);
+    $attb_array = explode(',', $attributes);
+    $attb_count = count($attb_array);
 
     // Construct attribute string
     $attributes_final = array();
     for ($i = 0; $i < $attb_count; $i++) {
-        if ($attributes[$i] == null) { continue; 
+        if ($attb_array[$i] == null) {
+            continue;
         }
-        if (!isset($_POST[$attributes[$i]])) { $_POST[$attributes[$i]] = null; 
-        }
-        $attributes_final[] = $attributes[$i].'='.$_POST[$attributes[$i]];
+        $attributes_final[] = $attb_array[$i].'='.FormUtil::post($attb_array[$i]);
     }
-    $attb_string = $db->sql_escape_string(implode(',', $attributes_final));
+    $attb_string = implode(',', $attributes_final);
     
     // Create record
     $query = 'INSERT INTO `'.BLOCK_TABLE."`
-		(`type`,`attributes`)
+		(`type`, `attributes`)
 		VALUES
-		('$type','$attb_string')";
-    $handle = $db->sql_query($query);
-    if($db->error[$handle] === 1) {
-        throw new \Exception('An error occurred while creating the block.'); 
+		(:type, :attributes)";
+    try {
+        DBConn::get()->query($query, [":type" => $type, ":attributes" => $attb_string]);
+        Log::addMessage("Created block '$type' ($attb_string)");
+    } catch (Exceptions\DBException $ex) {
+        throw new \Exception('An error occurred while creating the block.', $ex->getCode(), $ex);
     }
-
-    Log::addMessage('Created block \''.stripslashes($type).'\' ('.stripslashes($attb_string).')');
 }
 
 /**
  * Edit a block entry
- * @global db $db
  * @param integer $id         Block ID
  * @param string  $attributes Comma separated list
  * @throws \Exception 
  */
-function block_edit($id,$attributes) 
+function block_edit($id, $attributes)
 {
-    global $db;
-    
-    if (!acl::get()->check_permission('block_edit')) {
-        throw new \Exception('You are not allowed to edit content blocks.'); 
-    }
+    acl::get()->require_permission('block_edit');
 
-    // Validate inputs
-    $id = (int)$id;
-    if ($id < 1) {
-        throw new \Exception('Invalid block ID.'); 
-    }
-    $attributes = explode(',', $attributes);
-    $attb_count = count($attributes);
+    $attb_array = explode(',', $attributes);
+    $attb_count = count($attb_array);
 
-    // Generate a string of attributes
+    // Construct attribute string
     $attributes_final = array();
     for ($i = 0; $i < $attb_count; $i++) {
-        if ($attributes[$i] == null) { continue; 
+        if ($attb_array[$i] == null) {
+            continue;
         }
-        if (!isset($_POST[$attributes[$i]])) { $_POST[$attributes[$i]] = null; 
-        }
-        $attributes_final[] = $attributes[$i].'='.$_POST[$attributes[$i]];
+        $attributes_final[] = $attb_array[$i].'='.FormUtil::post($attb_array[$i]);
     }
-    $attb_string = $db->sql_escape_string(implode(',', $attributes_final));
+    $attb_string = implode(',', $attributes_final);
 
     // Update the block record
     $query = 'UPDATE `'.BLOCK_TABLE."`
-		SET `attributes` = '$attb_string'
-		WHERE `id` = $id";
-    $handle = $db->sql_query($query);
-    if($db->error[$handle] === 1) {
-        throw new \Exception('An error occurred while editing the block.'); 
+		SET `attributes` = :attributes
+		WHERE `id` = :id";
+    try {
+        DBConn::get()->query($query, [":id" => $id, ":attributes" => $attb_string]);
+        Log::addMessage("Edited block '$id' ($attb_string)");
+    } catch (Exceptions\DBException $ex) {
+        throw new \Exception('An error occurred while editing the block.', $ex->getCode(), $ex);
     }
-    Log::addMessage('Edited block \''.$id.' ('.stripslashes($attb_string).')\'');
 }
 
 /**
  * Generate the form for block management
- * @global db $db
  * @param string $type Block type
  * @param array  $vars Array of parameters to set as form defaults
  * @return string HTML for form (or false on failure)
  */
 function block_edit_form($type,$vars = array()) 
 {
-    global $db;
-
     $return = null;
     if (!is_array($vars)) {
         Debug::get()->addMessage('Invalid set of variables', true);
@@ -126,35 +102,16 @@ function block_edit_form($type,$vars = array())
         if (!isset($vars['show_border'])) {
             $vars['show_border'] = 'yes';
         }
-        $news_query = 'SELECT `news`.`name`, `news`.`id`, `news`.`page`, `page`.`title`
-				FROM `'.NEWS_TABLE.'` `news`
-				LEFT JOIN `'.PAGE_TABLE.'` `page`
-				ON `news`.`page` = `page`.`id`
-				ORDER BY `news`.`page` ASC, `news`.`name` ASC';
-        $news_handle = $db->sql_query($news_query);
-        if ($db->error[$news_handle] === 1) {
-            Debug::get()->addMessage('Failed to read news articles', true);
-            return false;
-        }
-        $num_articles = $db->sql_num_rows($news_handle);
-        if ($num_articles == 0) {
+        $news_items = Content::getByPage("*");
+        if (count($news_items) == 0) {
             return 'No articles exist.<br />'."\n";
         }
-        $return .= 'News Article <select name="article_id">'."\n";
-        for ($i = 1; $i <= $num_articles; $i++) {
-            $news_result = $db->sql_fetch_assoc($news_handle);
-            if ($news_result['title'] == null && $news_result['page'] == 0) {
-                $news_result['title'] = 'No Page';
-            } elseif ($news_result['title'] == null && $news_result['page'] != 0) {
-                $news_result['title'] = 'Unknown Page';
-            }
-            if ($vars['article_id'] == $news_result['id']) {
-                $return .= "\t".'<option value="'.$news_result['id'].'" selected>'.$news_result['title'].' - '.$news_result['name'].'</option>'."\n";
-            } else {
-                $return .= "\t".'<option value="'.$news_result['id'].'">'.$news_result['title'].' - '.$news_result['name'].'</option>'."\n";
-            }
+        $news_select = new UISelect(["name" => "article_id"]);
+        foreach ($news_items as $news_item) {
+            $news_select->addOption($news_item->getID(), sprintf("%s - %s", PageUtil::getTitle($news_item->getPage()), $news_item->getTitle()));
         }
-        $return .= '</select><br />'."\n";
+        $news_select->setChecked($vars['article_id']);
+        $return .= "News Article $news_select<br />\n";
         $return .= 'Show Border <select name="show_border">'."\n";
         if ($vars['show_border'] == 'yes') {
             $return .= "\t".'<option value="yes" selected>Yes</option>'."\n".
@@ -173,28 +130,9 @@ function block_edit_form($type,$vars = array())
         if (!isset($vars['page'])) {
             $vars['page'] = 0;
         }
-        $news_query = 'SELECT *
-				FROM `'.PAGE_TABLE.'`
-				ORDER BY `title` ASC';
-        $news_handle = $db->sql_query($news_query);
-        if ($db->error[$news_handle] === 1) {
-            Debug::get()->addMessage('Failed to read pages', true);
-            return false;
-        }
-        $num_articles = $db->sql_num_rows($news_handle);
-        if ($num_articles == 0) {
-            return 'No pages exist.<br />'."\n";
-        }
-        $return .= 'Page <select name="page">'."\n";
-        for ($i = 1; $i <= $num_articles; $i++) {
-            $news_result = $db->sql_fetch_assoc($news_handle);
-            if ($vars['page'] == $news_result['id']) {
-                $return .= "\t".'<option value="'.$news_result['id'].'" selected>'.$news_result['title'].'</option>'."\n";
-            } else {
-                $return .= "\t".'<option value="'.$news_result['id'].'">'.$news_result['title'].'</option>'."\n";
-            }
-        }
-        $return .= '</select><br />'."\n";
+        $page_select = new UISelectPageList(["pagetype" => 1, "name" => "page"]);
+        $page_select->setChecked($vars['page']);
+        $return .= "Page $page_select<br />\n";
         $return .= '<input type="hidden" name="attributes" value="page" />';
         break;
             
