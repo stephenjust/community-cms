@@ -20,7 +20,6 @@ class AdminCalLocationModule extends AdminModule
     
     /**
      * Handle adding and deleting actions
-     * @global db $db
      * @param string $event
      * @param array  $params
      * @throws AdminException
@@ -28,12 +27,6 @@ class AdminCalLocationModule extends AdminModule
      */
     public function onLoadEvent($event, $params) 
     {
-        global $db;
-        
-        if ($db->dbms == 'postgresql') {
-            throw new AdminException('The locations feature does not work with the PostgreSQL database engine.'); 
-        }
-        
         try {
             switch ($event) {
             default:

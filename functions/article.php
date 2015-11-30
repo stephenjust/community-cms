@@ -30,13 +30,11 @@ function article_url_nopage($id)
 
 /**
  * Generate a URL to a news article (on-page format)
- * @global db $db Database connection object
  * @param int $id Article ID
  * @return string URL
  */
 function article_url_onpage($id) 
 {
-    global $db;
     if (!is_numeric($id)) {
         return '#';
     }

@@ -16,7 +16,6 @@ if (!defined('SECURITY')) {
     exit;
 }
 
-global $db;
 $content = null;
 
 switch (Page::$id) {

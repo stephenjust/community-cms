@@ -82,7 +82,6 @@ class AdminPage extends Page
 
     public static function display_admin() 
     {
-        global $db;
         $template_page = new Template;
         $template_page->loadAdminFile();
 
