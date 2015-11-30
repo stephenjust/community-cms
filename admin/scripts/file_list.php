@@ -40,5 +40,3 @@ if (File::getDirProperty($dir, 'icons_only')) {
 $file_list = new Component\FileListComponent();
 $file_list->setDirectory($dir);
 echo $file_list->render();
-
-clean_up();

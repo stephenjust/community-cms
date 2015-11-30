@@ -39,5 +39,3 @@ try {
 } catch (Exceptions\DBException $ex) {
     echo('Failed to submit your vote.');
 }
-
-clean_up();

@@ -450,11 +450,10 @@ class Page
 
     public static function displayDebug()
     {
-        global $db;
         $template = new Template;
         $template->loadFile('debug');
-        $template->debug_queries = $db->print_queries();
-        $template->debug_query_stats = $db->print_query_stats();
+        $template->debug_queries = null;
+        $template->debug_query_stats = null;
         $template->debug_log = Debug::get()->displayTraces();
         echo $template;
     }

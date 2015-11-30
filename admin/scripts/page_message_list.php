@@ -62,5 +62,3 @@ foreach ($messages AS $message) {
 $content = TableComponent::create($table_headings, $table_rows);
 
 echo $content;
-
-clean_up();

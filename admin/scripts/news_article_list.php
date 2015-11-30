@@ -90,5 +90,3 @@ $content = TableComponent::create($label_array, $list_rows);
 $content .= '<input type="hidden" name="page" value="'.FormUtil::get('page').'" />';
 
 echo $content;
-
-clean_up();

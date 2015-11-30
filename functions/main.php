@@ -31,20 +31,7 @@ function initialize($mode = null)
 
     new Bootstrap();
 
-    global $db;
-
-    // Must initialize DB class before ACL class
-    $db->sql_connect();
-    if (!$db->connect) {
-        err_page(1001); // Database connection error
-    }
-
     new LoginController();
 
     return;
-}
-function clean_up() 
-{
-    global $db;
-    @ $db->sql_close();
 }

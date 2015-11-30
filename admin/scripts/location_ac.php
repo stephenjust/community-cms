@@ -31,4 +31,3 @@ initialize('ajax');
 $search = CalLocation::search($term, false);
 $json_result = json_encode($search);
 echo $json_result;
-clean_up();

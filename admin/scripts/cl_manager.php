@@ -115,5 +115,3 @@ $content .= '<input type="hidden" id="cl_contact_ids" value="'.implode(',', $con
 $content .= '<input type="button" value="Add" onClick="update_cl_manager_add()" /><br />'."\n";
 
 echo $content;
-
-clean_up();

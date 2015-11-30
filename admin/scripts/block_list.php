@@ -60,23 +60,24 @@ if (FormUtil::get('left') == '0' || FormUtil::get('right') == '0') {
 
 // Get list of blocks available to add
 $block_list_query = 'SELECT * FROM `'.BLOCK_TABLE.'`';
-$block_list_handle = $db->sql_query($block_list_query);
-if ($db->error[$block_list_handle] === 1) {
+try {
+    $results = DBConn::get()->query($block_list_query, [], DBConn::FETCH_ALL);
+} catch (Exceptions\DBException $ex) {
     die ('Failed to read block list');
 }
-if ($db->sql_num_rows($block_list_handle) == 0) {
+if (count($results) == 0) {
     echo 'No blocks available to add.<br />';
 } else {
     echo 'Add: <select id="adm_add_block_list">';
-    for ($i = 1; $i <= $db->sql_num_rows($block_list_handle); $i++) {
-        $block_list = $db->sql_fetch_assoc($block_list_handle);
+    foreach ($results as $block_list) {
         $attribute_list = ($block_list['attributes'] == '') ? null : ' ('.$block_list['attributes'].')';
         echo '<option value="'.$block_list['id'].'">'.$block_list['type'].$attribute_list.'</option>';
     }
     echo '</select><br />';
 }
 
-if (DEBUG === 1) { echo 'Left: '.$blocks_left.' /Right: '.$blocks_right.'<br />'; 
+if (DEBUG === 1) {
+    echo 'Left: '.$blocks_left.' /Right: '.$blocks_right.'<br />';
 }
 
 // Turn the lists into arrays
@@ -86,18 +87,18 @@ $blocks_right = explode(',', $blocks_right);
 // Function to generate tables to add/remove blocks
 function block_table(array $current_blocks, $side)
 {
-    global $db;
     $return = '<a href="#" onClick="block_list_add(0,\''.$side.'\')"><img src="admin/templates/default/images/add.png" width="16px" height="16px" border="0"></a><br />';
 
     $pos = 1;
     $rmpos = 0;
     foreach ($current_blocks as $block) {
-        $block_info_query = 'SELECT * FROM `'.BLOCK_TABLE.'` WHERE `id` = '.(int)$block.' LIMIT 1';
-        $block_info_handle = $db->sql_query($block_info_query);
-        if ($db->error[$block_info_handle] === 1) {
+        $block_info_query = 'SELECT * FROM `'.BLOCK_TABLE.'` WHERE `id` = :id LIMIT 1';
+        try {
+            $block_info = DBConn::get()->query($block_info_query, [":id" => $block], DBConn::FETCH);
+        } catch (Exceptions\DBException $ex) {
             die ('ERROR: Failed to read block information.');
         }
-        if ($db->sql_num_rows($block_info_handle) != 1) {
+        if (!$block_info) {
             echo 'Block '.$block.' does not exist.
 				<span id="adm_block_'.$rmpos.'" style="display:none;">'.$block.'</span>
 				<a href="#" onClick="block_list_remove('.$rmpos.',\''.$side.'\')">
@@ -106,7 +107,6 @@ function block_table(array $current_blocks, $side)
             $rmpos++;
             continue;
         }
-        $block_info = $db->sql_fetch_assoc($block_info_handle);
         $attribute_list = ($block_info['attributes'] == '') ? null : ' ('.$block_info['attributes'].')';
         $return .= $block_info['type'].$attribute_list.' 
 			<span id="adm_block_'.$rmpos.'" style="display:none;">'.$block.'</span>
@@ -136,4 +136,3 @@ echo '</tr></table>'."\n";
 
 echo '<input type="hidden" name="blocks_left" id="adm_blocklist_left" value="'.implode(',', $blocks_left).'" />'."\n";
 echo '<input type="hidden" name="blocks_right" id="adm_blocklist_right" value="'.implode(',', $blocks_right).'" />'."\n";
-clean_up();

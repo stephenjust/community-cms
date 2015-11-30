@@ -68,5 +68,3 @@ try {
 catch (NewsletterException $e) {
     echo '<span class="errormessage">'.$e->getMessage().'</span>';
 }
-
-clean_up();

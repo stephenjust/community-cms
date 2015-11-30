@@ -102,6 +102,5 @@ initialize();
                 </div>
             </div>
         </form>
-<?php clean_up(); ?>
     </body>
 </html>

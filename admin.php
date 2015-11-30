@@ -43,5 +43,3 @@ if (DEBUG === 1) {
 	AdminPage::display_debug();
 }
 AdminPage::display_footer();
-
-clean_up();

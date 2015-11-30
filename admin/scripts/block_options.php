@@ -40,4 +40,3 @@ if($current_directory != $referer_directory.'/admin/scripts') {
 
 initialize();
 echo block_edit_form(FormUtil::get('blocktype'));
-clean_up();

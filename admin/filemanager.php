@@ -94,7 +94,7 @@ if (FormUtil::get('action') == 'delete' && FormUtil::get('upload') === null) {
 $tab_layout = new Tabs;
 if (FormUtil::get('action') == 'edit') {
     $tab_content['edit'] = null;
-    $path = $db->sql_escape_string(FormUtil::get('path').FormUtil::get('file'));
+    $path = FormUtil::get('path').FormUtil::get('file');
     $file = new File($path);
 
     $form = new Form;

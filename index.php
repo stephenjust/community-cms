@@ -59,8 +59,6 @@ if (DEBUG === 1) {
 }
 Page::displayFooter();
 
-clean_up();
-
 // Page load timer
 if (DEBUG === 1) {
     $totaltime = (microtime(true) - $starttime);

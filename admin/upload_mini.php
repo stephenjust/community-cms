@@ -59,4 +59,3 @@ catch (\Exception $e) {
 }
 $template->dialog_body = $content;
 echo $template;
-clean_up();
