@@ -14,6 +14,7 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\DebugInfoComponent;
 use CommunityCMS\Component\EditBarComponent;
 use CommunityCMS\Component\LoginBoxComponent;
 use CommunityCMS\Component\PageNavComponent;
@@ -297,9 +298,6 @@ class Page
         $css_include =
         '<link rel="StyleSheet" type="text/css" href="'.$template->path.'style.css" />'."\n".
         '<link rel="StyleSheet" type="text/css" href="'.$template->path.'print.css" media="print" />'."\n";
-        if (DEBUG === 1) {
-            $css_include .= '<link rel="StyleSheet" type="text/css" href="'.$template->path.'debug.css" />'."\n";
-        }
         $template->css_include = $css_include;
         unset($css_include);
 
@@ -450,12 +448,8 @@ class Page
 
     public static function displayDebug()
     {
-        $template = new Template;
-        $template->loadFile('debug');
-        $template->debug_queries = null;
-        $template->debug_query_stats = null;
-        $template->debug_log = Debug::get()->displayTraces();
-        echo $template;
+        $c = new DebugInfoComponent();
+        echo $c->render();
     }
 
     /**

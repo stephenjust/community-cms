@@ -80,22 +80,19 @@ class Debug
     }
 
     /**
-     * Return a list of traces formatted in HTML
+     * Return a list of traces
      * @return string List of traces
      */
-    public function displayTraces() 
+    public function getTraces()
     {
-        $stack = null;
-        if (count(Debug::$message_list) === 0) {
-            $stack .= "\t".'No errors have occured<br />'."\n";
-        }
-        for ($i = 0; $i < count(Debug::$message_list); $i++) {
-            if (Debug::$message_list[$i]['error'] == true) {
-                $stack .= "\t".'<p><span style="color: #CC0000;">Error: \''.Debug::$message_list[$i]['message'].'\' reported by \''.Debug::$message_list[$i]['function'].'\'</span></p>'."\n";
-            } else {
-                $stack .= "\t<p>'".Debug::$message_list[$i]['message'].'\' reported by \''.Debug::$message_list[$i]['function'].'\'</p>'."\n";
+        $logs = [];
+        foreach (Debug::$message_list as $debug) {
+            $string = "{$debug['message']} ({$debug['function']})";
+            if ($debug['error']) {
+                $string = "ERROR: $string";
             }
+            $logs[] = $string;
         }
-        return $stack;
+        return $logs;
     }
 }

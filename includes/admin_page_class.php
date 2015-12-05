@@ -9,6 +9,9 @@
 
 namespace CommunityCMS;
 
+use CommunityCMS\Component\AdminNavComponent;
+use CommunityCMS\Component\DebugInfoComponent;
+
 /**
  * Assist in generating admin pages
  *
@@ -53,9 +56,6 @@ class AdminPage extends Page
 
         // Include StyleSheets
         $css_include = '<link rel="StyleSheet" type="text/css" href="'.$template->path.'style.css" />';
-        if (DEBUG === 1) {
-            $css_include .= '<link rel="StyleSheet" type="text/css" href="'.$template->path.'debug.css" />';
-        }
         $template->css_include = $css_include;
         unset($css_include);
 
@@ -85,7 +85,7 @@ class AdminPage extends Page
         $template_page = new Template;
         $template_page->loadAdminFile();
 
-        $nav = new Component\AdminNavComponent();
+        $nav = new AdminNavComponent();
         $template_page->nav_bar = $nav->render();
         $template_page->nav_login = Page::displayLoginBox();
         $template_page_bottom = $template_page->split('content');
@@ -105,13 +105,8 @@ class AdminPage extends Page
     
     public static function display_debug() 
     {
-        $template = new Template;
-        $template->loadAdminFile('debug');
-        $template->debug_queries = null;
-        $template->debug_query_stats = null;
-        $template->debug_log = Debug::get()->displayTraces();
-        echo $template;
-        unset($template);
+        $c = new DebugInfoComponent();
+        echo $c->render();
     }
 
     public static function display_footer() 

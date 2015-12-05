@@ -22,6 +22,9 @@ namespace CommunityCMS;
  */
 class DBConn
 {
+    private $all_queries = [];
+    private $failed_queries = [];
+
     /**
      * Shared instance of the class
      * @var DBConn
@@ -73,6 +76,9 @@ class DBConn
         if (empty($query)) {
             throw new Exceptions\DBException("Empty Query");
         }
+        if (defined("DEBUG")) {
+            $this->all_queries[] = $query;
+        }
         try {
             $sth = $this->conn->prepare($query);
             $sth->execute($params);
@@ -87,6 +93,7 @@ class DBConn
                     return $sth->fetch(\PDO::FETCH_ASSOC);
             }
         } catch (\PDOException $ex) {
+            $this->failed_queries[] = $query;
             throw new Exceptions\DBException($ex->getMessage(), (int) $ex->getCode(), $ex);
         }
     }
@@ -138,5 +145,17 @@ class DBConn
     public function serverInfo()
     {
         return $this->conn->getAttribute(\PDO::ATTR_SERVER_VERSION);
+    }
+
+    /**
+     * Get all executed and failed queries
+     * @return array
+     */
+    public function getQueryHistory()
+    {
+        return [
+            "all" => $this->all_queries,
+            "failed" => $this->failed_queries
+        ];
     }
 }
